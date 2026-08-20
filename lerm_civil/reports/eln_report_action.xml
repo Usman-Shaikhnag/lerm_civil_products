@@ -1062,6 +1062,28 @@
             <field name="binding_type">report</field>
         </record>
 
+        <record id="solid_block_datasheet_action" model="ir.actions.report">
+            <field name="name">Solid Concrete Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">solid_concrete_block.solid_block_datasheet</field>
+            <field name="report_file">solid_concrete_block.solid_block_datasheet</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="solid_concrete_report_action" model="ir.actions.report">
+            <field name="name">Solid Concrete Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">solid_concrete_block.solid_concrete_report</field>
+            <field name="report_file">solid_concrete_block.solid_concrete_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
         <record id="rock_datasheet_action" model="ir.actions.report">
         <field name="name">ROCK DataSheet </field>
         <field name="model">lerm.eln</field>

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_solid_block" model="ir.ui.view">
+        <field name="name">mechanical.solid.concrete.block.form</field>
+        <field name="model">mechanical.solid.concrete.block</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <div >
+                         <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                      <group>
+                        <field name="srf_id" invisible="1" style='width:50%'/>
+                        <field name="sample_id" readonly="1" style='width:50%'/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+                        <field name="parameter_id" invisible="1"/>
+                      </group>
+                     
+                    </group>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                    
+                    <!-- Block Density -->
+
+                    <div  invisible = "block_density_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="block_density_name" readonly="1" nolabel="1"/>
+                            <field name="block_density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "block_density_visible == False">
+                        <field name="block_density_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                           <field name="sr_no" />
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="heigth" class="blue-input" decoration-info="heigth != 0"/>
+                          <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
+                          <field name="volume" class="blue-input" decoration-info="volume != 0"/>
+                          <field name="intial_wt" class="blue-input" decoration-info="intial_wt != 0"/>
+                          <field name="final_wt" class="blue-input" decoration-info="final_wt != 0"/>
+                          <field name="block_density" />
+                        </tree>
+                        </field>
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible = "block_density_visible == False">
+
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="average_length1">Average Length</label></td>
+                                    <td><field name="average_length1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="averag_height1">Average Height</label></td>
+                                    <td><field name="averag_height1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="average_thickness">Average Thickness</label></td>
+                                    <td><field name="average_thickness"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+
+
+                    <table invisible = "block_density_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                    <td><label class="fw-bold" for="average_block">Average Block Density</label></td>
+                                    <td><field name="average_block"/></td>
+                                </tr>
+                         
+                            <tr>
+                                <td><label class="fw-bold" for="block_density_conformity"></label></td>
+                                <td>
+                                    <field name="block_density_conformity"
+                                        decoration-success="block_density_conformity == 'pass'"
+                                        decoration-danger="block_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="block_density_nabl"></label></td>
+                                <td><field name="block_density_nabl"
+                                            decoration-success="block_density_nabl == 'pass'"
+                                            decoration-danger="block_density_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+
+                    <!-- Moisture Movment -->
+
+                    <div  invisible = "moisture_movment_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="moisture_movment_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_movment_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "moisture_movment_visible == False">
+                        <field name="moisture_movment_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="sr_no" />
+                          <field name="dry_length" class="blue-input" decoration-info="dry_length != 0"/>
+                          <field name="wet_length" class="blue-input" decoration-info="wet_length != 0"/>
+                          <field name="moisture_movment" />
+                        </tree>
+                        </field>
+                    </div>
+
+                    <table invisible = "block_density_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                    <td><label class="fw-bold" for="average_moisture_movment">Average</label></td>
+                                    <td><field name="average_moisture_movment"/></td>
+                                </tr>
+                         
+                            <tr>
+                                <td><label class="fw-bold" for="moisture_movment_conformity"></label></td>
+                                <td>
+                                    <field name="moisture_movment_conformity"
+                                        decoration-success="moisture_movment_conformity == 'pass'"
+                                        decoration-danger="moisture_movment_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="moisture_movment_nabl"></label></td>
+                                <td><field name="moisture_movment_nabl"
+                                            decoration-success="moisture_movment_nabl == 'pass'"
+                                            decoration-danger="moisture_movment_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     
+                     <!-- Drying Shrinkage -->
+
+                     <div  invisible = "drying_shrinkage_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "drying_shrinkage_visible == False">
+                        <field name="drying_shrinkage_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="sr_no" />
+                          <field name="wet_measurment" class="blue-input" decoration-info="wet_measurment != 0"/>
+                          <field name="dry_measurment" class="blue-input" decoration-info="dry_measurment != 0"/>
+                          <field name="dry_lengths" class="blue-input" decoration-info="dry_lengths != 0"/>
+                          <field name="drying_shrinkage" />
+                        </tree>
+                        </field>
+                    </div>
+
+                    <table invisible = "drying_shrinkage_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                    <td><label class="fw-bold" for="average_drying_shrinkage">Average</label></td>
+                                    <td><field name="average_drying_shrinkage"/></td>
+                                </tr>
+                         
+                            <tr>
+                                <td><label class="fw-bold" for="drying_shrinkage_conformity"></label></td>
+                                <td>
+                                    <field name="drying_shrinkage_conformity"
+                                        decoration-success="drying_shrinkage_conformity == 'pass'"
+                                        decoration-danger="drying_shrinkage_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="drying_shrinkage_nabl"></label></td>
+                                <td><field name="drying_shrinkage_nabl"
+                                            decoration-success="drying_shrinkage_nabl == 'pass'"
+                                            decoration-danger="drying_shrinkage_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     
+
+                    <!-- Water Absorption -->
+
+                    <div  invisible = "water_absorption_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "water_absorption_visible == False">
+                        <field name="water_absorption_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="sr_no" />
+                          <field name="wet_mass" class="blue-input" decoration-info="wet_mass != 0"/>
+                          <field name="dry_mass" class="blue-input" decoration-info="dry_mass != 0"/>
+                          <field name="water_absorption" />
+                        </tree>
+                        </field>
+                    </div>
+
+
+                    <table invisible = "water_absorption_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                    <td><label class="fw-bold" for="average_water_absorption">Average</label></td>
+                                    <td><field name="average_water_absorption"/></td>
+                                </tr>
+                         
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_conformity"></label></td>
+                                <td>
+                                    <field name="water_absorption_conformity"
+                                        decoration-success="water_absorption_conformity == 'pass'"
+                                        decoration-danger="water_absorption_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_nabl"></label></td>
+                                <td><field name="water_absorption_nabl"
+                                            decoration-success="water_absorption_nabl == 'pass'"
+                                            decoration-danger="water_absorption_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    
+
+                   <!-- Dimension -->
+
+
+                   <div  invisible = "dimension_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="dimension_name1" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "dimension_visible == False">
+                        <field name="dimension_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="sr_no" />
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="hight" class="blue-input" decoration-info="hight != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible = "dimension_visible == False">
+
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="average_length">Average Length</label></td>
+                                    <td><field name="average_length"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="avreage_height2">Average Thickness</label></td>
+                                    <td><field name="avreage_height2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="average_width">Average Width</label></td>
+                                    <td><field name="average_width"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+
+                    
+
+
+                   <!-- Compressive Strength -->
+
+                   <div  invisible = "compressive_visible == False">
+                        <h1 class="text-center"> 
+                            <field name="compressive_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible = "compressive_visible == False">
+                        <field name="compressive_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="sr_no" />
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
+                          <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
+                          <field name="area" />
+                          <field name="load" class="blue-input" decoration-info="load != 0"/>
+                          <field name="compressiv_strength" />
+                        </tree>
+                        </field>
+                    </div>
+
+                    <table invisible = "compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                    <td><label class="fw-bold" for="avg_compressive_strength">Average </label></td>
+                                    <td><field name="avg_compressive_strength"/></td>
+                                </tr>
+                         
+                            <tr>
+                                <td><label class="fw-bold" for="compressive_conformity"></label></td>
+                                <td>
+                                    <field name="compressive_conformity"
+                                        decoration-success="compressive_conformity == 'pass'"
+                                        decoration-danger="compressive_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="compressive_nabl"></label></td>
+                                <td><field name="compressive_nabl"
+                                            decoration-success="compressive_nabl == 'pass'"
+                                            decoration-danger="compressive_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+               
+            
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
