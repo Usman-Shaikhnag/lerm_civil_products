@@ -152,7 +152,8 @@ class WmmMechanical(models.Model):
 
     specific_gravity_wmm_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_wmm_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_specific_gravity_wmm_conformity", store=True)
 
 
 
@@ -165,6 +166,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','356klu87-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_wmm_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -291,7 +295,8 @@ class WmmMechanical(models.Model):
 
     water_absorbtion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
 
 
 
@@ -304,6 +309,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51e6dcfa-6d14-468e-8488-6d100818e924')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorbtion_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -400,7 +408,8 @@ class WmmMechanical(models.Model):
 
     aggregate_flakiness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
 
 
 
@@ -413,6 +422,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b8390baa-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_flakiness_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -454,7 +466,8 @@ class WmmMechanical(models.Model):
 
     aggregate_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
 
 
 
@@ -467,6 +480,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f1a27ee1-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_elongation_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -537,7 +553,8 @@ class WmmMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
 
 
 
@@ -550,6 +567,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7edace9a-a4ae-451c-a4cf-36d2c042ed7d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.abrasion_value_percentage_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -608,7 +628,8 @@ class WmmMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
 
 
@@ -621,6 +642,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','aaea4989-7446-446e-a018-8a5f9dcfd549')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_impact_value_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -671,7 +695,8 @@ class WmmMechanical(models.Model):
 
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
     
 
 
@@ -715,6 +740,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88627a7b-c438-4d13-bfde-330ee0005734')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.liquid_limit_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -779,7 +807,8 @@ class WmmMechanical(models.Model):
 
     average_plastic_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
 
 
 
@@ -792,6 +821,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ed625cc1-4295-4d00-977f-205b7a508363')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_plastic_moisture_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -843,7 +875,8 @@ class WmmMechanical(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
 
 
@@ -856,6 +889,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6fd54acc-61fd-478f-9bcf-6817965312f1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.plasticity_index_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -929,7 +965,8 @@ class WmmMechanical(models.Model):
 
     degree_of_compaction_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_degree_of_compaction_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_degree_of_compaction_conformity", store=True)
 
     @api.depends('wmm_degree_of_compaction','eln_ref','grade')
     def _compute_degree_of_compaction_conformity(self):
@@ -940,6 +977,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','429h14d9-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.degree_of_compaction_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

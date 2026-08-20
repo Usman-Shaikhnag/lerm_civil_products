@@ -558,6 +558,79 @@
 
 
 
+                <!-- Field Density by Sand Replacement method -->
+                <div invisible="wmm_density_visible == False">
+                    <div>
+                        <h1>
+                            <field name="wmm_density_name" readonly="1" nolabel="1"/>
+                            <field name="wmm_density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>MMD gm/cc</span></td>
+                                    <td><field name="mmd_wmm" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>OMC %</span></td>
+                                    <td><field name="omc_wmm" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <group/>
+
+                    <div class="custom_table_borders">
+                        <field name="wmm_density_table" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="determination_no"/>
+                                <field name="wt_of_sample" class="blue-input" decoration-info="wt_of_sample != 0"/>
+                                <field name="water_of_sample" class="blue-input" decoration-info="water_of_sample != 0"/>
+                                <field name="wt_of_before_cylinder" class="blue-input" decoration-info="wt_of_before_cylinder != 0"/>
+                                <field name="wt_of_after_cylinder" class="blue-input" decoration-info="wt_of_after_cylinder != 0"/>
+                                <field name="wt_of_sand_cone" class="blue-input" decoration-info="wt_of_sand_cone != 0"/>
+                                <field name="wt_of_sand_hole"/>
+                                <field name="density_of_sand" class="blue-input" decoration-info="density_of_sand != 0"/>
+                                <field name="volume_of_hole"/>
+                                <field name="bulk_density_of_sample"/>
+                                <field name="dry_density_of_sample"/>
+                                <field name="degree_of_compaction"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Degree of Compaction in %</span></td>
+                                    <td><field name="wmm_degree_of_compaction"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Conformity</span></td>
+                                    <td>
+                                        <field name="degree_of_compaction_conformity" col="1"
+                                            decoration-success="degree_of_compaction_conformity == 'pass'"
+                                            decoration-danger="degree_of_compaction_conformity == 'fail'"
+                                            readonly="1"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>NABL</span></td>
+                                    <td><field name="degree_of_compaction_nabl" col="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <group/>
+                </div>
+
+
+
                 <!-- Density Relation Heavy Compaction  -->
                 <div invisible="not density_relation_visible">
                     <div >
