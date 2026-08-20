@@ -17,7 +17,7 @@
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                    <!-- <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/> -->
                     </div>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -67,7 +67,8 @@
 
 
                  <!-- Dry Gradation -->
-                 <div>
+                 <div invisible="dry_gradation_visible == False">
+                    <div>
                         <h1>
                             <field name="dry_gradation_name" readonly="1" nolabel="1"/>
                             <field name="dry_gradation_visible" invisible="1"/>
@@ -109,6 +110,7 @@
                     </div>
                     <group/>
                     <group/>
+                 </div>
 
 
                     <!-- <group>
@@ -122,6 +124,7 @@
 
 
                     <!-- Water Absorption -->
+                    <div invisible="water_absorbtion_visible == False">
                     <div>
                         <h1>
                             <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
@@ -170,11 +173,12 @@
                           </table>
                       </div>
                       <group/>
+                    </div>
 
                       <!-- Elongation and Flakiness Index -->
 
-
-                <div modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                <div invisible="elongation_visible == False and flakiness_visible == False">
+                <div>
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
@@ -183,7 +187,7 @@
                     </div>
                     <group/>
 
-                    <group modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <div class="custom_table_borders">
                         <field name="elongation_table" colspan="2" nolabel="1">
                         <tree editable="bottom" class="table-bordered o_list_view">
                           <field name="sieve_size"/>
@@ -192,7 +196,7 @@
                           <field name="flakiness_retained" class="blue-input" decoration-info="flakiness_retained != 0"/>
                         </tree>
                         </field>
-                    </group>
+                    </div>
 
                     <div style="display:flex;">
                   
@@ -260,10 +264,12 @@
                       </div>
 
                       <group/>
+                </div>
 
 
 
                     <!-- Impact Value  -->
+                    <div invisible="impact_visible == False">
                     <div>
                         <h1>
                             <field name="impact_value_name" readonly="1" nolabel="1"/>
@@ -311,9 +317,11 @@
                           </table>
                       </div>
                       <group/>
+                    </div>
 
 
                 <!-- Abrasion Value  -->
+                <div invisible="abrasion_visible == False">
                 <div>
                         <h1>
                             <field name="abrasion_value_name" readonly="1" nolabel="1"/>
@@ -368,10 +376,12 @@
                           </table>
                       </div>
                       <group/>
+                </div>
 
 
 
                 <!-- Liquid Limit -->
+               <div invisible="liquid_limit_visible == False">
                <div >
                         <h1>
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
@@ -466,9 +476,11 @@
                       </div>
                       </div>
                       <group/>
+                </div>
 
 
                 <!-- Plastic Limit -->
+                <div invisible="plastic_visible == False">
                 <div>
                       <h1>
                         <field name="plastic_name" readonly="1" nolabel="1"/>
@@ -507,11 +519,13 @@
                           </table>
                       </div>
                       <group/>
+                </div>
 
                    
                       <group/>
 
-                      <div>
+                      <div invisible="plasticity_index_visible == False">
+                        <field name="plasticity_index_visible" invisible="1"/>
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                         <tr>
@@ -544,92 +558,228 @@
 
 
 
-                <!-- Density Relation Heavy Compaction  -->
-                <div >
+                <!-- Field Density by Sand Replacement method -->
+                <div invisible="wmm_density_visible == False">
+                    <div>
                         <h1>
-                            <field name="density_relation_name" readonly="1" nolabel="1"/>
-                            <field name="density_relation_visible" invisible="1"/>
-
+                            <field name="wmm_density_name" readonly="1" nolabel="1"/>
+                            <field name="wmm_density_visible" invisible="1"/>
                         </h1>
-                </div>
-                <group/>
-
-                <div>
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                           <tr>
-                             <td><span>Weight of Mould in gm</span></td>
-                              <td><field name="wt_of_modul" class="blue-input"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>Volume of Mould in cc</span></td>
-                            <td><field name="vl_of_modul" class="blue-input"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
-                      <group/>
-
-               
-
-                <div class=" custom_table_borders" >
-                    <field name="density_relation_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom">
-                                <field name='determination_no'/>
-                                <field name='wt_of_modul_compact' class="blue-input" decoration-info="wt_of_modul_compact != 0"/>
-                                <field name='wt_of_compact' class="blue-input" decoration-info="wt_of_compact != 0"/>
-                                <field name='bulk_density' class="blue-input" decoration-info="bulk_density != 0"/>
-                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
-                                <field name='wt_of_container' class="blue-input" decoration-info="wt_of_container != 0"/>
-                                <field name='wt_of_container_wet' class="blue-input" decoration-info="wt_of_container_wet != 0"/>
-                                <field name='wt_of_container_dry' class="blue-input" decoration-info="wt_of_container_dry != 0"/>
-                                <field name='wt_of_dry_sample' class="blue-input" decoration-info="wt_of_dry_sample != 0"/>
-                                <field name='wt_of_moisture' class="blue-input" decoration-info="wt_of_moisture != 0"/>
-                                <field name='moisture' class="blue-input" decoration-info="moisture != 0"/>
-                                <field name='dry_density' class="blue-input" decoration-info="dry_density != 0"/>
-                            </tree>
-                    </field> 
                     </div>
-
                     <group/>
 
-                    <group >
-                    <field name="chart_image_density" widget="image" readonly="1" />
-                    </group>
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>MMD gm/cc</span></td>
+                                    <td><field name="mmd_wmm" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>OMC %</span></td>
+                                    <td><field name="omc_wmm" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <group/>
+
+                    <div class="custom_table_borders">
+                        <field name="wmm_density_table" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="determination_no"/>
+                                <field name="wt_of_sample" class="blue-input" decoration-info="wt_of_sample != 0"/>
+                                <field name="water_of_sample" class="blue-input" decoration-info="water_of_sample != 0"/>
+                                <field name="wt_of_before_cylinder" class="blue-input" decoration-info="wt_of_before_cylinder != 0"/>
+                                <field name="wt_of_after_cylinder" class="blue-input" decoration-info="wt_of_after_cylinder != 0"/>
+                                <field name="wt_of_sand_cone" class="blue-input" decoration-info="wt_of_sand_cone != 0"/>
+                                <field name="wt_of_sand_hole"/>
+                                <field name="density_of_sand" class="blue-input" decoration-info="density_of_sand != 0"/>
+                                <field name="volume_of_hole"/>
+                                <field name="bulk_density_of_sample"/>
+                                <field name="dry_density_of_sample"/>
+                                <field name="degree_of_compaction"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Degree of Compaction in %</span></td>
+                                    <td><field name="wmm_degree_of_compaction"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Conformity</span></td>
+                                    <td>
+                                        <field name="degree_of_compaction_conformity" col="1"
+                                            decoration-success="degree_of_compaction_conformity == 'pass'"
+                                            decoration-danger="degree_of_compaction_conformity == 'fail'"
+                                            readonly="1"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span>NABL</span></td>
+                                    <td><field name="degree_of_compaction_nabl" col="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <group/>
+                </div>
+
+
+
+                <!-- Density Relation Heavy Compaction  -->
+                <div invisible="not density_relation_visible">
+                    <div >
+                            <h1>
+                                <field name="density_relation_name" readonly="1" nolabel="1"/>
+                                <field name="density_relation_visible" invisible="1"/>
+
+                            </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Weight of Mould in gm</span></td>
+                                <td><field name="wt_of_modul" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>Volume of Mould in cc</span></td>
+                                <td><field name="vl_of_modul" class="blue-input"/></td>
+                            </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        <group/>
+
                 
+
+                    <div class=" custom_table_borders" >
+                        <field name="density_relation_table" nolabel="1" colspan="2" >
+                                <tree editable="bottom">
+                                    <field name='determination_no'/>
+                                    <field name='wt_of_modul_compact' class="blue-input" decoration-info="wt_of_modul_compact != 0"/>
+                                    <field name='wt_of_compact' class="blue-input" decoration-info="wt_of_compact != 0"/>
+                                    <field name='bulk_density' class="blue-input" decoration-info="bulk_density != 0"/>
+                                    <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                    <field name='wt_of_container' class="blue-input" decoration-info="wt_of_container != 0"/>
+                                    <field name='wt_of_container_wet' class="blue-input" decoration-info="wt_of_container_wet != 0"/>
+                                    <field name='wt_of_container_dry' class="blue-input" decoration-info="wt_of_container_dry != 0"/>
+                                    <field name='wt_of_dry_sample' class="blue-input" decoration-info="wt_of_dry_sample != 0"/>
+                                    <field name='wt_of_moisture' class="blue-input" decoration-info="wt_of_moisture != 0"/>
+                                    <field name='moisture' class="blue-input" decoration-info="moisture != 0"/>
+                                    <field name='dry_density' class="blue-input" decoration-info="dry_density != 0"/>
+                                </tree>
+                        </field> 
+                        </div>
+
+                        <group/>
+
+                        <group >
+                        <field name="chart_image_density" widget="image" readonly="1" />
+                        </group>
                 
+                </div>
 
 
                 <!-- CBR -->
-                <div >
-                        <h1>
-                            <field name="cbr_name" readonly="1" nolabel="1"/>
-                            <field name="cbr_visible" invisible="1"/>
+                <div invisible="cbr_visible == False">
+                    <div >
+                            <h1>
+                                <field name="cbr_name" readonly="1" nolabel="1"/>
+                                <field name="cbr_visible" invisible="1"/>
 
-                        </h1>
+                            </h1>
+                    </div>
+                    <group/>
+                    <group>
+                        <field name="division_factor"/>
+                    </group>
+
+                    <div class=" custom_table_borders">
+                        <field name="cbr_table" nolabel="1" colspan="2" >
+                                <tree editable="bottom">
+                                    <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
+                                    <field name='proving_reading' class="blue-input" decoration-info="proving_reading != 0"/>
+                                    <field name='load'/>
+                                </tree>      
+                        </field> 
+                    </div>
+
+                    <group >
+                        <field name="chart_image_cbr" widget="image" readonly="1"/>
+                    </group>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="ps_2mm"/>
+                                    
+                                </td>
+                                <td>
+                                    <field name="ps_2mm"/>
+                                </td>
+                                <td>
+                                    <label for="pt_2mm"/>
+                                    
+                                </td>
+                                <td>
+                                    <field name="pt_2mm"/>
+                                </td>
+                                <td>
+                                    <label for="cbr_2mm"/>
+                                </td>
+                                <td>
+                                    <field name="cbr_2mm"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="ps_5mm"/>
+                                </td>
+                                <td>
+                                    <field name="ps_5mm"/>
+                                </td>
+                                <td>
+                                    <label for="pt_5mm"/>
+                                </td>
+                                <td>
+                                    <field name="pt_5mm"/>
+                                </td>
+                                <td>
+                                    <label for="cbr_5mm"/>
+                                </td>
+                                <td>
+                                    <field name="cbr_5mm"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="cbr_result"/>
+                                </td>
+                                <td>
+                                    <field name="cbr_result"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <group/>
-
-                <div class=" custom_table_borders">
-                    <field name="cbr_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom">
-                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
-                                <field name='proving_reading' class="blue-input" decoration-info="proving_reading != 0"/>
-                                <field name='load'/>
-                            </tree>      
-                    </field> 
-                </div>
-
-                <group >
-                    <field name="chart_image_cbr" widget="image" readonly="1"/>
-                </group>
 
 
 
 
-
-                    <notebook>
+                    <!-- <notebook>
 
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
@@ -643,7 +793,7 @@
                             </div>
                         </page>
 
-                    </notebook>
+                    </notebook> -->
 
 
 

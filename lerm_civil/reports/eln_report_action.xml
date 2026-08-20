@@ -183,12 +183,12 @@
     <field name="binding_type">report</field>
 </record>
 
-<record id="soil_ssl_report1_action" model="ir.actions.report">
+<record id="soil_report_action" model="ir.actions.report">
     <field name="name">Soil Report</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">soil.soil_ssl_report1</field>
-    <field name="report_file">soil.soil_ssl_report1</field>
+    <field name="report_name">soil.soil_report</field>
+    <field name="report_file">soil.soil_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
@@ -1287,6 +1287,114 @@
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
+
+
+<record id="concrete_cylinder_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete Cylinder DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cylinder.concrete_cylinder_datasheet</field>
+    <field name="report_file">concrete_cylinder.concrete_cylinder_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="concrete_cylinder_report_action" model="ir.actions.report">
+    <field name="name">Concrete Cylinder Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cylinder.concrete_cylinder_report</field>
+    <field name="report_file">concrete_cylinder.concrete_cylinder_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="fusion_bond_datasheet_action" model="ir.actions.report">
+    <field name="name">Fusion Bond DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fusion_bond.lerm_fusion_bond_coated_steel_datasheet</field>
+    <field name="report_file">fusion_bond.lerm_fusion_bond_coated_steel_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="fusion_bond_report_action" model="ir.actions.report">
+    <field name="name">Fusion Bond Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fusion_bond.lerm_fusion_bond_coated_steel_report</field>
+    <field name="report_file">fusion_bond.lerm_fusion_bond_coated_steel_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="threaded_steel_datasheet_action" model="ir.actions.report">
+    <field name="name">Threaded Steel DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">threaded_steel.threaded_steel_mech_datasheet</field>
+    <field name="report_file">threaded_steel.threaded_steel_mech_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="threaded_steel_report_action" model="ir.actions.report">
+    <field name="name">Threaded Steel Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">threaded_steel.threaded_steel_mech_report</field>
+    <field name="report_file">threaded_steel.threaded_steel_mech_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="concrete_cube_density_datasheet_action" model="ir.actions.report">
+    <field name="name">Cube Density DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_density.concrete_cube_density_datasheet</field>
+    <field name="report_file">concrete_cube_density.concrete_cube_density_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_cube_density_report_action" model="ir.actions.report">
+    <field name="name">Cube Density Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_density.concrete_cube_density_report</field>
+    <field name="report_file">concrete_cube_density.concrete_cube_density_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+
+<record id="concrete_core_density_datasheet_action" model="ir.actions.report">
+    <field name="name">Core Density DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core_density.concrete_core_density_datasheet</field>
+    <field name="report_file">concrete_core_density.concrete_core_density_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_core_density_report_action" model="ir.actions.report">
+    <field name="name">Core Density Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core_density.concrete_core_density_report</field>
+    <field name="report_file">concrete_core_density.concrete_core_density_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+
+
+
+
 
 
 </odoo>

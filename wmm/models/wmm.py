@@ -13,29 +13,13 @@ class WmmMechanical(models.Model):
     _rec_name = "name"
 
 
-
     name = fields.Char("Name",default="WMM")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
-
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-
-    def prefill_data(self):
-        # import wdb; wdb.set_trace()
-        return {
-            'name': 'Prefill Data',
-            'type': 'ir.actions.act_window',
-            'res_model': 'wmm.prefill.data',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_product_id': self.eln_ref.sample_id.material_id.id,
-                'exclude_sample_id': self.eln_ref.sample_id.id,
-                },
-        }
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
@@ -80,7 +64,13 @@ class WmmMechanical(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-   
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+        
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
 
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
@@ -96,34 +86,126 @@ class WmmMechanical(models.Model):
             record.plasticity_index_visible = False
             record.density_relation_visible = False
             record.cbr_visible = False
+            record.wmm_density_visible = False
+            record.specific_gravity_wmm_visible = False
+            record.wmm_infra_visible = False
 
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '32145ghty-6741-4817-95f4-5e53a0676c5f':
+                if sample.internal_id == '64fecdf5-6741-4817-95f4-5e53a0676c5f':
                     record.dry_gradation_visible = True
-                if sample.internal_id == '1478578hgfr-6d14-468e-8488-6d100818e924':
+                if sample.internal_id == '51e6dcfa-6d14-468e-8488-6d100818e924':
                     record.water_absorbtion_visible  = True  
-                if sample.internal_id == '312gthdvfe-3e7e-4fff-b912-f7b046f5099c':
+                if sample.internal_id == 'f1a27ee1-3e7e-4fff-b912-f7b046f5099c':
                     record.elongation_visible = True
                     record.flakiness_visible = True
-                if sample.internal_id == 'asd21452-2d4b-47f4-b9ee-7a4a5b176b97':
+                if sample.internal_id == 'b8390baa-2d4b-47f4-b9ee-7a4a5b176b97':
                     record.elongation_visible = True
                     record.flakiness_visible = True
-                if sample.internal_id == 'bghf65241-a4ae-451c-a4cf-36d2c042ed7d':
+                if sample.internal_id == '7edace9a-a4ae-451c-a4cf-36d2c042ed7d':
                     record.abrasion_visible = True
-                if sample.internal_id == 'nbv21455-7446-446e-a018-8a5f9dcfd549':
+                if sample.internal_id == 'aaea4989-7446-446e-a018-8a5f9dcfd549':
                     record.impact_visible = True
-                if sample.internal_id == 'hjgt24512-4295-4d00-977f-205b7a508363':
+                if sample.internal_id == 'ed625cc1-4295-4d00-977f-205b7a508363':
                     record.plastic_visible  = True  
-                if sample.internal_id == '2145bghty-c438-4d13-bfde-330ee0005734':
+                if sample.internal_id == '88627a7b-c438-4d13-bfde-330ee0005734':
                     record.liquid_limit_visible = True
-                if sample.internal_id == '210bgvv-61fd-478f-9bcf-6817965312f1':
+                if sample.internal_id == '6fd54acc-61fd-478f-9bcf-6817965312f1':
+                    record.liquid_limit_visible = True
                     record.plasticity_index_visible = True
-                if sample.internal_id == '1245bvg-3cb1-448a-8bb0-8f48657ae86b':
+                if sample.internal_id == 'fc19b116-3cb1-448a-8bb0-8f48657ae86b':
                     record.density_relation_visible = True
-                if sample.internal_id == '214bnhgty-12d3-45ea-bc23-5b35ec6ffd24':
+                if sample.internal_id == '6c0014d9-12d3-45ea-bc23-5b35ec6ffd24':
                     record.cbr_visible = True
+
+                if sample.internal_id == '429h14d9-12d3-45ea-bc23-5b35ec6ffd50':
+                    record.wmm_density_visible = True
+
+                if sample.internal_id == '356klu87-12d3-45ea-bc23-5b35ec6ffd50':
+                    record.specific_gravity_wmm_visible = True
+
+                if sample.internal_id == '32145ukt1-12d3-45ea-bc23-5b35ec6ff142':
+                    record.wmm_infra_visible = True
+
+
+      # Specific Gravity  
+    specific_gravity_wmm_name = fields.Char(default="Specific Gravity ")
+    specific_gravity_wmm_visible = fields.Boolean(compute="_compute_visible")
+
+    wt_ssd_wmm = fields.Integer('Weight of saturated surface dry (SSD) sample in air in gms, A')
+    wt_saturated_wmm = fields.Float('Weight of saturated sample in water in gms, B')
+    oven_dried_wmm = fields.Float('Oven dried weight of sample in gms, C')
+    specific_gravity_wmm = fields.Float('Specific Gravity, [C/(A-B)]',compute="_compute_specific_gravity")
+
+
+    @api.depends('wt_ssd_wmm', 'wt_saturated_wmm', 'oven_dried_wmm')
+    def _compute_specific_gravity(self):
+        for record in self:
+            if record.wt_ssd_wmm and record.wt_saturated_wmm:
+                try:
+                    record.specific_gravity_wmm = record.oven_dried_wmm / (record.wt_ssd_wmm - record.wt_saturated_wmm)
+                except ZeroDivisionError:
+                    record.specific_gravity_wmm = 0.0  # Avoid division by zero
+            else:
+                record.specific_gravity_wmm = 0.0
+
+    specific_gravity_wmm_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_specific_gravity_wmm_conformity", store=True)
+
+
+
+    @api.depends('specific_gravity_wmm','eln_ref','grade')
+    def _compute_specific_gravity_wmm_conformity(self):
+        
+        for record in self:
+            record.specific_gravity_wmm_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','356klu87-12d3-45ea-bc23-5b35ec6ffd50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','356klu87-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_wmm_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.specific_gravity_wmm - record.specific_gravity_wmm*mu_value
+                    upper = record.specific_gravity_wmm + record.specific_gravity_wmm*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.specific_gravity_wmm_conformity = 'pass'
+                        break
+                    else:
+                        record.specific_gravity_wmm_conformity = 'fail'
+
+    specific_gravity_wmm_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_specific_gravity_wmm_nabl", store=True)
+
+    @api.depends('specific_gravity_wmm','eln_ref','grade')
+    def _compute_specific_gravity_wmm_nabl(self):
+        
+        for record in self:
+            record.specific_gravity_wmm_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','356klu87-12d3-45ea-bc23-5b35ec6ffd50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','356klu87-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.specific_gravity_wmm - record.specific_gravity_wmm*mu_value
+                    upper = record.specific_gravity_wmm + record.specific_gravity_wmm*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.specific_gravity_wmm_nabl = 'pass'
+                        break
+                    else:
+                        record.specific_gravity_wmm_nabl = 'fail'
+
                 
 
     # Dry Gradation
@@ -192,44 +274,6 @@ class WmmMechanical(models.Model):
         res['elongation_table'] = default_elongated_sieve_sizes
 
         return res
-    
-
-
-
-
-    # remark
-
-    notes_id = fields.One2many('wmm.notes', 'parent_id', string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(WmmMechanical, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-
-
-
-
 
     # Water Absorbtion 
     water_absorbtion_name = fields.Char(default="Water Absorbtion")
@@ -251,7 +295,8 @@ class WmmMechanical(models.Model):
 
     water_absorbtion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
 
 
 
@@ -260,10 +305,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.water_absorbtion_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51e6dcfa-6d14-468e-8488-6d100818e924')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51e6dcfa-6d14-468e-8488-6d100818e924')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorbtion_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -285,8 +333,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.water_absorbtion_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51e6dcfa-6d14-468e-8488-6d100818e924')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51e6dcfa-6d14-468e-8488-6d100818e924')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -360,7 +408,8 @@ class WmmMechanical(models.Model):
 
     aggregate_flakiness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
 
 
 
@@ -369,10 +418,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.aggregate_flakiness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b8390baa-2d4b-47f4-b9ee-7a4a5b176b97')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b8390baa-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_flakiness_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -394,8 +446,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.aggregate_flakiness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b8390baa-2d4b-47f4-b9ee-7a4a5b176b97')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b8390baa-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -414,7 +466,8 @@ class WmmMechanical(models.Model):
 
     aggregate_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
 
 
 
@@ -423,10 +476,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.aggregate_elongation_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f1a27ee1-3e7e-4fff-b912-f7b046f5099c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f1a27ee1-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_elongation_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -448,8 +504,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.aggregate_elongation_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f1a27ee1-3e7e-4fff-b912-f7b046f5099c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f1a27ee1-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -497,7 +553,8 @@ class WmmMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
 
 
 
@@ -510,6 +567,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7edace9a-a4ae-451c-a4cf-36d2c042ed7d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.abrasion_value_percentage_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -568,7 +628,8 @@ class WmmMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
 
 
@@ -577,10 +638,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.average_impact_value_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','aaea4989-7446-446e-a018-8a5f9dcfd549')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','aaea4989-7446-446e-a018-8a5f9dcfd549')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_impact_value_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -602,8 +666,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.average_impact_value_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','aaea4989-7446-446e-a018-8a5f9dcfd549')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','aaea4989-7446-446e-a018-8a5f9dcfd549')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -631,7 +695,8 @@ class WmmMechanical(models.Model):
 
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
     
 
 
@@ -671,10 +736,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.liquid_limit_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88627a7b-c438-4d13-bfde-330ee0005734')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88627a7b-c438-4d13-bfde-330ee0005734')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.liquid_limit_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -696,8 +764,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.liquid_limit_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88627a7b-c438-4d13-bfde-330ee0005734')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88627a7b-c438-4d13-bfde-330ee0005734')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -739,7 +807,8 @@ class WmmMechanical(models.Model):
 
     average_plastic_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
 
 
 
@@ -752,6 +821,9 @@ class WmmMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ed625cc1-4295-4d00-977f-205b7a508363')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_plastic_moisture_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -803,7 +875,8 @@ class WmmMechanical(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
 
 
@@ -812,10 +885,13 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.plasticity_index_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6fd54acc-61fd-478f-9bcf-6817965312f1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6fd54acc-61fd-478f-9bcf-6817965312f1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.plasticity_index_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -837,8 +913,8 @@ class WmmMechanical(models.Model):
         
         for record in self:
             record.plasticity_index_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6fd54acc-61fd-478f-9bcf-6817965312f1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6fd54acc-61fd-478f-9bcf-6817965312f1')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -861,6 +937,85 @@ class WmmMechanical(models.Model):
     wt_of_modul = fields.Float('Weight of Mould in gm')
     vl_of_modul = fields.Float('Volume of Mould in cc')
     chart_image_density = fields.Binary("Line Chart", compute="_compute_chart_image_density", store=True)
+
+
+      # added
+    # field Density by Sand Replacement method
+    wmm_density_name = fields.Char("Name",default="Field Density by Sand Replacement method")
+    wmm_density_visible = fields.Boolean("Field Density by Sand Replacement method Visible",compute="_compute_visible")
+    # job_no_dry_density = fields.Char(string="Job No")
+    # material_dry_density = fields.Char(String="Material")
+    # start_date_dry_density = fields.Date("Start Date")
+    # end_date_dry_density = fields.Date("End Date")
+
+    wmm_density_table = fields.One2many('mechanical.wmm.field.dencity.line','parent_id',string="Parameter")
+    mmd_wmm = fields.Float(string="MMD gm/cc", store=True)
+    omc_wmm = fields.Float(string="OMC %", store=True)
+    wmm_degree_of_compaction = fields.Float(string="Degree of Compaction in %",compute="_compute_wmm_degree_of_compaction")
+
+    @api.depends('wmm_density_table.degree_of_compaction')
+    def _compute_wmm_degree_of_compaction(self):
+        for record in self:
+            degree_of_compaction_values = record.wmm_density_table.mapped('degree_of_compaction')
+            if degree_of_compaction_values:
+                wmm_degree_of_compaction = sum(degree_of_compaction_values) / len(degree_of_compaction_values)
+                record.wmm_degree_of_compaction = wmm_degree_of_compaction
+            else:
+                record.wmm_degree_of_compaction = 0.0
+
+    degree_of_compaction_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_degree_of_compaction_conformity", store=True)
+
+    @api.depends('wmm_degree_of_compaction','eln_ref','grade')
+    def _compute_degree_of_compaction_conformity(self):
+        
+        for record in self:
+            record.degree_of_compaction_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','429h14d9-12d3-45ea-bc23-5b35ec6ffd50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','429h14d9-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.degree_of_compaction_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.wmm_degree_of_compaction - record.wmm_degree_of_compaction*mu_value
+                    upper = record.wmm_degree_of_compaction + record.wmm_degree_of_compaction*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.degree_of_compaction_conformity = 'pass'
+                        break
+                    else:
+                        record.degree_of_compaction_conformity = 'fail'
+
+    degree_of_compaction_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_degree_of_compaction_nabl", store=True)
+
+    @api.depends('wmm_degree_of_compaction','eln_ref','grade')
+    def _compute_degree_of_compaction_nabl(self):
+        
+        for record in self:
+            record.degree_of_compaction_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','429h14d9-12d3-45ea-bc23-5b35ec6ffd50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','429h14d9-12d3-45ea-bc23-5b35ec6ffd50')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.wmm_degree_of_compaction - record.wmm_degree_of_compaction*mu_value
+            upper = record.wmm_degree_of_compaction + record.wmm_degree_of_compaction*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.degree_of_compaction_nabl = 'pass'
+                break
+            else:
+                record.degree_of_compaction_nabl = 'fail'
 
 
 
@@ -905,8 +1060,66 @@ class WmmMechanical(models.Model):
     cbr_name = fields.Char("Name",default="CBR")
     cbr_visible = fields.Boolean("CBR Visible",compute="_compute_visible")
 
+    division_factor = fields.Float(
+    string="Division Factor",
+    digits=(8, 2),)
+
     cbr_table = fields.One2many('mechanical.wmm.cbr.line','parent_id',string="CBR")
     chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+
+
+    ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
+    pt_2mm = fields.Float("PT at 2.5mm",default=1370)
+    cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
+
+    ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
+    pt_5mm = fields.Float("PT at 5mm",default=2055)
+    cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
+
+    cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
+
+    @api.depends('cbr_table')
+    def _compute_ps_2mm(self):
+        for record in self:
+            if record.cbr_table and len(record.cbr_table) >= 6:
+                fifth_row = record.cbr_table[5] 
+                record.ps_2mm = fifth_row.load
+            else:
+                record.ps_2mm = 0
+
+
+    @api.depends('cbr_table')
+    def _compute_ps_5mm(self):
+        for record in self:
+            if record.cbr_table and len(record.cbr_table) >= 9:
+                fifth_row = record.cbr_table[8] 
+                record.ps_5mm = fifth_row.load
+            else:
+                record.ps_5mm = 0
+
+    @api.depends('pt_2mm','ps_2mm')
+    def _compute_cbr_2mm(self):
+        for record in self:
+            if record.pt_2mm != 0:
+                record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
+            else:
+                record.cbr_2mm = 0
+
+    @api.depends('pt_5mm','ps_5mm')
+    def _compute_cbr_5mm(self):
+        for record in self:
+            if record.pt_5mm != 0:
+                record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
+            else:
+                record.cbr_5mm = 0
+
+    @api.depends('cbr_5mm','cbr_2mm')
+    def _compute_final_cbr(self):
+        for record in self:
+            if record.cbr_5mm > record.cbr_2mm:
+                record.cbr_result = record.cbr_5mm
+            else:
+                record.cbr_result = record.cbr_2mm
 
 
     def generate_line_chart_cbr(self):
@@ -943,6 +1156,140 @@ class WmmMechanical(models.Model):
                 record.chart_image_cbr = chart_image
         except:
             pass 
+
+
+
+     # CBR Infrastructure
+
+    wmm_infra_name = fields.Char("Name",default="California Bearing Ratio")
+    wmm_infra_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
+    
+    wmm_infra_table = fields.One2many('mechanical.wmm.infra.cbr.line','parent_id',string="CBR")
+    chart_image_cbr_infra = fields.Binary("Line Chart", compute="_compute_chart_image_cbr_infra_wmm", store=True)
+
+    wmm_infra_ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm_wmm_infra_ps")
+    wmm_infra_pt_2mm = fields.Float("PT at 2.5mm",default=1370)
+    wmm_infra_cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm_infra")
+
+    wmm_infra_ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm_infra")
+    wmm_infra_pt_5mm = fields.Float("PT at 5mm",default=2055)
+    wmm_infra_cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm_infra")
+
+    wmm_infra_cbr_result = fields.Float("CBR",compute="_compute_final_cbr_infra")
+
+    @api.depends('wmm_infra_table')
+    def _compute_ps_2mm_wmm_infra_ps(self):
+        for record in self:
+            if record.wmm_infra_table and len(record.wmm_infra_table) >= 6:
+                fifth_row1 = record.wmm_infra_table[5] 
+                record.wmm_infra_ps_2mm = fifth_row1.load1
+            else:
+                record.wmm_infra_ps_2mm = 0
+
+
+    @api.depends('wmm_infra_table')
+    def _compute_ps_5mm_infra(self):
+        for record in self:
+            if record.wmm_infra_table and len(record.wmm_infra_table) >= 9:
+                fifth_row = record.wmm_infra_table[8] 
+                record.wmm_infra_ps_5mm = fifth_row.load1
+            else:
+                record.wmm_infra_ps_5mm = 0
+
+    @api.depends('wmm_infra_pt_2mm','wmm_infra_ps_2mm')
+    def _compute_cbr_2mm_infra(self):
+        for record in self:
+            if record.wmm_infra_pt_2mm != 0:
+                record.wmm_infra_cbr_2mm = round((record.wmm_infra_ps_2mm/record.wmm_infra_pt_2mm)*100,2)
+            else:
+                record.wmm_infra_cbr_2mm = 0
+
+    @api.depends('wmm_infra_pt_5mm','wmm_infra_ps_5mm')
+    def _compute_cbr_5mm_infra(self):
+        for record in self:
+            if record.wmm_infra_pt_5mm != 0:
+                record.wmm_infra_cbr_5mm = round((record.wmm_infra_ps_5mm/record.wmm_infra_pt_5mm)*100,2)
+            else:
+                record.wmm_infra_cbr_5mm = 0
+
+    @api.depends('wmm_infra_cbr_5mm','wmm_infra_cbr_2mm')
+    def _compute_final_cbr_infra(self):
+        for record in self:
+            if record.wmm_infra_cbr_5mm > record.wmm_infra_cbr_2mm:
+                record.wmm_infra_cbr_result = record.wmm_infra_cbr_5mm
+            else:
+                record.wmm_infra_cbr_result = record.wmm_infra_cbr_2mm
+
+
+    def wmm_line_chart_cbr_infra(self):
+        # Prepare data for the chart
+        x_values = []
+        y_values = []
+        for line in self.wmm_infra_table:
+            x_values.append(line.penetration1)
+            y_values.append(line.load1)
+        
+        # Create the line chart
+        plt.plot(x_values, y_values, marker='o')
+        plt.xlabel('Penetration')
+        plt.ylabel('Load')
+        plt.title('CBR')
+
+
+        plt.ylim(bottom=0, top=max(y_values) + 10)
+        
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close()  # Close the figure to free up resources
+        buffer.seek(0)
+    
+        # Convert the chart image to base64
+        chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
+        return chart_image
+    
+    @api.depends('wmm_infra_table')
+    def _compute_chart_image_cbr_infra_wmm(self):
+        try:
+            for record in self:
+                chart_image = record.wmm_line_chart_cbr_infra()
+                record.chart_image_cbr_infra = chart_image
+        except:
+            pass 
+
+
+class WmmInfraCBRLine(models.Model):
+    _name = "mechanical.wmm.infra.cbr.line"
+    parent_id = fields.Many2one('mechanical.wmm',string="Parent Id")
+
+    penetration1 = fields.Float(string="Penetration in mm")
+    proving_reading1 = fields.Float(string="Proving Ring Reading 1")
+
+    proving_reading2 = fields.Float(string="Proving Ring Reading 2")
+    proving_reading3 = fields.Float(string="Proving Ring Reading 2")
+
+    proving_reading_avg = fields.Integer(string="Proving Ring Reading Avg.",compute="_compute_avg_reading")
+
+    load1 = fields.Float(string="Load in Kg", compute="_compute_load")
+
+
+    @api.depends('proving_reading1', 'proving_reading2', 'proving_reading3')
+    def _compute_avg_reading(self):
+        for rec in self:
+            readings = [rec.proving_reading1, rec.proving_reading2, rec.proving_reading3]
+            if any(readings):
+                avg = sum(readings) / 3
+                if avg <= 5.5:
+                    rec.proving_reading_avg = math.floor(avg)
+                else:
+                    rec.proving_reading_avg = math.ceil(avg)
+            else:
+                rec.proving_reading_avg = 0
+
+
+    @api.depends('proving_reading_avg')
+    def _compute_load(self):
+        for record in self:
+            record.load1 = record.proving_reading_avg * 5.88
 
 
 
@@ -1021,10 +1368,18 @@ class WmmCBRLine(models.Model):
     load = fields.Float(string="Load in Kg", compute="_compute_load")
 
 
-    @api.depends('proving_reading')
+    # @api.depends('proving_reading')
+    # def _compute_load(self):
+    #     for record in self:
+    #         record.load = record.proving_reading * 6.96
+
+    @api.depends('proving_reading', 'parent_id.division_factor')
     def _compute_load(self):
         for record in self:
-            record.load = record.proving_reading * 6.96
+            avg = record.proving_reading or 0.0
+            factor = record.parent_id.division_factor or 0.0
+
+            record.load = avg * factor
 
 
 
@@ -1217,9 +1572,82 @@ class ImpactValueLine(models.Model):
                 rec.impact_value = 0.0
 
 
-class wmmNotes(models.Model):
-    _name = "wmm.notes"
-
+#added
+class WmmFieldDencityLine(models.Model):
+    _name = "mechanical.wmm.field.dencity.line"
     parent_id = fields.Many2one('mechanical.wmm',string="Parent Id")
-    sr_no = fields.Char("Sr. No.")
-    notes = fields.Char("Notes")
+   
+    determination_no = fields.Integer(string="Determination No",readonly=True, copy=False, default=1)
+    wt_of_sample = fields.Integer(string="Weight of sample gm")
+    water_of_sample = fields.Integer(string="Water content of sample RMM")
+    wt_of_before_cylinder = fields.Integer(string="Weight of sand + Cylinder before pouring gm")
+    wt_of_after_cylinder = fields.Integer(string="Weight of sand + Cylinder after pouring gm")
+    wt_of_sand_cone = fields.Integer(string="Weight of sand in cone gm")
+    wt_of_sand_hole = fields.Integer(string="Weight of sand in hole gm", compute="_compute_sand_hole")
+    density_of_sand = fields.Float(string="Density of sand gm/cc")
+    volume_of_hole = fields.Float(string="Volume of hole cc",compute="_compute_volume_of_hole")
+    bulk_density_of_sample = fields.Float(string="Bulk Density of sample gm/cc",compute="_compute_bulk_density")
+    dry_density_of_sample = fields.Float(string="Dry Density of sample",compute="_compute_dry_density")
+    degree_of_compaction = fields.Float(string="Degree of Compaction %",compute="_compute_degree_of_compaction")
+
+    
+
+
+    @api.depends('wt_of_before_cylinder','wt_of_after_cylinder','wt_of_sand_cone')
+    def _compute_sand_hole(self):
+        for record in self:
+            record.wt_of_sand_hole = record.wt_of_before_cylinder - record.wt_of_after_cylinder - record.wt_of_sand_cone
+
+
+    @api.depends('wt_of_sand_hole', 'density_of_sand')
+    def _compute_volume_of_hole(self):
+        for record in self:
+            if record.density_of_sand != 0:
+                record.volume_of_hole = record.wt_of_sand_hole / record.density_of_sand
+            else:
+                record.volume_of_hole = 0.0
+
+ 
+
+
+    @api.depends('wt_of_sample', 'volume_of_hole')
+    def _compute_bulk_density(self):
+        for record in self:
+            if record.volume_of_hole != 0:  # Avoid division by zero
+                record.bulk_density_of_sample = record.wt_of_sample / record.volume_of_hole
+            else:
+                record.bulk_density_of_sample = 0.0
+
+    @api.depends('bulk_density_of_sample', 'water_of_sample')
+    def _compute_dry_density(self):
+        for record in self:
+            if record.water_of_sample + 100 != 0:  # Avoid division by zero
+                record.dry_density_of_sample = (100 * record.bulk_density_of_sample) / (record.water_of_sample + 100)
+            else:
+                record.dry_density_of_sample = 0.0
+
+    @api.depends('dry_density_of_sample', 'parent_id.mmd_wmm')
+    def _compute_degree_of_compaction(self):
+        for record in self:
+            if record.parent_id.mmd_wmm != 0:  # Access mmd_wmm from parent_id
+                record.degree_of_compaction = (record.dry_density_of_sample / record.parent_id.mmd_wmm) * 100
+            else:
+                record.degree_of_compaction = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('determination_no'))
+                vals['determination_no'] = max_serial_no + 1
+
+        return super(WmmFieldDencityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.determination_no = index + 1

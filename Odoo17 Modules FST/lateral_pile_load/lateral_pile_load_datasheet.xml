@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="lateral_pile_load_datasheet_report_py3o" model="ir.actions.report">
+    <field name="name">Lateral Pile Load Datasheet</field>
+    <field name="model">fst.lateral.pile.load.test</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.lateral_pile_load_datasheet</field>
+    <field name="report_file">lerm_civil.lateral_pile_load_datasheet</field>
+    <field name="print_report_name">'Lateral_Pile_Load_Datasheet'</field>
+    <field name="binding_type">report</field>
+    <field name="binding_model_id" ref="model_fst_lateral_pile_load_test"/>
+</record>
+
+<template id="lateral_pile_load_datasheet">
+    <t t-call="web.html_container">
+        <t t-call="lerm_civil.mechanical_data_sheet_header">
+            <div style="text-align:center;font-size:18px">
+                LATERAL PILE LOAD DATASHEET
+            </div>
+
+            <div class="container_eln" style="margin-top:5px">
+                <div style="margin-top:20px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            <td colspan="6">Project Name<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.name"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Pile No<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.pile_no"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Name of Work<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.work_name"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Client<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.client"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Contractor<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.contractor"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Report Date<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.rec_date"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Test Standard<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.test_standard"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Site Location<![CDATA[&nbsp;]]></td>
+                            <td colspan="6">
+                                <span t-field="data.site_location"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-top:30px">
+                        <h3 style="border-bottom:1px solid #000;">
+                            TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                        </h3>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th style="border:1px solid #000; padding:4px;">Date</th>
+                                <th style="border:1px solid #000; padding:4px;">Time</th>
+                                <th style="border:1px solid #000; padding:4px;">Load (Tonne)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial A (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial B (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial C (mm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data.loading_reading_ids" t-as="r">
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.reading_date_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.reading_time_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_a"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_b"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_c"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:30px">
+                        <h3 style="border-bottom:1px solid #000;">
+                            TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                        </h3>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th style="border:1px solid #000; padding:4px;">Date</th>
+                                <th style="border:1px solid #000; padding:4px;">Time</th>
+                                <th style="border:1px solid #000; padding:4px;">Load (Tonne)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial A (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial B (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Dial C (mm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data.unloading_reading_ids" t-as="r">
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.reading_date_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.reading_time_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_a"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_b"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="r.dial_c"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:30px">
+                        <h3 style="border-bottom:1px solid #000;">
+                            TABLE 2A(i) : LOAD ON PLATE vs AVERAGE SETTLEMENT vs CUMULATIVE SETTLEMENT
+                        </h3>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th style="border:1px solid #000; padding:4px;">Sr No</th>
+                                <th style="border:1px solid #000; padding:4px;">Load on Plate (t)</th>
+                                <th style="border:1px solid #000; padding:4px;">Average Settlement (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Cumulative Settlement (mm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data.loading_summary_ids" t-as="s">
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="s.sequence"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="s.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="s.avg_settlement"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                    <span t-esc="s.cumulative_settlement"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div t-if="data.graph_image" style="text-align:center; margin:20px 0;">
+                        <h3 style="border-bottom:1px solid #000;">
+                            LOAD - DISPLACEMENT GRAPH
+                        </h3>
+                        <img t-att-src="'data:image/png;base64,%s' % data.graph_image.decode('utf-8')"
+                            style="width:80%; border:1px solid #cccccc;"/>
+                    </div>
+
+                    <div style="margin-top:20px; font-weight:bold;">
+                        Gross Displacement = <span t-esc="data.gross_settlement"/> mm<br/>
+                        Net Displacement = <span t-esc="data.net_settlement"/> mm<br/>
+                        Rebound = <span t-esc="data.rebound"/> mm
+                    </div>
+                </div>
+
+                <div class="authorizeRowDataSheet">
+                    <div>
+                        <div><b>Tested By</b></div>
+                        <div style="height:40px;">
+                            <t t-if="eln.tested_by_signature_datasheet">
+                                <div t-if="eln.sample_id.filled_by.employee_id.signature">
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div><span t-esc="eln.sample_id.filled_by.name"/></div>
+                        <div>(<span t-esc="eln.sample_id.filled_by.job_title"/>)</div>
+                    </div>
+                    <div style="margin-left:600px">
+                        <div><b>Checked By</b></div>
+                        <div style="height:40px;">
+                            <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div><span t-esc="eln.sample_id.check_by.name"/></div>
+                        <div>(<span t-esc="eln.sample_id.check_by.job_title"/>)</div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+
+</odoo>

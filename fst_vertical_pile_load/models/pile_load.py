@@ -36,6 +36,7 @@ class PileLoadTestParent(models.Model):
         string="Contractor",
         domain="[('partner_id', '=', client)]"
     )
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     cover_image = fields.Binary("Cover Image")
 

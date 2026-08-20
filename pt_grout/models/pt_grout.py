@@ -162,7 +162,7 @@ class PtGrout(models.Model):
 
 
                         
-     #Initial setting Time
+       #Initial setting Time
     initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
 
@@ -177,20 +177,37 @@ class PtGrout(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity',compute="_compute_initial_setting_conformity")
+    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', compute="_compute_initial_setting_nabl")
+    ], string='NABL', default='NABL',compute="_compute_initial_setting_nabl")
 
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_conformity(self):
         for record in self:
             record.initial_setting_conformity = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.initial_setting_time_hours:
+                if isinstance(record.initial_setting_time_hours, str) and ':' in record.initial_setting_time_hours:
+                    try:
+                        parts = record.initial_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.initial_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -201,30 +218,49 @@ class PtGrout(models.Model):
 
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
+                    mu_value = line.mu_value or 0.0
+                    
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
+                    if lower >= req_min and upper <= req_max:
                         record.initial_setting_conformity = 'pass'
                         break
                     else:
                         record.initial_setting_conformity = 'fail'
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref')
+    @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
-        
         for record in self:
             record.initial_setting_nabl = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours
+            time_val = 0.0
+            if record.initial_setting_time_hours:
+                if isinstance(record.initial_setting_time_hours, str) and ':' in record.initial_setting_time_hours:
+                    try:
+                        parts = record.initial_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.initial_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
-                # if material.grade.id == record.grade.id:
+                if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+                    mu_value = line.mu_value or 0.0
+
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
                     
-                    lower = record.initial_setting_time_minutes_unrounded - record.initial_setting_time_minutes_unrounded*mu_value
-                    upper = record.initial_setting_time_minutes_unrounded + record.initial_setting_time_minutes_unrounded*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.initial_setting_nabl = 'pass'
                         break
@@ -272,23 +308,39 @@ class PtGrout(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity',compute="_compute_final_setting_conformity")
+    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL',compute="_compute_final_setting_nabl")
+    ], string='NABL', default='NABL',compute="_compute_final_setting_nabl")
 
 
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
             record.final_setting_conformity = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.final_setting_time_hours:
+                if isinstance(record.final_setting_time_hours, str) and ':' in record.final_setting_time_hours:
+                    try:
+                        parts = record.final_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.final_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
-
                     # Check if permissible limit is '--' or empty
                     if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.final_setting_conformity = '--'
@@ -296,30 +348,49 @@ class PtGrout(models.Model):
 
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
+                    mu_value = line.mu_value or 0.0
+                    
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
+                    if lower >= req_min and upper <= req_max:
                         record.final_setting_conformity = 'pass'
                         break
                     else:
                         record.final_setting_conformity = 'fail'
 
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_nabl(self):
-        
         for record in self:
             record.final_setting_nabl = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.final_setting_time_hours:
+                if isinstance(record.final_setting_time_hours, str) and ':' in record.final_setting_time_hours:
+                    try:
+                        parts = record.final_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.final_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+                    mu_value = line.mu_value or 0.0
                     
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
                     if lower >= lab_min and upper <= lab_max:
                         record.final_setting_nabl = 'pass'
                         break
@@ -384,6 +455,9 @@ class PtGrout(models.Model):
 
 
     
+
+
+
 
 
 
@@ -908,7 +982,7 @@ class PtGrout(models.Model):
           
 
             if result.parameter.internal_id == '0fd53f55-7350-4597-8057-139ef15f07fe':
-                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.result_char = self.initial_setting_time_hours
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -930,7 +1004,7 @@ class PtGrout(models.Model):
             
 
             if result.parameter.internal_id == '9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e':
-                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                result.result_char = self.final_setting_time_hours
                 result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'

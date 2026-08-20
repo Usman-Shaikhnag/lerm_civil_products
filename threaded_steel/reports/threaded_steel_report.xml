@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="threaded_steel_mech_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						
+						<table >
+							<tr>
+								<td style="font-size:12px;width:100%" >#Customer Party Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
+									
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+								
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+								
+								
+							</tr>
+							<tr>
+							<td style="font-size:12px;width:100%" >#Project / Site Address : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+								
+						
+							
+						</table>
+						<table>
+							<tr>
+								<td style="font-size:12px;width:30%;" colspan="3">Test Start Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td style="font-size:12px;width:30%;" colspan="3">Test End Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size:12px;width:30%;" colspan="3">#Grade :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+								<td style="font-size:12px;width:30%;" colspan="3">#Size :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">#Sample Id Mark: 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								
+							</tr>
+							
+							
+							<tr>
+								<td style="font-size:12px;width:30%;" colspan="3">#Consultant :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+								<td style="font-size:12px;width:30%4" colspan="3">#Client :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">#Client Ref :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size:12px;" colspan="3">#Brand :
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td style="font-size:12px;" colspan="3">Discipline :
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								
+								<td style="font-size:12px;" colspan="3">Group :
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="font-size:12px;width:50%;" colspan="6">Material/Test Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td style="font-size:12px;width:50%;" colspan="6">#Sample Description : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							
+							</tr>
+						</table>
+					</div>
+				
+			<div style="padding-top:2px">
+				<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
+            </div>
+
+		
+					<table>
+						<t t-set="i" t-value="0"/>
+						<thead>
+							<tr>
+								<th style="text-align: center;font-size:12px;">
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th style="text-align: center;font-size:12px;">
+									<span>
+										Parameter
+									</span>
+								</th>
+								<th style="text-align: center;font-size:12px;">
+									<span>
+										Unit
+									</span>
+								</th>
+
+								<th style="text-align: center;font-size:12px;">
+									<span>
+										Observation-1
+									</span>
+								</th>
+								<th style="max-width: 250px; text-align: center;font-size:12px;">
+									<span>
+										<span style="font-size:12px;" t-esc="eln.material.specifications"/>
+									</span>
+								</th>
+								
+
+								
+							</tr>
+						</thead>
+						
+						<tbody >
+							<tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Gauge Dia	
+								</td>
+								<td style="text-align: center;">
+									mm
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.diameter"/>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+
+								
+
+								
+							</tr>
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Area
+								</td>
+								<td style="text-align: center;">
+									mm2
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.area" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Gauge Length
+								</td>
+								<td style="text-align: center;">
+									mm
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.gauge_length"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Final Diameter
+								</td>
+								<td style="text-align: center;">
+									mm
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.final_diameter"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Final Length
+								</td>
+								<td style="text-align: center;">
+									mm
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.final_length"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+                            
+                            
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  0.2% Proof Load / Yield Load
+								</td>
+								<td style="text-align: center;">
+									KN
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.proof_load"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Ultimate Load
+								</td>
+								<td style="text-align: center;">
+									KN
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.ultimate_load"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  0.2% Proof Load / Yield Stress
+								</td>
+								<td style="text-align: center;">
+									N/mm²
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.yield_stress"/>
+								</td>
+
+
+								<td style="text-align: center;">
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4d303b20-3c0d-406a-99fd-2342f5284def')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+									</span>
+								</td>
+
+								
+							</tr>
+
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Ultimate Tensile Strength
+								</td>
+								<td style="text-align: center;">
+									N/mm²
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.ult_tens_strgth"/>
+								</td>
+
+
+								<td style="text-align: center;">
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','cfd57c73-61d9-4c56-a219-cb99719ef035')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+									</span>
+								</td>
+
+								
+							</tr>
+
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Elongation 
+								</td>
+								<td style="text-align: center;">
+									%
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.percent_elongation"/>
+								</td>
+
+
+								<td style="text-align: center;">
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0fa60911-adbd-4beb-a10b-7a2447c6a92a')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+									</span>
+								</td>
+
+								
+							</tr>
+
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Reduction Area
+								</td>
+								<td style="text-align: center;">
+									%
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.reduction_area"/>
+								</td>
+
+
+								<td style="text-align: center;">
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','de8d91bc-9326-45d1-b35c-8c777f0e665b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+									</span>
+								</td>
+
+								
+							</tr>
+
+                            <tr style="font-size:12px;" >
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td  >
+								  Fracture
+								</td>
+								<td style="text-align: center;">
+									
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.fracture"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+
+								
+							</tr>
+
+							
+						</tbody>
+					</table>
+				
+					
+
+				
+							
+						<div style="margin-top:2px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+										<li>
+											# - Information provided by the customer.
+									</li>
+									<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+					
+						<div style="margin-top:2px; page-break-inside: avoid;" class="signatureContainer girdgird">
+
+							<div>
+								<div>
+									<b>
+									Checked By
+									</b>
+								</div>
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image" style="width:65px;height:65px;"/>
+								</div>
+								<div style="padding-top:2px">
+								Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+									Approved By 
+									</b>
+
+								</div>
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px;margin-bottom:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							</div>
+						</div>
+						
+
+				</div>
+			</t>
+		</t>
+	</template>
+
+
+</odoo>

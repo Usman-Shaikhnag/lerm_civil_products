@@ -1,16 +1,11 @@
 from odoo import api, fields, models
 from datetime import timedelta
-from odoo.exceptions import UserError, ValidationError
 import base64
 import io
-import math
 import re
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
-
-GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
-GRAPH_MINOR_GRID_COLOR = '#f0c7a0'
 
 
 class FstLateralPileLoadTest(models.Model):
@@ -23,6 +18,7 @@ class FstLateralPileLoadTest(models.Model):
     work_name = fields.Char("Name of Work")
     client = fields.Char(string="Client")
     contractor = fields.Char(string="Contractor")
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -661,7 +657,7 @@ class FstLateralPileLoadTest(models.Model):
 
     def print_report(self):
         self.ensure_one()
-        return self.env.ref('fst_lateral_pile_load.lateral_pile_load_report_py3o').report_action(self)
+        return self.env.ref('fst_lateral_pile_load.lateral_pile_load_report').report_action(self)
 
     def action_duplicate_parent(self):
         for record in self:
@@ -780,20 +776,6 @@ class FstLateralPileLoadReadingLoading(models.Model):
             res['reading_datetime'] = fields.Datetime.now()
 
         return res
-
-    @api.onchange('load_tonne')
-    def _onchange_load_tonne(self):
-        for rec in self:
-            if rec.load_tonne:
-                rec.applied_pressure = round(rec.load_tonne * 1000.0 / 154.0, 2)
-                rec.pressure_under_plate = round(rec.load_tonne / 0.07, 2)
-
-    @api.onchange('applied_pressure')
-    def _onchange_applied_pressure(self):
-        for rec in self:
-            if rec.applied_pressure:
-                rec.load_tonne = round(rec.applied_pressure * 154.0 / 1000.0, 2)
-                rec.pressure_under_plate = round(rec.load_tonne / 0.07, 2)
 
     @api.onchange('parent_id')
     def _onchange_set_datetime(self):
