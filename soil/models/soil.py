@@ -65,13 +65,16 @@ class Soil(models.Model):
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
+    show_d10_cc_cu = fields.Boolean(
+    string='Show D10 / D30 / D60 / Cc / Cu')
+
     boulder = fields.Float(string="% Boulders ",compute="_compute_boulder")
 
     gravel = fields.Float(string="%Gravels",compute="_compute_gravel")
     sand = fields.Float(string="%Sand",compute="_compute_sand")
     silt_clay = fields.Float(string="%Clay",compute="_compute_clay_fraction")
 
-    silt = fields.Float(string="%Silt",compute="_compute_silt")
+    silt = fields.Float(string="silt & clay%",compute="_compute_silt")
     
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
 

@@ -1017,12 +1017,22 @@
 				   <div style="margin-top:10px" t-if="data.sieve_visible">
 							<table style="width:100%;">
 									<tr> 
-									<td colspan="6">% Gravels :
+									<td colspan="6" style="text-align:right;">% Gravels :
 									</td>
 									<td style="font-weight:bold;" colspan="6">
 										<span t-esc="data.gravel" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td colspan="6">D60 (mm) :
+									<td colspan="6" style="text-align:right;">% Silt + Clay :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td colspan="6" style="text-align:right;">% Sand :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.sand" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									 <!-- <td colspan="6">D60 (mm) :
 									</td>
 									<td style="font-weight:bold;" colspan="6">
 										<span t-esc="data.d60" t-options='{"widget": "float", "precision": 2}'/>
@@ -1031,14 +1041,10 @@
 									</td>
 									<td style="font-weight:bold;" colspan="6">
 										<span t-esc="data.cu" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									</td>  -->
 								</tr>
-									<tr> 
-									<td colspan="6">% Sand :
-									</td>
-									<td style="font-weight:bold;" colspan="6">
-										<span t-esc="data.sand" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									<!-- <tr> 
+									
 									<td colspan="6">D30 (mm) :
 									</td>
 									<td style="font-weight:bold;" colspan="6">
@@ -1048,20 +1054,16 @@
 									</td>
 									<td style="font-weight:bold;" colspan="6">
 										<span t-esc="data.cc" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									</td> 
 								</tr>
 									<tr> 
-									<td colspan="6">% Silt + Clay :
-									</td>
-									<td style="font-weight:bold;" colspan="6">
-										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									
 									<td  colspan="6">D10 (mm) :
 									</td>
-									<td style="font-weight:bold;" colspan="18">
+									 <td style="font-weight:bold;" colspan="18">
 										<span t-esc="data.d10" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								</tr>
+									</td> 
+								</tr> -->
 								
 							</table>
 							</div>

@@ -434,11 +434,11 @@
 						</table>
 						<div style="margin-top:10px" t-if="data.sieve_visible">
 							<table>
-								<tr> 
+								<!-- <tr> 
 									<td colspan="12">% Boulders :<![CDATA[&nbsp;]]>
 										<span t-esc="data.boulder" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-								</tr>
+								</tr> -->
 
 									<tr> 
 									<td colspan="12">% Gravels :<![CDATA[&nbsp;]]>
@@ -452,7 +452,7 @@
 								</tr>
 									<tr> 
 									<td colspan="12">% Silt + Clay :<![CDATA[&nbsp;]]>
-										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="data.silt" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 								
@@ -460,7 +460,7 @@
 						</div>
 					
 
-					<div t-if="data.graph_image_slive" style="margin-top: 20px;">
+					<div t-if="data.show_sieve_graph" style="margin-top: 20px;">
 								<img t-att-src="'data:image/png;base64,' + data.graph_image_slive.decode('utf-8')" style="max-width: 100%;"/>
 					</div>
 

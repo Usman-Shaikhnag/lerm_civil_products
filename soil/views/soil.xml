@@ -101,10 +101,10 @@
 
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td><label for="boulder">% Boulders</label></td>
                                 <td><field name="boulder"/></td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td><label for="gravel">% Gravels</label></td>
                                 <td><field name="gravel"/></td>
@@ -114,20 +114,32 @@
                                 <td><field name="sand"/></td>
                             </tr>
                             <tr>
-                                <td><label for="silt">%Slit</label></td>
+                                <td><label for="silt">%Slit And Clay</label></td>
                                 <td><field name="silt"/></td>
                             </tr>
 
-                             <tr>
+                             <!-- <tr>
                                 <td><label for="silt_clay">%Clay</label></td>
                                 <td><field name="silt_clay"/></td>
-                            </tr>
+                            </tr> -->
                             
                         </tbody>
                     </table>
 
+                    <div invisible="sieve_visible == False">
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_d10_cc_cu">Show D10 / D30 / D60 / Cc / Cu</label></td>
+                                <td style="width:10%;"><field name="show_d10_cc_cu" class="blue-input" decoration-info="show_d10_cc_cu != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   </div>
+
                     <div class="d-flex gap-2">
-                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_d10_cc_cu">
                         <tbody>
                             <tr>
                                 <td><label for="d60">D60 (mm)</label></td>
@@ -146,7 +158,7 @@
                         </tbody>
                     </table>
                         
-                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_d10_cc_cu">
                         <tbody>
                             <tr>
                                 <td><label for="cu">Cu = D60/D10</label></td>
