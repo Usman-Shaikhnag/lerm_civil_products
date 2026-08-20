@@ -183,12 +183,12 @@
     <field name="binding_type">report</field>
 </record>
 
-<record id="soil_ssl_report1_action" model="ir.actions.report">
+<record id="soil_report_action" model="ir.actions.report">
     <field name="name">Soil Report</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">soil.soil_ssl_report1</field>
-    <field name="report_file">soil.soil_ssl_report1</field>
+    <field name="report_name">soil.soil_report</field>
+    <field name="report_file">soil.soil_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
@@ -1324,5 +1324,55 @@
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
+
+
+<record id="concrete_cube_density_datasheet_action" model="ir.actions.report">
+    <field name="name">Cube Density DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_density.concrete_cube_density_datasheet</field>
+    <field name="report_file">concrete_cube_density.concrete_cube_density_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_cube_density_report_action" model="ir.actions.report">
+    <field name="name">Cube Density Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_density.concrete_cube_density_report</field>
+    <field name="report_file">concrete_cube_density.concrete_cube_density_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+
+<record id="concrete_core_density_datasheet_action" model="ir.actions.report">
+    <field name="name">Core Density DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core_density.concrete_core_density_datasheet</field>
+    <field name="report_file">concrete_core_density.concrete_core_density_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_core_density_report_action" model="ir.actions.report">
+    <field name="name">Core Density Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core_density.concrete_core_density_report</field>
+    <field name="report_file">concrete_core_density.concrete_core_density_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+
+
+
+
+
 
 </odoo>
