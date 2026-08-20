@@ -189,8 +189,25 @@ class PtGrout(models.Model):
     def _compute_initial_setting_conformity(self):
         for record in self:
             record.initial_setting_conformity = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.initial_setting_time_hours:
+                if isinstance(record.initial_setting_time_hours, str) and ':' in record.initial_setting_time_hours:
+                    try:
+                        parts = record.initial_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.initial_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -201,10 +218,12 @@ class PtGrout(models.Model):
 
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_hours) - float(record.initial_setting_time_hours)*mu_value
-                    upper = float(record.initial_setting_time_hours) + float(record.initial_setting_time_hours)*mu_value
-                    if lower >= req_min and upper <= req_max :
+                    mu_value = line.mu_value or 0.0
+                    
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
+                    if lower >= req_min and upper <= req_max:
                         record.initial_setting_conformity = 'pass'
                         break
                     else:
