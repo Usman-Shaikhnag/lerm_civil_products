@@ -43,13 +43,13 @@ class MechanicalRock(models.Model):
 
     avg_specific_gravity = fields.Float(
         string="Average Specific Gravity",
-        compute="_compute_average",
+        compute="_compute_aaverage",
         store=True
     )
 
     avg_water_absorption = fields.Float(
         string="Average Water Absorption (%)",
-        compute="_compute_average",
+        compute="_compute_aaverage",
         store=True
     )
 
@@ -57,7 +57,7 @@ class MechanicalRock(models.Model):
         'specific_gravity_line_ids.specific_gravity',
         'specific_gravity_line_ids.water_absorption'
     )
-    def _compute_average(self):
+    def _compute_aaverage(self):
         for rec in self:
             sg = rec.specific_gravity_line_ids.mapped('specific_gravity')
             wa = rec.specific_gravity_line_ids.mapped('water_absorption')
