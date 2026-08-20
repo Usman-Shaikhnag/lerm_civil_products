@@ -162,7 +162,7 @@ class PtGrout(models.Model):
 
 
                         
-     #Initial setting Time
+       #Initial setting Time
     initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
 
@@ -171,18 +171,18 @@ class PtGrout(models.Model):
     time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
     initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)",compute="_compute_initial_setting_time")
     initial_setting_time_minutes = fields.Char("Initial Setting Time Rounded",compute="_compute_initial_setting_time")
-    initial_setting_time_hours = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
+    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
 
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity',compute="_compute_initial_setting_conformity")
+    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', compute="_compute_initial_setting_nabl")
+    ], string='NABL', default='NABL',compute="_compute_initial_setting_nabl")
 
 
     @api.depends('initial_setting_time_hours','eln_ref','grade')
@@ -212,19 +212,36 @@ class PtGrout(models.Model):
 
     @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
-        
         for record in self:
             record.initial_setting_nabl = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours
+            time_val = 0.0
+            if record.initial_setting_time_hours:
+                if isinstance(record.initial_setting_time_hours, str) and ':' in record.initial_setting_time_hours:
+                    try:
+                        parts = record.initial_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.initial_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+                    mu_value = line.mu_value or 0.0
+
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
                     
-                    lower = float(record.initial_setting_time_hours) - float(record.initial_setting_time_hours)*mu_value
-                    upper = float(record.initial_setting_time_hours) + float(record.initial_setting_time_hours)*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.initial_setting_nabl = 'pass'
                         break
@@ -251,12 +268,12 @@ class PtGrout(models.Model):
                 else:
                     record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
 
-                record.initial_setting_time_hours = time_difference_minutes
+                record.initial_setting_time_minutes_unrounded = time_difference_minutes
 
             else:
                 record.initial_setting_time_hours = False
                 record.initial_setting_time_minutes = False
-                record.initial_setting_time_hours = False
+                record.initial_setting_time_minutes_unrounded = False
 
     #Final setting Time
 
@@ -266,29 +283,45 @@ class PtGrout(models.Model):
     time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
     final_setting_time_hours = fields.Char("Final Setting Time (t2-t1) (Hours)",compute="_compute_final_setting_time")
     final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
-    final_setting_time_hours = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
+    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
 
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity',compute="_compute_final_setting_conformity")
+    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL',compute="_compute_final_setting_nabl")
+    ], string='NABL', default='NABL',compute="_compute_final_setting_nabl")
 
 
     @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
             record.final_setting_conformity = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.final_setting_time_hours:
+                if isinstance(record.final_setting_time_hours, str) and ':' in record.final_setting_time_hours:
+                    try:
+                        parts = record.final_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.final_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
-
                     # Check if permissible limit is '--' or empty
                     if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.final_setting_conformity = '--'
@@ -296,10 +329,12 @@ class PtGrout(models.Model):
 
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.final_setting_time_hours) - float(record.final_setting_time_hours)*mu_value
-                    upper = float(record.final_setting_time_hours) + float(record.final_setting_time_hours)*mu_value
-                    if lower >= req_min and upper <= req_max :
+                    mu_value = line.mu_value or 0.0
+                    
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
+                    if lower >= req_min and upper <= req_max:
                         record.final_setting_conformity = 'pass'
                         break
                     else:
@@ -307,19 +342,36 @@ class PtGrout(models.Model):
 
     @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_nabl(self):
-        
         for record in self:
             record.final_setting_nabl = 'fail'
+            
+            # Convert time string like '2:00' or '1:30' to float hours safely
+            time_val = 0.0
+            if record.final_setting_time_hours:
+                if isinstance(record.final_setting_time_hours, str) and ':' in record.final_setting_time_hours:
+                    try:
+                        parts = record.final_setting_time_hours.split(':')
+                        time_val = float(parts[0]) + float(parts[1]) / 60.0
+                    except (ValueError, IndexError):
+                        time_val = 0.0
+                else:
+                    try:
+                        time_val = float(record.final_setting_time_hours)
+                    except ValueError:
+                        time_val = 0.0
+
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e')]).parameter_table
+            materials = line.parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+                    mu_value = line.mu_value or 0.0
                     
-                    lower = float(record.final_setting_time_hours) - float(record.final_setting_time_hours)*mu_value
-                    upper = float(record.final_setting_time_hours) + float(record.final_setting_time_hours)*mu_value
+                    lower = time_val - (time_val * mu_value)
+                    upper = time_val + (time_val * mu_value)
+                    
                     if lower >= lab_min and upper <= lab_max:
                         record.final_setting_nabl = 'pass'
                         break
@@ -344,11 +396,11 @@ class PtGrout(models.Model):
     #             else:
     #                 record.final_setting_time_minutes = round(final_setting_time / 5) * 5
 
-    #             record.final_setting_time_hours = final_setting_time
+    #             record.final_setting_time_minutes_unrounded = final_setting_time
     #         else:
     #             record.final_setting_time_hours = False
     #             record.final_setting_time_minutes = False
-    #             record.final_setting_time_hours = False
+    #             record.final_setting_time_minutes_unrounded = False
                         
     @api.depends('time_needle_make_impression')
     def _compute_final_setting_time(self):
@@ -372,11 +424,11 @@ class PtGrout(models.Model):
                 else:
                     record.final_setting_time_minutes = round(final_setting_time_minutes / 5) * 5
 
-                record.final_setting_time_hours = final_setting_time_minutes
+                record.final_setting_time_minutes_unrounded = final_setting_time_minutes
             else:
                 record.final_setting_time_hours = False
                 record.final_setting_time_minutes = False
-                record.final_setting_time_hours = False
+                record.final_setting_time_minutes_unrounded = False
 
 
 
@@ -384,6 +436,9 @@ class PtGrout(models.Model):
 
 
     
+
+
+
 
 
 
