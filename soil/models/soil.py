@@ -897,7 +897,7 @@ class Soil(models.Model):
         ll = a * 20.0 + b
 
         # Whole number
-        record.liquid_limit = round(ll)
+        record.liquid_limit = round(ll,2)
 
     
 
@@ -961,38 +961,57 @@ class Soil(models.Model):
     show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
 
 
+
     def generate_line_chart_liquid(self):
 
+   
+
+      self.ensure_one()
+
+    # =========================================================
+    # GET DYNAMIC DATA FROM CHILD LINES
+    # =========================================================
       x_value = []
       y_value = []
 
-    # ----------------------------------
-    # Get child data
-    # ----------------------------------
       for line in self.child_liness:
-        if line.penetration and line.moisture_content is not None:
-            x_value.append(float(line.penetration))
-            y_value.append(float(line.moisture_content))
 
+        if (
+            line.penetration is not None
+            and line.moisture_content is not None
+        ):
+            try:
+                x = float(line.penetration)
+                y = float(line.moisture_content)
+
+                x_value.append(x)
+                y_value.append(y)
+
+            except (ValueError, TypeError):
+                continue
+
+    # =========================================================
+    # MINIMUM 2 POINTS REQUIRED
+    # =========================================================
       if len(x_value) < 2:
         return False
 
-    # ----------------------------------
-    # Sort data by penetration
-    # ----------------------------------
+    # =========================================================
+    # SORT DATA BY PENETRATION
+    # =========================================================
       data = sorted(
         zip(x_value, y_value),
-        key=lambda x: x[0]
+        key=lambda item: item[0]
     )
 
-      x_value = [d[0] for d in data]
-      y_value = [d[1] for d in data]
+      x_value = [item[0] for item in data]
+      y_value = [item[1] for item in data]
 
-    # ----------------------------------
-    # Linear Regression
+    # =========================================================
+    # LINEAR REGRESSION
     #
     # y = a*x + b
-    # ----------------------------------
+    # =========================================================
       n = len(x_value)
 
       sum_x = sum(x_value)
@@ -1014,63 +1033,141 @@ class Soil(models.Model):
     )
 
       if denominator == 0:
-        return False
+          return False
 
+    # Slope
       a = (
         n * sum_xy
         - sum_x * sum_y
     ) / denominator
 
+    # Intercept
       b = (
         sum_y
         - a * sum_x
     ) / n
 
-    # ----------------------------------
-    # Liquid Limit at 20 mm
-    # ----------------------------------
+    # =========================================================
+    # LIQUID LIMIT AT 20 mm
+    #
+    # NO ROUNDING
+    # =========================================================
       ll_penetration = 20.0
 
       ll_value = (
         a * ll_penetration + b
     )
 
-    # ----------------------------------
-    # Regression line
+    # =========================================================
+    # REGRESSION LINE
     #
-    # IMPORTANT:
-    # Draw ONLY from minimum data point
-    # to maximum data point.
+    # TRUE REGRESSION LINE
     #
-    # This prevents the red line from
-    # touching/crossing the Y-axis.
-    # ----------------------------------
+    # DO NOT modify/round ll_value.
+    # =========================================================
       x_fit = np.linspace(
         min(x_value),
         max(x_value),
         500
     )
 
-      y_fit = [
-        a * x + b
-        for x in x_fit
-    ]
+      y_fit = (
+        a * x_fit + b
+    )
 
-    # ----------------------------------
-    # Create figure
-    # ----------------------------------
+    # =========================================================
+    # DYNAMIC AXIS RANGE
+    #
+    # Include:
+    #   - all X data
+    #   - 20 mm
+    #
+    # Include:
+    #   - all Y data
+    #   - exact LL value
+    # =========================================================
+
+      all_x_for_axis = (
+        x_value + [ll_penetration]
+    )
+ 
+      all_y_for_axis = (
+        y_value + [ll_value]
+    )
+
+      data_x_min = min(
+        all_x_for_axis
+    )
+
+      data_x_max = max(
+        all_x_for_axis
+    )
+
+      data_y_min = min(
+        all_y_for_axis
+    )
+
+      data_y_max = max(
+        all_y_for_axis
+    )
+
+    # =========================================================
+    # X AXIS PADDING
+    # =========================================================
+      x_range = (
+        data_x_max - data_x_min
+    )
+
+      if x_range == 0:
+        x_range = 2.0
+
+      x_padding = x_range * 0.12
+
+      x_min = (
+        data_x_min - x_padding
+    )
+
+      x_max = (
+        data_x_max + x_padding
+    )
+
+    # =========================================================
+    # Y AXIS PADDING
+    # =========================================================
+      y_range = (
+        data_y_max - data_y_min
+    )
+
+      if y_range == 0:
+        y_range = 2.0
+
+      y_padding = y_range * 0.12
+
+      y_min = (
+        data_y_min - y_padding
+    )
+
+      y_max = (
+        data_y_max + y_padding
+    )
+
+    # =========================================================
+    # CREATE FIGURE
+    # =========================================================
       fig, ax = plt.subplots(
         figsize=(10, 5)
     )
 
-    # ----------------------------------
-    # NORMAL LINEAR X AXIS
-    # ----------------------------------
-      ax.set_xscale('linear')
+    # =========================================================
+    # LINEAR X AXIS
+    # =========================================================
+      ax.set_xscale(
+        'linear'
+    )
 
-    # ----------------------------------
-    # RED REGRESSION LINE
-    # ----------------------------------
+    # =========================================================
+    # RED TRUE REGRESSION LINE
+    # =========================================================
       ax.plot(
         x_fit,
         y_fit,
@@ -1079,9 +1176,9 @@ class Soil(models.Model):
         zorder=2
     )
 
-    # ----------------------------------
+    # =========================================================
     # RED TEST POINTS
-    # ----------------------------------
+    # =========================================================
       ax.scatter(
         x_value,
         y_value,
@@ -1092,127 +1189,185 @@ class Soil(models.Model):
         zorder=5
     )
 
-    # ----------------------------------
+    # =========================================================
     # BLACK VERTICAL LINE AT 20 mm
-    # ----------------------------------
+    #
+    # IMPORTANT:
+    #
+    # The TOP of this line is the EXACT regression value:
+    #
+    # ll_value = a * 20 + b
+    #
+    # Therefore it intersects the red line exactly.
+    # =========================================================
       ax.plot(
-        [ll_penetration, ll_penetration],
-        [40, ll_value + 1.3],
+        [
+            ll_penetration,
+            ll_penetration
+        ],
+        [
+            y_min,
+            ll_value
+        ],
         color='black',
         linewidth=2,
         zorder=3
     )
 
-    # ----------------------------------
+    # =========================================================
     # DOWN ARROW AT 20 mm
-    # ----------------------------------
+    # =========================================================
+      arrow_height = (
+        y_range * 0.15
+    )
+
+      arrow_top = min(
+        ll_value + arrow_height,
+        y_max
+    )
+
       ax.annotate(
         '',
-        xy=(ll_penetration, 40),
-        xytext=(ll_penetration, 41.0),
+        xy=(
+            ll_penetration,
+            y_min
+        ),
+        xytext=(
+            ll_penetration,
+            arrow_top
+        ),
         arrowprops=dict(
             arrowstyle='->',
             color='black',
             linewidth=2
-        )
+        ),
+        zorder=4
     )
 
-    # ----------------------------------
-    # BLACK HORIZONTAL LINE AT LL
-    # ----------------------------------
+    # =========================================================
+    # BLACK HORIZONTAL LINE AT EXACT LIQUID LIMIT
+    #
+    # NO ROUNDING
+    # =========================================================
+      horizontal_start = x_min
+
+      horizontal_end = max(
+        x_value
+    )
+
       ax.plot(
-        [14, 22.8],
-        [ll_value, ll_value],
+        [
+            horizontal_start,
+            horizontal_end
+        ],
+        [
+            ll_value,
+            ll_value
+        ],
         color='black',
         linewidth=2,
         zorder=3
     )
 
-    # ----------------------------------
-    # LEFT ARROW AT 45%
-    # ----------------------------------
+    # =========================================================
+    # LEFT ARROW ON LIQUID LIMIT LINE
+    # =========================================================
+      arrow_width = (
+        horizontal_end - horizontal_start
+    ) * 0.08
+
       ax.annotate(
         '',
-        xy=(14, ll_value),
-        xytext=(15.0, ll_value),
+        xy=(
+            horizontal_start,
+            ll_value
+        ),
+        xytext=(
+            horizontal_start + arrow_width,
+            ll_value
+        ),
         arrowprops=dict(
             arrowstyle='->',
             color='black',
             linewidth=2
-        )
+        ),
+        zorder=4
     )
 
-    # ----------------------------------
-    # X AXIS LIMIT
-    # ----------------------------------
+    # =========================================================
+    # X AXIS
+    # =========================================================
       ax.set_xlim(
-        14,
-        26
+        x_min,
+        x_max
     )
 
-    # ----------------------------------
-    # X MAJOR TICKS
-    # 14, 16, 18, 20, 22, 24, 26
-    # ----------------------------------
-      ax.set_xticks(
-        np.arange(14, 27, 2)
+    # =========================================================
+    # X MAJOR GRID / TICKS
+    #
+    # Tick spacing is 2 mm.
+    # This does NOT modify your actual values.
+    # =========================================================
+      ax.xaxis.set_major_locator(
+        MultipleLocator(2)
     )
 
-    # ----------------------------------
-    # X MINOR TICKS
-    # Every 0.5
-    # ----------------------------------
-      ax.set_xticks(
-        np.arange(14, 26.5, 0.5),
-        minor=True
+    # =========================================================
+    # X MINOR GRID / TICKS
+    #
+    # 0.5 mm
+    # =========================================================
+      ax.xaxis.set_minor_locator(
+        MultipleLocator(0.5)
     )
 
-    # ----------------------------------
-    # Y AXIS LIMIT
-    # ----------------------------------
+    # =========================================================
+    # Y AXIS
+    # =========================================================
       ax.set_ylim(
-        40,
-        48
+        y_min,
+        y_max
     )
 
-    # ----------------------------------
+    # =========================================================
     # Y MAJOR TICKS
-    # 40, 41, 42 ... 48
-    # ----------------------------------
-      ax.set_yticks(
-        np.arange(40, 49, 1)
+    #
+    # Every 1%
+    # =========================================================
+      ax.yaxis.set_major_locator(
+        MultipleLocator(1)
     )
 
-    # ----------------------------------
+    # =========================================================
     # Y MINOR TICKS
-    # Every 0.5
-    # ----------------------------------
-      ax.set_yticks(
-        np.arange(40, 48.5, 0.5),
-        minor=True
+    #
+    # Every 0.5%
+    # =========================================================
+      ax.yaxis.set_minor_locator(
+        MultipleLocator(0.5)
     )
 
-    # ----------------------------------
+    # =========================================================
     # X LABEL
-    # ----------------------------------
+    # =========================================================
       ax.set_xlabel(
         'penetration(mm)',
         fontsize=12,
         fontweight='bold'
     )
 
-    # ----------------------------------
+    # =========================================================
     # Y LABEL
-    # ----------------------------------
+    # =========================================================
       ax.set_ylabel(
         'Moisture Content (%)',
         fontsize=12,
         fontweight='bold'
     )
 
-    # ----------------------------------
+    
     # MAJOR GRID
-    # ----------------------------------
+    
       ax.grid(
         which='major',
         color='black',
@@ -1221,9 +1376,9 @@ class Soil(models.Model):
         alpha=0.7
     )
 
-    # ----------------------------------
+    
     # MINOR GRID
-    # ----------------------------------
+   
       ax.grid(
         which='minor',
         color='#d0d7df',
@@ -1232,29 +1387,29 @@ class Soil(models.Model):
         alpha=0.7
     )
 
-    # ----------------------------------
-    # Tick labels
-    # ----------------------------------
+    # =========================================================
+    # TICK LABEL SIZE
+    # =========================================================
       ax.tick_params(
         axis='both',
         which='major',
         labelsize=10
     )
 
-    # ----------------------------------
-    # Remove legend
-    # ----------------------------------
+    # =========================================================
+    # REMOVE LEGEND
+    # =========================================================
       if ax.legend_:
         ax.legend_.remove()
 
-    # ----------------------------------
-    # Tight layout
-    # ----------------------------------
+    # =========================================================
+    # TIGHT LAYOUT
+    # =========================================================
       plt.tight_layout()
 
-    # ----------------------------------
-    # Convert chart to PNG
-    # ----------------------------------
+    # =========================================================
+    # CONVERT GRAPH TO PNG
+    # =========================================================
       buffer = io.BytesIO()
 
       plt.savefig(
@@ -1264,24 +1419,28 @@ class Soil(models.Model):
         bbox_inches='tight'
     )
 
-      plt.close()
+      plt.close(fig)
 
       buffer.seek(0)
 
-    # ----------------------------------
-    # Return Base64
-    # ----------------------------------
+    # =========================================================
+    # RETURN BASE64
+    # =========================================================
       return base64.b64encode(
         buffer.read()
     ).decode('utf-8')
 
 
+    
 
     # def generate_line_chart_liquid(self):
 
     #   x_value = []
     #   y_value = []
 
+    # # ----------------------------------
+    # # Get child data
+    # # ----------------------------------
     #   for line in self.child_liness:
     #     if line.penetration and line.moisture_content is not None:
     #         x_value.append(float(line.penetration))
@@ -1291,7 +1450,7 @@ class Soil(models.Model):
     #     return False
 
     # # ----------------------------------
-    # # Sort data
+    # # Sort data by penetration
     # # ----------------------------------
     #   data = sorted(
     #     zip(x_value, y_value),
@@ -1303,6 +1462,7 @@ class Soil(models.Model):
 
     # # ----------------------------------
     # # Linear Regression
+    # #
     # # y = a*x + b
     # # ----------------------------------
     #   n = len(x_value)
@@ -1322,7 +1482,7 @@ class Soil(models.Model):
 
     #   denominator = (
     #     n * sum_x2
-    #     - sum_x ** 2
+    #     - (sum_x ** 2)
     # )
 
     #   if denominator == 0:
@@ -1349,10 +1509,17 @@ class Soil(models.Model):
 
     # # ----------------------------------
     # # Regression line
+    # #
+    # # IMPORTANT:
+    # # Draw ONLY from minimum data point
+    # # to maximum data point.
+    # #
+    # # This prevents the red line from
+    # # touching/crossing the Y-axis.
     # # ----------------------------------
     #   x_fit = np.linspace(
-    #     14,
-    #     24,
+    #     min(x_value),
+    #     max(x_value),
     #     500
     # )
 
@@ -1362,60 +1529,59 @@ class Soil(models.Model):
     # ]
 
     # # ----------------------------------
-    # # Plot
+    # # Create figure
     # # ----------------------------------
     #   fig, ax = plt.subplots(
     #     figsize=(10, 5)
     # )
 
-    # # IMPORTANT:
-    # # Normal linear X-axis
+    # # ----------------------------------
+    # # NORMAL LINEAR X AXIS
+    # # ----------------------------------
     #   ax.set_xscale('linear')
 
     # # ----------------------------------
-    # # Regression line
+    # # RED REGRESSION LINE
     # # ----------------------------------
     #   ax.plot(
     #     x_fit,
     #     y_fit,
     #     color='#c64b47',
     #     linewidth=2.5,
-    #     marker='',
     #     zorder=2
     # )
 
     # # ----------------------------------
-    # # Actual test points
+    # # RED TEST POINTS
     # # ----------------------------------
-    #   ax.plot(
+    #   ax.scatter(
     #     x_value,
     #     y_value,
     #     color='#c64b47',
-    #     linewidth=2.5,
+    #     edgecolors='#c64b47',
     #     marker='s',
-    #     markersize=7,
-    #     markerfacecolor='#c64b47',
-    #     markeredgecolor='#c64b47',
+    #     s=70,
     #     zorder=5
     # )
 
     # # ----------------------------------
-    # # Liquid Limit
+    # # BLACK VERTICAL LINE AT 20 mm
     # # ----------------------------------
-    # # Vertical line at 20 mm
     #   ax.plot(
-    #     [20, 20],
+    #     [ll_penetration, ll_penetration],
     #     [40, ll_value + 1.3],
     #     color='black',
     #     linewidth=2,
     #     zorder=3
     # )
 
-    # # Arrow at bottom
+    # # ----------------------------------
+    # # DOWN ARROW AT 20 mm
+    # # ----------------------------------
     #   ax.annotate(
     #     '',
-    #     xy=(20, 40),
-    #     xytext=(20, 41.0),
+    #     xy=(ll_penetration, 40),
+    #     xytext=(ll_penetration, 41.0),
     #     arrowprops=dict(
     #         arrowstyle='->',
     #         color='black',
@@ -1424,7 +1590,7 @@ class Soil(models.Model):
     # )
 
     # # ----------------------------------
-    # # Horizontal line at LL
+    # # BLACK HORIZONTAL LINE AT LL
     # # ----------------------------------
     #   ax.plot(
     #     [14, 22.8],
@@ -1434,7 +1600,9 @@ class Soil(models.Model):
     #     zorder=3
     # )
 
-    # # Arrow pointing left
+    # # ----------------------------------
+    # # LEFT ARROW AT 45%
+    # # ----------------------------------
     #   ax.annotate(
     #     '',
     #     xy=(14, ll_value),
@@ -1447,35 +1615,57 @@ class Soil(models.Model):
     # )
 
     # # ----------------------------------
-    # # X Axis
+    # # X AXIS LIMIT
     # # ----------------------------------
-    #   ax.set_xlim(14, 26)
+    #   ax.set_xlim(
+    #     14,
+    #     26
+    # )
 
+    # # ----------------------------------
+    # # X MAJOR TICKS
+    # # 14, 16, 18, 20, 22, 24, 26
+    # # ----------------------------------
     #   ax.set_xticks(
     #     np.arange(14, 27, 2)
     # )
 
+    # # ----------------------------------
+    # # X MINOR TICKS
+    # # Every 0.5
+    # # ----------------------------------
     #   ax.set_xticks(
     #     np.arange(14, 26.5, 0.5),
     #     minor=True
     # )
 
     # # ----------------------------------
-    # # Y Axis
+    # # Y AXIS LIMIT
     # # ----------------------------------
-    #   ax.set_ylim(40, 48)
+    #   ax.set_ylim(
+    #     40,
+    #     48
+    # )
 
+    # # ----------------------------------
+    # # Y MAJOR TICKS
+    # # 40, 41, 42 ... 48
+    # # ----------------------------------
     #   ax.set_yticks(
     #     np.arange(40, 49, 1)
     # )
 
+    # # ----------------------------------
+    # # Y MINOR TICKS
+    # # Every 0.5
+    # # ----------------------------------
     #   ax.set_yticks(
     #     np.arange(40, 48.5, 0.5),
     #     minor=True
     # )
 
     # # ----------------------------------
-    # # Labels
+    # # X LABEL
     # # ----------------------------------
     #   ax.set_xlabel(
     #     'penetration(mm)',
@@ -1483,6 +1673,9 @@ class Soil(models.Model):
     #     fontweight='bold'
     # )
 
+    # # ----------------------------------
+    # # Y LABEL
+    # # ----------------------------------
     #   ax.set_ylabel(
     #     'Moisture Content (%)',
     #     fontsize=12,
@@ -1490,24 +1683,29 @@ class Soil(models.Model):
     # )
 
     # # ----------------------------------
-    # # Grid
+    # # MAJOR GRID
     # # ----------------------------------
     #   ax.grid(
     #     which='major',
     #     color='black',
     #     linestyle='-',
-    #     linewidth=0.5
+    #     linewidth=0.5,
+    #     alpha=0.7
     # )
 
+    # # ----------------------------------
+    # # MINOR GRID
+    # # ----------------------------------
     #   ax.grid(
     #     which='minor',
     #     color='#d0d7df',
     #     linestyle='-',
-    #     linewidth=0.4
+    #     linewidth=0.4,
+    #     alpha=0.7
     # )
 
     # # ----------------------------------
-    # # Tick appearance
+    # # Tick labels
     # # ----------------------------------
     #   ax.tick_params(
     #     axis='both',
@@ -1516,17 +1714,18 @@ class Soil(models.Model):
     # )
 
     # # ----------------------------------
-    # # No legend
+    # # Remove legend
     # # ----------------------------------
-    #   ax.legend_.remove() if ax.legend_ else None
+    #   if ax.legend_:
+    #     ax.legend_.remove()
 
     # # ----------------------------------
-    # # Layout
+    # # Tight layout
     # # ----------------------------------
     #   plt.tight_layout()
 
     # # ----------------------------------
-    # # Save image
+    # # Convert chart to PNG
     # # ----------------------------------
     #   buffer = io.BytesIO()
 
@@ -1541,12 +1740,14 @@ class Soil(models.Model):
 
     #   buffer.seek(0)
 
+    # # ----------------------------------
+    # # Return Base64
+    # # ----------------------------------
     #   return base64.b64encode(
     #     buffer.read()
     # ).decode('utf-8')
 
 
-    
 
         
        
