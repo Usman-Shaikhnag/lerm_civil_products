@@ -13,18 +13,26 @@ class FstLateralPileLoadTest(models.Model):
     _description = "Initial Lateral Pile Load Test Report"
     _order = "rec_date desc, id desc"
 
-    name = fields.Char("Project Name", required=True)
+    name = fields.Char("Project Name", compute="_compute_eln_fields", store=True, readonly=False)
     rec_date = fields.Date("Report Date")
-    work_name = fields.Char("Name of Work")
-    client = fields.Char(string="Client")
-    contractor = fields.Char(string="Contractor")
+    work_name = fields.Char("Name of Work", compute="_compute_eln_fields", store=True, readonly=False)
+    client = fields.Char(string="Client", compute="_compute_eln_fields", store=True, readonly=False)
+    contractor = fields.Char(string="Contractor", compute="_compute_eln_fields", store=True, readonly=False)
     lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
-    ulr = fields.Char("ULR No", copy=False, readonly=True)
-    report_no = fields.Char("Report No", copy=False, readonly=True)
+    ulr = fields.Char("ULR No", copy=False, compute="_compute_eln_fields", store=True)
+    report_no = fields.Char("Report No", copy=False, compute="_compute_eln_fields", store=True)
     pile_no = fields.Char("Pile No")
-    site_location = fields.Char("Site Location")
-    test_standard = fields.Char("Test Standard")
+    site_location = fields.Char("Site Location", compute="_compute_eln_fields", store=True, readonly=False)
+    test_standard = fields.Char("Test Standard", compute="_compute_eln_fields", store=True, readonly=False)
+
+    srf_id = fields.Many2one('lerm.civil.srf', string="SRF", readonly=True)
+    sample_id = fields.Many2one('lerm.srf.sample', string="Sample", readonly=True)
+    eln_ref = fields.Many2one('lerm.eln', string="ELN", readonly=True)
+    parameter_id = fields.Many2one('eln.parameters.result', string="Parameter", readonly=True)
+
+    discipline = fields.Char("Discipline", compute="_compute_srf_data", store=True)
+    group = fields.Char("Group", compute="_compute_srf_data", store=True)
 
     general_philosophy = fields.Text("General Philosophy")
     methodology = fields.Text("Methodology for Lateral Pile Load Testing")
@@ -126,6 +134,78 @@ class FstLateralPileLoadTest(models.Model):
                 rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
             else:
                 rec.rec_date_str = False
+
+    @api.depends('sample_id.discipline_id.discipline', 'sample_id.group_id.group')
+    def _compute_srf_data(self):
+        for rec in self:
+            rec.discipline = rec.sample_id.discipline_id.discipline if rec.sample_id and rec.sample_id.discipline_id else False
+            rec.group = rec.sample_id.group_id.group if rec.sample_id and rec.sample_id.group_id else False
+
+    @api.depends('eln_ref', 'srf_id', 'srf_id.customer.name',
+                 'srf_id.name_work.project_name',
+                 'srf_id.site_address', 'srf_id.contractor.name',
+                 'sample_id.kes_no', 'sample_id.ulr_no', 'parameter_id.test_method.test_method')
+    def _compute_eln_fields(self):
+        for rec in self:
+            tm = rec.parameter_id.test_method if rec.parameter_id else False
+            tm_name = tm.test_method if tm else False
+
+            if rec.eln_ref:
+                kes_no = rec.sample_id.kes_no if rec.sample_id else False
+                ulr_no = rec.sample_id.ulr_no if rec.sample_id else False
+                rec.report_no = kes_no if kes_no and kes_no != 'New' else (rec.eln_ref.eln_id or rec.report_no or False)
+                rec.ulr = ulr_no if ulr_no and ulr_no != 'New' else (rec.ulr or False)
+                rec.test_standard = tm_name or rec.test_standard or False
+            else:
+                if not rec.report_no:
+                    rec.report_no = False
+                if not rec.ulr:
+                    rec.ulr = False
+                if not rec.test_standard:
+                    rec.test_standard = tm_name or False
+
+            if rec.srf_id:
+                rec.client = rec.srf_id.customer.name if rec.srf_id.customer else (rec.client or False)
+                project = rec.srf_id.name_work.project_name if rec.srf_id.name_work else False
+                rec.name = project or rec.name or False
+                rec.work_name = project or rec.work_name or False
+                site_address = rec.srf_id.site_address or ''
+                valid_parts = [p.strip() for p in site_address.split(',') if p.strip() and p.strip() not in ('False', 'None')]
+                rec.site_location = site_address if valid_parts else False
+                rec.contractor = rec.srf_id.contractor.name if rec.srf_id.contractor else (rec.contractor or False)
+            else:
+                for field_name in ('client', 'name', 'work_name', 'site_location', 'contractor'):
+                    if not rec[field_name]:
+                        rec[field_name] = False
+
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        record.with_context(_fst_no_recompute=True)._compute_srf_data()
+        record.with_context(_fst_no_recompute=True)._compute_eln_fields()
+        if record.eln_ref:
+            record.eln_ref.write({'model_id': record.id})
+        if record.parameter_id:
+            record.parameter_id.write({'model_id': record.id})
+        return record
+
+    def write(self, vals):
+        if not self.env.context.get('_fst_no_recompute'):
+            old_report_no = {rec.id: rec.report_no for rec in self}
+            old_ulr = {rec.id: rec.ulr for rec in self}
+        res = super().write(vals)
+        if not self.env.context.get('_fst_no_recompute'):
+            for rec in self:
+                rec = rec.with_context(_fst_no_recompute=True)
+                if rec.eln_ref or rec.srf_id:
+                    rec._compute_srf_data()
+                    rec._compute_eln_fields()
+                else:
+                    if not rec.report_no and old_report_no.get(rec.id):
+                        rec.report_no = old_report_no[rec.id]
+                    if not rec.ulr and old_ulr.get(rec.id):
+                        rec.ulr = old_ulr[rec.id]
+        return res
 
     def action_generate_report_no(self):
         for rec in self:
