@@ -1302,6 +1302,63 @@
                     </table>
                     <group/>
 
+                    <div t-if="fly_ash_soundness_visible" >
+                        <h1>
+                            <field name="fly_ash_soundness_name" readonly="1" nolabel="1"/>
+                            <field name="fly_ash_soundness_visible" invisible="1"/>
+                        </h1>
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                              <tr>
+                                <td><label for="wt_cement_fly_ash" class="text-bold">Wt. of Cement (g)</label></td>
+                                <td><field name="wt_cement_fly_ash"/></td>
+                              </tr>
+                              <tr>
+                                <td><label for="water_required_fly_ash" class="text-bold">Wt.of water required (g)</label></td>
+                                <td><field name="water_required_fly_ash"/></td>
+                              </tr>
+
+                          </tbody>
+                          </table>
+                          <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="fly_ash_soundness_table" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" />
+                                        <field name="intial_length"/>
+                                        <field name="final_length"/>
+                                        <field name="expantion"/>
+
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                            
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_expantion_fly_ash" class="text-bold">Average Expansion (%)
+                                        </label></td>
+                                    <td><field name="avg_expantion_fly_ash"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="fineness_blaine_conformity" class="text-bold">Conformity</label></td>
+                                    <td>
+                                        <field  name="fineness_blaine_conformity"
+                                            decoration-success="fineness_blaine_conformity == 'pass'" 
+                                           decoration-danger="fineness_blaine_conformity == 'fail'" 
+                                            readonly="1" />  
+                                        </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="soundness_autoclave_nabl" class="text-bold">NABL</label></td>
+                                    <td><field name="soundness_autoclave_nabl"/></td>
+                                </tr>
+                                
+                            </tbody>
+                            </table>
+                    </div>
+
+
 
 
 
