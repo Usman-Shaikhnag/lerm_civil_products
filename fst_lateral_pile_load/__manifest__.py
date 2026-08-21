@@ -1,6 +1,6 @@
 {
     'name': 'FST Lateral Pile Load',
-    'version': '1.3',
+    'version': '1.5',
     'category': 'Lerm Civil',
     'summary': 'Initial Lateral Pile Load Test',
     'depends': ['base', 'lerm_civil', 'fst'],

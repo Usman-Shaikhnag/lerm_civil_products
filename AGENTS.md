@@ -2,7 +2,7 @@
 
 ## Repo layout
 
-Monorepo of **91 Odoo 17 addons** for a construction-materials testing lab (LERM). Each top-level directory is one Odoo module with `__manifest__.py`. There is no shared Python package, root manifest, CI, or test runner.
+Monorepo of **93 Odoo 17 addons** for a construction-materials testing lab (LERM). Each top-level directory is one Odoo module with `__manifest__.py`. There is no shared Python package, root manifest, CI, or test runner.
 
 The working branch is `knack17_lerm`.
 
@@ -14,8 +14,9 @@ The working branch is `knack17_lerm`.
 - `documents` — Odoo's stock Documents app (OEEL-1), heavily extended; recently wired so SRF/Sample/ELN uploads land in DMS. It is mostly upstream Odoo code.
 - `document_management` — custom DMS: OWL UI + **FastAPI microservice** in `document_management/backend/`. Run separately via its bundled `docker-compose.yml` / `run.sh`; see `document_management/README.md`. Also read `document_management/backend/README.md`.
 - `ftp_storage` — depends on `lerm_civil` + `document_management`; requires `paramiko`.
-- `fst` and `report_py3o` use the OCA Py3o report engine (needs LibreOffice). The material modules instead use **native QWeb reports** whose templates call `lerm_civil.mechanical_data_sheet_header` (see `reports/*_datasheet.xml` in any material module).
+- `fst` and `report_py3o` use the OCA Py3o report engine (needs LibreOffice). The material modules use **native QWeb reports** whose templates call `lerm_civil.mechanical_data_sheet_header` (see `reports/*_datasheet.xml` in any material module). FST reports are being migrated off Py3o to native QWeb — `fst_lateral_pile_load` is the reference (t-call layout header/footer, no `report_py3o` dependency); only the base `fst` module still depends on `report_py3o`.
 - `lerm_mobile` — JSON REST controllers (`/mobile/...`) for a mobile app; `type='json'`, `auth='none'`, `csrf=False`.
+- `Odoo17 Modules FST/` — **tracked scratch dir**: a stale duplicate of `fst_lateral_pile_load` plus loose report XML fragments. The real module lives at the repo root. Never edit the copies here (confusingly named, but git-tracked).
 
 ## Commands
 
