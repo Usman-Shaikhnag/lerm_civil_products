@@ -1448,7 +1448,85 @@ class FlyaschNormalConsistency(models.Model):
                 record.fineness_blaine_nabl = 'fail'
 
 
+    # Soundness by Autoclave Method
+    fly_ash_soundness_name = fields.Char("Name",default="Soundness by Autoclave Method")
+    fly_ash_soundness_visible = fields.Boolean("Soundness by Autoclave Method Visible",compute="_compute_visible")
+  
+    fly_ash_soundness_table = fields.One2many('flyash.soundness.autoclave.line','parent_id',string="Parameter")
+    wt_cement_fly_ash = fields.Float(string="Wt. of Cement (g)", store=True)
+    water_required_fly_ash = fields.Float(string="Wt.of water required (g)", store=True)
+    avg_expantion_fly_ash = fields.Float(string="Average Expansion %",compute="_compute_avg_expantion_fly_ash",digits=(12,3))
 
+    @api.depends('fly_ash_soundness_table.expantion')
+    def _compute_avg_expantion_fly_ash(self):
+        for record in self:
+            expantion_values = record.fly_ash_soundness_table.mapped('expantion')
+            if expantion_values:
+                avg_expantion_fly_ash = sum(expantion_values) / len(expantion_values)
+                record.avg_expantion_fly_ash = avg_expantion_fly_ash
+            else:
+                record.avg_expantion_fly_ash = 0.0
+
+
+    avg_expantion_fly_ash_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_avg_expantion_fly_ash_conformity", store=True)
+
+
+
+    @api.depends('avg_expantion_fly_ash','eln_ref','grade')
+    def _compute_avg_expantion_fly_ash_conformity(self):
+        
+        for record in self:
+            record.avg_expantion_fly_ash_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
+            for material in materials:
+
+                if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.avg_expantion_fly_ash_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_expantion_fly_ash - record.avg_expantion_fly_ash*mu_value
+                    upper = record.avg_expantion_fly_ash + record.avg_expantion_fly_ash*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_expantion_fly_ash_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_expantion_fly_ash_conformity = 'fail'
+
+    avg_expantion_fly_ash_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_expantion_fly_ash_nabl", store=True)
+
+    @api.depends('avg_expantion_fly_ash','eln_ref','grade')
+    def _compute_avg_expantion_fly_ash_nabl(self):
+        
+        for record in self:
+            record.avg_expantion_fly_ash_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_expantion_fly_ash - record.avg_expantion_fly_ash*mu_value
+                    upper = record.avg_expantion_fly_ash + record.avg_expantion_fly_ash*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_expantion_fly_ash_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_expantion_fly_ash_nabl = 'fail'
 
     ### Compute Visible
     @api.depends('sample_parameters')
@@ -1467,6 +1545,7 @@ class FlyaschNormalConsistency(models.Model):
             record.compressive_visible = False
             record.lime_reactivity_visible = False
             record.fineness_blaine_visible = False
+            record.fly_ash_soundness_visible = False
 
          
             for sample in record.sample_parameters:
@@ -1508,7 +1587,10 @@ class FlyaschNormalConsistency(models.Model):
                 # fineness
                 if sample.internal_id == '2104fvdr-6047-4781-9885-0b8b29050fda':
                     record.fineness_blaine_visible = True
-               
+                # soundness
+                if sample.internal_id == '2104534c-5e9c-4335-9ea2-2d87624c23048':
+                    record.fly_ash_soundness_visible = True
+                # 
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -1801,6 +1883,44 @@ class Casting28DaysLiness(models.Model):
                 record.compressive_strengthss = (record.crushing_loadss / record.crosssectional_areass) * 1000
             else:
                 record.compressive_strengthss = 0
+
+class SoundnessAutoclaveMethod(models.Model):
+    _name = "flyash.soundness.autoclave.line"
+
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
+
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    intial_length = fields.Float("Intial Length (L1)",digits=(12,3))
+    final_length = fields.Float("Final Length (L2)",digits=(12,3))
+    expantion = fields.Float("Expansion ((L2-L1)/L1)x 100, %",compute="_compute_expansion_opc",digits=(12,3))
+
+
+    @api.depends('intial_length', 'final_length')
+    def _compute_expansion_opc(self):
+        for record in self:
+            if record.intial_length:  # Avoid division by zero
+                record.expantion = ((record.final_length - record.intial_length) / record.intial_length) * 100
+            else:
+                record.expantion = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(SoundnessAutoclaveMethod, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
 
 
 
