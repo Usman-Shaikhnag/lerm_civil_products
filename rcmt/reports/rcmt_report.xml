@@ -123,9 +123,16 @@
 
 						<!-- 1 Compressive strength  -->
 					
-				<div t-if="rcmt" style="margin-top:20px;">
-					 <div style="padding-top:5px">
-						<span t-esc="eln.material.test_parameter"/>
+				<div style="padding-top:5px">
+						<span style="font-weight: bold;" t-field="eln.material.method_reference"/>:   	
+						
+						
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						
 					</div>
 
 					<table t-if="rcmt" style="margin-top:30px;">
@@ -195,13 +202,14 @@
 
 										<th style="text-align: center;">
 									 <span style="font-weight: bold;">
-										Non – Steady State Migration Coefficient m²/sec
+										Non – Steady State Migration Coefficient  <br></br>
 
+										  x  10 <sup>-12</sup> m²/sec
 
 									 </span>
 									 
 									</th>
-									<th style="text-align: center;">
+									<!-- <th style="text-align: center;">
 									 <span style="font-weight: bold;">
 									Unit
 
@@ -214,7 +222,7 @@
 										<span t-esc="eln.material.specifications"/>
 										
 									</span>
-							    	</th>
+							    	</th> -->
 									
 								</tr>
 							</thead>
@@ -275,7 +283,7 @@
 										<span t-field="rcmt.specimen1_ov_avg1" t-options='{"widget": "float", "precision": 2}'/>
 									</span>	
 								</td>
-								<td  rowspan="3" style="text-align: center; vertical-align: middle;">
+								<!-- <td  rowspan="3" style="text-align: center; vertical-align: middle;">
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).unit.name"/>
 									</span>
@@ -289,7 +297,7 @@
 											<span t-field="parameter.permissable_limit"/>
 										</t>
 									</t>
-								</td>
+								</td> -->
 								
 							</tr>
 
@@ -424,6 +432,11 @@
 								</td> -->
 								
 							</tr>
+
+							<tr   t-if="(rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+							<td colspan="9" style="font-weight: bold;">Average   x  10 <sup>-12</sup> m²/sec</td>
+							<td style="text-align: center;"><span t-field="rcmt.overall_average"  t-options='{"widget": "float", "precision": 2}'  /></td>
+						</tr>
                        
 
 							
@@ -439,9 +452,9 @@
 
 							
 
-				</div>
+				<!-- </div> -->
 
-					<table style="margin-top:20px;">
+					<!-- <table style="margin-top:20px;">
 					<tbody>
 					   
 						<tr  cols="6" t-if="(rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
@@ -451,7 +464,7 @@
 
                
 					</tbody>
-					</table>
+					</table> -->
 
 
 
@@ -484,6 +497,7 @@
                    <div style="page-break-inside: avoid;">
 								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
 									<ul>
+									    <b>Note:-</b>
 										<t t-if="rcmt.notes_id">
 											<t t-foreach="rcmt.notes_id" t-as="n">
 												<li>
