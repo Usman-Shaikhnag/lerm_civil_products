@@ -526,11 +526,17 @@
 
                       <div invisible="plasticity_index_visible == False">
                         <field name="plasticity_index_visible" invisible="1"/>
+                        <field name="remarks_plastic" invisible="1"/>
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
-                        <tr>
+                        <tr invisible="remarks_plastic == 'non-plastic'">
                              <td><span>Plasticity Index</span></td>
                               <td><field name="plasticity_index"/>
+                            </td>
+                           </tr>
+                           <tr invisible="remarks_plastic != 'non-plastic'">
+                             <td><span>Plasticity Index</span></td>
+                              <td><field name="remarks_plasticity_index"/>
                             </td>
                            </tr>
                            <tr>
