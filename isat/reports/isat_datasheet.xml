@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="isat_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    ISAT
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+
+                <div t-if="data.isat_visible" style="margin-top:20px">
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Sample No
+								</td>
+								<td colspan="1">Age Days
+								</td>
+								<td colspan="1">Time Hrs
+								</td>
+								<td colspan="1">Elapse Time min 
+								</td>
+								<td colspan="1">No of scale Division in 5 sec
+								</td>
+								<td colspan="1">Period During Movement Measured
+								</td>
+								<td colspan="1">No of Scale division moved during selected period
+								</td>
+								<td colspan="1">No of Scale division in  1 min
+								</td>
+								<td colspan="1">ISAT ml/m2/sec
+								</td>
+								<td colspan="1">Correction Factor
+								</td>
+								<td colspan="1">ISAT Corrected to Equ 27°C ml/m2/sec
+								</td>
+								
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.isat_child_lines" t-as="r">
+									<t t-set="i" t-value="i+1"/>
+									<tr t-foreach="r['child_lines']" t-as="j" cols="12">
+										<td colspan="1">
+											<div>
+												<span t-esc="i"/>
+											</div>
+										</td>
+										<td colspan="1">
+											<span t-esc="r['sample_id']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="r['age_days']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="r['time_hrs']"/>
+										</td>
+										<td colspan="1">
+										<span t-esc="j['elapsed_time']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['no_of_scale_div_5sec']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['period_movement_measured']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['no_of_div_moved_selected_period']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['no_of_scale_div_1min']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['isat_sec']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['correction_factor']"/>
+										</td>
+										<td colspan="1">
+											<span t-esc="j['isat_corrected']"/>
+										</td>
+									</tr>
+								<!-- </td> -->
+								
+							</tr>
+						</table>
+						
+
+				</div>
+
+
+				<div t-if="data.isat_of_concrte_visible" style="margin-top:20px">
+								<div style="text-align:center;font-size:18px">
+									ISAT  of Concrete
+								</div>
+
+				            <table  style="margin-top:20px;">
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sample
+											</span>
+										</th>
+										<th>
+											<span>
+												ID MARK/ Location
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Length in mm
+											</span>
+										</th>
+										<th>
+											<span>
+												Width in mm
+											</span>
+										</th>
+										<th>
+											<span>
+												Initial Surface Absorption in ml/m2.sec  at 10 Minute
+											</span>
+										</th>
+										<th>
+											<span>
+												Initial Surface Absorption Corrected to Equivalent 27°C  ml/m2.sec
+											</span>
+										</th>
+										<th>
+											<span>
+												Initial Surface Absorption in ml/m2.sec  at 30 Minute
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Initial Surface Absorption in ml/m2.sec  at 60 Minute
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="i" t-value="0"/>
+									<tr t-foreach="data.isat_of_concrete_lines" t-as="r">
+										<td>
+											<div>
+												<span t-esc="i + 1" />
+												<t t-set="i" t-value="i+1"/>
+											</div>
+										</td>
+										<td>
+											<span t-esc="r.id_mark"/>
+										</td>
+										<td>
+											<span t-esc="r.length"/>
+										</td>
+										<td>
+											<span t-esc="r.width"/>
+										</td>
+										<td>
+											<span t-esc="r.intial_surface10"/>
+										</td>
+										<td>
+											<span t-esc="r.intial_surface_corrected"/>
+										</td>
+										<td>
+											<span t-esc="r.intial_surface30"/>
+										</td>
+										<td>
+											<span t-esc="r.intial_surface60" />
+										</td>
+									</tr>
+								</tbody>
+						</table>
+
+					
+					</div>
+
+				</div>
+
+				<div class="authorizeRowDataSheet">
+
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+							<div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+						
+					</div>
+			</t>
+		</t>
+	</template>
+</odoo>
