@@ -1302,7 +1302,7 @@
                     </table>
                     <group/>
 
-                    <div t-if="fly_ash_soundness_visible" >
+                    <div invisible="fly_ash_soundness_visible == False" >
                         <h1>
                             <field name="fly_ash_soundness_name" readonly="1" nolabel="1"/>
                             <field name="fly_ash_soundness_visible" invisible="1"/>
@@ -1341,17 +1341,17 @@
                                     <td><field name="avg_expantion_fly_ash"/></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="fineness_blaine_conformity" class="text-bold">Conformity</label></td>
+                                    <td><label for="avg_expantion_fly_ash_conformity" class="text-bold">Conformity</label></td>
                                     <td>
-                                        <field  name="fineness_blaine_conformity"
-                                            decoration-success="fineness_blaine_conformity == 'pass'" 
-                                           decoration-danger="fineness_blaine_conformity == 'fail'" 
+                                        <field  name="avg_expantion_fly_ash_conformity"
+                                            decoration-success="avg_expantion_fly_ash_conformity == 'pass'" 
+                                           decoration-danger="avg_expantion_fly_ash_conformity == 'fail'" 
                                             readonly="1" />  
                                         </td>
                                 </tr>
                                 <tr>
-                                    <td><label for="soundness_autoclave_nabl" class="text-bold">NABL</label></td>
-                                    <td><field name="soundness_autoclave_nabl"/></td>
+                                    <td><label for="avg_expantion_fly_ash_nabl" class="text-bold">NABL</label></td>
+                                    <td><field name="avg_expantion_fly_ash_nabl"/></td>
                                 </tr>
                                 
                             </tbody>
