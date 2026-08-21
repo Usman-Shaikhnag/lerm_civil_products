@@ -12,20 +12,15 @@ class PrecastKerbMechanical(models.Model):
 
 
     name = fields.Char("Name",default="Precast Kerb Stone")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
-
-
-
-    # remark
-
-    notes_id = fields.One2many('kerb.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.precast.kerb.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
@@ -34,41 +29,30 @@ class PrecastKerbMechanical(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
         res['notes_id'] = default_notes
         return res
 
-       
-
-    #    Dimension
-
-    dimension_name = fields.Char(default="Dimension")
-    dimension_visible = fields.Boolean(compute="_compute_visible")
-    length = fields.Float('Length')
-    thickness = fields.Float('Thickness')
-    width = fields.Float('Width')
-
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
         for record in self:
             record.transverse_visible = False
             record.water_absorbtion_visible  = False  
-            record.dimension_visible  = False
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
@@ -76,14 +60,6 @@ class PrecastKerbMechanical(models.Model):
                     record.transverse_visible = True
                 if sample.internal_id == 'f913fc79-eeb4-4e16-a7fc-75608384d9b0':
                     record.water_absorbtion_visible = True
-                if sample.internal_id == 'klrt1230t-eeb4-4e16-a7fc-7560838410lo':
-                    record.dimension_visible = True
-
-    # def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-
-
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -94,38 +70,26 @@ class PrecastKerbMechanical(models.Model):
         )
 
         for result in technician_results:
-          
-            
+
             if result.parameter.internal_id == '0b48abe6-07a4-4345-bcc1-30ff6e4830af':
-                # result.result_char = round(self.average_density,2)
+                # result.result_char = round(self.average_strength,2)
                 result.calculated = True
-                # if self.average_density_nabl == 'pass':
+                # if self.nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
                 #     result.nabl_status = 'non-nabl'
-                # continue
+                continue
 
             if result.parameter.internal_id == 'f913fc79-eeb4-4e16-a7fc-75608384d9b0':
-                # result.result_char = round(self.average_density,2)
+                # result.result_char = round(self.average_strength,2)
                 result.calculated = True
-                # if self.average_density_nabl == 'pass':
+                # if self.nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
                 #     result.nabl_status = 'non-nabl'
-                # continue
+                continue
 
-
-            if result.parameter.internal_id == 'klrt1230t-eeb4-4e16-a7fc-7560838410lo':
-                # result.result_char = round(self.average_density,2)
-                result.calculated = True
-                # if self.average_density_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
-
-
+           
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -133,7 +97,7 @@ class PrecastKerbMechanical(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            }   
 
     @api.model
     def create(self, vals):
@@ -206,22 +170,12 @@ class PrecastWaterAbsorbtionLine(models.Model):
     protocol = fields.Char('Protocol')
 
 
-
-
-
-
-
-
-
-
-
-class kerb(models.Model):
-    _name = "kerb.notes"
+class PrecastStoneNotes(models.Model):
+    _name = "mechanical.precast.kerb.notes"
 
     parent_id = fields.Many2one('mechanical.precast.kerb',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
-
 
 
 
