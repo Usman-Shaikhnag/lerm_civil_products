@@ -208,12 +208,12 @@ class ConcreteCore(models.Model):
         return default_lines
 
 
-    # thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
+    thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
 
-    # @api.depends('size_id')
-    # def _compute_thickness2(self):
-    #     for rec in self:
-    #         rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+    @api.depends('size_id')
+    def _compute_thickness2(self):
+        for rec in self:
+            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
 
    
 
