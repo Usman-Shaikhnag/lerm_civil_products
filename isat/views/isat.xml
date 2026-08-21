@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-    
 
         <record id="mech_isat_form" model="ir.ui.view">
         <field name="name">mech.isat.form</field>
@@ -12,17 +11,20 @@
 
                 <div >
                     <h1>
-                    
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                </div>
-                <group>
-                        <field name="srf_id" invisible="1"/>
-                        <field name="eln_ref" readonly="1"/>
-                        <field name="eln_state" />
-                </group>
+                    </div>
 
-                 <style>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <!-- <field name="grade" exception="grade"  string="Grade" identity="extra"/>    -->
+                        <field name="eln_state" />
+                    </group>
+
+                     <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
                             border-color: #3b82f6 !important;        /* Blue border */ 
@@ -40,9 +42,67 @@
                             }
                     </style>
 
-                    <group>
-                        <field name="isat_child_lines" colspan="2" nolabel="1"/>
-                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+
+                    <div invisible="not isat_visible" >
+                        <h1>
+                            <field name="isat_name" readonly="1" nolabel="1"/>
+                            <field name="isat_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                        <field name="isat_child_lines" nolabel="1" />
+                        
+
+
+                    <div invisible="not isat_of_concrte_visible" >
+                        <h1>
+                            <field name="isat_of_concrte_name1" readonly="1" nolabel="1"/>
+                            <field name="isat_of_concrte_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                        <field name="isat_of_concrete_lines" nolabel="1"  class="custom_table_borders"  invisible="not isat_of_concrte_visible">
+                            <tree editable="bottom">
+                                <field name='sr_no' />
+                                <field name='id_mark'/>
+                                <field name='length' />
+                                <field name='width' />
+                                <field name='intial_surface10' />
+                                <field name='intial_surface10' />
+                                <field name='intial_surface30' />
+                                <field name="intial_surface60" />
+                                <field name="remark" />
+                            </tree>
+                            
+                        </field> 
+
+
+                         <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
                     <button
                             type="object"
                             class="oe_highlight" 
@@ -61,27 +121,65 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group>
-                    <field name='sample_id' style="width:30%" class="blue-input" />
-                    <field name='age_days' style="width:30%" class="blue-input" />
-                    <field name='time_hrs' style="width:30%" class="blue-input" />
-                    <field name='child_lines' colspan="2" nolabel="1" >
+
+
+                 <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="sample_id"></label></td>
+                                    <td><field name="sample_id" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="age_days"></label></td>
+                                    <td><field name="age_days"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="time_hrs"></label></td>
+                                    <td><field name="time_hrs"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+                   
+                    <field name='child_lines'  nolabel="1" class="custom_table_borders">
                         <tree editable="bottom">
                             <field name="elapsed_time"/>
-                            <field name="no_of_scale_div_5sec" class="blue-input" decoration-info="no_of_scale_div_5sec != 0"/>
-                            <field name="period_movement_measured" class="blue-input" decoration-info="period_movement_measured != 0"/>
-                            <field name="no_of_div_moved_selected_period" class="blue-input" decoration-info="no_of_div_moved_selected_period != 0" />
-                            <field name="no_of_scale_div_1min" class="blue-input" decoration-info="no_of_scale_div_1min != 0" />
+                            <field name="no_of_scale_div_5sec"/>
+                            <field name="period_movement_measured"/>
+                            <field name="no_of_div_moved_selected_period"/>
+                            <field name="no_of_scale_div_1min"/>
                             <field name="isat_sec"/>
-                            <field name="correction_factor" class="blue-input" decoration-info="correction_factor != 0" />
+                            <field name="correction_factor"/>
                             <field name="isat_corrected"/>
                         </tree>
                     </field>
 
-                    </group>
-                    <group>
-                        <field name="comments" class="blue-input" decoration-info="comments != 0"/>
-                    </group>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="comments"></label></td>
+                                    <td><field name="comments" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                  
                      
 
                 </sheet>
@@ -89,18 +187,6 @@
         </field>
         </record>
 
-        <record id="mech_isat_line_tree" model="ir.ui.view">
-        <field name="name">mech.isat.line.tree</field>
-        <field name="model">mech.isat.line</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name='sample_id'/>
-                <field name='age_days'/>
-                <field name='time_hrs'/>
-                <!-- <field name='child_lines'/> -->
-                <field name="child_lines" widget="many2many_tags"/>
-            </tree>
-        </field>
-    </record>
+       
     </data>
 </odoo>
