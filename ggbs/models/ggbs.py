@@ -416,8 +416,8 @@ class GgbsMechanical(models.Model):
     def _compute_slag_7days_conformity(self):
         for record in self:
             record.slag_7days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -436,8 +436,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_7days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -727,7 +727,7 @@ class GgbsMechanical(models.Model):
                     record.normal_consistency_cement_visible = True
                 if sample.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
                     record.specific_gravity_visible = True
-                if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                if sample.internal_id == '55b3df61-8e67-4e94-86ea-98d9472f5c71':
                     record.slag_activity_7_visible = True
                 if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
                     record.fineness_visible = True
@@ -749,7 +749,7 @@ class GgbsMechanical(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+            if result.parameter.internal_id == '55b3df61-8e67-4e94-86ea-98d9472f5c71':
                 result.result_char = self.slag_activity_index_7days
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
