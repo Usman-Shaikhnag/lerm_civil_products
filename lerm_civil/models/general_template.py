@@ -1284,7 +1284,7 @@ class SoilReport(models.AbstractModel):
 
         
 class SoilDatasheet(models.AbstractModel):
-    _name = 'report.lerm_civil.soil_datasheet'
+    _name = 'report.soil.soil_datasheet'
     _description = 'Soil DataSheet'
     
     @api.model

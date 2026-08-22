@@ -1062,55 +1062,95 @@
                 </table>
              
                 <!-- Angularity Number  -->
-                <!-- <div invisible="not angularity_visible" class="custom_table_borders">
-                    <h1>
+                <div invisible="not angularity_visible">
+                    <h1 class="text-center">
                         <field name="angularity_name" readonly="1" nolabel="1"/>
                         <field name="angularity_visible" invisible="1"/>
                     </h1>
                 </div>
 
-                <div invisible="not angularity_visible" class="custom_table_borders">
-                    <field name="mean_wt_aggregate"/>
-                    <field name="wt_water_required_angularity"/>
-                    <field name="specific_gravity_aggregate_angularity"/>
-                    <field name="angularity_number"/>
-                </div>
+                <table class="table table-sm table-bordered custom_table_borders" invisible="not angularity_visible">
+                    <tbody>
 
-                <div invisible="not angularity_visible" class="custom_table_borders">
-                    <field  name="angularity_number_conformity"
-                            decoration-success="angularity_number_conformity == 'pass'" 
-                            decoration-danger="angularity_number_conformity == 'fail'" 
-                            readonly="1"/>
-                    <field  name="angularity_number_conformity_nabl"/>
-                </div> -->
+                        <tr>
+                            <td class="w-50"><label for="mean_wt_aggregate" string="Mean Weight of Aggregate"/></td>
+                            <td class="w-50"><field name="mean_wt_aggregate" class="blue-input"/></td>
+                        </tr>
 
-                <!-- Aggregate Grading  -->
-                <!-- <div invisible="not aggregate_grading_visible" class="custom_table_borders">
-                    <h1>
+                        <tr>
+                            <td><label for="wt_water_required_angularity" string="Weight of Water Required"/></td>
+                            <td><field name="wt_water_required_angularity" class="blue-input"/></td>
+                        </tr>
+
+                        <tr>
+                            <td><label for="specific_gravity_aggregate_angularity" string="Specific Gravity of Aggregate"/></td>
+                            <td><field name="specific_gravity_aggregate_angularity"/></td>
+                        </tr>
+
+                        <tr>
+                            <td><label for="angularity_number" string="Angularity Number"/></td>
+                            <td><field name="angularity_number"/></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not angularity_visible">
+                    <tbody>
+
+                        <tr>
+                            <td class="w-50"><span class="fw-bold">Conformity</span></td>
+                            <td class="w-50">
+                                <field name="angularity_number_conformity" 
+                                        decoration-success="angularity_number_conformity == 'pass'" 
+                                        decoration-danger="angularity_number_conformity == 'fail'" 
+                                        readonly="1"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="fw-bold">NABL</span></td>
+                            <td><field name="angularity_number_conformity_nabl"/></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+                <!-- ============================================================ -->
+                <!-- Aggregate Grading -->
+                <!-- ============================================================ -->
+
+                <div invisible="not aggregate_grading_visible">
+                    <h1 class="text-center">
                         <field name="aggregate_grading_name" readonly="1" nolabel="1"/>
                         <field name="aggregate_grading_visible" invisible="1"/>
-
                     </h1>
                 </div>
 
-                <div invisible="not aggregate_grading_visible" class="custom_table_borders">
+                <div invisible="not aggregate_grading_visible" class="mb-2">
                     <button string="Calculate" type="object" name="calculate_aggregate" class="oe_highlight"/>
                 </div>
-                <div invisible="not aggregate_grading_visible" class="custom_table_borders">
-                    <field name="aggregate_grading_child_lines" nolabel="1">
-                        <tree>
-                            <field name="serial_no" string="Sr.No"/>
-                            <field name="sieve_size" string="IS Sieve Size"/>
-                            <field name="wt_retained" string="Wt. Retained in gms"/>
-                            <field name="percent_retained" string="% Retained"/>
-                            <field name="cumulative_retained" context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
-                            <field name="passing_percent" string="Passing %" readonly="1"/>
-                        </tree>
-                    </field>
-                </div>
-                <div invisible="not aggregate_grading_visible" class="custom_table_borders">
-                    <field name="total_aggregate_grading"/>
-                </div> -->
+
+                <field name="aggregate_grading_child_lines" nolabel="1" invisible="not aggregate_grading_visible">
+                    <tree editable="bottom" class="custom_table_borders">
+                        <field name="serial_no" string="Sr.No"/>
+                        <field name="sieve_size" string="IS Sieve Size"/>
+                        <field name="wt_retained" string="Wt. Retained in gms" class="blue-input"/>
+                        <field name="percent_retained" string="% Retained"/>
+                        <field name="cumulative_retained" context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                        <field name="passing_percent" string="Passing %" readonly="1"/>
+                    </tree>
+                </field>
+
+                <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not aggregate_grading_visible">
+                    <tbody>
+                        <tr>
+                            <td class="w-50"><label for="total_aggregate_grading" string="Total Aggregate Grading"/></td>
+                            <td class="w-50"><field name="total_aggregate_grading"/></td>
+                        </tr>
+                    </tbody>
+                </table>
                 
                 <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
 
