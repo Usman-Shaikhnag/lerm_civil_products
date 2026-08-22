@@ -358,6 +358,12 @@ class LermSampleForm(models.Model):
                         'type': 'ir.actions.act_window',
                         'target': 'current',
                         'res_id': eln.parameters_result[0].model_id,
+                        'context': {
+                            'default_srf_id': eln.srf_id.id if eln.srf_id else False,
+                            'default_sample_id': eln.sample_id.id if eln.sample_id else False,
+                            'default_parameter_id': eln.parameters_result[0].id,
+                            'default_eln_ref': eln.id,
+                         }
                         }
                     
 
