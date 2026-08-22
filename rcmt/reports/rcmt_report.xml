@@ -494,10 +494,13 @@
 
 				 <!-- Remarks Section -->
 
-                   <div style="page-break-inside: avoid;">
-								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+				 <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
 									<ul>
-									    <b>Note:-</b>
+									   
 										<t t-if="rcmt.notes_id">
 											<t t-foreach="rcmt.notes_id" t-as="n">
 												<li>
@@ -513,8 +516,10 @@
 										</li>
 									</ul>
 								</div>
-							</div>
+				</div>
 
+
+                 
 
 
 						

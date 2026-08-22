@@ -2,7 +2,7 @@
 <odoo>
 
 	<template id="custom_layout_header_footer_lerm_eln">
-        <div t-attf-class="header article" t-att-style="report_header_style">
+         <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
 				<t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
@@ -19,16 +19,15 @@
 					</div>
 					
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
-						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+						<img t-attf-src="/lerm_civil/static/src/img/letterHead.jpg" alt="Image"/>
 					</div>
 				</t>
 				
 			</div>
-			<div style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
-				<!-- <img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/> -->
-				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-width: 400px;" />
+			<div class="row backgroundimage" style="opacity:0.2; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:-99;">
+				
+				<img src="/lerm_civil/static/src/img/watermark.jpg" style="max-height:370px;"/>
 			</div>
-			
 					<!-- <table style="border:none;">
 						<tr cols="12" style="border:none;">
 							<td colspan="1" style="border:none;"><span></span>
