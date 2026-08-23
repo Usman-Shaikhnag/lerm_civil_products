@@ -110,6 +110,11 @@
 						<t t-set="triaxialp_vals" t-value="[g.phi for g in (data.triaxial_ids or []) if g.phi]"/>
 						<t t-set="triaxialp_index" t-value="0"/>
 
+						<t t-set="tensile_strength_vals" t-value="[g.avg_tensile_strength for g in (data.tensile_strength_ids or []) if g.avg_tensile_strength]"/>
+						<t t-set="tensile_strength_index" t-value="0"/>
+
+						
+
 						<t t-set="elasticitye_vals" t-value="[g.modulus_e for g in (data.elasticity_ids or []) if g.modulus_e]"/>
 			             <t t-set="elasticitye_index" t-value="0"/>
 
@@ -144,6 +149,8 @@
 							
 									len(triaxialc_vals or []),
 									len(triaxialp_vals or []),
+
+									len(tensile_strength_vals or []),
 
 									len(elasticitye_vals or []),
 									len(elasticityu_vals or []),
@@ -274,18 +281,7 @@
 								</td>
 								</t>
 
-									<!-- <t t-if="data.elasticity_visible"> -->
-								<td  colspan="2" style="text-align: center;">
-								<t t-if="data.elasticity_visible">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
-								</span>
-								</t>
-
-								 <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
-								 </t>
-								</td>
-								<!-- </t> -->
+									
                               
 
 							  
@@ -328,6 +324,30 @@
 								</span>
 								</td>
 								</t>
+
+								<!-- <t t-if="data.elasticity_visible"> -->
+								<td  colspan="2" style="text-align: center;">
+								<t t-if="data.elasticity_visible">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
+								</span>
+								</t>
+
+								 <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
+								 </t>
+								</td>
+								<!-- </t> -->
+
+								<td  colspan="2" style="text-align: center;">
+								<t t-if="data.tensile_strength_visible">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_name"/>
+								</span>
+								</t>
+
+								 <t t-else="">Tensile Srength
+								 </t>
+								 </td>
 
 								<td  colspan="2" style="text-align: center;">
 								<t t-if="data.triaxial_visible">
@@ -496,29 +516,7 @@
 							</t>
 
 								
-							<td  colspan="1" style="text-align: center;">
-							<t t-if="data.elasticity_visible">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-									
-								</span>
-								</t>
-								<t t-else="">GPa
-								 </t>
-							</td>
 							
-
-							
-							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.elasticity_visible">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-									
-								</span>
-								</t>
-								<t t-else="">--
-								 </t>
-							</td>
 							
 
 
@@ -562,6 +560,43 @@
 								</span>
 							</td>
 							</t>
+							
+
+							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.elasticity_visible">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/>
+									
+								</span>
+								</t>
+								<t t-else="">GPa
+								 </t>
+							</td>
+							
+
+							
+							<td  colspan="1" style="text-align: center;">
+							 <t t-if="data.elasticity_visible">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/>
+									
+								</span>
+								</t>
+								<t t-else="">--
+								 </t>
+							</td>
+
+							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.tensile_strength_visible">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).unit.name"/>
+									
+								</span>
+								</t>
+								<t t-else="">MPa
+								 </t>
+							</td>
+
 							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.triaxial_visible">
 							<span>
@@ -798,19 +833,7 @@
 							</t>
 
 								
-							<td  colspan="2" style="text-align: center;">
-							<t t-if="data.elasticity_visible">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</t>
-								<t t-else="">IS 9221
-								 </t>
-							</td> 
+							
 							
 							<!-- <t t-if="data.point_load_visible1">
 							<td  colspan="1" style="text-align: center;">
@@ -867,6 +890,34 @@
 								</span>
 							</td> 
 							</t>
+
+							<td  colspan="2" style="text-align: center;">
+							<t t-if="data.elasticity_visible">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</t>
+								<t t-else="">IS 9221
+								 </t>
+							</td> 
+
+							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.tensile_strength_visible">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</t>
+								<t t-else="">IS 10082
+								 </t>
+							</td> 
 
 							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.triaxial_visible">
@@ -1061,28 +1112,7 @@
                                 </td>     
 								</t>
 
-									<td colspan="1" style="text-align: center;">
-								<t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
-
-								<t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
-									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
-									<t t-esc="round(elasticitye_vals[di])"/>
-									<t t-set="elasticitye_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
-
-								<td colspan="1" style="text-align: center;">
-								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
-
-								<t t-if="elasticityu_vals and di &lt; len(elasticityu_vals)">
-									<t t-esc="'%.1f' % elasticityu_vals[di]"/>
-									<t t-set="elasticityu_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
-							
-							
+									
 
 								<!-- <td t-if="show_duration_of_test" colspan="1" style="text-align: center;"> -->
 								<t t-if="data.duration_of_test_visible">
@@ -1116,6 +1146,41 @@
 								<!-- <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>      -->
+
+
+								<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
+
+								<t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
+									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
+									<t t-esc="round(elasticitye_vals[di])"/>
+									<t t-set="elasticitye_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+								<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
+
+								<t t-if="elasticityu_vals and di &lt; len(elasticityu_vals)">
+									<t t-esc="'%.1f' % elasticityu_vals[di]"/>
+									<t t-set="elasticityu_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+
+							<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="tensile_strength_index if tensile_strength_index is not None else 0"/>
+
+								<t t-if="tensile_strength_vals and di &lt; len(tensile_strength_vals)">
+									<t t-esc="'%.1f' % tensile_strength_vals[di]"/>
+									<t t-set="tensile_strength_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+							
+							
 
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>

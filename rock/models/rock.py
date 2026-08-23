@@ -478,6 +478,46 @@ class MechanicalRock(models.Model):
 
 
 
+    # Tensile Srength 
+
+    tensile_strength_visible = fields.Boolean("Tensile Srength",compute="_compute_visible")
+    tensile_strength_name = fields.Char("Name",default="Tensile Srength")
+    show_sieve = fields.Boolean(default=False)
+    tensile_strength_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    tensile_strength_ids = fields.One2many('rock.tensile.strength.line', 'parent_id',ondelete='cascade')
+
+    doc_name1 = fields.Char("Doc Name",default="Tensile Srength")
+
+
+
+    def action_generate_tensile_strength_lines(self):
+        for record in self:
+            lines = []
+
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
+
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
+                record.tensile_strength_ids = lines
+                record.tensile_strength_generated = True
+                record.show_sieve = True
+
+
+
     
 
 
@@ -513,6 +553,8 @@ class MechanicalRock(models.Model):
 
             record.slake_durability_visible = False
             record.triaxial_visible = False
+
+            record.tensile_strength_visible = False
 
 
 
@@ -578,6 +620,10 @@ class MechanicalRock(models.Model):
                     record.triaxial_visible = True
 
 
+                if sample.internal_id == "b448cca3-37d8-40d5-9599-87a2f0a8d267":
+                    record.tensile_strength_visible = True
+
+
 
 
 
@@ -605,6 +651,11 @@ class MechanicalRock(models.Model):
             )
 
         for result in technician_results:
+
+            
+
+            if result.parameter.internal_id == 'b448cca3-37d8-40d5-9599-87a2f0a8d267':
+                result.calculated = True
                    
             if result.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d':
                 result.calculated = True
@@ -2682,5 +2733,823 @@ class ElasticityLine(models.Model):
             record.serial_no = index + 1
 
     
+
+class TensileStrengthLine(models.Model):
+    _name = "rock.tensile.strength.line"
+    parent_id = fields.Many2one('mechanical.rock',string="Parent Id",ondelete='cascade')
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_tensile_strength",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_tensile_strength",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_tensile_strength(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+    tensile_strength_child_lines = fields.One2many('mechanical.tensile.strength.line','parent_id_tensile_strength',string="Parameter")
+
+    avg_room_temp = fields.Float(
+    string="Average Room Temperature",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_relative_humidity = fields.Float(
+    string="Average Relative Humidity",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_water_temperature = fields.Float(
+    string="Average Water Temperature",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+) 
+
+    avg_dia_rock1 = fields.Float(
+    string="Average Diameter 1",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_dia_rock2 = fields.Float(
+    string="Average Diameter 2",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_dia_rock3 = fields.Float(
+    string="Average Diameter 3",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    
+
+    avg_height_rock1 = fields.Float(
+    string="Average Height 1",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_height_rock2 = fields.Float(
+    string="Average Height 2",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_height_rock3 = fields.Float(
+    string="Average Height 3",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+   
+   
+
+    avg_volume_of_sample = fields.Float(
+    string="Average Volume of Sample",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_initial_wt = fields.Float(
+    string="Average Initial Weight",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_dry_wet = fields.Float(
+    string="Average Dry Weight",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_saturated_wet = fields.Float(
+    string="Average Saturated Weight",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    
+
+    avg_wt_of_sample = fields.Float(
+    string="Average Weight in Water",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+   
+
+    avg_load_ucs = fields.Float(
+    string="Average Load UCS",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_dis_two_loadpoint = fields.Float(
+    string="Average Distance",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_point_load = fields.Float(
+    string="Average Point Load",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_duration_of_test = fields.Float(
+    string="Average Duration",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_tensile_strength = fields.Float(
+    string="Average Tensile Strength",
+    compute="_compute_tensile_environment_averages",
+    store=True,
+    digits=(16, 3)
+)
+
+
+    
+
+    
+
+
+
+    @api.depends(
+    'tensile_strength_child_lines.room_temp',
+    'tensile_strength_child_lines.relative_humidity',
+    'tensile_strength_child_lines.water_temperature',
+    'tensile_strength_child_lines.dia_rock1',
+    'tensile_strength_child_lines.dia_rock2',
+    'tensile_strength_child_lines.dia_rock3',
+    'tensile_strength_child_lines.height_rock1',
+    'tensile_strength_child_lines.height_rock2',
+    'tensile_strength_child_lines.height_rock3',
+    'tensile_strength_child_lines.initial_wt',
+    'tensile_strength_child_lines.dry_wet',
+    'tensile_strength_child_lines.saturated_wet',
+    'tensile_strength_child_lines.wt_of_sample',
+    'tensile_strength_child_lines.load_ucs',
+    'tensile_strength_child_lines.dis_two_loadpoint',
+    'tensile_strength_child_lines.point_load',
+    'tensile_strength_child_lines.duration_of_test',
+    'tensile_strength_child_lines.volume_of_sample1',
+    'tensile_strength_child_lines.tensile_strength',
+)
+    def _compute_tensile_environment_averages(self):
+
+      def avg(lines, field):
+        values = [
+            v for v in lines.mapped(field)
+            if v not in (False, None)
+        ]
+        return sum(values) / len(values) if values else 0.0
+
+      for rec in self:
+
+        lines = rec.tensile_strength_child_lines
+
+        rec.avg_room_temp = avg(lines, 'room_temp')
+        rec.avg_relative_humidity = avg(lines, 'relative_humidity')
+        rec.avg_water_temperature = avg(lines, 'water_temperature')
+
+        rec.avg_dia_rock1 = avg(lines, 'dia_rock1')
+        rec.avg_dia_rock2 = avg(lines, 'dia_rock2')
+        rec.avg_dia_rock3 = avg(lines, 'dia_rock3')
+
+        rec.avg_volume_of_sample = avg(lines, 'volume_of_sample1')
+
+        rec.avg_height_rock1 = avg(lines, 'height_rock1')
+        rec.avg_height_rock2 = avg(lines, 'height_rock2')
+        rec.avg_height_rock3 = avg(lines, 'height_rock3')
+
+        rec.avg_initial_wt = avg(lines, 'initial_wt')
+        rec.avg_dry_wet = avg(lines, 'dry_wet')
+        rec.avg_saturated_wet = avg(lines, 'saturated_wet')
+        rec.avg_wt_of_sample = avg(lines, 'wt_of_sample')
+
+        rec.avg_load_ucs = avg(lines, 'load_ucs')
+        rec.avg_dis_two_loadpoint = avg(
+            lines,
+            'dis_two_loadpoint'
+        )
+        rec.avg_point_load = avg(lines, 'point_load')
+        rec.avg_duration_of_test = avg(
+            lines,
+            'duration_of_test'
+        )
+        rec.avg_tensile_strength = avg(
+                    lines,
+                    'tensile_strength'
+                )
+
+
+
+    avg_diameter = fields.Float(
+    string="Average Diameter",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_height = fields.Float(
+    string="Average Height",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_hd = fields.Float(
+    string="H/D",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_volume_of_void = fields.Float(
+    string="Volume of Voids",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_sp_gravity = fields.Float(
+    string="Sp. Gravity",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_bulk_density = fields.Float(
+    string="Bulk Density",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_sat_density = fields.Float(
+    string="Sat Density",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 4)
+)
+
+    avg_dry_density = fields.Float(
+    string="Dry Density",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 4)
+)
+
+    avg_water_absorption = fields.Float(
+    string="Water Absorption",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+    avg_porosity = fields.Float(
+    string="Porosity",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+
+
+    avg_moisture_content = fields.Float(
+    string="Moisture Content",
+    compute="_compute_tensile_averages",
+    store=True,
+    digits=(16, 2)
+)
+
+
+
+    @api.depends(
+    'avg_dia_rock1',
+    'avg_dia_rock2',
+    'avg_dia_rock3',
+    'avg_height_rock1',
+    'avg_height_rock2',
+    'avg_height_rock3',
+    'avg_initial_wt',
+    'avg_dry_wet',
+    'avg_saturated_wet',
+    'avg_wt_of_sample',
+)
+    def _compute_tensile_averages(self):
+
+     for rec in self:
+
+        # ==========================================
+        # 1. AVERAGE DIAMETER
+        # ==========================================
+
+        diameter_values = [
+            rec.avg_dia_rock1,
+            rec.avg_dia_rock2,
+            rec.avg_dia_rock3,
+        ]
+
+        valid_diameters = [
+            value for value in diameter_values
+            if value not in (False, None, 0)
+        ]
+
+        rec.avg_diameter = (
+            sum(valid_diameters) / len(valid_diameters)
+            if valid_diameters
+            else 0.0
+        )
+
+
+        # ==========================================
+        # 2. AVERAGE HEIGHT
+        # ==========================================
+
+        height_values = [
+            rec.avg_height_rock1,
+            rec.avg_height_rock2,
+            rec.avg_height_rock3,
+        ]
+
+        valid_heights = [
+            value for value in height_values
+            if value not in (False, None, 0)
+        ]
+
+        rec.avg_height = (
+            sum(valid_heights) / len(valid_heights)
+            if valid_heights
+            else 0.0
+        )
+
+
+        # ==========================================
+        # 3. H/D
+        # H/D = Average Height / Average Diameter
+        # ==========================================
+
+        if rec.avg_diameter:
+            rec.avg_hd = (
+                rec.avg_height / rec.avg_diameter
+            )
+        else:
+            rec.avg_hd = 0.0
+
+
+        # ==========================================
+        # 4. VOLUME OF VOIDS
+        # Vvoid = Saturated Weight - Dry Weight
+        # ==========================================
+
+        if (
+            rec.avg_saturated_wet or
+            rec.avg_dry_wet
+        ):
+            rec.avg_volume_of_void = (
+                rec.avg_saturated_wet -
+                rec.avg_dry_wet
+            )
+        else:
+            rec.avg_volume_of_void = 0.0
+
+
+        # ==========================================
+        # 5. SPECIFIC GRAVITY
+        #
+        # G = Dry Weight /
+        #     ((Saturated Weight - Water Weight)
+        #      - Volume of Voids)
+        # ==========================================
+
+        denominator = (
+            rec.avg_saturated_wet -
+            rec.avg_wt_of_sample -
+            rec.avg_volume_of_void
+        )
+
+        if denominator:
+            rec.avg_sp_gravity = (
+                rec.avg_dry_wet /
+                denominator
+            )
+        else:
+            rec.avg_sp_gravity = 0.0
+
+
+        # ==========================================
+        # VOLUME OF SAMPLE
+        #
+        # V = Saturated Weight - Weight in Water
+        #
+        # This is required by density formulas
+        # ==========================================
+
+        volume_of_sample = (
+            rec.avg_saturated_wet -
+            rec.avg_wt_of_sample
+        )
+
+
+        # ==========================================
+        # 6. BULK DENSITY
+        #
+        # Bulk Density = Initial Weight / Volume
+        # ==========================================
+
+        if volume_of_sample:
+            rec.avg_bulk_density = (
+                rec.avg_initial_wt /
+                volume_of_sample
+            )
+        else:
+            rec.avg_bulk_density = 0.0
+
+
+        # ==========================================
+        # 7. SATURATED DENSITY
+        #
+        # Sat Density = Saturated Weight / Volume
+        # ==========================================
+
+        if volume_of_sample:
+            rec.avg_sat_density = (
+                rec.avg_saturated_wet /
+                volume_of_sample
+            )
+        else:
+            rec.avg_sat_density = 0.0
+
+
+        # ==========================================
+        # 8. DRY DENSITY
+        #
+        # Dry Density = Dry Weight / Volume
+        # ==========================================
+
+        if volume_of_sample:
+            rec.avg_dry_density = (
+                rec.avg_dry_wet /
+                volume_of_sample
+            )
+        else:
+            rec.avg_dry_density = 0.0
+
+
+        # ==========================================
+        # 9. WATER ABSORPTION
+        #
+        # ((Sat Density - Dry Density)
+        #  / Dry Density) * 100
+        # ==========================================
+
+        if rec.avg_dry_density:
+            rec.avg_water_absorption = (
+                (
+                    rec.avg_sat_density -
+                    rec.avg_dry_density
+                ) /
+                rec.avg_dry_density
+            ) * 100
+        else:
+            rec.avg_water_absorption = 0.0
+
+
+        # ==========================================
+        # 10. POROSITY
+        #
+        # (Sat Density - Dry Density) * 100
+        # ==========================================
+
+        if (
+            rec.avg_sat_density or
+            rec.avg_dry_density
+        ):
+            rec.avg_porosity = (
+                rec.avg_sat_density -
+                rec.avg_dry_density
+            ) * 100
+        else:
+            rec.avg_porosity = 0.0
+
+
+        # ==========================================
+        # 11. MOISTURE CONTENT
+        #
+        # ((Initial Weight - Dry Weight)
+        #  / Dry Weight) * 100
+        # ==========================================
+
+        if rec.avg_dry_wet:
+            rec.avg_moisture_content = (
+                (
+                    rec.avg_initial_wt -
+                    rec.avg_dry_wet
+                ) /
+                rec.avg_dry_wet
+            ) * 100
+        else:
+            rec.avg_moisture_content = 0.0
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(TensileStrengthLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class MechanicalTensileStrengthLine(models.Model):
+    _name = "mechanical.tensile.strength.line"
+    parent_id_tensile_strength = fields.Many2one('rock.tensile.strength.line',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Specimen NO.", readonly=True, copy=False, default=1)
+
+    date_received = fields.Date(string="Date of Test Started")
+    date_testing = fields.Date(string="Date of Completion")
+
+    lab_id = fields.Char(string="Lab ID") 
+    # bh_no = fields.Char(string="BH No./Location",digits=(16, 3))
+    # depth = fields.Char(string="Depth")
+
+    piece_no = fields.Char(string="Piece No")
+    lithological = fields.Char(string="Lithological Description of rock")
+    room_temp = fields.Float(string="Room Temperature")
+    relative_humidity = fields.Float(string="Relative humidity %",digits=(16, 2))
+    water_temperature = fields.Float(string="Water temperature",digits=(16, 2))
+
+    dia_rock1 = fields.Float(string="Diameter of Rock Sample 1",digits=(16, 2))
+    dia_rock2 = fields.Float(string="Diameter of Rock Sample 2",digits=(16, 2))
+    dia_rock3 = fields.Float(string="Diameter of Rock Sample 3",digits=(16, 2))
+    avg_dia = fields.Float(string="Average Diameter (D)",digits=(16, 13),store=True,compute="_compute_avg_dia")
+    height_rock1 = fields.Float(string="Height of Rock Sample 1",digits=(16, 2))
+    height_rock2 = fields.Float(string="Height of Rock Sample 2",digits=(16, 2))
+    height_rock3 = fields.Float(string="Height of Rock Sample 3",digits=(16, 2))
+    avg_height = fields.Float(string="Average Height (H)",digits=(16, 10),store=True,compute="_compute_avg_height")
+
+    hd = fields.Float(string="H/D",digits=(16, 10),store=True,compute="_compute_hd")
+    volume_of_sample = fields.Float(string="Volume of Sample(Wsat-Wsub)",digits=(16, 2),store=True,compute="_compute_volume_of_sample")
+    volume_of_sample1 = fields.Float(string="Volume of Sample",digits=(16, 2))
+    initial_wt = fields.Float(string="Initial Wt of sample",digits=(16, 2))
+    dry_wet = fields.Float(string="Dry Wt of sample",digits=(16, 2))
+    saturated_wet = fields.Float(string="Saturated Wt of sample",digits=(16, 2))
+    volume_of_void = fields.Float(string="Volume of Voids (cm³)",digits=(16, 2),store=True,compute="_compute_volume_of_void")
+
+    wt_of_sample = fields.Float(string="Wt of sample in Water",digits=(16, 2))
+
+
+    sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True,compute="_compute_sp_gravity")
+    bulk_density = fields.Float(string="Bulk Density",digits=(16, 2),store=True,compute="_compute_bulk_density")
+    sat_density = fields.Float(string="Sat Density",digits=(16, 4),store=True,compute="_compute_sat_density")
+    dry_density = fields.Float(string="Dry Density",digits=(16, 4),store=True,compute="_compute_dry_density")
+    water_absorption = fields.Float(string="Water Absorption",digits=(16, 2),store=True,compute="_compute_water_absorption")
+    porosity = fields.Float(string="Porosity",digits=(16, 2),store=True,compute="_compute_porosity")
+
+    load_ucs = fields.Float(string="Load (UCS)",digits=(16, 2))
+    dis_two_loadpoint = fields.Float(string="Distance between loading points (MUST for Tensile)",digits=(16, 2))
+    point_load = fields.Float(string="Point Load",digits=(16, 2))
+    duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
+    mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
+
+
+    tensile_strength = fields.Float(string="Tensile Strength",digits=(16, 2),store=True,compute="_compute_tensile_strength")
+    moisture_content = fields.Float(string="Moisture Content %",digits=(16, 2),store=True,compute="_compute_moisture_content")
+
+
+
+    @api.depends('dia_rock1', 'dia_rock2', 'dia_rock3')
+    def _compute_avg_dia(self):
+        for rec in self:
+            values = [rec.dia_rock1, rec.dia_rock2, rec.dia_rock3]
+            valid_values = [v for v in values if v]  
+            rec.avg_dia = sum(valid_values) / len(valid_values) if valid_values else 0.0
+
+    @api.depends('height_rock1', 'height_rock2', 'height_rock3')
+    def _compute_avg_height(self):
+        for rec in self:
+            valuess = [rec.height_rock1, rec.height_rock2, rec.height_rock3]
+            valid_valuess = [v for v in valuess if v]  
+            rec.avg_height = sum(valid_valuess) / len(valid_valuess) if valid_valuess else 0.0
+
+    @api.depends('avg_height', 'avg_dia')
+    def _compute_hd(self):
+        for rec in self:
+            if rec.avg_dia:
+                rec.hd = rec.avg_height / rec.avg_dia
+            else:
+                rec.hd = 0.0
+
+
+    # ---- Compute method ----
+
+    @api.depends('saturated_wet', 'wt_of_sample')
+    def _compute_volume_of_sample(self):
+     for rec in self:
+        if rec.saturated_wet or rec.wt_of_sample:
+            rec.volume_of_sample = rec.saturated_wet - rec.wt_of_sample
+        else:
+            rec.volume_of_sample = 0.0
+    # @api.depends('saturated_wet', 'wt_of_sample')
+    # def _compute_volume_of_sample(self):
+    #     for rec in self:
+    #         rec.volume_of_sample = rec.saturated_wet - rec.wt_of_sample if rec.saturated_wet and rec.wt_of_sample else 0.0
+
+
+      # ---- Compute method ----
+    @api.depends('saturated_wet', 'dry_wet')
+    def _compute_volume_of_void(self):
+        for rec in self:
+            rec.volume_of_void = rec.saturated_wet - rec.dry_wet if rec.saturated_wet and rec.dry_wet else 0.0
+
+    @api.depends('dry_wet', 'saturated_wet', 'wt_of_sample', 'volume_of_void')
+    def _compute_sp_gravity(self):
+        for rec in self:
+            denominator = (rec.saturated_wet - rec.wt_of_sample) - rec.volume_of_void
+            if denominator and denominator != 0:
+                rec.sp_gravity = rec.dry_wet / denominator
+            else:
+                rec.sp_gravity = 0.0
+
+    @api.depends('initial_wt', 'volume_of_sample1')
+    def _compute_bulk_density(self):
+        for rec in self:
+            if rec.volume_of_sample1 and rec.volume_of_sample1 != 0:
+                rec.bulk_density = rec.initial_wt / rec.volume_of_sample1
+            else:
+                rec.bulk_density = 0.0
+
+    @api.depends('saturated_wet', 'volume_of_sample1')
+    def _compute_sat_density(self):
+        for rec in self:
+            if rec.volume_of_sample1 and rec.volume_of_sample1 != 0:
+                rec.sat_density = rec.saturated_wet / rec.volume_of_sample1
+            else:
+                rec.sat_density = 0.0
+
+    @api.depends('dry_wet', 'volume_of_sample1')
+    def _compute_dry_density(self):
+        for rec in self:
+            if rec.volume_of_sample1 and rec.volume_of_sample1 != 0:
+                rec.dry_density = rec.dry_wet / rec.volume_of_sample1
+            else:
+                rec.dry_density = 0.0
+
+
+    @api.depends('sat_density', 'dry_density')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_density and rec.dry_density != 0:
+                # चार दशांश पर्यंत calculation साठी precision control
+                sat = float(f"{rec.sat_density:.4f}")
+                dry = float(f"{rec.dry_density:.4f}")
+
+                rec.water_absorption = ((sat - dry) / dry) * 100
+            else:
+                rec.water_absorption = 0.0
+
+    @api.depends('sat_density', 'dry_density')
+    def _compute_porosity(self):
+        for rec in self:
+                rec.porosity = (rec.sat_density - rec.dry_density) * 100
+
+
+    @api.depends('point_load', 'avg_dia', 'avg_height')
+    def _compute_tensile_strength(self):
+     for record in self:
+        if record.point_load and record.avg_dia and record.avg_height:
+            record.tensile_strength = (
+                2 * record.point_load * 1000
+            ) / (
+                math.pi * record.avg_dia * record.avg_height
+            )
+        else:
+            record.tensile_strength = 0.0
+
+
+
+    @api.depends('initial_wt', 'dry_wet')
+    def _compute_moisture_content(self):
+        for rec in self:
+            if rec.dry_wet:
+                rec.moisture_content = ((rec.initial_wt - rec.dry_wet) / rec.dry_wet) * 100
+            else:
+                rec.moisture_content = 0.0
+
+
+    
+   
+
+  
+    
+
+    
+
+
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id_tensile_strength'):
+            existing_records = self.search([('parent_id_tensile_strength', '=', vals['parent_id_tensile_strength'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(MechanicalTensileStrengthLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
 
 

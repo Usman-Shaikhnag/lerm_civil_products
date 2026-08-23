@@ -385,8 +385,8 @@
 							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
 							<td colspan="3" style="text-align: center;"><b>--</b></td>
 							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>Mpa</b></td>
-							<td colspan="3" style="text-align: center;"><b>Mpa</b></td>
+							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
+							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
 							<td colspan="3" style="text-align: center;"><b>--</b></td>
 							<td colspan="3" style="text-align: center;"><b>--</b></td>
 							
@@ -494,7 +494,7 @@
                                     </t>
                             </span>
                         </div>
-                        <table>
+                        <table t-if="data.slake_durability_visible">
                             <tr cols="12">
                                 <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
                                 sr.no
@@ -590,6 +590,344 @@
                             </tr>
                         </table>
                         </div>
+
+
+
+						<!-- Tensile Strength -->
+
+
+					<t t-foreach="data.tensile_strength_ids.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.triaxial_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Tensile Strength
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:100%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+							 <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                        
+                    </table>
+					</div>
+
+					<div t-if="data.triaxial_visible">
+
+					
+					<table>
+                            <tr cols="12" style="background-color:#f9f9f9;">
+                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
+								<td colspan="3" style="text-align: center;"><b>Date of Received</b></td>
+								<td colspan="3" style="text-align: center;"><b>Date of Testing</b></td>
+								<!-- <td colspan="3" style="text-align: center;"><b>Lab ID</b></td> -->
+                                <!-- <td colspan="3" style="text-align: center;"><b>BH No./Location</b></td> -->
+                                
+                                <!-- <td colspan="3" style="text-align: center;"><b>Depth</b></td> -->
+                                <td colspan="3" style="text-align: center;"><b>Piece No</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Lithological Description of rock</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Room temperature</b></td>
+								 <td colspan="3" style="text-align: center;"><b>Relative Humidity</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Water temperature</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Diameter of Rock Sample</b></td>
+								<td colspan="3" style="text-align: center;"><b>Average Diameter (D)</b></td>
+								<td colspan="3" style="text-align: center;"><b>Height of Rock Sample</b></td>
+								<td colspan="3" style="text-align: center;"><b>Average Height</b></td>
+								<td colspan="3" style="text-align: center;"><b>H/D</b></td>
+								<td colspan="3" style="text-align: center;"><b>Volume of Sample</b></td>
+								<td colspan="3" style="text-align: center;"><b>Initial Wt of sample</b></td>
+								
+                            </tr>
+
+							<!-- Units row -->
+						<tr style="background-color:#f9f9f9;">
+							<td colspan="3" style="text-align: center;"></td>
+							<td colspan="3" style="text-align: center;"></td>
+							<td colspan="3" style="text-align: center;"></td>
+							<!-- <td colspan="3" style="text-align: center;"></td> -->
+							<!-- <td colspan="3" style="text-align: center;"><b>-</b></td> -->
+							<!-- <td colspan="3" style="text-align: center;"><b>m</b></td> -->
+							<td colspan="3" style="text-align: center;"><b>-</b></td>
+							<td colspan="3" style="text-align: center;"><b>-</b></td>
+							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
+							<td colspan="3" style="text-align: center;"><b>%</b></td>
+							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="3" style="text-align: center;"><b>mm</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="1" style="text-align: center;"><b>mm</b></td>
+							<td colspan="3" style="text-align: center;"><b>mm</b></td>
+							<td colspan="3" style="text-align: center;"><b>--</b></td>
+							<td colspan="3" style="text-align: center;"><b>cm3</b></td>
+							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
+							
+						</tr>
+
+						
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="line.tensile_strength_child_lines" t-as="r">
+                                <td colspan="3" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['date_received']"/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['date_testing']"/>
+                                </td>
+								<!-- <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['lab_id']"/>
+                                </td> -->
+								
+                                <!-- <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['bh_no']"/>
+                                </td> -->
+                               
+                             
+                                 <!-- <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['depth']" />
+                                </td> -->
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['piece_no']" />
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['lithological']" />
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['relative_humidity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+									<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['water_temperature']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['dia_rock1']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['dia_rock2']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>    
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['dia_rock3']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['avg_dia']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['height_rock1']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>  
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['height_rock2']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>  
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['height_rock3']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>  
+
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['avg_height']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['hd']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>    
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['volume_of_sample1']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['initial_wt']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>      
+								
+                                
+                            </tr>
+                        </table>
+
+					</div>
+
+
+
+					<div t-if="data.triaxial_visible">
+
+
+					  <table style="margin-top:15px;">
+                            <tr cols="12" style="background-color:#f9f9f9;">
+                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
+								<td colspan="3" style="text-align: center;"><b>Date of Received</b></td>
+								<td colspan="3" style="text-align: center;"><b>Date of Testing</b></td>
+								<!-- <td colspan="3" style="text-align: center;"><b>Lab ID</b></td> -->
+                                <!-- <td colspan="3" style="text-align: center;"><b>BH No./Location</b></td> -->
+
+
+								
+								
+								<td colspan="3" style="text-align: center;"><b>Dry Wt of sample</b></td>
+								<td colspan="3" style="text-align: center;"><b>Saturated Wt of sample</b></td>
+								<td colspan="3" style="text-align: center;"><b>Volume of Voids</b></td>
+								<td colspan="3" style="text-align: center;"><b>Wt of sample in Water</b></td>
+								<td colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td>
+                                
+                                
+								<td colspan="3" style="text-align: center;"><b>Bulk Density</b></td>
+								<td colspan="3" style="text-align: center;"><b>Sat Density</b></td>
+								<td colspan="3" style="text-align: center;"><b>Dry Density</b></td>
+								<td colspan="3" style="text-align: center;"><b>Water Absorption</b></td>
+								<td colspan="3" style="text-align: center;"><b>Porosity</b></td>
+								<td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td>
+								<td colspan="3" style="text-align: center;"><b>Distance between loading points (MUST for Tensile)</b></td>
+								<td colspan="3" style="text-align: center;"><b>Point Load</b></td>
+								<td colspan="3" style="text-align: center;"><b>Duration of the test (Sec)</b></td>
+								<td colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
+								<td colspan="3" style="text-align: center;"><b>Tensile Strength</b></td>
+								<td colspan="3" style="text-align: center;"><b>Moisture Content %</b></td>
+
+
+								
+                            </tr>
+
+							<!-- Units row -->
+						<tr style="background-color:#f9f9f9;">
+							<td colspan="3" style="text-align: center;"></td>
+							<td colspan="3" style="text-align: center;"></td>
+							<td colspan="3" style="text-align: center;"></td>
+							<!-- <td colspan="3" style="text-align: center;"></td> -->
+							<!-- <td colspan="3" style="text-align: center;"><b>-</b></td> -->
+							
+							
+							
+							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
+							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
+							<td colspan="3" style="text-align: center;"><b>cm3</b></td>
+							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
+							<td colspan="3" style="text-align: center;"><b>--</b></td>
+							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
+							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
+							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
+							<td colspan="3" style="text-align: center;"><b>(%)</b></td>
+							<td colspan="3" style="text-align: center;"><b>(%)</b></td>
+							<td colspan="3" style="text-align: center;"><b>(kN)</b></td>
+							<td colspan="3" style="text-align: center;"><b>(mm)</b></td>
+							<td colspan="3" style="text-align: center;"><b>kN</b></td>
+							
+							<td colspan="3" style="text-align: center;"><b>--</b></td>
+							<td colspan="3" style="text-align: center;"><b>--</b></td>
+							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
+							<td colspan="3" style="text-align: center;"><b>--</b></td>
+						</tr>
+
+						
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="line.tensile_strength_child_lines" t-as="r">
+                                <td colspan="3" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['date_received']"/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['date_testing']"/>
+                                </td>
+								<!-- <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['lab_id']"/>
+                                </td> -->
+								
+                                <!-- <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['bh_no']"/>
+                                </td> -->
+                               
+                             
+                                     
+							
+								
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['dry_wet']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['saturated_wet']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['volume_of_void']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['wt_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['sp_gravity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['sat_density']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['porosity']" />
+                                </td>  
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['dis_two_loadpoint']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['point_load']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>      
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['duration_of_test']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['mode_of_failure']" />
+                                </td>        
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['tensile_strength']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>   
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['moisture_content']" />
+                                </td>    
+
+                                
+                            </tr>
+                        </table>
+
+					</div>
+
+
+                          
+					</div>
+					</t>
 						
 
 
@@ -823,7 +1161,7 @@
 
 
 
-<!-- Triaxial Shear Test (Rock) -->
+      <!-- Triaxial Shear Test (Rock) -->
 
 
 					<t t-foreach="data.triaxial_ids.filtered(lambda l: l.is_checked)" t-as="line">
@@ -1221,6 +1559,9 @@
 						<t t-set="triaxialp_vals" t-value="[g.phi for g in (data.triaxial_ids or []) if g.phi]"/>
 						<t t-set="triaxialp_index" t-value="0"/>
 
+						<t t-set="tensile_strength_vals" t-value="[g.avg_tensile_strength for g in (data.tensile_strength_ids or []) if g.avg_tensile_strength]"/>
+						<t t-set="tensile_strength_index" t-value="0"/>
+
 
 						<t t-set="elasticitye_vals" t-value="[g.modulus_e for g in (data.elasticity_ids or []) if g.modulus_e]"/>
 			             <t t-set="elasticitye_index" t-value="0"/>
@@ -1257,6 +1598,8 @@
 									len(triaxialc_vals or []),
 									len(triaxialp_vals or []),
 
+									len(tensile_strength_vals or []),
+
 									len(elasticitye_vals or []),
 									len(elasticityu_vals or []),
 
@@ -1266,6 +1609,17 @@
 									len(abrasivity_vals or []),
 									len(abrasivityclass_vals or [])
 									"/>
+
+
+									<!-- <t t-set="row_count"
+   t-value="max(
+       len(data.rock_child_lines or []),
+       len(data.tensile_strength_ids or []),
+       len(data.triaxial_ids or []),
+       len(data.elasticity_ids or []),
+       len(data.slake_durability_child_lines or []),
+       len(data.cerchar_abrasivity_ids or [])
+   )"/> -->
                         <table>
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
@@ -1384,16 +1738,7 @@
 								</td>
 								</t>
 
-								<td  colspan="2" style="text-align: center;">
-								<t t-if="data.elasticity_visible">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
-								</span>
-								</t>
-
-								 <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
-								 </t>
-								 </td>
+								
                               
 
 							  
@@ -1437,43 +1782,64 @@
 								</td>
 								</t>
 
-								
+								<t t-if="data.elasticity_visible">
 								<td  colspan="2" style="text-align: center;">
+							   	<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
+								</span>
+								 <!-- <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
+								 </t> -->
+								 </td>
+								 </t>
+
+								 <t t-if="data.tensile_strength_visible">
+								 <td  rowspan="2" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_name"/>
+								</span>
+								 <!-- <t t-else="">Tensile Srength
+								 </t> -->
+								 </td>
+								 </t>
+
 								<t t-if="data.triaxial_visible">
+								<td  colspan="2" style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_name"/>
 								</span>
-								</t>
-
-								 <t t-else="">
+								 <!-- <t t-else="">
 								  <span>TRIAXIAL SHEAR TEST</span>
-								 </t>
+								 </t> -->
 								</td>
+								</t>
 								
 
 									
-								<td  colspan="2" style="text-align: center;">
 								<t t-if="data.slake_durability_visible">
+								<td  colspan="2" style="text-align: center;">
+								
 								 <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_name"/>
 								 </span>
-								</t>
-								<t t-else="">
+								
+								<!-- <t t-else="">
 								  <span>DETERMINATION OF SLAKE DURABILITY OF ROCK</span>
-								 </t>
+								 </t> -->
 								</td>
+								</t>
 								
 
-									<td  colspan="2" style="text-align: center;">
 								<t t-if="data.cerchar_abrasivity_visible">
+								<td  colspan="2" style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_name"/>
 								</span>
-								</t>
-								<t t-else="">
+								
+								<!-- <t t-else="">
 								  <span>Determination of CERCHAR Abrasivity Index of Rock</span>
-								 </t>
+								 </t> -->
 								</td>
+								</t>
 
 
 								
@@ -1481,15 +1847,27 @@
 								
                             </tr>
 							<tr style="background-color:#f9f9f9;">
-							<th style="text-align:center;vertial-align:middle;">E</th>
-							<th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
-                            <th style="text-align:center;vertial-align:middle;">ϕ</th>
-							<th style="text-align:center;vertial-align:middle;">C</th>
+
+							<t t-if="data.elasticity_visible">
+							  <th style="text-align:center;vertial-align:middle;">E</th>
+							   <th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
+							</t>
+
+                            <t t-if="data.triaxial_visible">
+							  <th style="text-align:center;vertial-align:middle;">ϕ</th>
+							  <th style="text-align:center;vertial-align:middle;">C</th>
+							</t>
+
+							<t t-if="data.slake_durability_visible">
 							 <th style="text-align:center;vertial-align:middle;">Id</th>
 							 <th style="text-align:center;vertial-align:middle;">CL</th>
+							</t>
 
+							 
+							<t t-if="data.cerchar_abrasivity_visible">
 							 <th style="text-align:center;vertial-align:middle;">CAI</th>
 							 <th style="text-align:center;vertial-align:middle;">CL</th>
+							</t>
 
 							
 							</tr>
@@ -1608,33 +1986,8 @@
 							</td>
 							</t>
 
-							<td  colspan="1" style="text-align: center;">
-							<t t-if="data.elasticity_visible">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-									
-								</span>
-								</t>
-								<t t-else="">GPa
-								 </t>
-							</td>
 							
 
-							
-							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.elasticity_visible">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-									
-								</span>
-								</t>
-								<t t-else="">--
-								 </t>
-							</td>
-
-
-                           <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td> -->
 							<t t-if="data.duration_of_test_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1643,7 +1996,6 @@
 							</td>
 							</t>
 
-							<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
 							<t t-if="data.stress_rate_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1651,11 +2003,7 @@
 								</span>
 							</td>
 							</t>
-							<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>MPa/s</b></td> -->
-
-
-							<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>-</b></td> -->
+							
 							<t t-if="data.mode_of_failure_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1674,78 +2022,129 @@
 							</td>
 							</t>
 
+
+							<t t-if="data.elasticity_visible">
+							  <td  colspan="1" style="text-align: center;">
+							   <span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/>
+									
+								</span>
+								
+								<!-- <t t-else="">GPa
+								 </t> -->
+							  </td>
+							</t>
+							
+
+							
+							<t t-if="data.elasticity_visible">
+							 <td  colspan="1" style="text-align: center;">
+							  <span>
+									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/> -->
+
+									--
+								
+								</span>
+							</td>
+							</t>
+
+
+
+							<t t-if="data.tensile_strength_visible">
 							<td  colspan="1" style="text-align: center;">
+							
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).unit.name"/>
+									
+								</span>
+								
+								<!-- <t t-else="">MPa
+								 </t> -->
+							</td>
+							</t>
+
 							<t t-if="data.triaxial_visible">
+							<td  colspan="1" style="text-align: center;">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6315f914-f6f5-4b5b-bfc2-34792cf1a237')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">Degree
-								 </t>
+								
+								<!-- <t t-else="">Degree
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
+							<t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.triaxial_visible">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">MPa
-								 </t>
+								
+								<!-- <t t-else="">MPa
+								 </t> -->
 							</td>  
+							</t>
 							
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.slake_durability_visible">
+							<td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">
-								 </t>
+								
+								<!-- <t t-else="">
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
-							<td  colspan="1" style="text-align: center;">
 							 <t t-if="data.slake_durability_visible">
+							 <td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else=""> 
-								 </t>
+								
+								<!-- <t t-else=""> 
+								 </t> -->
 							</td> 
+							</t>
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.cerchar_abrasivity_visible">
+							<td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">
-								 </t>
+								
+								<!-- <t t-else="">
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
+							<t t-if="data.cerchar_abrasivity_visible">
 							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.cerchar_abrasivity_visible">
+							 
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else=""> 
-								 </t>
+								
+								<!-- <t t-else=""> 
+								 </t> -->
 							</td> 
+							</t>
 
 
 						 
@@ -1753,7 +2152,7 @@
 
 						<tr style="background-color:#f9f9f9;">
 								
-								<td colspan="11" style="text-align: center; "><b>Test Method/Reference</b></td>
+								<td colspan="8" style="text-align: center; "><b>Test Method/Reference</b></td>
 								<!-- <t t-if="data.avg_dia_visible">
 								<td colspan="1" style="text-align: center; ">
 								<span>
@@ -1801,6 +2200,42 @@
 
 								<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
 								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
+
+								<t t-if="data.avg_dia_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
+
+								<t t-if="data.avg_height_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
+
+								<t t-if="data.hd_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span> --
+								</td>
+								</t>
 								<t t-if="data.bulk_density_visible">
 								<td  colspan="6" style="text-align: center; ">
 								<span>
@@ -1909,19 +2344,7 @@
 							</td> 
 							</t>
 
-							<td  colspan="2" style="text-align: center;">
-							<t t-if="data.elasticity_visible">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</t>
-								<t t-else="">IS 9221
-								 </t>
-							</td> 
+							
 
 							<!-- <t t-if="data.point_load_visible1">
 							<td  colspan="1" style="text-align: center;">
@@ -1979,11 +2402,43 @@
 							</td> 
 							</t>
 
+							<t t-if="data.elasticity_visible">
+							<td  colspan="2" style="text-align: center;">
+							
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								
+								<!-- <t t-else="">IS 9221
+								 </t> -->
+							</td> 
+							</t>
+
+							<t t-if="data.tensile_strength_visible">
+							<td  colspan="1" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								
+								<!-- <t t-else="">IS 10082
+								 </t> -->
+							</td> 
+							</t>
+
 
 
 							
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.triaxial_visible">
+							<td  colspan="2" style="text-align: center;">
+							
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1991,10 +2446,11 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 13047: 1991
-								 </t>
-							</td> 
+								
+								<!-- <t t-else="">IS 13047: 1991
+								 </t> -->
+							</td>
+							</t> 
 							
 
 							<!-- <t t-if="data.triaxial_visible">
@@ -2009,8 +2465,9 @@
 							</td> 
 							</t> -->
 
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.slake_durability_visible">
+							<td  colspan="2" style="text-align: center;">
+							
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2018,10 +2475,11 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 10050: 1981
-								 </t>
-							</td> 
+								
+								<!-- <t t-else="">IS 10050: 1981
+								 </t> -->
+							</td>
+							</t> 
 							
 							<!-- <t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
@@ -2036,8 +2494,8 @@
 							</t> -->
 
 							
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.cerchar_abrasivity_visible">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2045,10 +2503,10 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">ASTMD7625-10: 2022
-								 </t>
+								<!-- <t t-else="">ASTMD7625-10: 2022
+								 </t> -->
 							</td> 
+							</t>
 
 						
 
@@ -2173,26 +2631,7 @@
                                 </td>     
 								</t>
 
-									<td colspan="1" style="text-align: center;">
-								<t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
-
-								<t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
-									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
-									<t t-esc="round(elasticitye_vals[di])"/>
-									<t t-set="elasticitye_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
-
-								<td colspan="1" style="text-align: center;">
-								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
-
-								<t t-if="elasticityu_vals and di &lt; len(elasticityu_vals)">
-									<t t-esc="'%.1f' % elasticityu_vals[di]"/>
-									<t t-set="elasticityu_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
+								
 							
 
 								<!-- <td t-if="show_duration_of_test" colspan="1" style="text-align: center;"> -->
@@ -2228,6 +2667,50 @@
                                     <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>      -->
 
+
+								<t t-if="data.elasticity_visible">
+							    	<td colspan="1" style="text-align: center;">
+								   <t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
+
+								    <t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
+									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
+									<t t-esc="round(elasticitye_vals[di])"/>
+									<t t-set="elasticitye_index" t-value="di + 1"/>
+								   </t>
+								   <t t-else="">--</t>
+							   </td>
+							   </t>
+
+								<t t-if="data.elasticity_visible">
+								<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
+
+								<t t-if="elasticityu_vals and di &lt; len(elasticityu_vals)">
+									<t t-esc="'%.1f' % elasticityu_vals[di]"/>
+									<t t-set="elasticityu_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+							</t>
+
+							<t t-if="data.tensile_strength_visible">
+							<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="tensile_strength_index if tensile_strength_index is not None else 0"/>
+
+								<t t-if="tensile_strength_vals and di &lt; len(tensile_strength_vals)">
+									<t t-esc="'%.1f' % tensile_strength_vals[di]"/>
+									<t t-set="tensile_strength_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+							</t>
+
+
+							
+
+
+
+								<t t-if="data.triaxial_visible">
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
@@ -2238,7 +2721,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+								<t t-if="data.triaxial_visible">
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
@@ -2248,7 +2733,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+							<t t-if="data.slake_durability_visible">
 							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="slackfirst_index if slackfirst_index is not None else 0"/>
 
@@ -2258,7 +2745,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+							<t t-if="data.slake_durability_visible">
 								<td colspan="1" style="text-align: center;">
 								 <t t-if="slackclass_vals and slackclass_index &lt; len(slackclass_vals)">
 									<t t-set="val" t-value="slackclass_vals[slackclass_index]"/>
@@ -2271,8 +2760,10 @@
 
 								<t t-else="">--</t>
 							</td>
+							</t>
 
 
+							<t t-if="data.cerchar_abrasivity_visible">
 							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="abrasivity_index if abrasivity_index is not None else 0"/>
 
@@ -2282,7 +2773,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+								<t t-if="data.cerchar_abrasivity_visible">
 								<td colspan="1" style="text-align: center;">
 								 <t t-if="abrasivityclass_vals and abrasivityclass_index &lt; len(abrasivityclass_vals)">
 									<t t-set="val" t-value="abrasivityclass_vals[abrasivityclass_index]"/>
@@ -2295,6 +2788,7 @@
 
 								<t t-else="">--</t>
 							</td>
+							</t>
 
 
 
