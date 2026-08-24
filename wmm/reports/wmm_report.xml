@@ -284,6 +284,13 @@
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
 							<span t-esc="o.material.test_parameter "/> 
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','64fecdf5-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+								</span>
 						</div>
 						<table t-if="data.dry_gradation_visible">
 							<tr cols="12">
@@ -291,14 +298,8 @@
 								</td>
                                 <td colspan="2">Percentage of Passing (in %) observed				
 								</td>
-								<td colspan="2">Requirements as per MORT&amp;H
-								 <span>
-								 	<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','64fecdf5-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-                                	</t>
-								 </span>
+								<td colspan="2">Requirements as per MORTH
+								 
 								</td>
 
                             </tr>
@@ -1715,7 +1716,7 @@
 								CBR at 2.5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load2"/>
+								From Graph PT = <span t-esc="round(load2, 2)"/>
 							</div>
 							<div>
 								PS = 1370
@@ -1730,7 +1731,7 @@
 								CBR at 5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load5"/>
+								From Graph PT = <span t-esc="round(load5, 2)"/>
 							</div>
 							<div>
 								PS = 2055
@@ -1853,7 +1854,7 @@
 								CBR at 2.5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load2wmm"/>
+								From Graph PT = <span t-esc="round(load2wmm, 2)"/>
 							</div>
 							<div>
 								PS = 1370
@@ -1868,7 +1869,7 @@
 								CBR at 5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load5wmm"/>
+								From Graph PT = <span t-esc="round(load5wmm, 2)"/>
 							</div>
 							<div>
 								PS = 2055
