@@ -103,19 +103,19 @@ class HtStrand(models.Model):
             record.crossectional_area_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.crossectional_area - record.crossectional_area*mu_value
-                    upper = record.crossectional_area + record.crossectional_area*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.crossectional_area_nabl = 'pass'
-                        break
-                    else:
-                        record.crossectional_area_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.crossectional_area - record.crossectional_area*mu_value
+            upper = record.crossectional_area + record.crossectional_area*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.crossectional_area_nabl = 'pass'
+                break
+            else:
+                record.crossectional_area_nabl = 'fail'
 
     per_diff_dia = fields.Float(string="Percentage Diff in Diameter ",compute="_compute_per_diff_dia",store=True)
 
@@ -160,19 +160,19 @@ class HtStrand(models.Model):
             record.per_diff_dia_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.per_diff_dia - record.per_diff_dia*mu_value
-                    upper = record.per_diff_dia + record.per_diff_dia*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.per_diff_dia_nabl = 'pass'
-                        break
-                    else:
-                        record.per_diff_dia_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.per_diff_dia - record.per_diff_dia*mu_value
+            upper = record.per_diff_dia + record.per_diff_dia*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.per_diff_dia_nabl = 'pass'
+                break
+            else:
+                record.per_diff_dia_nabl = 'fail'
 
     weight = fields.Float(string="Weight, gm",digits=(10, 3))
     lenght = fields.Float(string="Length, mm",digits=(10, 3))
@@ -220,19 +220,19 @@ class HtStrand(models.Model):
             record.weight_per_meter_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.weight_per_meter - record.weight_per_meter*mu_value
-                    upper = record.weight_per_meter + record.weight_per_meter*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.weight_per_meter_nabl = 'pass'
-                        break
-                    else:
-                        record.weight_per_meter_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.weight_per_meter - record.weight_per_meter*mu_value
+            upper = record.weight_per_meter + record.weight_per_meter*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.weight_per_meter_nabl = 'pass'
+                break
+            else:
+                record.weight_per_meter_nabl = 'fail'
     
     
     lay_length = fields.Float(string="Lay Length mm")
@@ -278,19 +278,19 @@ class HtStrand(models.Model):
             record.lay_length_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.lay_length - record.lay_length*mu_value
-                    upper = record.lay_length + record.lay_length*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.lay_length_nabl = 'pass'
-                        break
-                    else:
-                        record.lay_length_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.lay_length - record.lay_length*mu_value
+            upper = record.lay_length + record.lay_length*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.lay_length_nabl = 'pass'
+                break
+            else:
+                record.lay_length_nabl = 'fail'
 
 
     gauge_length = fields.Float(string="Guage  Length mm",store=True)
@@ -337,19 +337,19 @@ class HtStrand(models.Model):
             record.proof_stress2per_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.proof_stress2per - record.proof_stress2per*mu_value
-                    upper = record.proof_stress2per + record.proof_stress2per*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.proof_stress2per_nabl = 'pass'
-                        break
-                    else:
-                        record.proof_stress2per_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.proof_stress2per - record.proof_stress2per*mu_value
+            upper = record.proof_stress2per + record.proof_stress2per*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.proof_stress2per_nabl = 'pass'
+                break
+            else:
+                record.proof_stress2per_nabl = 'fail'
 
     breaking_load = fields.Float(string="Breaking Load,  (kN)")
 
@@ -394,19 +394,19 @@ class HtStrand(models.Model):
             record.breaking_load_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.breaking_load - record.breaking_load*mu_value
-                    upper = record.breaking_load + record.breaking_load*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.breaking_load_nabl = 'pass'
-                        break
-                    else:
-                        record.breaking_load_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.breaking_load - record.breaking_load*mu_value
+            upper = record.breaking_load + record.breaking_load*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.breaking_load_nabl = 'pass'
+                break
+            else:
+                record.breaking_load_nabl = 'fail'
 
 
     tensile_strength = fields.Float(string="Tensile Strength Mpa",compute="_compute_tensile_strength")
@@ -452,19 +452,19 @@ class HtStrand(models.Model):
             record.tensile_strength_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.tensile_strength - record.tensile_strength*mu_value
-                    upper = record.tensile_strength + record.tensile_strength*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.tensile_strength_nabl = 'pass'
-                        break
-                    else:
-                        record.tensile_strength_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.tensile_strength - record.tensile_strength*mu_value
+            upper = record.tensile_strength + record.tensile_strength*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.tensile_strength_nabl = 'pass'
+                break
+            else:
+                record.tensile_strength_nabl = 'fail'
 
     
     elongation = fields.Float(string="Elongation %",store=True)
@@ -510,19 +510,19 @@ class HtStrand(models.Model):
             record.elongation_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.elongation - record.elongation*mu_value
-                    upper = record.elongation + record.elongation*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.elongation_nabl = 'pass'
-                        break
-                    else:
-                        record.elongation_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.elongation - record.elongation*mu_value
+            upper = record.elongation + record.elongation*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.elongation_nabl = 'pass'
+                break
+            else:
+                record.elongation_nabl = 'fail'
 
 
     center_dia = fields.Float("Centre Diameter (mm) ",compute="_compute_max_dia")
@@ -573,19 +573,19 @@ class HtStrand(models.Model):
             record.modulus_of_ela_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.modulus_of_ela - record.modulus_of_ela*mu_value
-                    upper = record.modulus_of_ela + record.modulus_of_ela*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.modulus_of_ela_nabl = 'pass'
-                        break
-                    else:
-                        record.modulus_of_ela_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.modulus_of_ela - record.modulus_of_ela*mu_value
+            upper = record.modulus_of_ela + record.modulus_of_ela*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.modulus_of_ela_nabl = 'pass'
+                break
+            else:
+                record.modulus_of_ela_nabl = 'fail'
 
 
     @api.depends('ht_strand_lines.individual_area')
