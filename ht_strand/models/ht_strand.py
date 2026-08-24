@@ -68,7 +68,8 @@ class HtStrand(models.Model):
 
     crossectional_area_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_crossectional_area_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_crossectional_area_conformity", store=True)
 
 
     @api.depends('crossectional_area','eln_ref','grade')
@@ -80,6 +81,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.crossectional_area_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -125,7 +129,8 @@ class HtStrand(models.Model):
 
     per_diff_dia_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_per_diff_dia_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_per_diff_dia_conformity", store=True)
 
 
     @api.depends('per_diff_dia','eln_ref','grade')
@@ -137,6 +142,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. per_diff_dia_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -185,7 +193,8 @@ class HtStrand(models.Model):
 
     weight_per_meter_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_weight_per_meter_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_weight_per_meter_conformity", store=True)
 
 
     @api.depends('weight_per_meter','eln_ref','grade')
@@ -197,6 +206,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. weight_per_meter_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -243,7 +255,8 @@ class HtStrand(models.Model):
 
     lay_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_lay_length_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_lay_length_conformity", store=True)
 
 
     @api.depends('lay_length','eln_ref','grade')
@@ -255,6 +268,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. lay_length_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -302,7 +318,8 @@ class HtStrand(models.Model):
 
     proof_stress2per_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_proof_stress2per_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_proof_stress2per_conformity", store=True)
 
 
     @api.depends('proof_stress2per','eln_ref','grade')
@@ -314,6 +331,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. proof_stress2per_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -359,7 +379,8 @@ class HtStrand(models.Model):
 
     breaking_load_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_breaking_load_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_breaking_load_conformity", store=True)
 
 
     @api.depends('breaking_load','eln_ref','grade')
@@ -371,6 +392,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. breaking_load_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -417,7 +441,8 @@ class HtStrand(models.Model):
 
     tensile_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_tensile_strength_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_tensile_strength_conformity", store=True)
 
 
     @api.depends('tensile_strength','eln_ref','grade')
@@ -429,6 +454,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. tensile_strength_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -475,7 +503,8 @@ class HtStrand(models.Model):
 
     elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_elongation_conformity", store=True)
 
 
     @api.depends('elongation','eln_ref','grade')
@@ -487,6 +516,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. elongation_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -538,7 +570,8 @@ class HtStrand(models.Model):
 
     modulus_of_ela_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_modulus_of_ela_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string=" Conformity", compute="_compute_modulus_of_ela_conformity", store=True)
 
 
     @api.depends('modulus_of_ela','eln_ref','grade')
@@ -550,6 +583,9 @@ class HtStrand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record. modulus_of_ela_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
