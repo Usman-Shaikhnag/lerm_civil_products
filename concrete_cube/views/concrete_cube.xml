@@ -202,14 +202,17 @@
                     <field name="child_lines" nolabel="1" class="custom_table_borders" invisible="cube_visible == False" >
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
+
+                             <field name='id_mark' string="ID Mark"/>
                             <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_casting != 0"/>
                             <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_testing1 != 0"/>
                             <field name='days' class="blue-input" decoration-info="days != 0"/>
-                            <field name='id_mark' />
+                           
                             <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
 
                             <field name='length' class="blue-input" decoration-info="length != 0" />
                             <field name='breadth' class="blue-input" decoration-info="breadth != 0"/>
+                             <field name='height' class="blue-input" decoration-info="height != 0"/>
                             <field name='area' />
                             
                            
@@ -247,7 +250,7 @@
                         </tbody>
                     </table>
 
-                        <div class="custom_table_borders" style="width:100%;" invisible="cube_visible == False" >
+                        <!-- <div class="custom_table_borders" style="width:100%;" invisible="cube_visible == False" >
                             <table style="width: 100%; border-collapse: collapse;">
                                 <thead>
                                     <tr>
@@ -289,7 +292,7 @@
                                     
                                 </tbody>
                             </table>
-                        </div>
+                        </div> -->
                       
                        <group  invisible="wpt_visible == False" style="white-space: nowrap; width:80%;margin-top: 15px;">
                         <h1>

@@ -288,6 +288,10 @@
 						</table>
 					</div>
 
+					<div style="margin-top:5px; text-align: center;">
+						<b style="font-size: 15px;">Test Results</b><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+					</div>
+
 					<!--Maybe Used Later -->
 					<!-- <div style="padding-top:5px">
 						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
@@ -301,7 +305,7 @@
 						
 					</div> -->
 					
-					<div style="margin-top:2px">
+					<!-- <div style="margin-top:2px">
 						<table class="custom_table_borders text-center">
 							<tr>
 								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
@@ -312,21 +316,24 @@
 								<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>		
 							</tr>
 						</table>
-					</div> 
+					</div>  -->
 
 					<div style="" t-if="data.cube_visible">
 						<table class="custom_table_borders">
 							<thead>
 								<tr>
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
-									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">No. Of Days</th>
+									
 									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
 
 
 									<th style="text-align: center; font-weight: bold; width: 10%;">Length (mm)</th>
 									<th style="text-align: center; font-weight: bold; width: 10%;">Breadth (mm)</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Height (mm)</th>
 									<th style="text-align: center; font-weight: bold; width: 10%;">Area (mm²)</th>
 									
 									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
@@ -341,6 +348,7 @@
 								<t t-foreach="lines" t-as="r">
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
+									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
 									<t t-if="r.dt_of_casting">
 										<td style="text-align: center;">
 											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>
@@ -357,10 +365,13 @@
 									<t t-else="">
 										<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
 									</t>
-									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+									
+								
+									 <td style="text-align: center;"><span t-esc="r.days"/></td>
 									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
 									<td style="text-align: center;"><span t-esc="r.length"/></td>
 									<td style="text-align: center;"><span t-esc="r.breadth"/></td>
+									<td style="text-align: center;"><span t-esc="r.height"/></td>
 									<td style="text-align: center;"><span t-esc="r.area"/></td>
 									
 									<td style="text-align: center;"><span t-esc="r.load"/></td>

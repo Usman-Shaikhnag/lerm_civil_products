@@ -830,6 +830,7 @@ class MechanicalConcreteCubeLine(models.Model):
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
     length = fields.Float(string="Length (mm)")
     breadth = fields.Float(string="Breadth (mm)")
+    height = fields.Float(string="Height (mm)")
     area = fields.Float(string="Area (sq.mm)", compute="_compute_area")
 
     @api.depends('length', 'breadth')

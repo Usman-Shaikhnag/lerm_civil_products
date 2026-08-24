@@ -507,16 +507,36 @@ class ChemicalDrinkingWater(models.Model):
             rec.chloride5 = ((rec.chloride_nitratev1_5 - rec.chloride_nitratev2_5) * rec.chloride_normality5 * 35450 / rec.chloride_sample_taken5) if rec.chloride_sample_taken5 else 0.0
 
         
-    @api.depends('chloride1','chloride2','chloride3','chloride4','chloride5')
+    # @api.depends('chloride1','chloride2','chloride3','chloride4','chloride5')
+    # def _compute_avg_chloride(self):
+    #     for rec in self:
+    #         rec.avg_chloride = (
+    #             rec.chloride1 +
+    #             rec.chloride2 +
+    #             rec.chloride3 +
+    #             rec.chloride4 +
+    #             rec.chloride5
+    #         ) / 5
+
+    @api.depends('chloride1', 'chloride2', 'chloride3', 'chloride4', 'chloride5')
     def _compute_avg_chloride(self):
         for rec in self:
-            rec.avg_chloride = (
-                rec.chloride1 +
-                rec.chloride2 +
-                rec.chloride3 +
-                rec.chloride4 +
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            chlorides = [
+                rec.chloride1,
+                rec.chloride2,
+                rec.chloride3,
+                rec.chloride4,
                 rec.chloride5
-            ) / 5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_chlorides = [c for c in chlorides if c]  # ya (c for c in chlorides if c not in [False, None, 0.0])
+            
+            if valid_chlorides:
+                rec.avg_chloride = sum(valid_chlorides) / len(valid_chlorides)
+            else:
+                rec.avg_chloride = 0.0
 
     avg_chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
