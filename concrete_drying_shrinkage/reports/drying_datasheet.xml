@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="drying_shrinkage_datasheet">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                   Drying Shrinkage Datasheet
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                        <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                     
+                    </table>
+                    
+                    
+                   
+                     <div style="margin-top:20px" t-if="data.drying_shrinkage_visible">
+                        <div style="text-align:center;font-size:18px">
+                            Drying Shrinkage 
+                            <!-- added -->
+                            <span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+							</span>
+
+                            
+							<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_name"/>
+							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/> -->
+						    
+                            <!-- <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                        
+                                    </t>
+                                </t>
+                            </span> -->
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sample No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>original length measurment W1</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Dry measurement W2</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Dry length W3</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Initial drying shrinkage [(W1-W2)/W3]*100</b></td>
+                               
+                            </tr>
+                            
+                            <tr t-foreach="data.drying_child_lines" t-as="r">
+                                
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['sr_no']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['original_length']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['dry_mesurment']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['dry_length']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['initial_drying']"  t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                              
+                                
+                            </tr>
+                        </table>
+                        <table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average1" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								
+							</tr>
+						</table>
+                       
+                    </div>
+
+
+
+                    <div style="margin-top:20px" t-if="data.moisture_movement_visible">
+                        <div style="text-align:center;font-size:18px">
+                         Moisture Movement 
+                         <!-- added -->
+                            <span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+							</span>
+                          
+                        <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_name"/>
+							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>
+						     -->
+
+                            <!-- <b>Moisture Movement</b>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span> -->
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sample No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Final wet measurment W4</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Moisture Movement in % [(W2 - W4)/W3]*100</b></td>
+                                
+                            </tr>
+                            
+                            <tr t-foreach="data.moisture_child_lines" t-as="r">
+                                
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['sr_no']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['final_wet']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['moisture_movement']" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                               
+                                
+                            </tr>
+                        </table>
+                        <table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average2" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								
+							</tr>
+						</table>
+                       
+                    </div>
+
+
+
+                
+                    
+                   	
+                   
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                           <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

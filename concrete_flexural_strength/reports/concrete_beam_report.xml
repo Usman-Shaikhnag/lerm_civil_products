@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	<template id="lerm_cocncrete_beam_report">
+
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+							
+						<table>
+								<tr>
+								<td colspan="12">#Customer Party Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
+									<br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								
+
+								<td colspan="12">#Project / Site Address : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Sample Description :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						<!-- </table>
+						<table> -->
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Sample Id Mark: 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Size :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">#Grade :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Brand :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">#Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">#Client Reference :<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						
+							<tr>
+							    <td colspan="6" >#Age in Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="concrete_beam.age_of_test"/>
+								</td>
+								
+								<td colspan="6" >#Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="concrete_beam.date_of_casting"/>
+								</td>
+								
+							</tr>
+						</table>
+					</div>
+		
+			
+					<div style="padding-top:10px">
+						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>
+						
+						
+							
+						
+					</div>
+
+						
+				
+				<table>
+							<tr cols="12">
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Sr No.
+                                </td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">ID MARK/ Location
+								</td>
+								<td colspan="2" style="text-align: center;font-weight: bold;width:200px;">Grade
+								</td>
+								<td colspan="2" style="text-align: center;font-weight: bold;">Length in mm
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Depth in mm
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Width in mm
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Weight of Sample in kgs
+								</td>
+                                <!-- <td colspan="2" style="text-align: center;font-weight: bold;">Fracture Distance from near support in Cm
+								</td> -->
+								<td colspan="2" style="text-align: center;font-weight: bold;">
+									Fracture Distance from near support in Cm
+								</td>
+								
+								<td colspan="2" style="text-align: center;font-weight: bold;">Crushing Load in kN
+								</td>
+								
+								<td colspan="2" style="text-align: center;font-weight: bold;">Flexural Strength in N/mm2
+								</td>
+								<!-- <td colspan="2" style="text-align: center;font-weight: bold;">Test Method
+								</td>  -->
+								<!-- <th colspan="2" style="text-align: center;font-weight: bold;">
+									<span>
+										<span t-esc="eln.material.method_reference"/>
+										
+									</span>
+								</th> -->
+                            </tr>
+                            
+							<t t-set="k" t-value="0"/>
+							<tr t-foreach="concrete_beam.child_lines" t-as="r">
+								<td colspan="2" style="text-align: center;">
+									<div>
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</div>
+                  				</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['id_mark']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<!-- <span t-esc="r['id_mark']"/> -->
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['length']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['depth']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['width']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="2" style="text-align: center;">
+									<span t-esc="r['wt_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['fracture_distance']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['failure_load']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['flexural_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<!-- <td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a3c54810-53a6-4113-9C05-c996fb0c34c9')]).parameter_table" t-as="parameter">
+											<span t-field="parameter.specification"/>
+									</t>
+								</td> -->
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+                            <tr cols="12">
+                                    <td colspan="2" style="font-weight: bold;">Result - Avg Flexural Strength in N/mm2  
+                                        <![CDATA[&nbsp;]]> :  
+										<span t-field="concrete_beam.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+
+                                    </td>
+                                    <!-- <td colspan="2" style="text-align: center;">
+                                        <![CDATA[&nbsp;]]>
+                                        <span t-field="concrete_beam.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td> -->
+                            </tr>
+                        </table>
+
+
+
+				<div>
+
+				</div>
+				<!-- <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Remarks: -</b>
+					</div>
+					<div>
+						<ul>
+							<li>
+								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+							</li>
+							<li>
+								Sample(s) was/were not drawn by laboratory.
+							</li>
+							<li>
+								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+							</li>
+								<li>
+										# - Information provided by the customer.
+									</li>
+							<li t-if="eln.has_witness">
+								Test witnessed by : <span t-esc="eln.witness_name"/>
+							</li>
+							<li t-if="eln.remarks">
+									<span t-esc="eln.remarks"/>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+
+				<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+					
+					<div>
+						<div>
+							<b>
+								Checked By
+							</b>
+						</div>
+						<div style="height: 40px;">
+							<t t-if="eln.sample_id.checkby_signature_required">
+								<div t-if="eln.sample_id.check_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+						<div>
+							<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+							</b>
+						</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.check_by.job_title"/>)
+							</b>
+						</div>
+					</div>
+					<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+					<div>
+						<div>
+							<b>
+								Approved By 
+							</b>
+							
+						</div>
+						<div style="height: 40px;">
+							<t t-if="eln.sample_id.approveby_signature_required">
+								<div t-if="eln.sample_id.approved_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+						<div>
+							<b>
+							<span t-esc="eln.sample_id.approved_by.name"/>
+							</b>
+						</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+							</b>
+						</div>
+						
+					</div>
+				</div>
+
+				<div style="margin-top: 50px; text-align: center;">
+					<p style="border-top: 1px dashed #000; padding-top: 10px;">
+						...... End Of Report......
+					</p>
+				</div>
+				
+														
+				</div> -->
+
+
+				<div style="page-break-inside: avoid;">
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+									<ul>
+										<t t-if="concrete_beam.notes_id">
+											<t t-foreach="concrete_beam.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+
+							<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+									<div>
+										<div>
+											<b>
+												Checked By
+											</b>
+										</div>
+										<div style="height: 40px;">
+											<t t-if="eln.sample_id.checkby_signature_required">
+												<div t-if="eln.sample_id.check_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+										<div>
+											<b>
+												<span t-esc="eln.sample_id.check_by.name"/>
+											</b>
+										</div>
+										<div>
+											<b>
+												(<span t-esc="eln.sample_id.check_by.job_title"/>)
+											</b>
+										</div>
+									</div>
+
+									<div>
+										<div >
+											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+										</div>
+										<div style="padding-top:5px">
+											Format No. <span t-esc="eln.material.test_format_no"/>
+										</div>
+									</div>
+									<div>
+										<div>
+											<b>
+												Approved By 
+											</b>
+											
+										</div>
+										<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+										<div>
+											<b>
+											<span t-esc="eln.sample_id.approved_by.name"/>
+											</b>
+										</div>
+										
+										<div>
+											<b>
+												(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+											</b>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div style="text-align:center;margin-top:25px">
+								......End of Report......
+							</div> -->
+							<div style="margin-top: 20px; text-align: center;">
+								<p style="border-top: 1px dashed #000; padding-top: 10px;">
+									...... End Of Report......
+								</p>
+							</div>
+
+				
+				
+			</t>
+		</t>
+		
+</template>
+	
+</odoo>

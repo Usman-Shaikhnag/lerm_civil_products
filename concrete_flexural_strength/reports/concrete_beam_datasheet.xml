@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="lerm_cocncrete_beam_datasheet">
+    <t t-call="web.html_container">
+	<!-- <t t-call="lerm_civil.data_sheet_header_generaltemplate"> -->
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+			Concrete Beam										
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+			<table style="margin-top:20px">
+				<tr>
+					<td colspan="6">Job No  :  <span t-field="eln.kes_no"></span>
+					</td>
+					<td colspan="6">Grade  :  <span t-field="data.grade"></span>
+					</td>
+					
+				</tr>
+				<tr>
+					<td colspan="4">Material: <span t-field="eln.material"></span>
+					</td>
+					<td colspan="4">Test Start Date  :  <span t-field="eln.start_date"></span>
+					</td>
+					<td colspan="4">Test End Date   :  <span t-field="eln.end_date"></span>
+					</td>
+				</tr>
+				<tr style="height:50px" cols="12">
+					<td colspan="4">Performed By :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.technician.name"/>
+					</td>
+					<td colspan="4">Witness Name :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.witness_name"/>
+					</td>
+					<td colspan="4">Witness Signature :
+						<![CDATA[&nbsp;]]>
+						<span style='padding:20px'></span>
+					</td>
+				</tr>
+			</table>
+			
+                <!-- Flexural Strength of Concrete Beam -->
+
+			
+                    <div>
+						
+						<div style="text-align:center;font-size:18px">
+							Flexural Strength of Concrete Beam	
+							
+							<span>
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a3c54810-53a6-4113-9C05-c996fb0c34c9')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+								
+							</t>
+						</span>
+						</div>
+						<table style="margin-top:20px">
+				
+							
+							<tr>
+								<td colspan="6">Date of Casting  :  <span t-field="data.date_of_casting"></span>
+								</td>
+								<!-- <td colspan="6">Date of Testing  :  <span t-field="data.date_of_testing"></span>
+								</td> -->
+								<td colspan="6">Age of Test, Days :  <span t-field="data.age_of_test"></span>
+								</td>
+							</tr>
+							<!-- <tr cols="12">
+								<td colspan="6">Age of Test, Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.age_of_test"/>
+								</td>
+							</tr> -->
+						</table>
+						<div>
+						</div>
+						<table>
+							<tr cols="12">
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Sr No.
+                                </td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">ID MARK/ Location
+								</td>
+								<td colspan="2" style="text-align: center;font-weight: bold;">Grade
+								</td>
+								<td colspan="2" style="text-align: center;font-weight: bold;">Length
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Depth in mm
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Width in mm
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Weight of Sample in kgs
+								</td>
+                                <td colspan="2" style="text-align: center;font-weight: bold;">Fracture Distance from near support in Cm
+								</td>
+								<td colspan="2" style="text-align: center;font-weight: bold;">Crushing Load in kN
+								</td>
+								
+								<td colspan="2" style="text-align: center;font-weight: bold;">Flexural Strength in N/mm2
+								</td> 
+                            </tr>
+                            
+							<t t-set="k" t-value="0"/>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td colspan="2" style="text-align: center;">
+									<div>
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</div>
+                  				</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['id_mark']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-field="data.grade"></span>
+								</td>
+								 
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['depth']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['width']"/>
+								</td>
+                                <td colspan="2" style="text-align: center;">
+									<span t-esc="r['wt_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['fracture_distance']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['failure_load']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['flexural_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								
+							</tr>
+						</table>
+                        <table style="margin-top:20px">
+                            <tr cols="12">
+                                    <td colspan="6">Result - Avg Flexural Strength in N/mm2 
+                                        <![CDATA[&nbsp;]]> : 
+										<span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+
+                                    </td>
+                                    <!-- <td colspan="6" style="text-align: center;">
+                                        <![CDATA[&nbsp;]]>
+                                        <span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td> -->
+									
+									
+                            </tr>
+							
+                        </table>
+						
+					</div>
+
+            
+				<!-- authorizeRowDataSheet -->
+				
+			<div class="authorizeRowDataSheet">
+				<div>
+					<div>
+						<b>
+							Tested By 
+						</b>
+						
+					</div>
+					 <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.check_by.name"/>
+						</b>
+					</div>
+					
+					 <div>
+						<b>
+							(<span t-esc="eln.sample_id.check_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>
