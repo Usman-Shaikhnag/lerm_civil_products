@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="natural_stone_datasheet">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+        
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                 Natural Building Stone DataSheet
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+
+                          <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                    </table>
+
+                       <!-- Dimension  -->
+                    
+                    <div t-if="data.asgapw_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7c729ec4-ddf2-49ce-9839-715d30f9ccb5')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7c729ec4-ddf2-49ce-9839-715d30f9ccb5')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2" style="text-align: center; vertical-align: middle;">Observations
+
+							</td>
+
+							<td colspan="6" style="text-align:center;">Description
+
+							</td>
+                            </tr>
+                            <tr>
+
+                            <td  style="text-align:center;">Weight of Saturated Surface Dry Test piece, g (B)
+
+							</td>
+                            <td  style="text-align:center;">Quantity of water added in 1000-ml jar containing the test piece, g (C)
+
+							</td>
+                            <td  style="text-align:center;">Weight of oven-dry test piece (A)
+
+							</td>
+                            <td  style="text-align:center;">Apparent Specific Gravity  A/(1000-C)
+							</td>
+                            <td  style="text-align:center;">Apparent Porosity, %  (B-A)/(1000-C)*100
+							</td>
+                            <td  style="text-align:center;">Water Absorption, %   (B-A)/A*100
+							</td>
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_asgapw" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['weight_of_saturated']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['quantity_of_water']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['weight_of_oven']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['apparent_specific']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['apparent_porosity']" t-options='{"widget": "float", "precision": 2}' />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['water_absorption']"  t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+                           
+                       
+                       
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Apparent Specific Gravity   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_asg" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                     <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Apparent Porosity, %   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_ap" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                     <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Water Absorption, %   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_wa" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                       
+                    </div>
+
+
+                        <!-- true porosity and true specific gravity -->
+
+                     <div t-if="data.psg_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','396d6df0-37de-4fa7-90f7-08ea7b6b59a6')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','396d6df0-37de-4fa7-90f7-08ea7b6b59a6')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2" style="text-align: center; vertical-align: middle;">Observations
+
+							</td>
+
+							<td colspan="5" style="text-align:center;">Description
+
+							</td>
+                            </tr>
+                            <tr>
+
+                            <td  style="text-align:center;">Mass of Empty Specific Gravity Bottle,g W1
+
+							</td>
+                            <td  style="text-align:center;">Mass of Specific Gravity bottle + Powder,g W2
+
+							</td>
+                            <td  style="text-align:center;">Mass of Specific Gravity bottle + Powder + Distilled Water, g W3
+
+							</td>
+                            <td  style="text-align:center;">Mass of Specific Gravity bottle + Distilled Water,g W4  A/(1000-C)
+							</td>
+                            <td  style="text-align:center;">True Specific Gravity,  (W2-W1)/ (W4-W1)-(W3-W2)
+							</td>
+                            
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_psg" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_empty']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['mass_specific']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['mass_specific_gravity']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['mass_specific_bottle']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['true_specific']" t-options='{"widget": "float", "precision": 2}' />
+							</td>
+                         
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>True Specific Gravity   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_psg" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                     <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>True Porosity, %    :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.true_porosity" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                    </div>
+
+
+                     <!-- Dry Density -->
+
+                    <div t-if="data.dry_dencity_natural_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','b0d2809b-94bf-46d5-8aa8-423c86dd7ddc')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b0d2809b-94bf-46d5-8aa8-423c86dd7ddc')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2" style="text-align: center; vertical-align: middle;">Observations
+
+							</td>
+
+							<td colspan="4" style="text-align:center;">Description
+
+							</td>
+                            </tr>
+                            <tr>
+
+                            <td  style="text-align:center;">Mass of Oven Dried Sample, g
+
+							</td>
+                            <td  style="text-align:center;">Volume of Sample, m3
+
+							</td>
+                            <td  style="text-align:center;">Dry Density of Sample, Kg/m3
+
+							</td>
+                            <td  style="text-align:center;">Dry Density of Sample, g/cc
+							</td>
+                            
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_dry_dencity_natural" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_oven']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['volume_sample']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['dry_dencity']" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['dry_dencity_sample']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                           
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Dry Density, Kg/m3   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_dry_dencity_natural" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                    
+                    </div>
+
+
+                    <div t-if="data.moisture_natural_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','8245b6e4-763b-4cca-bcc0-0068ea2c98bd')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','8245b6e4-763b-4cca-bcc0-0068ea2c98bd')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2" style="text-align: center; vertical-align: middle;">Observations
+
+							</td>
+
+							<td colspan="3" style="text-align:center;">Description
+
+							</td>
+                            </tr>
+                            <tr>
+
+                            <td  style="text-align:center;">Mass of Sample before Drying, g
+
+							</td>
+                            <td  style="text-align:center;">Mass of Oven Dried Sample, g
+
+							</td>
+                            <td  style="text-align:center;">Moisture Content, %
+
+							</td>
+                       
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_moisture_natural" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_sample']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['volume_oven']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                          
+                           
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Moisture Content, %   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                    
+                    </div>
+                   <!-- Scratch hardness according to Moh's Scale -->
+
+                    <div t-if="data.scratch_natural_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','4d8ddbd7-f253-4755-b630-08bdab7ac0d9')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4d8ddbd7-f253-4755-b630-08bdab7ac0d9')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2" style="text-align: center; vertical-align: middle;">Observations
+
+							</td>
+
+							<td colspan="1" style="text-align:center;">Description
+
+							</td>
+                            </tr>
+                            <tr>
+
+                            <td  style="text-align:center;">Moh's Scratch Hardness
+
+							</td>
+                            
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_scratch_natural" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							
+                            <td colspan="1">
+								<span t-esc="r['scratch_hardness']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                          
+                           
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Moh's Scratch Hardness   :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_scratch" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                    
+                    </div>
+
+
+					  <div t-if="data.compressive_natural_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','c3b03713-2274-4d60-ba93-43cbbf385fc7')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c3b03713-2274-4d60-ba93-43cbbf385fc7')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sample No. 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Condition
+							</td>
+
+							<td colspan="1" style="text-align:center;">Length ,mm
+							</td>
+
+							<td colspan="1" style="text-align:center;">Width ,mm
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Bearing Surface Area, mm x mm
+							</td>
+                            <td colspan="1" style="text-align:center;">Max Compressive Load for Failure, KN
+							</td>
+                            <td colspan="1" style="text-align:center;">UniAxial Compressive Strength, N/mm2
+							</td>
+                            <td colspan="1" style="text-align:center;">kg/cm2
+							</td>
+                        
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_compressive_natural1" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['condition']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['length']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['width']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bearing_surface']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['max_compressive']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['uniaxial_compressive']" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['kg']" t-options='{"widget": "float", "precision": 4}'/>
+							</td>
+                       
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average UniAxial Compressive Strength, N/mm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_uniaxial_compressive" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                           <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average kg/cm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_kg" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+
+
+						<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sample No. 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Condition
+							</td>
+							<td colspan="1" style="text-align:center;">Length ,mm
+							</td>
+
+							<td colspan="1" style="text-align:center;">Width ,mm
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Bearing Surface Area, mm x mm
+							</td>
+                            <td colspan="1" style="text-align:center;">Max Compressive Load for Failure, KN
+							</td>
+                            <td colspan="1" style="text-align:center;">UniAxial Compressive Strength, N/mm2
+							</td>
+                            <td colspan="1" style="text-align:center;">kg/cm2
+							</td>
+                        
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_compressive_natural2" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['condition1']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['length1']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['width1']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bearing_surface1']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['max_compressive1']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['uniaxial_compressive1']" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['kg1']" t-options='{"widget": "float", "precision": 4}'/>
+							</td>
+                       
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average UniAxial Compressive Strength, N/mm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_uniaxial_compressive2" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                           <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average kg/cm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_kg2" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+						<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sample No. 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Condition
+							</td>
+
+							<td colspan="1" style="text-align:center;">Length ,mm
+							</td>
+
+							<td colspan="1" style="text-align:center;">Width ,mm
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Bearing Surface Area, mm x mm
+							</td>
+                            <td colspan="1" style="text-align:center;">Max Compressive Load for Failure, KN
+							</td>
+                            <td colspan="1" style="text-align:center;">UniAxial Compressive Strength, N/mm2
+							</td>
+                            <td colspan="1" style="text-align:center;">kg/cm2
+							</td>
+                        
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_compressive_natural3" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['condition3']" />
+							</td>
+								<td colspan="1">
+								<span t-esc="r['length3']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['width3']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bearing_surface3']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['max_compressive3']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['uniaxial_compressive3']" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['kg3']" t-options='{"widget": "float", "precision": 4}'/>
+							</td>
+                       
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average UniAxial Compressive Strength, N/mm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_uniaxial_compressive3" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                           <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average kg/cm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_kg3" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+
+						<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sample No. 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Condition
+							</td>
+
+								<td colspan="1" style="text-align:center;">Length ,mm
+							</td>
+
+							<td colspan="1" style="text-align:center;">Width ,mm
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Bearing Surface Area, mm x mm
+							</td>
+                            <td colspan="1" style="text-align:center;">Max Compressive Load for Failure, KN
+							</td>
+                            <td colspan="1" style="text-align:center;">UniAxial Compressive Strength, N/mm2
+							</td>
+                            <td colspan="1" style="text-align:center;">kg/cm2
+							</td>
+                        
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_compressive_natural4" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['condition4']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['length4']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['width4']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bearing_surface4']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['max_compressive4']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['uniaxial_compressive4']" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['kg4']" t-options='{"widget": "float", "precision": 4}'/>
+							</td>
+                       
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average UniAxial Compressive Strength, N/mm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_uniaxial_compressive4" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                           <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average kg/cm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.avg_kg4" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+						  <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Dry State- Perpendicular to the plane :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.dry_state_perpendicular" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+
+								
+                            </tr>
+                          
+                           
+                        </table>
+						  <table style="margin-top:5px">
+                            <tr cols="12">
+                               
+								<td colspan="6"><b>Dry State- Parallel to the plane :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.dry_state_paraller" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+
+								
+                            </tr>
+                          
+                           
+                        </table>
+						  <table style="margin-top:5px">
+                            <tr cols="12">
+                             
+
+								<td colspan="6"><b>Wet State- Perpendicular to the plane :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.wet_state_perpendicular" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+
+							
+                            </tr>
+
+                          
+                           
+                        </table>
+						  <table style="margin-top:5px">
+                            <tr cols="12">
+                              
+								<td colspan="6"><b>Wet State- Parallel to the plane :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.wet_state_paraller" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+                </div>
+
+
+                    <!-- authorizeRowDataSheet -->
+                    
+                   <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+    </odoo>
