@@ -38,6 +38,8 @@ class MechanicalCoupler(models.Model):
     result_test = fields.Selection([
         ('satisfactory', 'Satisfactory'),
         ('non-satisfactory', 'Non-Satisfactory')],"Result",store=True)
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     
     # re_bend_test = fields.Selection([
     #     ('satisfactory', 'Satisfactory'),
