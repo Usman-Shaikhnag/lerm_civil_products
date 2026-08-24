@@ -9,11 +9,12 @@
             <form>
                 <sheet>
 
-                <group  style="white-space: nowrap; width:70%;">
+                <div >
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                    </group>
+                    </div>
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -21,7 +22,26 @@
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
                     </group>
-                   <div class="custom_table_borders" style="margin-top: 15px;">
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                     <div class="custom_table_borders" style="margin-top: 15px;">
                       <field name="sample_parameters">
                         <tree>
                           <field name="parameter_name"/>
@@ -29,92 +49,47 @@
                         </tree>
                       </field>
                     </div>
-
-                    <group  invisible="dimension_visible == False">
-                        <h1>
-                            <field name="dimension_name" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
-                        </h1>
-                    </group>
-
-                    <div class="d-flex gap-2" invisible="dimension_visible == False">
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="length"></label></td>
-                                    <td style="width:50%;"><field name="length"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="thickness"></label></td>
-                                    <td style="width:50%;"><field name="thickness"/></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="width"></label></td>
-                                    <td style="width:50%;"><field name="width"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-
                     
                     <!-- Transverse Strength -->
 
-                    <group  invisible="transverse_visible == False" style="white-space: nowrap; width:70%;">
+                    <div invisible="not transverse_visible"   >
                         <h1>
                             <field name="transverse_name" readonly="1" nolabel="1"/>
                             <field name="transverse_visible" invisible="1"/>
                         </h1>
-                    </group>
-                    <div class="custom_table_borders" style="width: 100%;"  invisible="transverse_visible == False">
-                        <field name="transverse_table" nolabel="1">
-                        <tree editable="bottom">
-                          <field name="trial_no"/>
-                          <field name="required_load"/>
-                          <field name="observed_test_result"/>
-                          <field name="protocol"/>
-                          <field name="requirement"/>
-                        </tree>
-                        </field>
                     </div>
 
+                        <field name="transverse_table" nolabel="1" invisible="not transverse_visible" class="custom_table_borders">
+                        <tree editable="bottom">
+                          <field name="trial_no" class="blue-input" decoration-info="trial_no != 0"/>
+                          <field name="required_load" class="blue-input" decoration-info="required_load != 0"/>
+                          <field name="observed_test_result" class="blue-input" decoration-info="observed_test_result != 0"/>
+                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
+                          <field name="requirement" class="blue-input" decoration-info="requirement != 0"/>
+                        </tree>
+                        </field>
 
-                    <group  invisible="water_absorbtion_visible == False" style="white-space: nowrap; width:70%;">
+
+                    <div invisible="not water_absorbtion_visible" >
                         <h1>
                             <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
                             <field name="water_absorbtion_visible" invisible="1"/>
                         </h1>
-                    </group>
-                    <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorbtion_visible == False">
-                        <field name="water_absorbtion_table" nolabel="1">
+                    </div>
+
+                        <field name="water_absorbtion_table" nolabel="1" invisible="not water_absorbtion_visible" class="custom_table_borders">
                         <tree editable="bottom">
-                          <field name="dry_wt_oven"/>
-                          <field name="wt_10_min"/>
-                          <field name="wt_24_hr"/>
-                          <field name="initial_water_absorbtion"/>
-                          <field name="final_water_absorbtion"/>
-                          <field name="protocol"/>
+                          <field name="dry_wt_oven" class="blue-input" decoration-info="dry_wt_oven != 0"/>
+                          <field name="wt_10_min" class="blue-input" decoration-info="wt_10_min != 0"/>
+                          <field name="wt_24_hr" class="blue-input" decoration-info="wt_24_hr != 0"/>
+                          <field name="initial_water_absorbtion" class="blue-input" decoration-info="initial_water_absorbtion != 0"/>
+                          <field name="final_water_absorbtion" class="blue-input" decoration-info="final_water_absorbtion != 0"/>
+                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
                         </tree>
                         </field>
-                    </div>
-                     
 
 
-
-
-                     
-                           <notebook>
+                         <notebook>
 
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
@@ -130,9 +105,7 @@
 
                     </notebook>
 
-
-
-                    
+                     
                     <button
                             type="object"
                             class="oe_highlight" 

@@ -831,7 +831,12 @@
 								<![CDATA[&nbsp;]]>
 							</td>
 							<td colspan="6">
-								<span t-field="data.plasticity_index"/>
+							<t t-if="data.remarks_plastic == 'non-plastic'">
+							<span>Non Plastic</span>
+						</t>
+						<t t-else="">
+							<span t-field="data.plasticity_index" t-options='{"widget": "float", "precision": 2}'/>
+						</t>
 							</td>
 							
 						</tr>

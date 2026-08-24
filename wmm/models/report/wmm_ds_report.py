@@ -248,7 +248,13 @@ class WMMReport(models.AbstractModel):
             # Add a horizontal line with a label
             if len(cbry_values) > 8:  # Ensure indices 5 and 8 exist
                     plt.axhline(y=cbry_values[5], color='green', linestyle='--', label=f'Load at 2.5 mm = {cbry_values[5]}')
-                    plt.axhline(y=cbry_values[8], color='green', linestyle='--', label=f'Load at 5 mm = {cbry_values[8]}')
+                    # plt.axhline(y=cbry_values[8], color='green', linestyle='--', label=f'Load at 5 mm = {cbry_values[8]}')
+                    plt.axhline(
+                        y=cbry_values[8],
+                        color='green',
+                        linestyle='--',
+                        label=f'Load at 5 mm = {round(cbry_values[8], 2)}'
+                    )
 
             # Add a vertical line with a label
             plt.axvline(x=2.5, color='orange', linestyle='--')

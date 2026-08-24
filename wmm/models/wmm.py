@@ -866,12 +866,17 @@ class WmmMechanical(models.Model):
     plasticity_index = fields.Float("Plasticity Index",compute="_compute_plasticity_limit")
     remarks_plasticity_index = fields.Selection([
         ('plastic', 'Plastic'),
-        ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
+        ('non-plastic', 'Non-Plastic')],"Remarks",compute="_compute_plasticity_limit",store=True)
 
-    @api.depends('average_plastic_moisture','liquid_limit')
+    @api.depends('average_plastic_moisture','liquid_limit','remarks_plastic')
     def _compute_plasticity_limit(self):
         for record in self:
-            record.plasticity_index = record.liquid_limit - record.average_plastic_moisture
+            if record.remarks_plastic == 'non-plastic':
+                record.plasticity_index = 0
+                record.remarks_plasticity_index = 'non-plastic'
+            else:
+                record.plasticity_index = record.liquid_limit - record.average_plastic_moisture
+                record.remarks_plasticity_index = False
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
