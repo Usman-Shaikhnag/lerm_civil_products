@@ -46,8 +46,10 @@
                     <field name="parameter_table">
                         <tree editable="bottom">
                             <field name="material"/>
-                            <field name="grade"/>
-                            <field name="size"/>
+                            <field name="grade_ids" column_invisible="1"/>
+                            <field name="size_ids" column_invisible="1"/>
+                            <field name="grade" domain="[('id', 'in', grade_ids)]"/>
+                            <field name="size" domain="[('id', 'in', size_ids)]"/>
                             <field name="permissable_limit"/>
                             <field name="specification"/>
                             <field name="req_min"/>
