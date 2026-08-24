@@ -863,7 +863,8 @@ class SrfForm(models.Model):
                 'default_sample_description':sample_description,
                 'default_source_of_sample':source_of_sample,
                 'default_sample_received_date':sample_received_date,
-                'default_report_due_date':report_due_date
+                'default_report_due_date':report_due_date,
+                'default_lab_id':samples[-1].lab_id
             }
         }
         else:

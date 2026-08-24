@@ -1616,17 +1616,17 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                 lab_min = line.lab_min_value
-                 lab_max = line.lab_max_value
-                 mu_value = line.mu_value
-            
-                lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
-                upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
-                if lower >= lab_min and upper <= lab_max:
-                   record.total_weighted_avg_nabl = 'pass'
-                   break
-                else:
-                   record.total_weighted_avg_nabl = 'fail'
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+
+                    lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
+                    upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.total_weighted_avg_nabl = 'pass'
+                        break
+                    else:
+                        record.total_weighted_avg_nabl = 'fail'
 
 
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
