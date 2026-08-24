@@ -4,13 +4,24 @@
 	<template id="custom_layout_header_footer_lerm_eln">
          <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
-				<t t-if="eln.sample_id.lab_location">
+				<!-- <t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
 					</div>
 					
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/>
+					</div>
+				</t> -->
+				<t t-if="eln.sample_id.lab_location">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer">
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')" 
+							style="width: 100%; height: auto; display: block; margin: 0 auto;"/>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer">
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')" 
+							style="width: 100%; height: auto; display: block; margin: 0 auto;"/>
 					</div>
 				</t>
 				<t t-else="">
