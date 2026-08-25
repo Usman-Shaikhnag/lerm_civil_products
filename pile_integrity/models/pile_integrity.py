@@ -681,7 +681,7 @@ class PileIntegrityReport(models.AbstractModel):
 
         model_id = eln.model_id
         general_data = self.env['pile.integrity'].sudo().browse(model_id) if model_id else self.env['pile.integrity']
-        if not general_data:
+        if not general_data.exists():
             general_data = self.env['pile.integrity'].sudo().search(
                 [('eln_ref', '=', eln.id)], limit=1
             )
