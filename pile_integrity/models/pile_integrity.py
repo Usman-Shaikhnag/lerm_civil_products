@@ -761,11 +761,16 @@ class IrActionsReport(models.Model):
 
         uploads = self.env['ir.attachment'].sudo()
         for eln_id in eln_ids:
+            eln = eln_model.browse(eln_id)
             pile = self.env['pile.integrity'].sudo().search(
                 [('eln_ref', '=', eln_id)], limit=1
             )
             if pile:
                 uploads |= pile.pile_report_upload
+            if eln:
+                uploads |= eln.file_upload
+                if eln.sample_id:
+                    uploads |= eln.sample_id.file_upload | eln.sample_id.report_upload
 
         _logger.warning("PILE-PDF-DEBUG candidate_ids=%s eln_ids=%s uploads=%s",
                         candidate_ids, sorted(eln_ids), [(a.id, a.name) for a in uploads])
