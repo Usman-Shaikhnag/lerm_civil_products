@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_coupler_form" model="ir.ui.view">
+        <field name="name">mechanical.coupler.form</field>
+        <field name="model">mechanical.coupler</field>
+        <field name="arch" type="xml">
+            <form create="false"> 
+
+                <sheet>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="eln_state" />
+                    </group>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+
+                        .o_list_view .o_data_cell.blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+                    </style>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    <tr>
+                                        <td><label for="diameter"></label></td>
+                                        <td><field name="diameter"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="crossectional_area"></label></td>
+                                        <td><field name="crossectional_area"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="gauge_length"></label></td>
+                                        <td><field name="gauge_length"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="elongated_gauge_length"></label></td>
+                                        <td><field name="elongated_gauge_length"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ultimate_load"></label></td>
+                                        <td><field name="ultimate_load"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="distance"></label></td>
+                                        <td><field name="distance"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ult_tens_strgth"></label></td>
+                                        <td><field name="ult_tens_strgth"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="total_elongation"></label></td>
+                                        <td><field name="total_elongation"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="location_of_failure"></label></td>
+                                        <td><field name="location_of_failure"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="result_test"></label></td>
+                                        <td><field name="result_test"/></td>
+                                    </tr>
+                                    
+
+                                </tbody>
+                            </table>
+
+
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td><label for="requirement_ult_tens_strgth"></label></td>
+                                        <td><field name="requirement_ult_tens_strgth" string="UTS Requirement"/></td>
+                                        <td><label for="ult_tens_strgth_nabl"></label></td>
+                                        <td>
+                                            <field name="ult_tens_strgth_nabl" string="UTS NABL"
+                                                decoration-success="ult_tens_strgth_nabl == 'pass'"
+                                                decoration-danger="ult_tens_strgth_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="ult_tens_strgth_conformity"></label></td>
+                                        <td>
+                                            <field name="ult_tens_strgth_conformity" string="UTS Confirmity"
+                                                decoration-success="ult_tens_strgth_conformity == 'pass'"
+                                                decoration-danger="ult_tens_strgth_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label for="requirement_total_elongation"></label></td>
+                                        <td><field name="requirement_total_elongation" string="Elongation Requirement"/></td>
+                                        <td><label for="total_elongation_nabl"></label></td>
+                                        <td>
+                                            <field name="total_elongation_nabl" string="Elongation NABL"
+                                                decoration-success="total_elongation_nabl == 'pass'"
+                                                decoration-danger="total_elongation_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="total_elongation_conformity"></label></td>
+                                        <td>
+                                            <field name="total_elongation_conformity" string="Elongation Confirmity"
+                                                decoration-success="total_elongation_conformity == 'pass'"
+                                                decoration-danger="total_elongation_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    <button
+                        type="object"
+                        class="oe_highlight" 
+                        name="open_eln_page"
+                        string="Submit"
+                    />
+
+                </sheet>
+            </form>
+        </field>
+     </record>
+
+    </data>
+</odoo>

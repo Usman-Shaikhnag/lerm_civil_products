@@ -90,7 +90,7 @@ class ParameterMaster(models.Model):
     grade = fields.Many2one('lerm.grade.line' , string="Grade")
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades",compute="compute_grade")
     size = fields.Many2one('lerm.size.line' , string="Size")
-    size_ids = fields.Many2many('lerm.size.line',string="Size")
+    size_ids = fields.Many2many('lerm.size.line',string="Size",compute="compute_size")
     permissable_limit = fields.Char(string="Specification")
     specification = fields.Char(string="Test Method")
     req_max = fields.Float(string="Req Max",digits=(16, 4))

@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_natural_building_stone" model="ir.ui.view">
+        <field name="name">mechanical.natural.bulding.stone.form</field>
+        <field name="model">mechanical.natural.bulding.stone</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <div >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                         <field name="eln_state" />
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+
+                       <!--  density -->
+
+                       <div invisible = "asgapw_visible == False" >
+                        <h1>
+                            <field name="asgapw_name" readonly="1" nolabel="1"/>
+                            <field name="asgapw_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_asgapw" nolabel="1" class="custom_table_borders" invisible="asgapw_visible == False" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='weight_of_saturated' class="blue-input" decoration-info="weight_of_saturated != 0"/>
+                                <field name='quantity_of_water' class="blue-input" decoration-info="quantity_of_water != 0"/>
+                                <field name='weight_of_oven' class="blue-input" decoration-info="weight_of_oven != 0"/>
+                                <field name='apparent_specific'/>
+                                   <field name='apparent_porosity'/>
+                                <field name='water_absorption'/>
+                
+                            </tree>
+                           
+                         </field> 
+
+                           <div class="d-flex gap-2" invisible="asgapw_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_asg"></label></td>
+                                    <td><field name="average_asg" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_ap"></label></td>
+                                    <td><field name="average_ap"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_wa"></label></td>
+                                    <td><field name="average_wa"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+                           
+                       
+
+                     <div invisible="not asgapw_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_asg_conformity"></label></td>
+                            <td><field name='average_asg_conformity'
+                               decoration-success="average_asg_conformity == 'pass'" 
+                               decoration-danger="average_asg_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_asg_nabl"></label></td>
+                            <td><field name='average_asg_nabl'
+                               decoration-success="average_asg_nabl == 'pass'" 
+                               decoration-danger="average_asg_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+
+                      <div invisible="not asgapw_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_ap_conformity"></label></td>
+                            <td><field name='average_ap_conformity'
+                               decoration-success="average_ap_conformity == 'pass'" 
+                               decoration-danger="average_ap_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_ap_nabl"></label></td>
+                            <td><field name='average_ap_nabl'
+                               decoration-success="average_ap_nabl == 'pass'" 
+                               decoration-danger="average_ap_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+                      <div invisible="not asgapw_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_wa_conformity"></label></td>
+                            <td><field name='average_wa_conformity'
+                               decoration-success="average_wa_conformity == 'pass'" 
+                               decoration-danger="average_wa_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_wa_nabl"></label></td>
+                            <td><field name='average_wa_nabl'
+                               decoration-success="average_wa_nabl == 'pass'" 
+                               decoration-danger="average_wa_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+
+                 
+
+                    
+
+                    
+
+                   
+
+
+
+
+                    <div invisible="not psg_visible"  >
+                        <h1>
+                            <field name="psg_name" readonly="1" nolabel="1"/>
+                            <field name="psg_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_psg" nolabel="1" class="custom_table_borders" invisible="psg_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='mass_empty' class="blue-input" decoration-info="mass_empty != 0"/>
+                                <field name='mass_specific' class="blue-input" decoration-info="mass_specific != 0"/>
+                                <field name='mass_specific_gravity' class="blue-input" decoration-info="mass_specific_gravity != 0"/>
+                                <field name='mass_specific_bottle' class="blue-input" decoration-info="mass_specific_bottle != 0"/>
+                                   <field name='true_specific'/>
+                
+                            </tree>
+                           
+                         </field> 
+
+                          <div class="d-flex gap-2" invisible="psg_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_psg"></label></td>
+                                    <td><field name="average_psg" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                      
+
+                          
+                    </div>
+                           
+                       
+
+                   <div invisible="not psg_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_psg_conformity"></label></td>
+                            <td><field name='average_psg_conformity'
+                               decoration-success="average_psg_conformity == 'pass'" 
+                               decoration-danger="average_psg_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_psg_nabl"></label></td>
+                            <td><field name='average_psg_nabl'
+                               decoration-success="average_psg_nabl == 'pass'" 
+                               decoration-danger="average_psg_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+                         <div class="d-flex gap-2" invisible="psg_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="true_porosity"></label></td>
+                                    <td><field name="true_porosity" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
+                    <div invisible="not psg_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="true_porosity_conformity"></label></td>
+                            <td><field name='true_porosity_conformity'
+                               decoration-success="true_porosity_conformity == 'pass'" 
+                               decoration-danger="true_porosity_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="true_porosity_nabl"></label></td>
+                            <td><field name='true_porosity_nabl'
+                               decoration-success="true_porosity_nabl == 'pass'" 
+                               decoration-danger="true_porosity_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+                 
+                  
+
+                      
+
+
+                      <div invisible="dry_dencity_natural_visible == False"  >
+                        <h1>
+                            <field name="dry_dencity_natural_name" readonly="1" nolabel="1"/>
+                            <field name="dry_dencity_natural_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_dry_dencity_natural" nolabel="1"  class="custom_table_borders" invisible="dry_dencity_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='mass_oven' class="blue-input" decoration-info="mass_oven != 0"/>
+                                <field name='volume_sample' class="blue-input" decoration-info="volume_sample != 0"/>
+                                <field name='dry_dencity'/>
+                                <field name='dry_dencity_sample'/>
+                
+                            </tree>
+                           
+                         </field> 
+
+
+                          <div class="d-flex gap-2" invisible="dry_dencity_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_dry_dencity_natural"></label></td>
+                                    <td><field name="average_dry_dencity_natural" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
+
+                       <div invisible="not dry_dencity_natural_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_dry_dencity_natural_conformity"></label></td>
+                            <td><field name='average_dry_dencity_natural_conformity'
+                               decoration-success="average_dry_dencity_natural_conformity == 'pass'" 
+                               decoration-danger="average_dry_dencity_natural_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_dry_dencity_natural_nabl"></label></td>
+                            <td><field name='average_dry_dencity_natural_nabl'
+                               decoration-success="average_dry_dencity_natural_nabl == 'pass'" 
+                               decoration-danger="average_dry_dencity_natural_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+                           
+                       
+
+                    
+                     
+
+
+                     <div invisible="not moisture_natural_visible" >
+                        <h1>
+                            <field name="moisture_natural_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_natural_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_moisture_natural" nolabel="1" class="custom_table_borders" invisible="moisture_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='mass_sample' class="blue-input" decoration-info="mass_sample != 0"/>
+                                <field name='volume_oven' class="blue-input" decoration-info="volume_oven != 0"/>
+                                <field name='moisture_content'/>
+                
+                            </tree>
+                           
+                         </field> 
+
+
+                           <div class="d-flex gap-2" invisible="moisture_natural_visible == False" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="avg_moisture"></label></td>
+                                                <td><field name="avg_moisture" /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                
+                            
+                            </div>
+
+                       <div invisible="not moisture_natural_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="avg_moisture_conformity"></label></td>
+                            <td><field name='avg_moisture_conformity'
+                               decoration-success="avg_moisture_conformity == 'pass'" 
+                               decoration-danger="avg_moisture_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="avg_moisture_nabl"></label></td>
+                            <td><field name='avg_moisture_nabl'
+                               decoration-success="avg_moisture_nabl == 'pass'" 
+                               decoration-danger="avg_moisture_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+                           
+                       
+
+                    
+
+
+                      <div invisible="not scratch_natural_visible">
+                        <h1>
+                            <field name="scratch_natural_name" readonly="1" nolabel="1"/>
+                            <field name="scratch_natural_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_scratch_natural" nolabel="1" class="custom_table_borders" invisible="scratch_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='scratch_hardness' class="blue-input" decoration-info="scratch_hardness != 0"/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+
+                           <div class="d-flex gap-2" invisible="scratch_natural_visible == False" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="avg_scratch"></label></td>
+                                                <td><field name="avg_scratch" /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                
+                            
+                            </div>
+
+                       <div invisible="not scratch_natural_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="avg_scratch_conformity"></label></td>
+                            <td><field name='avg_scratch_conformity'
+                               decoration-success="avg_scratch_conformity == 'pass'" 
+                               decoration-danger="avg_scratch_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="avg_scratch_nabl"></label></td>
+                            <td><field name='avg_scratch_nabl'
+                               decoration-success="avg_scratch_nabl == 'pass'" 
+                               decoration-danger="avg_scratch_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+                           
+                           
+                       
+
+                    
+
+                       <div invisible="not compressive_natural_visible" >
+                        <h1>
+                            <field name="compressive_natural_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_natural_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_compressive_natural1" nolabel="1" class="custom_table_borders" invisible="compressive_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                 <field name='condition' class="blue-input" decoration-info="condition != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                 <field name='bearing_surface'/>
+                                  <field name='max_compressive' class="blue-input" decoration-info="max_compressive != 0"/>
+                                  <field name='uniaxial_compressive'/>
+                                  <field name='kg'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_uniaxial_compressive"></label></td>
+                                    <td><field name="avg_uniaxial_compressive" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_kg"></label></td>
+                                    <td><field name="avg_kg"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                           
+                       
+
+                
+
+
+
+                        <field name="child_lines_compressive_natural2" nolabel="1" class="custom_table_borders" invisible="compressive_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='condition1' class="blue-input" decoration-info="condition1 != 0"/>
+                                <field name='length1' class="blue-input" decoration-info="length1 != 0"/>
+                                <field name='width1' class="blue-input" decoration-info="width1 != 0"/>
+                                 <field name='bearing_surface1'/>
+                                  <field name='max_compressive1' class="blue-input" decoration-info="max_compressive1 != 0"/>
+                                  <field name='uniaxial_compressive1'/>
+                                  <field name='kg1'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_uniaxial_compressive2"></label></td>
+                                    <td><field name="avg_uniaxial_compressive2" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_kg2"></label></td>
+                                    <td><field name="avg_kg2"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+                           
+                       
+
+                   
+
+
+                        <field name="child_lines_compressive_natural3" nolabel="1"  class="custom_table_borders" invisible="compressive_natural_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='condition3' class="blue-input" decoration-info="condition3 != 0"/>
+                                <field name='length3' class="blue-input" decoration-info="length3 != 0"/>
+                                <field name='width3' class="blue-input" decoration-info="width3 != 0"/>
+                                 <field name='bearing_surface3'/>
+                                  <field name='max_compressive3' class="blue-input" decoration-info="max_compressive3 != 0"/>
+                                  <field name='uniaxial_compressive3'/>
+                                  <field name='kg3'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_uniaxial_compressive3"></label></td>
+                                    <td><field name="avg_uniaxial_compressive3" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_kg3"></label></td>
+                                    <td><field name="avg_kg3"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+                           
+                       
+
+                   
+
+                        <field name="child_lines_compressive_natural4" nolabel="1" class="custom_table_borders" invisible="compressive_natural_visible == False" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='condition4' class="blue-input" decoration-info="condition4 != 0"/>
+                                  <field name='length4' class="blue-input" decoration-info="length4 != 0"/>
+                                <field name='width4' class="blue-input" decoration-info="width4 != 0"/>
+                                 <field name='bearing_surface4'/>
+                                  <field name='max_compressive4'  class="blue-input" decoration-info="max_compressive4 != 0"/>
+                                  <field name='uniaxial_compressive4'/>
+                                  <field name='kg4'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+
+                         <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_uniaxial_compressive4"></label></td>
+                                    <td><field name="avg_uniaxial_compressive4" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_kg4"></label></td>
+                                    <td><field name="avg_kg4"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+
+
+
+                      <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="dry_state_perpendicular"></label></td>
+                                    <td><field name="dry_state_perpendicular" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="dry_state_paraller"></label></td>
+                                    <td><field name="dry_state_paraller"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="compressive_natural_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wet_state_perpendicular"></label></td>
+                                    <td><field name="wet_state_perpendicular" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wet_state_paraller"></label></td>
+                                    <td><field name="wet_state_paraller"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+                           
+                       
+
+                   
+
+
+                      <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                           
+                      
+
+                
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
