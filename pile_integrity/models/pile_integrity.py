@@ -728,39 +728,41 @@ class IrActionsReport(models.Model):
         if isinstance(docids, int):
             docids = [docids]
 
-        candidate_ids = list(docids or [])
-        if data:
-            if data.get('sample'):
-                candidate_ids.append(data['sample'])
-            ctx = data.get('context') or {}
-            if ctx.get('active_id'):
-                candidate_ids.append(ctx['active_id'])
-
         eln_model = self.env['lerm.eln'].sudo()
         sample_model = self.env['lerm.srf.sample'].sudo()
         eln_ids = set()
-        for cid in candidate_ids:
-            try:
-                eln = eln_model.browse(cid)
-                if eln.exists():
-                    eln_ids.add(cid)
-                    continue
-            except Exception:
-                pass
-            try:
-                sample = sample_model.browse(cid)
-                if sample.exists() and sample.eln_id:
-                    eln_ids.add(sample.eln_id.id)
-            except Exception:
-                pass
+
+        # data['sample'] / context['active_id'] are SAMPLE ids (same as _get_report_values)
+        sample_candidates = []
+        if data:
+            if data.get('sample'):
+                sample_candidates.append(data['sample'])
+            ctx = data.get('context') or {}
+            if ctx.get('active_id'):
+                sample_candidates.append(ctx['active_id'])
+        for cid in sample_candidates:
+            sample = sample_model.browse(cid)
+            if sample.exists() and sample.eln_id:
+                eln_ids.add(sample.eln_id.id)
+
+        # docids are ELN ids (report bound to lerm.eln)
+        for eln_id in docids or []:
+            eln = eln_model.browse(eln_id)
+            if eln.exists():
+                eln_ids.add(eln_id)
 
         uploads = self.env['ir.attachment'].sudo()
         for eln_id in eln_ids:
+            eln = eln_model.browse(eln_id)
             pile = self.env['pile.integrity'].sudo().search(
                 [('eln_ref', '=', eln_id)], limit=1
             )
             if pile:
                 uploads |= pile.pile_report_upload
+            if eln:
+                uploads |= eln.file_upload
+                if eln.sample_id:
+                    uploads |= eln.sample_id.file_upload | eln.sample_id.report_upload
 
         pdfs = []
         for att in uploads.sorted('id'):
