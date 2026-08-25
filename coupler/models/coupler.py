@@ -40,45 +40,29 @@ class MechanicalCoupler(models.Model):
         ('non-satisfactory', 'Non-Satisfactory')],"Result",store=True)
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
-    
-    # re_bend_test = fields.Selection([
-    #     ('satisfactory', 'Satisfactory'),
-    #     ('non-satisfactory', 'Non-Satisfactory')],"Re-Bend Test",store=True)
-    
-      
 
-    # @api.depends('bend_test')
-    # def _compute_bend_test_text(self):
-    #     for record in self:
-    #         if record.bend_test == '1':
-    #             record.bend_test_text = 'Satisfactory'
-    #         elif record.bend_test == '2':
-    #             record.bend_test_text = 'Non-Satisfactory'
-    #         else:
-    #             record.bend_test_text = 'Undefined'
-    
+    # Slip Strength
+    slip_strength = fields.Float(string="Slip Strength, N/mm2",compute="_compute_slip_strength",store=True)
+    ext_at_20 = fields.Float(string="Ext At 20 N/MM2",store=True)
+    slip_test_visible = fields.Boolean("Slip Test Visible",compute="_compute_visible")
 
 
-  
-    # location_of_failure_visible = fields.Boolean("Location of failure",compute="_compute_visible")
-    # result_test_visible = fields.Boolean("Result",compute="_compute_visible")
+    @api.depends('sample_parameters')
+    def _compute_visible(self):
+        for record in self:
+            record.slip_test_visible = False
+            for sample in record.sample_parameters:
+                if sample.internal_id == 'b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6':
+                    record.slip_test_visible = True
 
-  
-   
+    @api.depends('ultimate_load', 'crossectional_area')
+    def _compute_slip_strength(self):
+        for record in self:
+            if record.crossectional_area != 0:
+                record.slip_strength = record.ultimate_load / record.crossectional_area * 1000
+            else:
+                record.slip_strength = 0
 
-    # @api.depends('eln_ref','sample_parameters')
-    # def _compute_visible(self):
-    #     for record in self:
-    #         record.location_of_failure_visible = False
-    #         record.result_test_visible  = False  
-          
-    #         for sample in record.sample_parameters:
-    #             print("Samples internal id",sample.internal_id)
-    #             if sample.internal_id == 'c3b7e054-bafc-40bf-82ad-82063feabfb8':
-    #                 record.location_of_failure_visible = True
-    #             if sample.internal_id == 'dceffc67-d195-4991-8e28-e35eb27ecc34':
-    #                 record.result_test_visible = True
-               
 
     # @api.depends('diameter')
     # def _compute_crossectional_area(self):
@@ -220,8 +204,89 @@ class MechanicalCoupler(models.Model):
                 record.total_elongation_nabl = 'fail'
 
 
+    slip_strength_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity",compute="compute_slip_strength_conformity", store=True)
+
+    @api.depends('slip_strength','eln_ref','grade')
+    def compute_slip_strength_conformity(self):
+        
+        for record in self:
+            record.slip_strength_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.slip_strength - record.slip_strength*mu_value
+                    upper = record.slip_strength + record.slip_strength*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.slip_strength_conformity = 'pass'
+                        break
+                    else:
+                        record.slip_strength_conformity = 'fail'
+
+    slip_strength_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL",compute="_compute_slip_strength_nabl", store=True)
+
+    @api.depends('slip_strength','eln_ref','grade')
+    def _compute_slip_strength_nabl(self):
+        
+        for record in self:
+            record.slip_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_table
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.slip_strength - record.slip_strength*mu_value
+            upper = record.slip_strength + record.slip_strength*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.slip_strength_nabl = 'pass'
+                break
+            else:
+                record.slip_strength_nabl = 'fail'
+
+
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        current_user = self.env.user
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            if result.parameter.internal_id == '78a837cc-25e3-460d-802f-7dd858984087':
+                result.result_char = round(self.ult_tens_strgth,2)
+                result.calculated = True
+                if self.ult_tens_strgth_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '73e5f596-972c-46f8-8d2c-3149b00c57df':
+                result.result_char = round(self.total_elongation,2)
+                result.calculated = True
+                if self.total_elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6':
+                result.result_char = round(self.slip_strength,2)
+                result.calculated = True
+                if self.slip_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',
