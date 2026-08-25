@@ -654,16 +654,21 @@ class PileIntegrityReport(models.AbstractModel):
     
     @api.model
     def _get_report_values(self, docids, data):
+        data = data or {}
         inreport_value = data.get('inreport', None)
         nabl = data.get('nabl')
-        
+        context = data.get('context') or {}
+
         if data.get('report_wizard') == True:
             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['sample'])])
-        elif 'active_id' in data['context']:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
+        elif context.get('active_id'):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', context['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
-        
+
+        if not eln:
+            eln = self.env['lerm.eln'].sudo().search([('id', 'in', docids)], limit=1)
+
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         qr.add_data(eln.kes_no)
         qr.make(fit=True)
@@ -697,10 +702,12 @@ class PileIntegrityReport(models.AbstractModel):
 
         return {
             'eln': eln,
+            'o': eln,
             'data': general_data,
             'qrcode': qr_image_base64,
             'stamp': inreport_value,
             'nabl': nabl,
+            'fromEln': True,
             'show_doc_column': show_doc_column,
             'fig1a': img_to_base64('pile_integrity_Figure1a.png'),
             'fig1b': img_to_base64('pile_integrity_Figure1b.png'),
@@ -719,8 +726,6 @@ class IrActionsReport(models.Model):
         return content, content_type
 
     def _append_pile_report_uploads(self, docids, content, data=None):
-        if not PdfFileMerger:
-            return content
         if isinstance(docids, int):
             docids = [docids]
 
@@ -765,11 +770,24 @@ class IrActionsReport(models.Model):
         if not pdfs:
             return content
 
+        # Prefer Odoo's merge_pdf: it picks the most capable PDF backend available.
+        try:
+            from odoo.tools.pdf import merge_pdf
+            return merge_pdf([content] + pdfs)
+        except Exception:
+            pass
+
+        if not PdfFileMerger:
+            return content
+
         try:
             merger = PdfFileMerger()
             merger.append(BytesIO(content), import_bookmarks=False)
             for pdf in pdfs:
-                merger.append(BytesIO(pdf), import_bookmarks=False)
+                try:
+                    merger.append(BytesIO(pdf), import_bookmarks=False)
+                except Exception:
+                    continue
             output = BytesIO()
             merger.write(output)
             merger.close()
