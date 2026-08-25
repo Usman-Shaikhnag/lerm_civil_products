@@ -1,4 +1,5 @@
 import base64
+import logging
 import qrcode
 from base64 import b64decode
 from datetime import datetime
@@ -6,6 +7,8 @@ from io import BytesIO
 
 from odoo import api, fields, models
 from odoo.modules.module import get_module_resource
+
+_logger = logging.getLogger(__name__)
 
 try:
     from PyPDF2 import PdfFileMerger
@@ -720,8 +723,10 @@ class IrActionsReport(models.Model):
 
     def _render_qweb_pdf(self, report_ref, docids, data=None):
         content, content_type = super()._render_qweb_pdf(report_ref, docids, data=data)
+        _logger.warning("PILE-PDF-DEBUG report_ref=%r docids=%r", report_ref, docids)
         if report_ref == 'pile_integrity.pile_integrity_report':
             content = self._append_pile_report_uploads(docids, content, data=data)
+            _logger.warning("PILE-PDF-DEBUG after merge len=%s", len(content))
         return content, content_type
 
     def _append_pile_report_uploads(self, docids, content, data=None):
@@ -761,6 +766,9 @@ class IrActionsReport(models.Model):
             )
             if pile:
                 uploads |= pile.pile_report_upload
+
+        _logger.warning("PILE-PDF-DEBUG candidate_ids=%s eln_ids=%s uploads=%s",
+                        candidate_ids, sorted(eln_ids), [(a.id, a.name) for a in uploads])
 
         pdfs = []
         for att in uploads.sorted('id'):
