@@ -680,9 +680,8 @@ class PileIntegrityReport(models.AbstractModel):
         qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
 
         model_id = eln.model_id
-        if model_id:
-            general_data = self.env['pile.integrity'].sudo().browse(model_id)
-        else:
+        general_data = self.env['pile.integrity'].sudo().browse(model_id) if model_id else self.env['pile.integrity']
+        if not general_data:
             general_data = self.env['pile.integrity'].sudo().search(
                 [('eln_ref', '=', eln.id)], limit=1
             )
