@@ -301,6 +301,7 @@ class AacBlockMechanical(models.Model):
     moisture_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
     moisture_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -316,6 +317,9 @@ class AacBlockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.moisture_confirmity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -372,6 +376,7 @@ class AacBlockMechanical(models.Model):
     density_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_density_confirmity")
     density_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -387,6 +392,9 @@ class AacBlockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.density_confirmity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -439,6 +447,7 @@ class AacBlockMechanical(models.Model):
     drying_shrinkage_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_drying_shrinkage_confirmity")
     
 
@@ -456,6 +465,9 @@ class AacBlockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.drying_shrinkage_confirmity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -510,6 +522,7 @@ class AacBlockMechanical(models.Model):
     compressive_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_compressive_strength_confirmity")
     compressive_strength_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -525,6 +538,9 @@ class AacBlockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_strength_confirmity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
