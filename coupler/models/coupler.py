@@ -21,7 +21,7 @@ class MechanicalCoupler(models.Model):
     elongated_gauge_length = fields.Float(string="Gauge Length  at Maximum Force, mm")
     ultimate_load = fields.Float(string="Ultimate Tensile Load, KN")
     distance = fields.Float(string="Distance of fracture From center of Coupler")
-    ult_tens_strgth = fields.Float(string="Ultimate Tensile Strength, N/mm2",compute="_compute_ult_tens_strgth",store=True)
+    ult_tens_strgth = fields.Float(string="Static Tensile Strength, N/mm2",compute="_compute_ult_tens_strgth",store=True)
     total_elongation = fields.Float(string="Total Elongation at maximum force(%)",compute="_compute_elongation_percent",store=True)
  
     # fracture = fields.Char("Fracture (Within Gauge Length)",default="W.G.L")
