@@ -133,6 +133,22 @@
 							
 							</tr>
 
+							<tr t-if="data.slip_test_visible">
+								<td >
+                                    Slip Strength, N/mm2
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="round(data.slip_strength,2)"/>
+								</td>
+							</tr>
+							<tr t-if="data.slip_test_visible">
+								<td >
+                                    Ext At 20 N/MM2
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.ext_at_20"/>
+								</td>
+							</tr>
 
 							<tr>
 								

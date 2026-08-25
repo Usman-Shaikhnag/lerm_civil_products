@@ -303,6 +303,48 @@
 								</td>
 							</tr>
 
+							<tr t-if="data.slip_test_visible and (data.slip_strength_nabl == 'pass' and nabl or (data.slip_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td >
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_name"/>
+                                </td>
+								<td style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).unit.name"/>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.slip_strength"  t-options='{"widget": "float", "precision": 2}' />
+								</td>
+									<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                            </t>
+                                        </t>
+									</span>
+								</td>
+								<td t-if="eln.conformity">
+									<span t-esc="data.slip_strength_nabl"/>
+								</td>
+							</tr>
+
+							<tr t-if="data.slip_test_visible">
+								<td >
+                                    Ext At 20 N/MM2
+                                </td>
+								<td style="text-align: center; vertical-align: middle;">
+									
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="data.ext_at_20"/>
+								</td>
+								<td>
+								</td>
+								<td t-if="eln.conformity">
+								</td>
+							</tr>
+
 							<tr>
 								
 								<td >
