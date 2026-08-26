@@ -1385,4 +1385,25 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="bentonite_datasheet_action" model="ir.actions.report">
+        <field name="name">Bentonite DataSheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bentonite.bentonite_datasheet</field>
+        <field name="report_file">bentonite.bentonite_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="bentonite_report_action" model="ir.actions.report">
+        <field name="name">Bentonite Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bentonite.bentonite_report</field>
+        <field name="report_file">bentonite.bentonite_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="paperformat_id" ref="paperformat_geonyms_common"/>
+        <field name="binding_type">report</field>
+    </record>
+
 </odoo>
