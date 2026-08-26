@@ -72,41 +72,41 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.moisture_cruciblew1_1"/></td>
-                             <td><span t-field="data.moisture_cruciblew2_1"/></td>
-                             <td><span t-field="data.moisture_cruciblew3_1"/></td>
-							 <td><span t-field="data.moisture_residue1"/></td>
+                             <td><span t-field="data.moisture_cruciblew1_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew2_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew3_1" t-options='{"widget": "float", "precision": 4}'/></td>
+							               <td><span t-field="data.moisture_residue1" /></td>
                            </tr>
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.moisture_cruciblew1_2"/></td>
-                             <td><span t-field="data.moisture_cruciblew2_2"/></td>
-                             <td><span t-field="data.moisture_cruciblew3_2"/></td>
-							 <td><span t-field="data.moisture_residue2"/></td>
+                             <td><span t-field="data.moisture_cruciblew1_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew2_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew3_2" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.moisture_residue2" /></td>
                            </tr>
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.moisture_cruciblew1_3"/></td>
-                             <td><span t-field="data.moisture_cruciblew2_3"/></td>
-                             <td><span t-field="data.moisture_cruciblew3_3"/></td>
-							 <td><span t-field="data.moisture_residue3"/></td>
+                             <td><span t-field="data.moisture_cruciblew1_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew2_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew3_3" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.moisture_residue3" /></td>
                            </tr>
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.moisture_cruciblew1_4"/></td>
-                             <td><span t-field="data.moisture_cruciblew2_4"/></td>
-                             <td><span t-field="data.moisture_cruciblew3_4"/></td>
-							 <td><span t-field="data.moisture_residue4"/></td>
+                             <td><span t-field="data.moisture_cruciblew1_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew2_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew3_4" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.moisture_residue4" /></td>
                            </tr>
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.moisture_cruciblew1_5"/></td>
-                             <td><span t-field="data.moisture_cruciblew2_5"/></td>
-                             <td><span t-field="data.moisture_cruciblew3_5"/></td>
+                             <td><span t-field="data.moisture_cruciblew1_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew2_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.moisture_cruciblew3_5" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.moisture_residue5"/></td>
                            </tr>
                          </tbody>
@@ -135,25 +135,47 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '999oo00-645d-4794-a0fd-3daa0124r00110')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
 							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6677pou-645d-4794-a0fd-3daa0124r0014')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6677pou-645d-4794-a0fd-3daa0124r0014')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
 						
 						<div style="margin-left:500px">
 									
@@ -163,13 +185,13 @@
 								</b>
 							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>
@@ -178,11 +200,12 @@
 							
 							<div>
 								<b>
-									(Sr. Chemist)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-					</div>
+
+						</div>
 
 					</div>
 
@@ -214,50 +237,50 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.ash_dishw1_1"/></td>
-                             <td><span t-field="data.ash_dishw2_1"/></td>
-                             <td><span t-field="data.ash_dishw3_1"/></td>
-							 <td><span t-field="data.ash_dishw4_1"/></td>
-                             <td><span t-field="data.ash_1"/></td>
+                             <td><span t-field="data.ash_dishw1_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw2_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw3_1" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.ash_dishw4_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_1" /></td>
                              
                            </tr>
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.ash_dishw1_2"/></td>
-                             <td><span t-field="data.ash_dishw2_2"/></td>
-                             <td><span t-field="data.ash_dishw3_2"/></td>
-							 <td><span t-field="data.ash_dishw4_2"/></td>
-                             <td><span t-field="data.ash_2"/></td>
+                             <td><span t-field="data.ash_dishw1_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw2_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw3_2" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.ash_dishw4_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_2" /></td>
                              
                            </tr>
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.ash_dishw1_3"/></td>
-                             <td><span t-field="data.ash_dishw2_3"/></td>
-                             <td><span t-field="data.ash_dishw3_3"/></td>
-							 <td><span t-field="data.ash_dishw4_3"/></td>
-                             <td><span t-field="data.ash_3"/></td>
+                             <td><span t-field="data.ash_dishw1_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw2_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw3_3" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.ash_dishw4_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_3" /></td>
                             
                            </tr>
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.ash_dishw1_4"/></td>
-                             <td><span t-field="data.ash_dishw2_4"/></td>
-                             <td><span t-field="data.ash_dishw3_4"/></td>
-							 <td><span t-field="data.ash_dishw4_4"/></td>
+                             <td><span t-field="data.ash_dishw1_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw2_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw3_4" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.ash_dishw4_4" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.ash_4"/></td>
                             
                            </tr>
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.ash_dishw1_5"/></td>
-                             <td><span t-field="data.ash_dishw2_5"/></td>
-                             <td><span t-field="data.ash_dishw3_5"/></td>
-							 <td><span t-field="data.ash_dishw4_5"/></td>
+                             <td><span t-field="data.ash_dishw1_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw2_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.ash_dishw3_5" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.ash_dishw4_5" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.ash_5"/></td>
                            
                            </tr>
@@ -277,9 +300,7 @@
                       </table>
                     </div>
 
-
-
-					<div class="authorizeRowDataSheet">
+                     <div class="authorizeRowDataSheet">
 						<div>
 							<div>
 								<b>
@@ -287,25 +308,47 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '999oo00-645d-4794-a0fd-3daa0124r00110')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
 							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '999oo00-645d-4794-a0fd-3daa0124r00110')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '999oo00-645d-4794-a0fd-3daa0124r00110')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
 						
 						<div style="margin-left:500px">
 									
@@ -315,13 +358,13 @@
 								</b>
 							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>
@@ -330,11 +373,12 @@
 							
 							<div>
 								<b>
-									(Sr. Chemist)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-					</div>
+
+						</div>
 
 					</div>
 
@@ -363,9 +407,9 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.volatile_matter_cruciblew1_1"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew2_1"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew3_1"/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew1_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew2_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew3_1" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.volatile_matter_driedw4_1"/></td>
                              <td><span t-field="data.volatile_matter_1"/></td>
                              
@@ -373,9 +417,9 @@
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.volatile_matter_cruciblew1_2"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew2_2"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew3_2"/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew1_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew2_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew3_2" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.volatile_matter_driedw4_2"/></td>
                              <td><span t-field="data.volatile_matter_2"/></td>
                              
@@ -383,9 +427,9 @@
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.volatile_matter_cruciblew1_3"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew2_3"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew3_3"/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew1_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew2_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew3_3" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.volatile_matter_driedw4_3"/></td>
                              <td><span t-field="data.volatile_matter_3"/></td>
                             
@@ -393,9 +437,9 @@
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.volatile_matter_cruciblew1_4"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew2_4"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew3_4"/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew1_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew2_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew3_4" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.volatile_matter_driedw4_4"/></td>
                              <td><span t-field="data.volatile_matter_4"/></td>
                             
@@ -403,9 +447,9 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.volatile_matter_cruciblew1_5"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew2_5"/></td>
-                             <td><span t-field="data.volatile_matter_cruciblew3_5"/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew1_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew2_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.volatile_matter_cruciblew3_5" t-options='{"widget": "float", "precision": 4}'/></td>
 							 <td><span t-field="data.volatile_matter_driedw4_5"/></td>
                              <td><span t-field="data.volatile_matter_5"/></td>
                            
@@ -436,25 +480,47 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3330077-645d-4794-a0fd-3daa0124r001144')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
 							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3330077-645d-4794-a0fd-3daa0124r001144')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3330077-645d-4794-a0fd-3daa0124r001144')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
 						
 						<div style="margin-left:500px">
 									
@@ -464,13 +530,13 @@
 								</b>
 							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>
@@ -479,11 +545,12 @@
 							
 							<div>
 								<b>
-									(Sr. Chemist)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-					</div>
+
+						</div>
 
 					</div>
 
@@ -579,25 +646,47 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6661147-645d-4794-a0fd-3daa0124r0022004')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
 							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6661147-645d-4794-a0fd-3daa0124r0022004')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6661147-645d-4794-a0fd-3daa0124r0022004')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
 						
 						<div style="margin-left:500px">
 									
@@ -607,13 +696,13 @@
 								</b>
 							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>
@@ -622,11 +711,12 @@
 							
 							<div>
 								<b>
-									(Sr. Chemist)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-					</div>
+
+						</div>
 
 					</div>
 
@@ -641,7 +731,7 @@
 						</div>
 						
 				
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <!-- <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                            <tr>
                                <td>GCV</td>
@@ -708,22 +798,20 @@
                            
                            </tr>
                          </tbody>
-                      </table>
+                      </table> -->
 
 
                       <div>
                       <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                       <tbody>
                       <tr>
-                          <td ><span>Average GCV, Kcal/Kg %</span></td>
-                          <td style="padding: 8px;"> <span t-field="data.avg_gross_calorific"/></td>
+                          <td ><span>Gross Calorific Value</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.gsv"/></td>
                          </tr>
                        
                      </tbody>
                       </table>
                     </div>
-
-
 
 					<div class="authorizeRowDataSheet">
 						<div>
@@ -733,25 +821,47 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9977882-645d-4794-a0fd-3daa0124r0021147')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
 							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9977882-645d-4794-a0fd-3daa0124r0021147')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9977882-645d-4794-a0fd-3daa0124r0021147')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
 						
 						<div style="margin-left:500px">
 									
@@ -761,13 +871,13 @@
 								</b>
 							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>
@@ -776,11 +886,16 @@
 							
 							<div>
 								<b>
-									(Sr. Chemist)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-					</div>
+
+						</div>
+
+
+
+					
 
 					</div>
 

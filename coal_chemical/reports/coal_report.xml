@@ -553,7 +553,7 @@
 							</tr>
 
 								<!-- gross_calorific_visible -->
-							<tr t-if="data.gross_calorific_visible and (data.avg_gross_calorific_nabl == 'pass' and nabl or (data.avg_gross_calorific_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.gross_calorific_visible and (data.gsv_nabl == 'pass' and nabl or (data.gsv_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -586,7 +586,7 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_gross_calorific" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.gsv" />
 									</span>									
 								</td>
 								
@@ -601,7 +601,7 @@
 								</td>
 
                                 <td t-if="eln.conformity">
-								<span t-field="data.avg_gross_calorific_conformity"/>
+								<span t-field="data.gsv_conformity"/>
 							</td>
 								
 							</tr>

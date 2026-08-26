@@ -14,8 +14,8 @@ class ChemicalCoal(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 
@@ -88,23 +88,23 @@ class ChemicalCoal(models.Model):
     moisture_name = fields.Char("Name",default="Moisture")
     moisture_visible = fields.Boolean("Moisture",compute="_compute_visible")
 
-    moisture_cruciblew1_1 = fields.Float(string="Weight of Empty Crucible, (W1)")
-    moisture_cruciblew1_2 = fields.Float(string="Weight of Empty Crucible, (W1)")
-    moisture_cruciblew1_3 = fields.Float(string="Weight of Empty Crucible, (W1)")
-    moisture_cruciblew1_4 = fields.Float(string="Weight of Empty Crucible, (W1)")
-    moisture_cruciblew1_5 = fields.Float(string="Weight of Empty Crucible, (W1)")
+    moisture_cruciblew1_1 = fields.Float(string="Weight of Empty Crucible, (W1)",digits=(12,4))
+    moisture_cruciblew1_2 = fields.Float(string="Weight of Empty Crucible, (W1)",digits=(12,4))
+    moisture_cruciblew1_3 = fields.Float(string="Weight of Empty Crucible, (W1)",digits=(12,4))
+    moisture_cruciblew1_4 = fields.Float(string="Weight of Empty Crucible, (W1)",digits=(12,4))
+    moisture_cruciblew1_5 = fields.Float(string="Weight of Empty Crucible, (W1)",digits=(12,4))
 
-    moisture_cruciblew2_1 = fields.Float(string="Weight of Crucible and Sample (W2)")
-    moisture_cruciblew2_2 = fields.Float(string="Weight of Crucible and Sample (W2)")
-    moisture_cruciblew2_3 = fields.Float(string="Weight of Crucible and Sample (W2)")
-    moisture_cruciblew2_4 = fields.Float(string="Weight of Crucible and Sample (W2)")
-    moisture_cruciblew2_5 = fields.Float(string="Weight of Crucible and Sample (W2)")
+    moisture_cruciblew2_1 = fields.Float(string="Weight of Crucible and Sample (W2)",digits=(12,4))
+    moisture_cruciblew2_2 = fields.Float(string="Weight of Crucible and Sample (W2)",digits=(12,4))
+    moisture_cruciblew2_3 = fields.Float(string="Weight of Crucible and Sample (W2)",digits=(12,4))
+    moisture_cruciblew2_4 = fields.Float(string="Weight of Crucible and Sample (W2)",digits=(12,4))
+    moisture_cruciblew2_5 = fields.Float(string="Weight of Crucible and Sample (W2)",digits=(12,4))
 
-    moisture_cruciblew3_1 = fields.Float(string="Weight of Crucible and sample after ignition (W3)")
-    moisture_cruciblew3_2 = fields.Float(string="Weight of Crucible and sample after ignition (W3)")
-    moisture_cruciblew3_3 = fields.Float(string="Weight of Crucible and sample after ignition (W3)" )
-    moisture_cruciblew3_4 = fields.Float(string="Weight of Crucible and sample after ignition (W3)" )
-    moisture_cruciblew3_5 = fields.Float(string="Weight of Crucible and sample after ignition (W3)" )
+    moisture_cruciblew3_1 = fields.Float(string="Weight of Crucible and sample after ignition (W3)",digits=(12,4))
+    moisture_cruciblew3_2 = fields.Float(string="Weight of Crucible and sample after ignition (W3)",digits=(12,4))
+    moisture_cruciblew3_3 = fields.Float(string="Weight of Crucible and sample after ignition (W3)" ,digits=(12,4))
+    moisture_cruciblew3_4 = fields.Float(string="Weight of Crucible and sample after ignition (W3)",digits=(12,4) )
+    moisture_cruciblew3_5 = fields.Float(string="Weight of Crucible and sample after ignition (W3)",digits=(12,4) )
 
     
 
@@ -115,6 +115,26 @@ class ChemicalCoal(models.Model):
     moisture_residue5 = fields.Float(string="Moisture %",  compute="_compute_moisture", store=True)
 
     avg_moisture = fields.Float(string="Average Moisture % ",compute="_compute_avg_moisture",store=True)
+
+    @api.depends('moisture_residue1', 'moisture_residue2', 'moisture_residue3', 'moisture_residue4', 'moisture_residue5')
+    def _compute_avg_moisture(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            moisture = [
+                rec.moisture_residue1,
+                rec.moisture_residue2,
+                rec.moisture_residue3,
+                rec.moisture_residue4,
+                rec.moisture_residue5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_moisture = [c for c in moisture if c]  # ya (c for c in moisture if c not in [False, None, 0.0])
+            
+            if valid_moisture:
+                rec.avg_moisture = sum(valid_moisture) / len(valid_moisture)
+            else:
+                rec.avg_moisture = 0.0
 
 
     @api.depends(
@@ -152,24 +172,7 @@ class ChemicalCoal(models.Model):
                 (rec.moisture_cruciblew2_5 - rec.moisture_cruciblew1_5)
             ) if (rec.moisture_cruciblew2_5 - rec.moisture_cruciblew1_5) else 0.0
 
-    @api.depends(
-    'moisture_residue1',
-    'moisture_residue2',
-    'moisture_residue3',
-    'moisture_residue4',
-    'moisture_residue5'
-    )
-    def _compute_avg_moisture(self):
-        for rec in self:
-
-            rec.avg_moisture = (
-                rec.moisture_residue1 +
-                rec.moisture_residue2 +
-                rec.moisture_residue3 +
-                rec.moisture_residue4 +
-                rec.moisture_residue5
-            ) / 5
-
+    
 
     avg_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -238,29 +241,29 @@ class ChemicalCoal(models.Model):
     ash_name = fields.Char("Name",default="DETERMINATION OF ASH")
     ash_visible = fields.Boolean("DETERMINATION OF ASH",compute="_compute_visible")
 
-    ash_dishw1_1 = fields.Float(string="Weight of dish (W1)")
-    ash_dishw1_2 = fields.Float(string="Weight of dish (W1)")
-    ash_dishw1_3 = fields.Float(string="Weight of dish (W1)")
-    ash_dishw1_4 = fields.Float(string="Weight of dish (W1)")
-    ash_dishw1_5 = fields.Float(string="Weight of dish (W1)")
+    ash_dishw1_1 = fields.Float(string="Weight of dish (W1)",digits=(12,4))
+    ash_dishw1_2 = fields.Float(string="Weight of dish (W1)",digits=(12,4))
+    ash_dishw1_3 = fields.Float(string="Weight of dish (W1)",digits=(12,4))
+    ash_dishw1_4 = fields.Float(string="Weight of dish (W1)",digits=(12,4))
+    ash_dishw1_5 = fields.Float(string="Weight of dish (W1)",digits=(12,4))
 
-    ash_dishw2_1 = fields.Float(string="Weight of dish and sample (W2)")
-    ash_dishw2_2 = fields.Float(string="Weight of dish and sample (W2)")
-    ash_dishw2_3 = fields.Float(string="Weight of dish and sample (W2)")
-    ash_dishw2_4 = fields.Float(string="Weight of dish and sample (W2)")
-    ash_dishw2_5 = fields.Float(string="Weight of dish and sample (W2)")
+    ash_dishw2_1 = fields.Float(string="Weight of dish and sample (W2)",digits=(12,4))
+    ash_dishw2_2 = fields.Float(string="Weight of dish and sample (W2)",digits=(12,4))
+    ash_dishw2_3 = fields.Float(string="Weight of dish and sample (W2)",digits=(12,4))
+    ash_dishw2_4 = fields.Float(string="Weight of dish and sample (W2)",digits=(12,4))
+    ash_dishw2_5 = fields.Float(string="Weight of dish and sample (W2)",digits=(12,4))
 
-    ash_dishw3_1 = fields.Float(string="Weight of dish and ash (W3)")
-    ash_dishw3_2 = fields.Float(string="Weight of dish and ash (W3)")
-    ash_dishw3_3 = fields.Float(string="Weight of dish and ash (W3)" )
-    ash_dishw3_4 = fields.Float(string="Weight of dish and ash (W3)" )
-    ash_dishw3_5 = fields.Float(string="Weight of dish and ash (W3)" )
+    ash_dishw3_1 = fields.Float(string="Weight of dish and ash (W3)",digits=(12,4))
+    ash_dishw3_2 = fields.Float(string="Weight of dish and ash (W3)",digits=(12,4))
+    ash_dishw3_3 = fields.Float(string="Weight of dish and ash (W3)",digits=(12,4) )
+    ash_dishw3_4 = fields.Float(string="Weight of dish and ash (W3)" ,digits=(12,4))
+    ash_dishw3_5 = fields.Float(string="Weight of dish and ash (W3)" ,digits=(12,4))
 
-    ash_dishw4_1 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)")
-    ash_dishw4_2 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)")
-    ash_dishw4_3 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)" )
-    ash_dishw4_4 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)" )
-    ash_dishw4_5 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)" )
+    ash_dishw4_1 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)",digits=(12,4))
+    ash_dishw4_2 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)",digits=(12,4))
+    ash_dishw4_3 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)",digits=(12,4) )
+    ash_dishw4_4 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)",digits=(12,4) )
+    ash_dishw4_5 = fields.Float(string="Weight of dish after brushing out the ash and on reweighing (W4)",digits=(12,4) )
 
     
 
@@ -271,6 +274,26 @@ class ChemicalCoal(models.Model):
     ash_5 = fields.Float(string="Ash %", compute="_compute_ash_dish", store=True)
 
     avg_ash = fields.Float(string="Average Ash % ",compute="_compute_avg_ash",store=True)
+
+    @api.depends('ash_1', 'ash_2', 'ash_3', 'ash_4', 'ash_5')
+    def _compute_avg_ash(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            ash = [
+                rec.ash_1,
+                rec.ash_2,
+                rec.ash_3,
+                rec.ash_4,
+                rec.ash_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_ash = [c for c in ash if c]  # ya (c for c in ash if c not in [False, None, 0.0])
+            
+            if valid_ash:
+                rec.avg_ash = sum(valid_ash) / len(valid_ash)
+            else:
+                rec.avg_ash = 0.0
 
     @api.depends(
     'ash_dishw1_1','ash_dishw2_1','ash_dishw3_1','ash_dishw4_1',
@@ -307,17 +330,7 @@ class ChemicalCoal(models.Model):
                 (rec.ash_dishw2_5 - rec.ash_dishw1_5)
             ) if (rec.ash_dishw2_5 - rec.ash_dishw1_5) else 0.0
 
-    @api.depends('ash_1','ash_2','ash_3','ash_4','ash_5')
-    def _compute_avg_ash(self):
-        for rec in self:
-
-            rec.avg_ash = (
-                rec.ash_1 +
-                rec.ash_2 +
-                rec.ash_3 +
-                rec.ash_4 +
-                rec.ash_5
-            ) / 5
+    
 
     avg_ash_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -386,23 +399,23 @@ class ChemicalCoal(models.Model):
     volatile_matter_name = fields.Char("Name",default="Volatile Matter")
     volatile_matter_visible = fields.Boolean("Volatile Matter",compute="_compute_visible")
 
-    volatile_matter_cruciblew1_1 = fields.Float(string="Weight of empty crucible and lid (W1)")
-    volatile_matter_cruciblew1_2 = fields.Float(string="Weight of empty crucible and lid (W1)")
-    volatile_matter_cruciblew1_3 = fields.Float(string="Weight of empty crucible and lid (W1)")
-    volatile_matter_cruciblew1_4 = fields.Float(string="Weight of empty crucible and lid (W1)")
-    volatile_matter_cruciblew1_5 = fields.Float(string="Weight of empty crucible and lid (W1)")
+    volatile_matter_cruciblew1_1 = fields.Float(string="Weight of empty crucible and lid (W1)" ,digits=(12,4))
+    volatile_matter_cruciblew1_2 = fields.Float(string="Weight of empty crucible and lid (W1)",digits=(12,4))
+    volatile_matter_cruciblew1_3 = fields.Float(string="Weight of empty crucible and lid (W1)",digits=(12,4))
+    volatile_matter_cruciblew1_4 = fields.Float(string="Weight of empty crucible and lid (W1)",digits=(12,4))
+    volatile_matter_cruciblew1_5 = fields.Float(string="Weight of empty crucible and lid (W1)",digits=(12,4))
 
-    volatile_matter_cruciblew2_1 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)")
-    volatile_matter_cruciblew2_2 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)")
-    volatile_matter_cruciblew2_3 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)")
-    volatile_matter_cruciblew2_4 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)")
-    volatile_matter_cruciblew2_5 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)")
+    volatile_matter_cruciblew2_1 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)",digits=(12,4))
+    volatile_matter_cruciblew2_2 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)",digits=(12,4))
+    volatile_matter_cruciblew2_3 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)",digits=(12,4))
+    volatile_matter_cruciblew2_4 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)",digits=(12,4))
+    volatile_matter_cruciblew2_5 = fields.Float(string="Weight of crucible plus lid and sample before heating (W2)",digits=(12,4))
 
-    volatile_matter_cruciblew3_1 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)")
-    volatile_matter_cruciblew3_2 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)")
-    volatile_matter_cruciblew3_3 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" )
-    volatile_matter_cruciblew3_4 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" )
-    volatile_matter_cruciblew3_5 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" )
+    volatile_matter_cruciblew3_1 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)",digits=(12,4))
+    volatile_matter_cruciblew3_2 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)",digits=(12,4))
+    volatile_matter_cruciblew3_3 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" ,digits=(12,4))
+    volatile_matter_cruciblew3_4 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" ,digits=(12,4))
+    volatile_matter_cruciblew3_5 = fields.Float(string="Weight of crucible plus lid and sample after heating (W3)" ,digits=(12,4))
 
     volatile_matter_driedw4_1 = fields.Float(string="Percentage of moisture in the sample on air dried basis (W°)")
     volatile_matter_driedw4_2 = fields.Float(string="Percentage of moisture in the sample on air dried basis (W°)")
@@ -419,6 +432,26 @@ class ChemicalCoal(models.Model):
     volatile_matter_5 = fields.Float(string="Volatile Matter %", compute="_compute_volatile_matter", store=True)
 
     avg_volatile_matter = fields.Float(string="Average Volatile Matter % ",compute="_compute_avg_vm",store=True)
+
+    @api.depends('volatile_matter_1', 'volatile_matter_2', 'volatile_matter_3', 'volatile_matter_4', 'volatile_matter_5')
+    def _compute_avg_vm(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            volatile_matter = [
+                rec.volatile_matter_1,
+                rec.volatile_matter_2,
+                rec.volatile_matter_3,
+                rec.volatile_matter_4,
+                rec.volatile_matter_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_volatile_matter = [c for c in volatile_matter if c]  # ya (c for c in volatile_matter if c not in [False, None, 0.0])
+            
+            if valid_volatile_matter:
+                rec.avg_volatile_matter = sum(valid_volatile_matter) / len(valid_volatile_matter)
+            else:
+                rec.avg_volatile_matter = 0.0
 
     @api.depends(
     'volatile_matter_cruciblew1_1','volatile_matter_cruciblew2_1','volatile_matter_cruciblew3_1','volatile_matter_driedw4_1',
@@ -460,23 +493,7 @@ class ChemicalCoal(models.Model):
                 (rec.volatile_matter_cruciblew2_5 - rec.volatile_matter_cruciblew1_5)
             ) if (rec.volatile_matter_cruciblew2_5 - rec.volatile_matter_cruciblew1_5) else 0.0
 
-    @api.depends(
-    'volatile_matter_1',
-    'volatile_matter_2',
-    'volatile_matter_3',
-    'volatile_matter_4',
-    'volatile_matter_5'
-    )
-    def _compute_avg_vm(self):
-        for rec in self:
-
-            rec.avg_volatile_matter = (
-                rec.volatile_matter_1 +
-                rec.volatile_matter_2 +
-                rec.volatile_matter_3 +
-                rec.volatile_matter_4 +
-                rec.volatile_matter_5
-            ) / 5
+    
 
     avg_volatile_matter_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -574,17 +591,25 @@ class ChemicalCoal(models.Model):
     avg_carbon = fields.Float(string="Average Fixed Carbon % ",compute="_compute_avg_fc",store=True)
 
 
-    @api.depends('carbon_1','carbon_2','carbon_3','carbon_4','carbon_5')
+    @api.depends('carbon_1', 'carbon_2', 'carbon_3', 'carbon_4', 'carbon_5')
     def _compute_avg_fc(self):
         for rec in self:
-
-            rec.avg_carbon = (
-                rec.carbon_1 +
-                rec.carbon_2 +
-                rec.carbon_3 +
-                rec.carbon_4 +
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            carbon = [
+                rec.carbon_1,
+                rec.carbon_2,
+                rec.carbon_3,
+                rec.carbon_4,
                 rec.carbon_5
-            ) / 5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_carbon = [c for c in carbon if c]  # ya (c for c in carbon if c not in [False, None, 0.0])
+            
+            if valid_carbon:
+                rec.avg_carbon = sum(valid_carbon) / len(valid_carbon)
+            else:
+                rec.avg_carbon = 0.0
 
 
     @api.depends(
@@ -744,123 +769,125 @@ class ChemicalCoal(models.Model):
     gross_calorific_name = fields.Char("Name",default="Gross Calorific Value")
     gross_calorific_visible = fields.Boolean("Gross Calorific Value",compute="_compute_visible")
 
-    gross_calorific_w_1 = fields.Float(string="Sample Weight (W)")
-    gross_calorific_w_2 = fields.Float(string="Sample Weight (W)")
-    gross_calorific_w_3 = fields.Float(string="Sample Weight (W)")
-    gross_calorific_w_4 = fields.Float(string="Sample Weight (W)")
-    gross_calorific_w_5 = fields.Float(string="Sample Weight (W)")
+    gsv = fields.Integer(string="Gross Calorific Value")
+
+    # gross_calorific_w_1 = fields.Float(string="Sample Weight (W)",digits=(12,4))
+    # gross_calorific_w_2 = fields.Float(string="Sample Weight (W)",digits=(12,4))
+    # gross_calorific_w_3 = fields.Float(string="Sample Weight (W)",digits=(12,4))
+    # gross_calorific_w_4 = fields.Float(string="Sample Weight (W)",digits=(12,4))
+    # gross_calorific_w_5 = fields.Float(string="Sample Weight (W)",digits=(12,4))
 
     
 
-    gross_calorific_t_1 = fields.Float(string="Rise in Temperature, (ΔT)")
-    gross_calorific_t_2 = fields.Float(string="Rise in Temperature, (ΔT)")
-    gross_calorific_t_3 = fields.Float(string="Rise in Temperature, (ΔT)")
-    gross_calorific_t_4 = fields.Float(string="Rise in Temperature, (ΔT)")
-    gross_calorific_t_5 = fields.Float(string="Rise in Temperature, (ΔT)")
+    # gross_calorific_t_1 = fields.Float(string="Rise in Temperature, (ΔT)")
+    # gross_calorific_t_2 = fields.Float(string="Rise in Temperature, (ΔT)")
+    # gross_calorific_t_3 = fields.Float(string="Rise in Temperature, (ΔT)")
+    # gross_calorific_t_4 = fields.Float(string="Rise in Temperature, (ΔT)")
+    # gross_calorific_t_5 = fields.Float(string="Rise in Temperature, (ΔT)")
 
-    gross_calorific_e1_1 = fields.Float(string="Cotton thread Correction (E1)")
-    gross_calorific_e1_2 = fields.Float(string="Cotton thread Correction (E1)")
-    gross_calorific_e1_3 = fields.Float(string="Cotton thread Correction (E1)")
-    gross_calorific_e1_4 = fields.Float(string="Cotton thread Correction (E1)")
-    gross_calorific_e1_5 = fields.Float(string="Cotton thread Correction (E1)")
+    # gross_calorific_e1_1 = fields.Float(string="Cotton thread Correction (E1)")
+    # gross_calorific_e1_2 = fields.Float(string="Cotton thread Correction (E1)")
+    # gross_calorific_e1_3 = fields.Float(string="Cotton thread Correction (E1)")
+    # gross_calorific_e1_4 = fields.Float(string="Cotton thread Correction (E1)")
+    # gross_calorific_e1_5 = fields.Float(string="Cotton thread Correction (E1)")
 
     
 
-    gross_calorific_e2_1 = fields.Float(string="Ignition Wire (E2)")
-    gross_calorific_e2_2 = fields.Float(string="Ignition Wire (E2)")
-    gross_calorific_e2_3 = fields.Float(string="Ignition Wire (E2)")
-    gross_calorific_e2_4 = fields.Float(string="Ignition Wire (E2)")
-    gross_calorific_e2_5 = fields.Float(string="Ignition Wire (E2)")
+    # gross_calorific_e2_1 = fields.Float(string="Ignition Wire (E2)")
+    # gross_calorific_e2_2 = fields.Float(string="Ignition Wire (E2)")
+    # gross_calorific_e2_3 = fields.Float(string="Ignition Wire (E2)")
+    # gross_calorific_e2_4 = fields.Float(string="Ignition Wire (E2)")
+    # gross_calorific_e2_5 = fields.Float(string="Ignition Wire (E2)")
 
-    gross_calorific_weqv_1 = fields.Float(string="Water Equivalent Weight (Weqv)")
-    gross_calorific_weqv_2 = fields.Float(string="Water Equivalent Weight (Weqv)")
-    gross_calorific_weqv_3 = fields.Float(string="Water Equivalent Weight (Weqv)")
-    gross_calorific_weqv_4 = fields.Float(string="Water Equivalent Weight (Weqv)")
-    gross_calorific_weqv_5 = fields.Float(string="Water Equivalent Weight (Weqv)")
-
-
-    gross_calorific_gcv_1 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True )
-    gross_calorific_gcv_2 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
-    gross_calorific_gcv_3 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
-    gross_calorific_gcv_4 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
-    gross_calorific_gcv_5 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
-
-    avg_gross_calorific = fields.Float(string="Average GCV, Kcal/Kg ",compute="_compute_avg_gcv",store=True)
+    # gross_calorific_weqv_1 = fields.Float(string="Water Equivalent Weight (Weqv)")
+    # gross_calorific_weqv_2 = fields.Float(string="Water Equivalent Weight (Weqv)")
+    # gross_calorific_weqv_3 = fields.Float(string="Water Equivalent Weight (Weqv)")
+    # gross_calorific_weqv_4 = fields.Float(string="Water Equivalent Weight (Weqv)")
+    # gross_calorific_weqv_5 = fields.Float(string="Water Equivalent Weight (Weqv)")
 
 
-    @api.depends(
-    'gross_calorific_w_1','gross_calorific_t_1','gross_calorific_weqv_1','gross_calorific_e1_1','gross_calorific_e2_1',
-    'gross_calorific_w_2','gross_calorific_t_2','gross_calorific_weqv_2','gross_calorific_e1_2','gross_calorific_e2_2',
-    'gross_calorific_w_3','gross_calorific_t_3','gross_calorific_weqv_3','gross_calorific_e1_3','gross_calorific_e2_3',
-    'gross_calorific_w_4','gross_calorific_t_4','gross_calorific_weqv_4','gross_calorific_e1_4','gross_calorific_e2_4',
-    'gross_calorific_w_5','gross_calorific_t_5','gross_calorific_weqv_5','gross_calorific_e1_5','gross_calorific_e2_5',
-    )
-    def _compute_gcv(self):
-        for rec in self:
+    # gross_calorific_gcv_1 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True )
+    # gross_calorific_gcv_2 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
+    # gross_calorific_gcv_3 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
+    # gross_calorific_gcv_4 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
+    # gross_calorific_gcv_5 = fields.Float(string="GCV, Kcal/Kg",compute="_compute_gcv", store=True)
 
-            rec.gross_calorific_gcv_1 = (
-                (rec.gross_calorific_t_1 * rec.gross_calorific_weqv_1) -
-                ((rec.gross_calorific_e1_1 or 0.0) + (rec.gross_calorific_e2_1 or 0.0))
-            ) / rec.gross_calorific_w_1 if rec.gross_calorific_w_1 else 0.0
-
-            rec.gross_calorific_gcv_2 = (
-                (rec.gross_calorific_t_2 * rec.gross_calorific_weqv_2) -
-                ((rec.gross_calorific_e1_2 or 0.0) + (rec.gross_calorific_e2_2 or 0.0))
-            ) / rec.gross_calorific_w_2 if rec.gross_calorific_w_2 else 0.0
-
-            rec.gross_calorific_gcv_3 = (
-                (rec.gross_calorific_t_3 * rec.gross_calorific_weqv_3) -
-                ((rec.gross_calorific_e1_3 or 0.0) + (rec.gross_calorific_e2_3 or 0.0))
-            ) / rec.gross_calorific_w_3 if rec.gross_calorific_w_3 else 0.0
-
-            rec.gross_calorific_gcv_4 = (
-                (rec.gross_calorific_t_4 * rec.gross_calorific_weqv_4) -
-                ((rec.gross_calorific_e1_4 or 0.0) + (rec.gross_calorific_e2_4 or 0.0))
-            ) / rec.gross_calorific_w_4 if rec.gross_calorific_w_4 else 0.0
-
-            rec.gross_calorific_gcv_5 = (
-                (rec.gross_calorific_t_5 * rec.gross_calorific_weqv_5) -
-                ((rec.gross_calorific_e1_5 or 0.0) + (rec.gross_calorific_e2_5 or 0.0))
-            ) / rec.gross_calorific_w_5 if rec.gross_calorific_w_5 else 0.0
+    # avg_gross_calorific = fields.Float(string="Average GCV, Kcal/Kg ",compute="_compute_avg_gcv",store=True)
 
 
-    @api.depends(
-    'gross_calorific_gcv_1',
-    'gross_calorific_gcv_2',
-    'gross_calorific_gcv_3',
-    'gross_calorific_gcv_4',
-    'gross_calorific_gcv_5'
-    )
-    def _compute_avg_gcv(self):
-        for rec in self:
+    # @api.depends(
+    # 'gross_calorific_w_1','gross_calorific_t_1','gross_calorific_weqv_1','gross_calorific_e1_1','gross_calorific_e2_1',
+    # 'gross_calorific_w_2','gross_calorific_t_2','gross_calorific_weqv_2','gross_calorific_e1_2','gross_calorific_e2_2',
+    # 'gross_calorific_w_3','gross_calorific_t_3','gross_calorific_weqv_3','gross_calorific_e1_3','gross_calorific_e2_3',
+    # 'gross_calorific_w_4','gross_calorific_t_4','gross_calorific_weqv_4','gross_calorific_e1_4','gross_calorific_e2_4',
+    # 'gross_calorific_w_5','gross_calorific_t_5','gross_calorific_weqv_5','gross_calorific_e1_5','gross_calorific_e2_5',
+    # )
+    # def _compute_gcv(self):
+    #     for rec in self:
 
-            rec.avg_gross_calorific = (
-                rec.gross_calorific_gcv_1 +
-                rec.gross_calorific_gcv_2 +
-                rec.gross_calorific_gcv_3 +
-                rec.gross_calorific_gcv_4 +
-                rec.gross_calorific_gcv_5
-            ) / 5
+    #         rec.gross_calorific_gcv_1 = (
+    #             (rec.gross_calorific_t_1 * rec.gross_calorific_weqv_1) -
+    #             ((rec.gross_calorific_e1_1 or 0.0) + (rec.gross_calorific_e2_1 or 0.0))
+    #         ) / rec.gross_calorific_w_1 if rec.gross_calorific_w_1 else 0.0
+
+    #         rec.gross_calorific_gcv_2 = (
+    #             (rec.gross_calorific_t_2 * rec.gross_calorific_weqv_2) -
+    #             ((rec.gross_calorific_e1_2 or 0.0) + (rec.gross_calorific_e2_2 or 0.0))
+    #         ) / rec.gross_calorific_w_2 if rec.gross_calorific_w_2 else 0.0
+
+    #         rec.gross_calorific_gcv_3 = (
+    #             (rec.gross_calorific_t_3 * rec.gross_calorific_weqv_3) -
+    #             ((rec.gross_calorific_e1_3 or 0.0) + (rec.gross_calorific_e2_3 or 0.0))
+    #         ) / rec.gross_calorific_w_3 if rec.gross_calorific_w_3 else 0.0
+
+    #         rec.gross_calorific_gcv_4 = (
+    #             (rec.gross_calorific_t_4 * rec.gross_calorific_weqv_4) -
+    #             ((rec.gross_calorific_e1_4 or 0.0) + (rec.gross_calorific_e2_4 or 0.0))
+    #         ) / rec.gross_calorific_w_4 if rec.gross_calorific_w_4 else 0.0
+
+    #         rec.gross_calorific_gcv_5 = (
+    #             (rec.gross_calorific_t_5 * rec.gross_calorific_weqv_5) -
+    #             ((rec.gross_calorific_e1_5 or 0.0) + (rec.gross_calorific_e2_5 or 0.0))
+    #         ) / rec.gross_calorific_w_5 if rec.gross_calorific_w_5 else 0.0
 
 
-    avg_gross_calorific_conformity = fields.Selection([
+    # @api.depends(
+    # 'gross_calorific_gcv_1',
+    # 'gross_calorific_gcv_2',
+    # 'gross_calorific_gcv_3',
+    # 'gross_calorific_gcv_4',
+    # 'gross_calorific_gcv_5'
+    # )
+    # def _compute_avg_gcv(self):
+    #     for rec in self:
+
+    #         rec.avg_gross_calorific = (
+    #             rec.gross_calorific_gcv_1 +
+    #             rec.gross_calorific_gcv_2 +
+    #             rec.gross_calorific_gcv_3 +
+    #             rec.gross_calorific_gcv_4 +
+    #             rec.gross_calorific_gcv_5
+    #         ) / 5
+
+
+    gsv_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
             ('na', 'NA'),
-            ], string="Conformity", compute="_compute_avg_gross_calorific_conformity", store=True)
+            ], string="Conformity", compute="_compute_gsv_conformity", store=True)
 
-    @api.depends('avg_gross_calorific','eln_ref','grade')
-    def _compute_avg_gross_calorific_conformity(self):
+    @api.depends('gsv','eln_ref','grade')
+    def _compute_gsv_conformity(self):
             # remove this first when making changes
-            self.avg_gross_calorific_conformity = 'fail'
+            self.gsv_conformity = 'fail'
         
             for record in self:
 
                 if not record.eln_ref or not record.eln_ref.conformity:
-                    record.avg_gross_calorific_conformity = 'na'
+                    record.gsv_conformity = 'na'
                     continue
 
-                record.avg_gross_calorific_conformity = 'fail'
+                record.gsv_conformity = 'fail'
                 line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9977882-645d-4794-a0fd-3daa0124r0021147')])
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9977882-645d-4794-a0fd-3daa0124r0021147')]).parameter_table
                 for material in materials:
@@ -869,25 +896,25 @@ class ChemicalCoal(models.Model):
                         req_max = material.req_max
                         mu_value = line.mu_value
                         
-                        lower = record.avg_gross_calorific - record.avg_gross_calorific*mu_value
-                        upper = record.avg_gross_calorific + record.avg_gross_calorific*mu_value
+                        lower = record.gsv - record.gsv*mu_value
+                        upper = record.gsv + record.gsv*mu_value
                         if lower >= req_min and upper <= req_max:
-                            record.avg_gross_calorific_conformity = 'pass'
+                            record.gsv_conformity = 'pass'
                             break
                         else:
-                            record.avg_gross_calorific_conformity = 'fail'
+                            record.gsv_conformity = 'fail'
 
-    avg_gross_calorific_nabl = fields.Selection([
+    gsv_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_gross_calorific_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_gsv_nabl", store=True)
 
-    @api.depends('avg_gross_calorific','eln_ref','grade')
-    def _compute_avg_gross_calorific_nabl(self):
+    @api.depends('gsv','eln_ref','grade')
+    def _compute_gsv_nabl(self):
         # remove this first
-        self.avg_gross_calorific_nabl = 'fail'
+        self.gsv_nabl = 'fail'
         
         for record in self:
-            record.avg_gross_calorific_nabl = 'fail'
+            record.gsv_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9977882-645d-4794-a0fd-3daa0124r0021147')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9977882-645d-4794-a0fd-3daa0124r0021147')]).parameter_table
             # for material in materials:
@@ -896,13 +923,13 @@ class ChemicalCoal(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_gross_calorific - record.avg_gross_calorific*mu_value
-            upper = record.avg_gross_calorific + record.avg_gross_calorific*mu_value
+            lower = record.gsv - record.gsv*mu_value
+            upper = record.gsv + record.gsv*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_gross_calorific_nabl = 'pass'
+                record.gsv_nabl = 'pass'
                 break
             else:
-                record.avg_gross_calorific_nabl = 'fail'
+                record.gsv_nabl = 'fail'
 
 
 
@@ -991,9 +1018,9 @@ class ChemicalCoal(models.Model):
                 continue
 
             if result.parameter.internal_id == '9977882-645d-4794-a0fd-3daa0124r0021147':
-                result.result_char = round(self.avg_gross_calorific,2)
+                result.result_char = round(self.gsv,2)
                 result.calculated = True
-                if self.avg_gross_calorific_nabl == 'pass':
+                if self.gsv_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

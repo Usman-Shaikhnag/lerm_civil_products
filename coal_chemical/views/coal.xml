@@ -521,8 +521,35 @@
                     </h1>
                 </div>
 
+            
 
-                <div invisible="not gross_calorific_visible">
+                    <div invisible="not gross_calorific_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Gross Calorific Value</span></td>
+                          <td style="padding: 8px;"><field name="gsv"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='gsv_conformity'
+                               decoration-success="gsv_conformity == 'pass'" 
+                               decoration-danger="gsv_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='gsv_nabl'
+                               decoration-success="gsv_nabl == 'pass'" 
+                               decoration-danger="gsv_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                <!-- <div invisible="not gross_calorific_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                            <tr>
@@ -613,7 +640,7 @@
                          </tr>
                      </tbody>
                       </table>
-                    </div>
+                    </div> -->
 
 
 

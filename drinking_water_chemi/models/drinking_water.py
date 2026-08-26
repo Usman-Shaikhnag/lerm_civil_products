@@ -14,8 +14,8 @@ class ChemicalDrinkingWater(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 
@@ -92,11 +92,27 @@ class ChemicalDrinkingWater(models.Model):
     ph_1_percent_e = fields.Float("pH of 1 % Solution in water")
     ph_average = fields.Float("Average",compute="_compute_ph_average")
 
-    @api.depends("ph_1_percent_a",'ph_1_percent_b','ph_1_percent_c','ph_1_percent_d','ph_1_percent_e')
+    @api.depends('ph_1_percent_a', 'ph_1_percent_b', 'ph_1_percent_c', 'ph_1_percent_d', 'ph_1_percent_e')
     def _compute_ph_average(self):
-        for record in self:
-            record.ph_average = (record.ph_1_percent_a + record.ph_1_percent_b + record.ph_1_percent_c + record.ph_1_percent_d + record.ph_1_percent_e)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            ph = [
+                rec.ph_1_percent_a,
+                rec.ph_1_percent_b,
+                rec.ph_1_percent_c,
+                rec.ph_1_percent_d,
+                rec.ph_1_percent_e
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_ph = [c for c in ph if c]  # ya (c for c in ph if c not in [False, None, 0.0])
+            
+            if valid_ph:
+                rec.ph_average = sum(valid_ph) / len(valid_ph)
+            else:
+                rec.ph_average = 0.0
 
+    
     ph_average_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -172,11 +188,27 @@ class ChemicalDrinkingWater(models.Model):
     conductivity_5 = fields.Float("Observation")
     conductivity_average = fields.Float("Average",compute="_compute_conductivity_average")
 
-    @api.depends("conductivity_1",'conductivity_2','conductivity_3','conductivity_4','conductivity_5')
+    @api.depends('conductivity_1', 'conductivity_2', 'conductivity_3', 'conductivity_4', 'conductivity_5')
     def _compute_conductivity_average(self):
-        for record in self:
-            record.conductivity_average = (record.conductivity_1 + record.conductivity_2 + record.conductivity_3 + record.conductivity_4 + record.conductivity_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            conductivity = [
+                rec.conductivity_1,
+                rec.conductivity_2,
+                rec.conductivity_3,
+                rec.conductivity_4,
+                rec.conductivity_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_conductivity = [c for c in conductivity if c]  # ya (c for c in conductivity if c not in [False, None, 0.0])
+            
+            if valid_conductivity:
+                rec.conductivity_average = sum(valid_conductivity) / len(valid_conductivity)
+            else:
+                rec.conductivity_average = 0.0
 
+   
     conductivity_average_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -250,23 +282,23 @@ class ChemicalDrinkingWater(models.Model):
     sample_taken4 = fields.Float(string="Sample taken (V)")
     sample_taken5 = fields.Float(string="Sample taken (V)")
 
-    initial_dish1 = fields.Float(string="Initial wt. evaporating dish")
-    initial_dish2 = fields.Float(string="Initial wt. evaporating dish")
-    initial_dish3 = fields.Float(string="Initial wt. evaporating dish")
-    initial_dish4 = fields.Float(string="Initial wt. evaporating dish")
-    initial_dish5 = fields.Float(string="Initial wt. evaporating dish")
+    initial_dish1 = fields.Float(string="Initial wt. evaporating dish",digits=(12,4))
+    initial_dish2 = fields.Float(string="Initial wt. evaporating dish",digits=(12,4))
+    initial_dish3 = fields.Float(string="Initial wt. evaporating dish",digits=(12,4))
+    initial_dish4 = fields.Float(string="Initial wt. evaporating dish",digits=(12,4))
+    initial_dish5 = fields.Float(string="Initial wt. evaporating dish",digits=(12,4))
 
-    final_dish1 = fields.Float(string="Final wt. of evaporating dish")
-    final_dish2 = fields.Float(string="Final wt. of evaporating dish")
-    final_dish3 = fields.Float(string="Final wt. of evaporating dish")
-    final_dish4 = fields.Float(string="Final wt. of evaporating dish")
-    final_dish5 = fields.Float(string="Final wt. of evaporating dish")
+    final_dish1 = fields.Float(string="Final wt. of evaporating dish",digits=(12,4))
+    final_dish2 = fields.Float(string="Final wt. of evaporating dish",digits=(12,4))
+    final_dish3 = fields.Float(string="Final wt. of evaporating dish",digits=(12,4))
+    final_dish4 = fields.Float(string="Final wt. of evaporating dish",digits=(12,4))
+    final_dish5 = fields.Float(string="Final wt. of evaporating dish",digits=(12,4))
 
-    mass_residue1 = fields.Float(string="Mass in mg of filterable residue ( M )")
-    mass_residue2 = fields.Float(string="Mass in mg of filterable residue ( M )")
-    mass_residue3 = fields.Float(string="Mass in mg of filterable residue ( M )")
-    mass_residue4 = fields.Float(string="Mass in mg of filterable residue ( M )")
-    mass_residue5 = fields.Float(string="Mass in mg of filterable residue ( M )")
+    mass_residue1 = fields.Float(string="Mass in mg of filterable residue ( M )",compute="_compute_mass_residue")
+    mass_residue2 = fields.Float(string="Mass in mg of filterable residue ( M )",compute="_compute_mass_residue")
+    mass_residue3 = fields.Float(string="Mass in mg of filterable residue ( M )",compute="_compute_mass_residue")
+    mass_residue4 = fields.Float(string="Mass in mg of filterable residue ( M )",compute="_compute_mass_residue")
+    mass_residue5 = fields.Float(string="Mass in mg of filterable residue ( M )",compute="_compute_mass_residue")
 
     filterable1 = fields.Float(string="Result Filterable residue",compute="_compute_filterable", store=True)
     filterable2 = fields.Float(string="Result Filterable residue",compute="_compute_filterable", store=True)
@@ -275,6 +307,26 @@ class ChemicalDrinkingWater(models.Model):
     filterable5 = fields.Float(string="Result Filterable residue",compute="_compute_filterable", store=True)
 
     avg_dissolved_solid = fields.Float(string="Average",compute="_compute_avg_dissolved_solid",store=True)
+
+    @api.depends('filterable1', 'filterable2', 'filterable3', 'filterable4', 'filterable5')
+    def _compute_avg_dissolved_solid(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            dissolved_solid = [
+                rec.filterable1,
+                rec.filterable2,
+                rec.filterable3,
+                rec.filterable4,
+                rec.filterable5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_dissolved_solid = [c for c in dissolved_solid if c]  # ya (c for c in dissolved_solid if c not in [False, None, 0.0])
+            
+            if valid_dissolved_solid:
+                rec.avg_dissolved_solid = sum(valid_dissolved_solid) / len(valid_dissolved_solid)
+            else:
+                rec.avg_dissolved_solid = 0.0
 
     @api.depends(
         'sample_taken1','mass_residue1',
@@ -291,21 +343,37 @@ class ChemicalDrinkingWater(models.Model):
             rec.filterable4 = (rec.mass_residue4 * 1000 / rec.sample_taken4) if rec.sample_taken4 else 0.0
             rec.filterable5 = (rec.mass_residue5 * 1000 / rec.sample_taken5) if rec.sample_taken5 else 0.0
 
-    @api.depends('filterable1','filterable2','filterable3','filterable4','filterable5')
-    def _compute_avg_dissolved_solid(self):
-        for rec in self:
-            values = [
-                rec.filterable1,
-                rec.filterable2,
-                rec.filterable3,
-                rec.filterable4,
-                rec.filterable5
-            ]
 
-            # Optional: None avoid + better average
-            valid_values = [v for v in values if v]
+    @api.depends(
+    'initial_dish1', 'final_dish1',
+    'initial_dish2', 'final_dish2',
+    'initial_dish3', 'final_dish3',
+    'initial_dish4', 'final_dish4',
+    'initial_dish5', 'final_dish5'
+    )
+    def _compute_mass_residue(self):
+        for record in self:
+            record.mass_residue1 = (
+                record.final_dish1 - record.initial_dish1
+            ) * 1000
 
-            rec.avg_dissolved_solid = sum(valid_values) / len(valid_values) if valid_values else 0.0
+            record.mass_residue2 = (
+                record.final_dish2 - record.initial_dish2
+            ) * 1000
+
+            record.mass_residue3 = (
+                record.final_dish3 - record.initial_dish3
+            ) * 1000
+
+            record.mass_residue4 = (
+                record.final_dish4 - record.initial_dish4
+            ) * 1000
+
+            record.mass_residue5 = (
+                record.final_dish5 - record.initial_dish5
+            ) * 1000
+
+    
 
 
     avg_dissolved_solid_conformity = fields.Selection([
@@ -382,11 +450,27 @@ class ChemicalDrinkingWater(models.Model):
     turbidity_5 = fields.Float("Observation")
     turbidity_average = fields.Float("Average",compute="_compute_turbidity_average")
 
-    @api.depends("turbidity_1",'turbidity_2','turbidity_3','turbidity_4','turbidity_5')
+    @api.depends('turbidity_1', 'turbidity_2', 'turbidity_3', 'turbidity_4', 'turbidity_5')
     def _compute_turbidity_average(self):
-        for record in self:
-            record.turbidity_average = (record.turbidity_1 + record.turbidity_2 + record.turbidity_3 + record.turbidity_4 + record.turbidity_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            turbidity = [
+                rec.turbidity_1,
+                rec.turbidity_2,
+                rec.turbidity_3,
+                rec.turbidity_4,
+                rec.turbidity_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_turbidity = [c for c in turbidity if c]  # ya (c for c in turbidity if c not in [False, None, 0.0])
+            
+            if valid_turbidity:
+                rec.turbidity_average = sum(valid_turbidity) / len(valid_turbidity)
+            else:
+                rec.turbidity_average = 0.0
 
+    
     turbidity_average_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -633,16 +717,25 @@ class ChemicalDrinkingWater(models.Model):
 
     avg_hardness = fields.Float(string="Average Hardness (mg/l)",compute="_compute_avg_hardness", store=True)
 
-    @api.depends('hardness1','hardness2','hardness3','hardness4','hardness5')
+    @api.depends('hardness1', 'hardness2', 'hardness3', 'hardness4', 'hardness5')
     def _compute_avg_hardness(self):
         for rec in self:
-            rec.avg_hardness = (
-                rec.hardness1 +
-                rec.hardness2 +
-                rec.hardness3 +
-                rec.hardness4 +
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            avg_hardness = [
+                rec.hardness1,
+                rec.hardness2,
+                rec.hardness3,
+                rec.hardness4,
                 rec.hardness5
-            ) / 5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_hardness = [c for c in avg_hardness if c]  # ya (c for c in avg_hardness if c not in [False, None, 0.0])
+            
+            if valid_avg_hardness:
+                rec.avg_hardness = sum(valid_avg_hardness) / len(valid_avg_hardness)
+            else:
+                rec.avg_hardness = 0.0
 
 
     @api.depends(
@@ -762,6 +855,26 @@ class ChemicalDrinkingWater(models.Model):
 
     avg_alkalinity = fields.Float(string="Average Alkalinity (mg/l)",compute="_compute_avg_alkalinity", store=True)
 
+    @api.depends('alkalinity1', 'alkalinity2', 'alkalinity3', 'alkalinity4', 'alkalinity5')
+    def _compute_avg_alkalinity(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            alkalinity = [
+                rec.alkalinity1,
+                rec.alkalinity2,
+                rec.alkalinity3,
+                rec.alkalinity4,
+                rec.alkalinity5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_alkalinity = [c for c in alkalinity if c]  # ya (c for c in avg_alkalinity if c not in [False, None, 0.0])
+            
+            if valid_avg_alkalinity:
+                rec.avg_alkalinity = sum(valid_avg_alkalinity) / len(valid_avg_alkalinity)
+            else:
+                rec.avg_alkalinity = 0.0
+
 
     @api.depends(
     'alkalinity_sample_takenv3_1','alkalinity_titrationx1_1','alkalinity_normality_1',
@@ -784,16 +897,7 @@ class ChemicalDrinkingWater(models.Model):
             rec.alkalinity5 = (rec.alkalinity_titrationx1_5 * rec.alkalinity_normality_5 * 50 * 1000 / rec.alkalinity_sample_takenv3_5) if rec.alkalinity_sample_takenv3_5 else 0.0
 
 
-    @api.depends('alkalinity1','alkalinity2','alkalinity3','alkalinity4','alkalinity5')
-    def _compute_avg_alkalinity(self):
-        for rec in self:
-            rec.avg_alkalinity = (
-                rec.alkalinity1 +
-                rec.alkalinity2 +
-                rec.alkalinity3 +
-                rec.alkalinity4 +
-                rec.alkalinity5
-            ) / 5
+    
 
 
     avg_alkalinity_conformity = fields.Selection([
@@ -885,16 +989,26 @@ class ChemicalDrinkingWater(models.Model):
     avg_calcium = fields.Float(string="Average Calcium (mg/l)",compute="_compute_avg_calcium", store=True)
 
 
-    @api.depends('calcium1','calcium2','calcium3','calcium4','calcium5')
+
+    @api.depends('calcium1', 'calcium2', 'calcium3', 'calcium4', 'calcium5')
     def _compute_avg_calcium(self):
         for rec in self:
-            rec.avg_calcium = (
-                rec.calcium1 +
-                rec.calcium2 +
-                rec.calcium3 +
-                rec.calcium4 +
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            calcium = [
+                rec.calcium1,
+                rec.calcium2,
+                rec.calcium3,
+                rec.calcium4,
                 rec.calcium5
-            ) / 5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_calcium = [c for c in calcium if c]  # ya (c for c in avg_calcium if c not in [False, None, 0.0])
+            
+            if valid_avg_calcium:
+                rec.avg_calcium = sum(valid_avg_calcium) / len(valid_avg_calcium)
+            else:
+                rec.avg_calcium = 0.0
 
 
     @api.depends(
@@ -1004,11 +1118,11 @@ class ChemicalDrinkingWater(models.Model):
     magnesium_th_4 = fields.Float(string="Total Hardness (mg/l)")
     magnesium_th_5 = fields.Float(string="Total Hardness (mg/l)")
 
-    magnesium_ch_1 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch", store=True)
-    magnesium_ch_2 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch", store=True)
-    magnesium_ch_3 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch", store=True)
-    magnesium_ch_4 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch", store=True)
-    magnesium_ch_5 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch", store=True)
+    magnesium_ch_1 = fields.Float(string="Calcium Hardness (mg/l)")
+    magnesium_ch_2 = fields.Float(string="Calcium Hardness (mg/l)")
+    magnesium_ch_3 = fields.Float(string="Calcium Hardness (mg/l)")
+    magnesium_ch_4 = fields.Float(string="Calcium Hardness (mg/l)")
+    magnesium_ch_5 = fields.Float(string="Calcium Hardness (mg/l)")
 
     
     magnesium_mh_1 = fields.Float(string="Magnesium Hardness", compute="_compute_magnesium_mh", store=True)
@@ -1023,51 +1137,89 @@ class ChemicalDrinkingWater(models.Model):
     magnesium_4 = fields.Float(string="Magnesium (mg/l)", compute="_compute_magnesium", store=True)
     magnesium_5 = fields.Float(string="Magnesium (mg/l)", compute="_compute_magnesium", store=True)
 
-    avg_magnesium = fields.Float(string="Average Magnesium (mg/l)",)
-
-
-    @api.depends('magnesium_1','magnesium_2','magnesium_3','magnesium_4','magnesium_5')
-    def _compute_avg_magnesium(self):
-        for rec in self:
-            rec.avg_magnesium = (
-                rec.magnesium_1 +
-                rec.magnesium_2 +
-                rec.magnesium_3 +
-                rec.magnesium_4 +
-                rec.magnesium_5
-            ) / 5
-
-
     @api.depends(
-    'cf_magnesium',
-    'magnesium_sample_taken_1','magnesium_calcium_titre_1',
-    'magnesium_sample_taken_2','magnesium_calcium_titre_2',
-    'magnesium_sample_taken_3','magnesium_calcium_titre_3',
-    'magnesium_sample_taken_4','magnesium_calcium_titre_4',
-    'magnesium_sample_taken_5','magnesium_calcium_titre_5',
-    )
-    def _compute_magnesium_ch(self):
-        for rec in self:
-            rec.magnesium_ch_1 = (rec.magnesium_calcium_titre_1 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_1) if rec.magnesium_sample_taken_1 else 0.0
-            rec.magnesium_ch_2 = (rec.magnesium_calcium_titre_2 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_2) if rec.magnesium_sample_taken_2 else 0.0
-            rec.magnesium_ch_3 = (rec.magnesium_calcium_titre_3 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_3) if rec.magnesium_sample_taken_3 else 0.0
-            rec.magnesium_ch_4 = (rec.magnesium_calcium_titre_4 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_4) if rec.magnesium_sample_taken_4 else 0.0
-            rec.magnesium_ch_5 = (rec.magnesium_calcium_titre_5 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_5) if rec.magnesium_sample_taken_5 else 0.0
-
-    @api.depends(
-    'magnesium_th_1','magnesium_ch_1',
-    'magnesium_th_2','magnesium_ch_2',
-    'magnesium_th_3','magnesium_ch_3',
-    'magnesium_th_4','magnesium_ch_4',
-    'magnesium_th_5','magnesium_ch_5',
+    'magnesium_th_1', 'magnesium_ch_1',
+    'magnesium_th_2', 'magnesium_ch_2',
+    'magnesium_th_3', 'magnesium_ch_3',
+    'magnesium_th_4', 'magnesium_ch_4',
+    'magnesium_th_5', 'magnesium_ch_5'
     )
     def _compute_magnesium_mh(self):
+        for record in self:
+            record.magnesium_mh_1 = (
+                record.magnesium_th_1 - record.magnesium_ch_1
+            )
+
+            record.magnesium_mh_2 = (
+                record.magnesium_th_2 - record.magnesium_ch_2
+            )
+
+            record.magnesium_mh_3 = (
+                record.magnesium_th_3 - record.magnesium_ch_3
+            )
+
+            record.magnesium_mh_4 = (
+                record.magnesium_th_4 - record.magnesium_ch_4
+            )
+
+            record.magnesium_mh_5 = (
+                record.magnesium_th_5 - record.magnesium_ch_5
+            )
+
+    avg_magnesium = fields.Float(string="Average Magnesium (mg/l)",compute="_compute_avg_magnesium")
+
+
+    @api.depends('magnesium_1', 'magnesium_2', 'magnesium_3', 'magnesium_4', 'magnesium_5')
+    def _compute_avg_magnesium(self):
         for rec in self:
-            rec.magnesium_mh_1 = rec.magnesium_th_1 - rec.magnesium_ch_1
-            rec.magnesium_mh_2 = rec.magnesium_th_2 - rec.magnesium_ch_2
-            rec.magnesium_mh_3 = rec.magnesium_th_3 - rec.magnesium_ch_3
-            rec.magnesium_mh_4 = rec.magnesium_th_4 - rec.magnesium_ch_4
-            rec.magnesium_mh_5 = rec.magnesium_th_5 - rec.magnesium_ch_5
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            magnesium = [
+                rec.magnesium_1,
+                rec.magnesium_2,
+                rec.magnesium_3,
+                rec.magnesium_4,
+                rec.magnesium_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_magnesium = [c for c in magnesium if c]  # ya (c for c in avg_magnesium if c not in [False, None, 0.0])
+            
+            if valid_avg_magnesium:
+                rec.avg_magnesium = sum(valid_avg_magnesium) / len(valid_avg_magnesium)
+            else:
+                rec.avg_magnesium = 0.0
+
+
+    # @api.depends(
+    # 'cf_magnesium',
+    # 'magnesium_sample_taken_1','magnesium_calcium_titre_1',
+    # 'magnesium_sample_taken_2','magnesium_calcium_titre_2',
+    # 'magnesium_sample_taken_3','magnesium_calcium_titre_3',
+    # 'magnesium_sample_taken_4','magnesium_calcium_titre_4',
+    # 'magnesium_sample_taken_5','magnesium_calcium_titre_5',
+    # )
+    # def _compute_magnesium_ch(self):
+    #     for rec in self:
+    #         rec.magnesium_ch_1 = (rec.magnesium_calcium_titre_1 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_1) if rec.magnesium_sample_taken_1 else 0.0
+    #         rec.magnesium_ch_2 = (rec.magnesium_calcium_titre_2 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_2) if rec.magnesium_sample_taken_2 else 0.0
+    #         rec.magnesium_ch_3 = (rec.magnesium_calcium_titre_3 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_3) if rec.magnesium_sample_taken_3 else 0.0
+    #         rec.magnesium_ch_4 = (rec.magnesium_calcium_titre_4 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_4) if rec.magnesium_sample_taken_4 else 0.0
+    #         rec.magnesium_ch_5 = (rec.magnesium_calcium_titre_5 * rec.cf_magnesium * 100 / rec.magnesium_sample_taken_5) if rec.magnesium_sample_taken_5 else 0.0
+
+    # @api.depends(
+    # 'magnesium_th_1','magnesium_ch_1',
+    # 'magnesium_th_2','magnesium_ch_2',
+    # 'magnesium_th_3','magnesium_ch_3',
+    # 'magnesium_th_4','magnesium_ch_4',
+    # 'magnesium_th_5','magnesium_ch_5',
+    # )
+    # def _compute_magnesium_mh(self):
+    #     for rec in self:
+    #         rec.magnesium_mh_1 = rec.magnesium_th_1 - rec.magnesium_ch_1
+    #         rec.magnesium_mh_2 = rec.magnesium_th_2 - rec.magnesium_ch_2
+    #         rec.magnesium_mh_3 = rec.magnesium_th_3 - rec.magnesium_ch_3
+    #         rec.magnesium_mh_4 = rec.magnesium_th_4 - rec.magnesium_ch_4
+    #         rec.magnesium_mh_5 = rec.magnesium_th_5 - rec.magnesium_ch_5
 
     @api.depends(
     'magnesium_mh_1','magnesium_mh_2','magnesium_mh_3',
@@ -1157,10 +1309,26 @@ class ChemicalDrinkingWater(models.Model):
     sulphate_5 = fields.Float("Observation")
     sulphate_average = fields.Float("Average",compute="_compute_sulphate_average")
 
-    @api.depends("sulphate_1",'sulphate_2','sulphate_3','sulphate_4','sulphate_5')
+    @api.depends('sulphate_1', 'sulphate_2', 'sulphate_3', 'sulphate_4', 'sulphate_5')
     def _compute_sulphate_average(self):
-        for record in self:
-            record.sulphate_average = (record.sulphate_1 + record.sulphate_2 + record.sulphate_3 + record.sulphate_4 + record.sulphate_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            sulphate = [
+                rec.sulphate_1,
+                rec.sulphate_2,
+                rec.sulphate_3,
+                rec.sulphate_4,
+                rec.sulphate_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_sulphate = [c for c in sulphate if c]  # ya (c for c in avg_sulphate if c not in [False, None, 0.0])
+            
+            if valid_avg_sulphate:
+                rec.sulphate_average = sum(valid_avg_sulphate) / len(valid_avg_sulphate)
+            else:
+                rec.sulphate_average = 0.0
+
 
     sulphate_average_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1236,10 +1404,25 @@ class ChemicalDrinkingWater(models.Model):
     nitrate_5 = fields.Float("Observation")
     nitrate_average = fields.Float("Average",compute="_compute_nitrate_average")
 
-    @api.depends("nitrate_1",'nitrate_2','nitrate_3','nitrate_4','nitrate_5')
+    @api.depends('nitrate_1', 'nitrate_2', 'nitrate_3', 'nitrate_4', 'nitrate_5')
     def _compute_nitrate_average(self):
-        for record in self:
-            record.nitrate_average = (record.nitrate_1 + record.nitrate_2 + record.nitrate_3 + record.nitrate_4 + record.nitrate_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            nitrate = [
+                rec.nitrate_1,
+                rec.nitrate_2,
+                rec.nitrate_3,
+                rec.nitrate_4,
+                rec.nitrate_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_nitrate = [c for c in nitrate if c]  # ya (c for c in avg_nitrate if c not in [False, None, 0.0])
+            
+            if valid_avg_nitrate:
+                rec.nitrate_average = sum(valid_avg_nitrate) / len(valid_avg_nitrate)
+            else:
+                rec.nitrate_average = 0.0
 
     nitrate_average_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1314,10 +1497,25 @@ class ChemicalDrinkingWater(models.Model):
     silica_5 = fields.Float("Observation")
     silica_average = fields.Float("Average",compute="_compute_silica_average")
 
-    @api.depends("silica_1",'silica_2','silica_3','silica_4','silica_5')
+    @api.depends('silica_1', 'silica_2', 'silica_3', 'silica_4', 'silica_5')
     def _compute_silica_average(self):
-        for record in self:
-            record.silica_average = (record.silica_1 + record.silica_2 + record.silica_3 + record.silica_4 + record.silica_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            silica = [
+                rec.silica_1,
+                rec.silica_2,
+                rec.silica_3,
+                rec.silica_4,
+                rec.silica_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_silica = [c for c in silica if c]  # ya (c for c in avg_silica if c not in [False, None, 0.0])
+            
+            if valid_avg_silica:
+                rec.silica_average = sum(valid_avg_silica) / len(valid_avg_silica)
+            else:
+                rec.silica_average = 0.0
 
     silica_average_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1392,10 +1590,25 @@ class ChemicalDrinkingWater(models.Model):
     phosphorus_5 = fields.Float("Observation")
     phosphorus_average = fields.Float("Average",compute="_compute_phosphorus_average")
 
-    @api.depends("phosphorus_1",'phosphorus_2','phosphorus_3','phosphorus_4','phosphorus_5')
+    @api.depends('phosphorus_1', 'phosphorus_2', 'phosphorus_3', 'phosphorus_4', 'phosphorus_5')
     def _compute_phosphorus_average(self):
-        for record in self:
-            record.phosphorus_average = (record.phosphorus_1 + record.phosphorus_2 + record.phosphorus_3 + record.phosphorus_4 + record.phosphorus_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            phosphorus = [
+                rec.phosphorus_1,
+                rec.phosphorus_2,
+                rec.phosphorus_3,
+                rec.phosphorus_4,
+                rec.phosphorus_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_phosphorus = [c for c in phosphorus if c]  # ya (c for c in avg_phosphorus if c not in [False, None, 0.0])
+            
+            if valid_avg_phosphorus:
+                rec.phosphorus_average = sum(valid_avg_phosphorus) / len(valid_avg_phosphorus)
+            else:
+                rec.phosphorus_average = 0.0
 
     phosphorus_average_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1471,10 +1684,26 @@ class ChemicalDrinkingWater(models.Model):
     sodium_5 = fields.Float("Observation")
     sodium_average = fields.Float("Average",compute="_compute_sodium_average")
 
-    @api.depends("sodium_1",'sodium_2','sodium_3','sodium_4','sodium_5')
+    @api.depends('sodium_1', 'sodium_2', 'sodium_3', 'sodium_4', 'sodium_5')
     def _compute_sodium_average(self):
-        for record in self:
-            record.sodium_average = (record.sodium_1 + record.sodium_2 + record.sodium_3 + record.sodium_4 + record.sodium_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            sodium = [
+                rec.sodium_1,
+                rec.sodium_2,
+                rec.sodium_3,
+                rec.sodium_4,
+                rec.sodium_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_sodium = [c for c in sodium if c]  # ya (c for c in avg_sodium if c not in [False, None, 0.0])
+            
+            if valid_avg_sodium:
+                rec.sodium_average = sum(valid_avg_sodium) / len(valid_avg_sodium)
+            else:
+                rec.sodium_average = 0.0
+
 
     sodium_average_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1548,10 +1777,25 @@ class ChemicalDrinkingWater(models.Model):
     potassium_5 = fields.Float("Observation")
     potassium_average = fields.Float("Average",compute="_compute_potassium_average")
 
-    @api.depends("potassium_1",'potassium_2','potassium_3','potassium_4','potassium_5')
+    @api.depends('potassium_1', 'potassium_2', 'potassium_3', 'potassium_4', 'potassium_5')
     def _compute_potassium_average(self):
-        for record in self:
-            record.potassium_average = (record.potassium_1 + record.potassium_2 + record.potassium_3 + record.potassium_4 + record.potassium_5)/5
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            potassium = [
+                rec.potassium_1,
+                rec.potassium_2,
+                rec.potassium_3,
+                rec.potassium_4,
+                rec.potassium_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_avg_potassium = [c for c in potassium if c]  # ya (c for c in avg_potassium if c not in [False, None, 0.0])
+            
+            if valid_avg_potassium:
+                rec.potassium_average = sum(valid_avg_potassium) / len(valid_avg_potassium)
+            else:
+                rec.potassium_average = 0.0
 
     potassium_average_conformity = fields.Selection([
             ('pass', 'Pass'),

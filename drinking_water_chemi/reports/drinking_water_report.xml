@@ -1003,16 +1003,12 @@
 							</tr>
 
                              <!-- phosphorus_visible -->
-							<tr t-if="data.phosphorus_visible and (data.phosphorus_average_nabl == 'pass' and nabl or (data.phosphorus_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<!-- <tr t-if="data.phosphorus_visible and (data.phosphorus_average_nabl == 'pass' and nabl or (data.phosphorus_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</td>
-								<!-- <td>
-									<span>
-										pH (25°C)
-									</span>
-								</td> -->
+								
 								
 								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','62478ye-ba0b-4e64-84d1-e3b23ftyy147r')]).parameter_name"/>
@@ -1054,7 +1050,7 @@
 								<span t-field="data.phosphorus_average_conformity"/>
 							</td>
 								
-							</tr>
+							</tr> -->
 
 
                              <!-- sodium_visible -->

@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_steel_form" model="ir.ui.view">
+        <field name="name">steel.chemical.form</field>
+        <field name="model">steel.chemical</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <!-- ph at 1% -->
+                    <div invisible="not carbon_visible">
+
+                        <h1 class="text-center">
+                            <field name="carbon_name" readonly="1" nolabel="1"/>
+                            <field name="carbon_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- pH -->
+
+                    <div invisible="not carbon_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           
+                             <td>Nomenclature</td>
+                             <td>Dia (mm)</td>
+                             <td>Bar. Pressure</td>
+                             <td>Ambient Temp.</td>
+                             <td>Pressure-Temp. Correction Factor (F)</td>
+                           </tr>
+                           <tr>
+                             
+                             <td><field  name="nomenclature"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dia"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="pressure"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ambient"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="correction_factor"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                     <div invisible="not carbon_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>S.No.</td>
+                             <td>Type of sample</td>
+                             <td>Wt. of sample (W)</td>
+                             <td>Burette Reading for sample (A)</td>
+                             <td>Burette Reading for Blank (B)</td>
+                             <td>Calculation= (A - B) X F " </td>
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="type_of_sample1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="wt_of_sample1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_a1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_b1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="carbon_calculation1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="type_of_sample2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="wt_of_sample2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_a2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_b2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="carbon_calculation2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="type_of_sample3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="wt_of_sample3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_a3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_b3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="carbon_calculation3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="type_of_sample4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="wt_of_sample4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_a4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_b4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="carbon_calculation4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="type_of_sample5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="wt_of_sample5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_a5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="br_reading_b5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="carbon_calculation5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not carbon_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Percentage of Carbon -</span></td>
+                          <td style="padding: 8px;"><field name="carbon_percentage"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='carbon_percentage_conformity'
+                               decoration-success="carbon_percentage_conformity == 'pass'" 
+                               decoration-danger="carbon_percentage_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='carbon_percentage_nabl'
+                               decoration-success="carbon_percentage_nabl == 'pass'" 
+                               decoration-danger="carbon_percentage_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+                      <!-- Total Suspended Solids (mg/l) -->
+                   <div invisible="phosphorus_visible == False">
+                    <h1 class="text-center">
+                        <field name="phosphorus_name" readonly="1" nolabel="1"/>
+                        <field name="phosphorus_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not phosphorus_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>S. No.</td>
+                             <td>Weight of sample taken in gm (D)</td>
+                             <td>Std. HNO3 solution consumed in sample in ml (A)</td>
+                             <td>Std. HNO3 solution consumed in Blank in ml (B)</td>
+                             <td>Phosphorus equivalent of 1 ml std. HNO3 solution (C)</td>
+                             <td>Percentage of phosphorus ((B - A) × C / D) × 100</td>
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="wt_sample_taken1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_a1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_b1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_c1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_of_phosphorus1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="wt_sample_taken2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_a2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_b2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_c2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_of_phosphorus2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="wt_sample_taken3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_a3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_b3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_c3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_of_phosphorus3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="wt_sample_taken4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_a4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_b4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_c4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_of_phosphorus4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><field  name="wt_sample_taken5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_a5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_b5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hno3_c5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_of_phosphorus5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not phosphorus_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Percentage of phosphorus =</span></td>
+                          <td style="padding: 8px;"><field name="avg_phosphorus"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_phosphorus_conformity'
+                               decoration-success="avg_phosphorus_conformity == 'pass'" 
+                               decoration-danger="avg_phosphorus_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_phosphorus_nabl'
+                               decoration-success="avg_phosphorus_nabl == 'pass'" 
+                               decoration-danger="avg_phosphorus_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- Oxygen Demand -->
+                    <div invisible="sulphur_steel_visible == False">
+                    <h1 class="text-center">
+                        <field name="sulphur_steel_name" readonly="1" nolabel="1"/>
+                        <field name="sulphur_steel_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not sulphur_steel_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sr. No.</td>
+                             <td>Weight of sample taken in gm (D)</td>
+                             <td>Volume in ml, of potassium iodate solution  used (B)</td>
+                             <td>Volume in ml, of potassium iodate solution added (A)</td>
+                             <td>Normality of potassium iodate solution (C)</td>
+                             <td>Percentage of Sulphur = [(A − B) × C × 1.6] / D</td>
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="sulpher_wt_sample1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumb1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiuma1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumc1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_sulpher1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="sulpher_wt_sample2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumb2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiuma2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumc2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_sulpher2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                            
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="sulpher_wt_sample3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumb3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiuma3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumc3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_sulpher3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="sulpher_wt_sample4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumb4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiuma4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumc4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_sulpher4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><field  name="sulpher_wt_sample5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumb5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiuma5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpher_potassiumc5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percentage_sulpher5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                            
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not sulphur_steel_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Percentage of Sulphur =</span></td>
+                          <td style="padding: 8px;"><field name="avg_sulphur"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_sulphur_conformity'
+                               decoration-success="avg_sulphur_conformity == 'pass'" 
+                               decoration-danger="avg_sulphur_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_sulphur_nabl'
+                               decoration-success="avg_sulphur_nabl == 'pass'" 
+                               decoration-danger="avg_sulphur_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                    <!-- Bio Oxygen Demand -->
+                    <div invisible="manganese_visible == False">
+                    <h1 class="text-center">
+                        <field name="manganese_name" readonly="1" nolabel="1"/>
+                        <field name="manganese_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not manganese_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sr. No.</td>
+                             <td>Weight of sample taken in gm (C)</td>
+                             <td>Std. Sodium arsenite solution consumed in sample in ml (A)</td>
+                             <td>Manganese equipment of std. sodium arsenite solution  (B) gm/ml</td>
+                             <td>% of Manganese = ([(A × B) / C] × 100)</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="manganese_wt_samplec1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiuma1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiumb1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_percentage1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="manganese_wt_samplec2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiuma2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiumb2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_percentage2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="manganese_wt_samplec3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiuma3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiumb3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_percentage3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="manganese_wt_samplec4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiuma4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiumb4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_percentage4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="manganese_wt_samplec5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiuma5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_sodiumb5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="manganese_percentage5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not manganese_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Percentage of Manganese =</span></td>
+                          <td style="padding: 8px;"><field name="avg_manganese"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_manganese_conformity'
+                               decoration-success="avg_manganese_conformity == 'pass'" 
+                               decoration-danger="avg_manganese_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_manganese_nabl'
+                               decoration-success="avg_manganese_nabl == 'pass'" 
+                               decoration-danger="avg_manganese_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                        <!-- OIL & GREASE -->
+                    <div invisible="silicon_visible == False">
+                    <h1 class="text-center">
+                        <field name="silicon_name" readonly="1" nolabel="1"/>
+                        <field name="silicon_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not silicon_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sr. No.</td>
+                             <td>Weight of sample taken in gm (C)</td>
+                             <td>Mass in gm. Of silica obtained in sample (A)</td>
+                             <td>Mass in gm. Of silica obtained in blank (B)</td>
+                             <td>PERCENTAGE OF SILICON % =</td>
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="wt_of_silicon1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mas_of_silicon1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_of_siliconb1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_of_silicon1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="wt_of_silicon2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mas_of_silicon2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_of_siliconb2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_of_silicon2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="wt_of_silicon3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mas_of_silicon3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_of_siliconb3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_of_silicon3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="wt_of_silicon4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mas_of_silicon4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_of_siliconb4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_of_silicon4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><field  name="wt_of_silicon5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mas_of_silicon5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_of_siliconb5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_of_silicon5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not silicon_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>PERCENTAGE OF SILICON % =</span></td>
+                          <td style="padding: 8px;"><field name="avg_silicon"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_silicon_conformity'
+                               decoration-success="avg_silicon_conformity == 'pass'" 
+                               decoration-danger="avg_silicon_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_silicon_nabl'
+                               decoration-success="avg_silicon_nabl == 'pass'" 
+                               decoration-danger="avg_silicon_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                      <!-- calcium-->
+                <div invisible="chromium_visible == False">
+                    <h1 class="text-center">
+                        <field name="chromium_name" readonly="1" nolabel="1"/>
+                        <field name="chromium_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+               
+                <div invisible="not chromium_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>S. No.</td>
+
+                             <td>Volume in ml of std. Ferrous ammonium sulphate solution added, (A)</td>
+                             <td>Volume in ml of std. Potassium permanganate solution equivalent to 1 ml of Ferrous ammonium sulphate solution, (B)</td>
+                             <td>Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)</td>
+                             <td>Normality of Std. Potassium Permanganate solution, (D)</td>
+                             <td>Mass in gm of the sample taken for Test, (E)</td>
+                             <td>Percent of Chromium= ((AB-C) X 0.01733 X 100)/E</td>
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="chromium_voluma_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumb_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumc1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_normalityd1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_masse1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_chromium1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="chromium_voluma_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumb_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumc2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_normalityd2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_masse2"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="percent_chromium2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="chromium_voluma_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumb_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumc3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_normalityd3"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="chromium_masse3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_chromium3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="chromium_voluma_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumb_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumc4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_normalityd4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_masse4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_chromium4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><field  name="chromium_voluma_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumb_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_volumc5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_normalityd5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chromium_masse5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_chromium5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not chromium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>PERCENTAGE OF Chromium % =</span></td>
+                          <td style="padding: 8px;"><field name="avg_chromium"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_chromium_conformity'
+                               decoration-success="avg_chromium_conformity == 'pass'" 
+                               decoration-danger="avg_chromium_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_chromium_nabl'
+                               decoration-success="avg_chromium_nabl == 'pass'" 
+                               decoration-danger="avg_chromium_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- CHLORIDE -->
+                <div invisible="nickel_visible == False">
+                    <h1 class="text-center">
+                        <field name="nickel_name" readonly="1" nolabel="1"/>
+                        <field name="nickel_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not nickel_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sr. No.</td>
+                             <td>Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)</td>
+                             <td>Mass in gm of the sample of aliquot representing the sample taken, (B)</td>
+                             <td>Percent of Nickel= (A X 20.32)/B</td>
+                           
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><field  name="mass_nickela1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_nickelb1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="percent_nickel_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><field  name="mass_nickela2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_nickelb2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           
+                             <td><field  name="percent_nickel_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><field  name="mass_nickela3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_nickelb3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             
+                             <td><field  name="percent_nickel_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><field  name="mass_nickela4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_nickelb4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                            
+                             <td><field  name="percent_nickel_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><field  name="mass_nickela5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_nickelb5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                            
+                             <td><field  name="percent_nickel_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not nickel_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>PERCENTAGE OF Nickel % =</span></td>
+                          <td style="padding: 8px;"><field name="avg_nickel"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_nickel_conformity'
+                               decoration-success="avg_nickel_conformity == 'pass'" 
+                               decoration-danger="avg_nickel_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_nickel_nabl'
+                               decoration-success="avg_nickel_nabl == 'pass'" 
+                               decoration-danger="avg_nickel_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                     
+
+
+
+
+                    
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>
