@@ -1118,11 +1118,11 @@ class ChemicalDrinkingWater(models.Model):
     magnesium_th_4 = fields.Float(string="Total Hardness (mg/l)")
     magnesium_th_5 = fields.Float(string="Total Hardness (mg/l)")
 
-    magnesium_ch_1 = fields.Float(string="Calcium Hardness (mg/l)")
-    magnesium_ch_2 = fields.Float(string="Calcium Hardness (mg/l)")
-    magnesium_ch_3 = fields.Float(string="Calcium Hardness (mg/l)")
-    magnesium_ch_4 = fields.Float(string="Calcium Hardness (mg/l)")
-    magnesium_ch_5 = fields.Float(string="Calcium Hardness (mg/l)")
+    magnesium_ch_1 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch")
+    magnesium_ch_2 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch")
+    magnesium_ch_3 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch")
+    magnesium_ch_4 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch")
+    magnesium_ch_5 = fields.Float(string="Calcium Hardness (mg/l)",compute="_compute_magnesium_ch")
 
     
     magnesium_mh_1 = fields.Float(string="Magnesium Hardness", compute="_compute_magnesium_mh", store=True)
@@ -1136,6 +1136,77 @@ class ChemicalDrinkingWater(models.Model):
     magnesium_3 = fields.Float(string="Magnesium (mg/l)", compute="_compute_magnesium", store=True)
     magnesium_4 = fields.Float(string="Magnesium (mg/l)", compute="_compute_magnesium", store=True)
     magnesium_5 = fields.Float(string="Magnesium (mg/l)", compute="_compute_magnesium", store=True)
+
+    @api.depends(
+    'cf_magnesium',
+
+    'magnesium_sample_taken_1',
+    'magnesium_calcium_titre_1',
+
+    'magnesium_sample_taken_2',
+    'magnesium_calcium_titre_2',
+
+    'magnesium_sample_taken_3',
+    'magnesium_calcium_titre_3',
+
+    'magnesium_sample_taken_4',
+    'magnesium_calcium_titre_4',
+
+    'magnesium_sample_taken_5',
+    'magnesium_calcium_titre_5'
+    )
+    def _compute_magnesium_ch(self):
+        for record in self:
+
+            # Sample 1
+            if record.magnesium_sample_taken_1:
+                record.magnesium_ch_1 = (
+                    record.magnesium_calcium_titre_1
+                    * record.cf_magnesium
+                    * 1000
+                ) / record.magnesium_sample_taken_1
+            else:
+                record.magnesium_ch_1 = 0.0
+
+            # Sample 2
+            if record.magnesium_sample_taken_2:
+                record.magnesium_ch_2 = (
+                    record.magnesium_calcium_titre_2
+                    * record.cf_magnesium
+                    * 1000
+                ) / record.magnesium_sample_taken_2
+            else:
+                record.magnesium_ch_2 = 0.0
+
+            # Sample 3
+            if record.magnesium_sample_taken_3:
+                record.magnesium_ch_3 = (
+                    record.magnesium_calcium_titre_3
+                    * record.cf_magnesium
+                    * 1000
+                ) / record.magnesium_sample_taken_3
+            else:
+                record.magnesium_ch_3 = 0.0
+
+            # Sample 4
+            if record.magnesium_sample_taken_4:
+                record.magnesium_ch_4 = (
+                    record.magnesium_calcium_titre_4
+                    * record.cf_magnesium
+                    * 1000
+                ) / record.magnesium_sample_taken_4
+            else:
+                record.magnesium_ch_4 = 0.0
+
+            # Sample 5
+            if record.magnesium_sample_taken_5:
+                record.magnesium_ch_5 = (
+                    record.magnesium_calcium_titre_5
+                    * record.cf_magnesium
+                    * 1000
+                ) / record.magnesium_sample_taken_5
+            else:
+                record.magnesium_ch_5 = 0.0
 
     @api.depends(
     'magnesium_th_1', 'magnesium_ch_1',
