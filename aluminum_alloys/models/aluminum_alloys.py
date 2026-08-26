@@ -21,8 +21,8 @@ class MechanicalAluminumAlloys(models.Model):
         if self.eln_ref:
             self.size_id = self.eln_ref.size_id.id
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 

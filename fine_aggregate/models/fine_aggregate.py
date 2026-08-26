@@ -21,8 +21,8 @@ class FineAggregate(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 

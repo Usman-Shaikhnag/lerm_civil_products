@@ -25,8 +25,8 @@ class MechanicalConcreteCube(models.Model):
 
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 

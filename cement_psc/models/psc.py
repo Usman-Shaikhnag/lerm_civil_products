@@ -20,8 +20,8 @@ class CementPSC(models.Model):
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
 
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     week_no = fields.Char("Week No")
 

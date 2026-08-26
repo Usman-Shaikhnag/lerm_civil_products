@@ -13,8 +13,8 @@ class MechanicalAdmixture(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
-    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
 
     condition = fields.Char("Condition")
 
