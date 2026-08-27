@@ -222,7 +222,7 @@ class AacBlockMechanical(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
             }),
         ]
 
@@ -288,6 +288,7 @@ class AacBlockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32134e16-d5ef-4319-ad7c-f10e03b326ae')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    # import wdb;wdb.set_trace();
                     if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.length_conformity = '--'
                         break
