@@ -81,13 +81,8 @@ class AacBlockMechanical(models.Model):
             
             # Dimension
             if result.parameter.internal_id == '12478fdr3w-ac79-4102-aeda-622dc0f973f6':
-                # result.result_char = round(self.aggregate_elongation,2)
                 result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                continue
 
              # Moisture Content
             if result.parameter.internal_id == '6478fde2-8097-4275-b80f-48ebdbcfe244':
@@ -248,15 +243,30 @@ class AacBlockMechanical(models.Model):
     average_length = fields.Float('Average Length',compute="_compute_average_length")
     length_grade1 = fields.Char("Length pecification Grade - 1")
     length_grade2 = fields.Char("Length Specification Grade - 2")
+    length_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string='Conformity', default='fail',compute="_compute_length_conformity")
 
     average_width = fields.Float('Average Width',compute="_compute_average_width")
-    width_grade1 = fields.Char("Width Specification Grade - 1")
-    width_grade2 = fields.Char("Width Specification Grade - 2")
+    width_grade1 = Char("Width Specification Grade - 1")
+    width_grade2 = Char("Width Specification Grade - 2")
+    width_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string='Conformity', default='fail',compute="_compute_width_conformity")
 
     average_height = fields.Float('Average Height',compute="_compute_average_height")
 
     height_grade1 = fields.Char("Height Specification Grade - 1")
     height_grade2 = fields.Char("Height Specification Grade - 2")
+    height_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string='Conformity', default='fail',compute="_compute_height_conformity")
 
 
 
@@ -270,6 +280,28 @@ class AacBlockMechanical(models.Model):
             except:
                 record.average_length = 0
 
+    @api.depends('average_length','eln_ref','grade')
+    def _compute_length_conformity(self):
+        for record in self:
+            record.length_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32134e16-d5ef-4319-ad7c-f10e03b326ae')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32134e16-d5ef-4319-ad7c-f10e03b326ae')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.length_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_length - record.average_length*mu_value
+                    upper = record.average_length + record.average_length*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.length_conformity = 'pass'
+                        break
+                    else:
+                        record.length_conformity = 'fail'
+
     
     @api.depends('dimension_table.width')
     def _compute_average_width(self):
@@ -280,6 +312,28 @@ class AacBlockMechanical(models.Model):
             except:
                 record.average_width = 0
 
+    @api.depends('average_width','eln_ref','grade')
+    def _compute_width_conformity(self):
+        for record in self:
+            record.width_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c52d3b4f-7dd4-4f98-acbb-a39c076e33f9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c52d3b4f-7dd4-4f98-acbb-a39c076e33f9')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.width_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_width - record.average_width*mu_value
+                    upper = record.average_width + record.average_width*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.width_conformity = 'pass'
+                        break
+                    else:
+                        record.width_conformity = 'fail'
+
 
     @api.depends('dimension_table.height')
     def _compute_average_height(self):
@@ -289,6 +343,28 @@ class AacBlockMechanical(models.Model):
                     record.dimension_table),2)
             except:
                 record.average_height = 0
+
+    @api.depends('average_height','eln_ref','grade')
+    def _compute_height_conformity(self):
+        for record in self:
+            record.height_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3cbfb75-e743-408e-8077-5d2f2ba22edc')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3cbfb75-e743-408e-8077-5d2f2ba22edc')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.height_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_height - record.average_height*mu_value
+                    upper = record.average_height + record.average_height*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.height_conformity = 'pass'
+                        break
+                    else:
+                        record.height_conformity = 'fail'
 
     # Moisture Content
     moisture_name = fields.Char(default="Moisture Content")
