@@ -43,16 +43,6 @@ class MechanicalCoupler(models.Model):
 
 
 
-    @api.depends('sample_parameters')
-    def _compute_visible(self):
-        for record in self:
-            record.slip_test_visible = False
-            for sample in record.sample_parameters:
-                if sample.internal_id == 'b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6':
-                    record.slip_test_visible = True
-
-    
-
 
     # @api.depends('diameter')
     # def _compute_crossectional_area(self):
