@@ -106,14 +106,14 @@
                             <tbody>
                                 <tr t-foreach="data.ll_child_lines" t-as="r">
                                     <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.penetration"/></td>
+                                    <td style="text-align:center;"><span t-field="r.penetration" t-options='{"widget": "float", "precision": 2}'/></td>
                                     <td style="text-align:center;"><span t-esc="r.container_no"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.wt_container_wet_soil"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.wt_container_dry_soil"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.wt_water"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.wt_container"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.wt_dry_soil"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.moisture_content"/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_water" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_dry_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.moisture_content" t-options='{"widget": "float", "precision": 2}'/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -121,7 +121,7 @@
                             <tr>
                                 <td colspan="12"><b>Liquid Limit (%):</b></td>
                                 <![CDATA[&nbsp;]]>
-                                <td><span t-field="data.liquid_limit_result"/></td>
+                                <td><span t-field="data.liquid_limit_result" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                         </table>
                         <div t-if="data.ll_graph" style="margin-top:10px; text-align:center;">
@@ -155,11 +155,11 @@
                             <tbody>
                                 <tr t-foreach="data.wet_fineness_lines" t-as="r">
                                     <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.sieve_size"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.retained_wt"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.cum_retained"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.pct_retention"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.pct_passing"/></td>
+                                    <td style="text-align:center;"><span t-field="r.sieve_size" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.retained_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.cum_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_retention" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_passing" t-options='{"widget": "float", "precision": 2}'/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -191,11 +191,11 @@
                             <tbody>
                                 <tr t-foreach="data.dry_fineness_lines" t-as="r">
                                     <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.sieve_size"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.retained_wt"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.cum_retained"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.pct_retention"/></td>
-                                    <td style="text-align:center;"><span t-esc="r.pct_passing"/></td>
+                                    <td style="text-align:center;"><span t-field="r.sieve_size" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.retained_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.cum_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_retention" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_passing" t-options='{"widget": "float", "precision": 2}'/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -213,18 +213,18 @@
                                 </t>
                             </span>
                         </div>
-                        <table class="custom_table_borders" style="width: 60%; margin-top:10px;">
+                        <table class="custom_table_borders" style="width: 100%; margin-top:10px;">
                             <tr>
                                 <td><b>Initial Weight M1 (g)</b></td>
-                                <td><span t-field="data.moisture_m1"/></td>
+                                <td><span t-field="data.moisture_m1" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
                                 <td><b>Dry Weight M2 (g)</b></td>
-                                <td><span t-field="data.moisture_m2"/></td>
+                                <td><span t-field="data.moisture_m2" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
                                 <td><b>Moisture Content (%)</b></td>
-                                <td><span t-field="data.moisture_content_result"/></td>
+                                <td><span t-field="data.moisture_content_result" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                         </table>
                     </div>
@@ -241,18 +241,18 @@
                                 </t>
                             </span>
                         </div>
-                        <table class="custom_table_borders" style="width: 60%; margin-top:10px;">
+                        <table class="custom_table_borders" style="width: 100%; margin-top:10px;">
                             <tr>
                                 <td><b>Initial Weight (g)</b></td>
-                                <td><span t-field="data.sand_initial_wt"/></td>
+                                <td><span t-field="data.sand_initial_wt" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
                                 <td><b>Final Weight (g)</b></td>
-                                <td><span t-field="data.sand_final_wt"/></td>
+                                <td><span t-field="data.sand_final_wt" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
                                 <td><b>Sand Content (%)</b></td>
-                                <td><span t-field="data.sand_content_result"/></td>
+                                <td><span t-field="data.sand_content_result" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                         </table>
                     </div>
