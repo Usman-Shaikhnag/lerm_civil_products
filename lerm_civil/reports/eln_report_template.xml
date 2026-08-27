@@ -388,8 +388,8 @@
 						Date. <span t-esc="eln.end_date"/>
 					</span>
 				
-					<div style="text-align:center;margin-top:12px">	
-						SRI SAINATH LABORATORY.
+					<div style="text-align:center;margin-top:12px"> 
+						<span t-esc="env['lerm.lab.master'].search([], limit=1).company_id.name"/>
 					</div>
 					<div style="text-align:center;">
 						TEST DATA SHEET
@@ -1570,13 +1570,10 @@
 		</t>
 	</template>
 
-	<template id="datasheet_report_template">
+	<!-- <template id="datasheet_report_template">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.data_sheet_header">
-				<!-- <div style="text-align:center;">
-					<p style="font-size:15px"><b>Test Data Sheet</b></p>
-				</div> -->
+				
 				<div class="container_eln" style="margin-top:5px">
 					<div t-foreach="eln" t-as="o">
 						<table>
@@ -1655,39 +1652,11 @@
 									</td>
 									<td>
 										<span t-esc="r['value']"/>
-										 <!-- <span t-esc="'{:.{}f}'.format(r['value'], r['decimal'])"/> -->
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<!-- <div class="authorizeRowDataSheet">
-							<div>
-								
-								<div>
-									<b>
-										(JR Chemist)
-									</b>
-								</div>
-								<div>
-									<b>
-										Tested By
-									</b>
-								</div>
-							</div>
-							<div style="margin-left:500px">
-								
-								<div>
-									<b>
-										Chemical Department (HOD)
-									</b>
-								</div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-							</div>
-						</div> -->
+						
 							<div class="authorizeRowDataSheet">
 				<div>
 					<div>
@@ -1740,15 +1709,136 @@
 				</div>
 			</div>
 
-					<!-- <div style="text-align:center;margin-top:25px">
-						......End of Report......
-					</div> -->
-
+				
 					
 				</div>
 			</t>
 		</t>
-	</template>
+	</template> -->
+
+	<template id="datasheet_report_template">
+    <t t-call="web.html_container">
+         <t t-call="lerm_civil.data_sheet_header">
+            <div class="container_eln" style="margin-top:5px">
+                <div t-foreach="eln" t-as="o">
+                    <table>
+                        <tr cols="12">
+                            <td colspan="6">Job no :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.kes_no"/>
+                            </td>
+                            <td colspan="6">Test Start Date :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.start_date"/>
+                            </td>
+                        </tr>
+                        <tr cols="12">
+                            <td colspan="6">Material :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.material.name"/>
+                            </td>
+                            <td colspan="6">Test End Date :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.end_date"/>
+                            </td>
+                        </tr>
+                        <tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="o.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Outer Loop for Parameter-wise tables -->
+                <t t-foreach="parameters_data" t-as="param">
+                    <div style="margin-top:20px; font-weight:bold; font-size:14px;">
+                        Parameter: <span t-esc="param['parameter_name']"/>
+                    </div>
+                    <table style="margin-top:5px; margin-bottom:15px;">
+                        <thead>
+                            <tr>
+                                <th><span>Parameters</span></th>
+                                <th><span>Identifiers</span></th>
+                                <th><span>Inputs</span></th>
+                                <th><span>Values</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loop through inputs/rows of this specific parameter -->
+                            <t t-foreach="param['rows']" t-as="r">
+                                <tr>
+                                    <td>
+                                        <span t-esc="param['parameter_name']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="r['identifier']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="r['inputs']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="r['value']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <!-- Optional: Formula & Result Row at the end of each table -->
+                            <tr style="background-color: #f9f9f9;">
+                                <td><span t-esc="param['parameter_name']"/></td>
+                                <td><b>Formula</b></td>
+                                <td><span t-esc="param['formula']"/></td>
+                                <td><b><span t-esc="param['result']"/></b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <div class="authorizeRowDataSheet" style="margin-top:30px;">
+                    <div>
+                        <div>
+                            <b>Tested By</b>
+                        </div>
+                        <div style="height:40px"></div>
+                        <div>
+                            <b><span t-esc="eln.sample_id.filled_by.name"/></b>
+                        </div>
+                        <div>
+                            <b>(<span t-esc="eln.sample_id.filled_by.job_title"/>)</b>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-left:500px">
+                        <div>
+                            <b>Checked By</b>
+                        </div>
+                        <div style="height: 40px;">
+                            <t t-if="eln.sample_id.checkby_signature_required">
+                                <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                    <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div>
+                            <b><span t-esc="eln.sample_id.check_by.name"/></b>
+                        </div>
+                         <div>
+                            <b>(<span t-esc="eln.sample_id.check_by.job_title"/>)</b>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </t>
+    </t>
+</template>
 
 
 	

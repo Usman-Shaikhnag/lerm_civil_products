@@ -147,42 +147,85 @@ class ElnReport(models.AbstractModel):
  
 
 
+# class DataSheetReport(models.AbstractModel):
+#     _name = 'report.lerm_civil.datasheet_report_template'
+#     _description = 'DataSheet Report'
+
+#     @api.model
+#     def _get_report_values(self, docids, data):
+#         # import wdb ; wdb.set_trace()
+#         if data['fromsample'] == True:
+#             if 'active_id' in data['context']:
+#                 # import wdb ; wdb.set_trace()
+#                 eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
+#             else:
+#                 # import wdb ; wdb.set_trace()
+#                 eln = self.env['lerm.eln'].sudo().browse(docids)
+#         else:
+#             if data['report_wizard'] == True:
+#                 eln = self.env['lerm.eln'].sudo().search([('id','=',data['eln'])])
+#             else:
+#                 eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
+#         model_id = eln.model_id
+        
+#         datasheet_data = []
+#         prev_data = None
+#         for i, input_data in enumerate(eln.parameters_input):
+#             datasheet_data.append({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': input_data.identifier, 'inputs' : input_data.inputs.label ,'value': input_data.value , 'decimal': input_data.parameter_result.parameter.parameter_name})
+#             if i > 0 and input_data.parameter_result.parameter.parameter_name != prev_data:
+#                 index = datasheet_data.index({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': input_data.identifier,'inputs' : input_data.inputs.label ,'value': input_data.value , 'decimal': input_data.parameter_result.parameter.parameter_name})
+#                 datasheet_data.insert(index,{'parameter_name': prev_data, 'identifier': 'Formula', 'inputs': prev_formula , 'value' : prev_result , 'decimal': input_data.parameter_result.parameter.parameter_name})
+#             if i == (len(eln.parameters_input) - 1):
+#                 datasheet_data.append({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': 'Formula', 'inputs': input_data.parameter_result.parameter.formula , 'value' : input_data.parameter_result.result , 'decimal': input_data.parameter_result.parameter.parameter_name})
+#             prev_data = input_data.parameter_result.parameter.parameter_name
+#             prev_formula = input_data.parameter_result.parameter.formula
+#             prev_result = input_data.parameter_result.result
+#         return {
+#             'eln': eln,
+#             'datasheet' : datasheet_data,
+#             'datasheet_name' : 'Afzal',
+#         }
+
+
 class DataSheetReport(models.AbstractModel):
     _name = 'report.lerm_civil.datasheet_report_template'
     _description = 'DataSheet Report'
 
     @api.model
     def _get_report_values(self, docids, data):
-        # import wdb ; wdb.set_trace()
-        if data['fromsample'] == True:
-            if 'active_id' in data['context']:
-                # import wdb ; wdb.set_trace()
-                eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
+        if data.get('fromsample', False):
+            if 'active_id' in data.get('context', {}):
+                eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
             else:
-                # import wdb ; wdb.set_trace()
                 eln = self.env['lerm.eln'].sudo().browse(docids)
         else:
-            if data['report_wizard'] == True:
-                eln = self.env['lerm.eln'].sudo().search([('id','=',data['eln'])])
+            if data.get('report_wizard', False):
+                eln = self.env['lerm.eln'].sudo().search([('id', '=', data.get('eln'))])
             else:
-                eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
-        model_id = eln.model_id
+                eln = self.env['lerm.eln'].sudo().browse(data.get('eln_id'))
         
-        datasheet_data = []
-        prev_data = None
-        for i, input_data in enumerate(eln.parameters_input):
-            datasheet_data.append({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': input_data.identifier, 'inputs' : input_data.inputs.label ,'value': input_data.value , 'decimal': input_data.parameter_result.parameter.parameter_name})
-            if i > 0 and input_data.parameter_result.parameter.parameter_name != prev_data:
-                index = datasheet_data.index({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': input_data.identifier,'inputs' : input_data.inputs.label ,'value': input_data.value , 'decimal': input_data.parameter_result.parameter.parameter_name})
-                datasheet_data.insert(index,{'parameter_name': prev_data, 'identifier': 'Formula', 'inputs': prev_formula , 'value' : prev_result , 'decimal': input_data.parameter_result.parameter.parameter_name})
-            if i == (len(eln.parameters_input) - 1):
-                datasheet_data.append({'parameter_name': input_data.parameter_result.parameter.parameter_name, 'identifier': 'Formula', 'inputs': input_data.parameter_result.parameter.formula , 'value' : input_data.parameter_result.result , 'decimal': input_data.parameter_result.parameter.parameter_name})
-            prev_data = input_data.parameter_result.parameter.parameter_name
-            prev_formula = input_data.parameter_result.parameter.formula
-            prev_result = input_data.parameter_result.result
+        # Group parameters parameter-wise
+        parameters_data = {}
+        for input_data in eln.parameters_input:
+            param_name = input_data.parameter_result.parameter.parameter_name
+            if param_name not in parameters_data:
+                parameters_data[param_name] = {
+                    'parameter_name': param_name,
+                    'rows': [],
+                    'formula': input_data.parameter_result.parameter.formula,
+                    'result': input_data.parameter_result.result,
+                }
+            
+            # Append input rows
+            parameters_data[param_name]['rows'].append({
+                'identifier': input_data.identifier,
+                'inputs': input_data.inputs.label if input_data.inputs else '',
+                'value': input_data.value,
+            })
+            
         return {
             'eln': eln,
-            'datasheet' : datasheet_data,
-            'datasheet_name' : 'Afzal',
+            'parameters_data': parameters_data.values(), # Passes grouped parameters list
+            'datasheet_name': 'Afzal',
         }
         

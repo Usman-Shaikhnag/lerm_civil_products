@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="custom_layout_header_footer_lerm_srfreport">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<table>
+				<tr>
+					<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
+						<div>
+							<span t-esc="env['lerm.lab.master'].search([], limit=1).company_id.name"/>
+						</div>
+						<div>
+							JOB CARD
+						</div>
+						<div>
+							Format No. 
+						</div>
+					</div>
+				</tr>
+			</table>
+        </div>
+        <div t-attf-class="article" t-att-style="report_header_style">
+            <t t-out="0"/>
+        </div>
+		<!-- <div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4">
+                    <div class="footertext">
+						<t t-set="target_date" t-value="datetime.date(2025, 10, 14)"/>
+						<t t-if="o.srf_date &lt;= target_date">
+							Regd. Office: Shop No. 3, Building B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai - 400037, Tel.: +91 22 2401 0040 Chemical Testing Department : Shramjivan Bldg., B-5, Office No. 109, First Floor, Wadala Truck Terminal, Mumbai - 400037.
+						</t>
+						<t t-else="">
+							Regd. Office: SHOP NO. 3, 103, 105 &amp; 115 BUILDING B1, MMRDA COMPOUND, ANTOP HILL, MUMBAI-400037, MAHARASHTRA, INDIA,     Tel.: 9324956232/40
+						</t>
+					</div>
+					<div class="footertext">
+						Email : sales@knackengineeringservices.com <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]> Website :  www.knackengineeringservices.com 
+					</div>
+					<div class="footertext">
+						CIN No.: U45209MH2017PTC291168
+					</div>
+                </ul>
+                <div t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div> -->
+	</template>
+
+	<template id="srf_report_template">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_srfreport">
+				<div class="container_eln">
+					<div t-foreach="srf" t-as="o">
+						<table>
+							<tr>
+								<td colspan="4">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id"/>
+								</td>
+								<td colspan="4">Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="6">Name of Organization :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Organization Address:
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+							</tr>
+
+							<tr>
+								
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">Site Name :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="4">Contact Person :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.contact_person"/>
+								</td>
+								<td colspan="4">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.consultant_name1"/>
+									
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">Mobile :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="4">Email :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="4">Billing Customer Name :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Refrence No :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.client_refrence"/>
+								</td>
+								<td colspan="6">Remarks :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6">Name of Work :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.name_work"/>
+								</td>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.client"/>
+								</td>
+							</tr>
+
+						</table>
+					</div>
+					<table style="margin-top:30px;">
+						<thead>
+							<tr>
+								<th>
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th>
+									<span>
+										ID
+									</span>
+								</th>
+								<th>
+									<span>
+										ULR No
+									</span>
+								</th>
+								<th>
+									<span>
+										Material
+									</span>
+								</th>
+								<th>
+									<span>
+										Sample Condition
+									</span>
+								</th>
+								<th>
+									<span>
+										Sample Des.
+									</span>
+								</th>
+								<th>
+									<span>
+										Days of Casting
+									</span>
+								</th>
+								<th>
+									<span>
+										Size
+									</span>
+								</th>
+								<th>
+									<span>
+										Grade
+									</span>
+								</th>
+								<th>
+									<span>
+										Brand
+									</span>
+								</th>
+								<th>
+									<span>
+										Date of casting
+									</span>
+								</th>
+								<th>
+									<span>
+										Identification Mark
+									</span>
+								</th>
+								<th>
+									<span>
+										Quantity
+									</span>
+								</th>
+
+								<th>
+									<span>
+										Test to be done
+									</span>
+								</th>
+								<th>
+									<span>
+										Test Method
+									</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="sample" t-as="r">
+								<td>
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td>
+									<span t-esc="r.kes_no"/>
+								</td>
+								
+								<td>
+									<span t-esc="r.ulr_no"/>
+								</td>
+								<td>
+									<span t-esc="r['material_id'].name"/>
+								</td>
+								<td>
+									<span t-esc="r['sample_condition']"/>
+								</td>
+								<td>
+									<span t-esc="r['sample_description']"/>
+								</td>
+								<!-- <td>
+									<span t-esc="r['sample_description']"/>
+								</td> -->
+								<td>
+									<!-- <span t-esc="r['witness']"/> -->
+									<span t-esc="r['days_casting']"/>
+
+								</td>
+								<td>
+									<span t-esc="r['size_id'].size"/>
+								</td>
+								<td>
+									<span t-esc="r['grade_id'].grade"/>
+								</td>
+								<td>
+									<span t-esc="r['brand']"/>
+								</td>
+								<td>
+									<t t-if="r['date_casting']">
+										<span t-esc="r['date_casting'].strftime('%d/%m/%y')"/>
+									</t>
+									<t t-else="">
+										<span t-esc="r['date_casting']"/>
+									</t>
+								</td>
+								<td>
+									<!-- <span t-esc="r['grade_id'].grade"/> -->
+									<span t-esc="r['client_sample_id']"/>
+								</td>
+								<td>
+									<span t-if="r['sample_qty']">
+										<span t-esc="r['sample_qty']"/> <![CDATA[&nbsp;]]> Set
+									</span>
+								</td>
+								<td>
+									<span t-foreach="r['parameters']" t-as="param">
+										<span t-if="param.parameter_name">
+											<span t-esc="param.parameter_name"/> ,
+										</span>
+									</span>
+								</td>
+								<td>
+									<span t-foreach="r['parameters']" t-as="param">
+										<span t-if="param.test_method.test_method">
+											<span t-esc="param.test_method.test_method"/> ,
+										</span>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div style="margin-top:20px" class="noteContainer">
+						<div>
+							<b>Note :-</b>
+						</div>
+						<div>
+							<ul>
+								<li>
+									The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+								</li>
+								<li>
+									Sample(s) was/were not drawn by laboratory.
+								</li>
+								<li>
+									This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:20px">
+
+							</div>
+							<div>
+								<b>
+									(Authorized Signatory)
+								</b>
+							</div>
+						</div>
+
+						<div>
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height:20px">
+
+							</div>
+							<div>
+								<b>
+									(Authorized Signatory)
+								</b>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>SRF Report</b></p>
+				</div>
+				<div class="container_eln">
+					<div t-foreach="srf" t-as="o">
+						<table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_id"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3">ULR NO :
+								</td>
+								<td colspan="3">
+									
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/> <br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div style="margin-top:20px;">
+						<u>Results</u>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th>
+									<span>
+										Parameter
+									</span>
+								</th>
+								
+								<th>
+									<span>
+										Result
+									</span>
+								</th>
+
+								<th>
+									<span>
+										Unit
+									</span>
+								</th>
+								<th>
+									<span>
+										Specification as per IS 1786:2008(RA 2018)
+									</span>
+								</th>
+								<th>
+									<span>
+										Method Reference
+									</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="eln.parameters_result" t-as="r">
+								<td>
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td>
+									<span t-esc="r['parameter'].parameter_name"/>
+								</td>
+								<td>
+									<span t-esc="r['result']"/>
+								</td>
+								<td>
+									<span t-esc="r['unit'].name"/>
+								</td>
+								<td>
+									<span t-esc="r['specification']"/>
+								</td>
+								<td>
+									<span t-esc="r['test_method']"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div style="margin-top:20px" class="noteContainer">
+						<div>
+							<b>Note :-</b>
+						</div>
+						<div>
+							<ul>
+								<li>
+									The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+								</li>
+								<li>
+									Sample(s) was/were not drawn by laboratory.
+								</li>
+								<li>
+									This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="signatureContainer">
+						<div style="margin-right:300px;">
+							Format No. <span t-esc="o.material.data_sheet_format_no.name"/>
+						</div>
+						<div>
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:20px">
+
+							</div>
+							<div>
+								<b>
+									Chemical Department (HOD)
+								</b>
+							</div>
+							<div>
+								<b>
+									(Authorized Signatory)
+								</b>
+							</div>
+						</div>
+
+					</div>
+					<div>
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 100px; height: 100px;"/>
+					</div>
+					<div style="text-align:center">
+						......End of Report......
+					</div>
+				</div> -->
+			</t>
+		</t>
+	</template>
+</odoo>

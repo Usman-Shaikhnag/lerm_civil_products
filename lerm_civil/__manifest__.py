@@ -40,7 +40,9 @@
     'reports/general_report_template.xml',
     'reports/general_template.xml',
     'reports/mechanical_general_template.xml',
-    'security/ir.model.access.csv'
+    'security/ir.model.access.csv',
+    'reports/srf_report_action.xml',
+    'reports/srf_report_template.xml'
    
 
 
