@@ -250,8 +250,8 @@ class AacBlockMechanical(models.Model):
     ], string='Conformity', default='fail',compute="_compute_length_conformity")
 
     average_width = fields.Float('Average Width',compute="_compute_average_width")
-    width_grade1 = Char("Width Specification Grade - 1")
-    width_grade2 = Char("Width Specification Grade - 2")
+    width_grade1 = fields.Char("Width Specification Grade - 1")
+    width_grade2 = fields.Char("Width Specification Grade - 2")
     width_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
