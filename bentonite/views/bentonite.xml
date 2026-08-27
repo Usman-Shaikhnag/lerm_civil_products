@@ -20,7 +20,7 @@
 
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="sample_parameters" nolabel="1">
-                                <tree style="width: 100%; border-collapse: collapse;">
+                                <tree class="nowrap_list" style="width: 100%; border-collapse: collapse;">
                                     <field name="parameter_name"/>
                                     <field name="test_method"/>
                                 </tree>
@@ -40,7 +40,7 @@
                                 <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
                                     <field name='sr_no' string="Sr. NO"/>
                                     <field name='penetration' string="Penetration (mm)" class="blue-input"/>
-                                    <field name='container_no' string="Container No."/>
+                                    <field name='container_no' string="Container No." width="60px"/>
                                     <field name='wt_container_wet_soil' string="Wt Container + Wet Soil (g)" class="blue-input"/>
                                     <field name='wt_container_dry_soil' string="Wt Container + Dry Soil (g)" class="blue-input"/>
                                     <field name='wt_water' string="Wt of Water (g)"/>
@@ -70,7 +70,7 @@
                         </div>
 
                         <!-- Wet Fineness -->
-                        <group invisible="wet_fineness_visible == False" style="margin-top: 15px;">
+                        <group invisible="wet_fineness_visible == False" style="margin-top: 15px; white-space: nowrap;">
                             <h1>
                                 <field name="wet_fineness_name" readonly="1" nolabel="1"/>
                                 <field name="wet_fineness_visible" invisible="1"/>
@@ -104,7 +104,7 @@
                         </group>
 
                         <!-- Dry Fineness -->
-                        <group invisible="dry_fineness_visible == False" style="margin-top: 15px;">
+                        <group invisible="dry_fineness_visible == False" style="margin-top: 15px; white-space: nowrap;">
                             <h1>
                                 <field name="dry_fineness_name" readonly="1" nolabel="1"/>
                                 <field name="dry_fineness_visible" invisible="1"/>
@@ -138,7 +138,7 @@
                         </group>
 
                         <!-- Moisture Content -->
-                        <group invisible="moisture_visible == False" style="margin-top: 15px;">
+                        <group invisible="moisture_visible == False" style="margin-top: 15px; white-space: nowrap;">
                             <h1>
                                 <field name="moisture_name" readonly="1" nolabel="1"/>
                                 <field name="moisture_visible" invisible="1"/>
@@ -161,7 +161,7 @@
                         </group>
 
                         <!-- Sand Content -->
-                        <group invisible="sand_visible == False" style="margin-top: 15px;">
+                        <group invisible="sand_visible == False" style="margin-top: 15px; white-space: nowrap;">
                             <h1>
                                 <field name="sand_name" readonly="1" nolabel="1"/>
                                 <field name="sand_visible" invisible="1"/>
