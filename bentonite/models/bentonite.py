@@ -381,19 +381,6 @@ class MechanicalBentonite(models.Model):
                     record.sand_visible = True
 
     # ---------------- ELN linkage ----------------
-    def prefill_data(self):
-        return {
-            'name': 'Prefill Data',
-            'type': 'ir.actions.act_window',
-            'res_model': 'bentonite.prefill.data',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_product_id': self.eln_ref.sample_id.material_id.id,
-                'exclude_sample_id': self.eln_ref.sample_id.id,
-            },
-        }
-
     def open_eln_page(self):
         current_user = self.env.user
         technician_results = self.eln_ref.parameters_result.filtered(

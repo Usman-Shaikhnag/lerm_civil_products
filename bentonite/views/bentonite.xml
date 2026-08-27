@@ -8,7 +8,6 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                         <group>
                             <field name="srf_id" invisible="1"/>
                             <field name="sample_id" readonly="1"/>
@@ -21,7 +20,7 @@
 
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="sample_parameters" nolabel="1">
-                                <tree>
+                                <tree style="width: 100%; border-collapse: collapse;">
                                     <field name="parameter_name"/>
                                     <field name="test_method"/>
                                 </tree>
@@ -29,7 +28,7 @@
                         </div>
 
                         <!-- Liquid Limit -->
-                        <group invisible="ll_visible == False">
+                        <group invisible="ll_visible == False" style="white-space: nowrap;">
                             <h1>
                                 <field name="ll_name" readonly="1" nolabel="1"/>
                                 <field name="ll_visible" invisible="1"/>
@@ -38,7 +37,7 @@
 
                         <div invisible="ll_visible == False">
                             <field name="ll_child_lines" nolabel="1" class="custom_table_borders">
-                                <tree editable="bottom">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
                                     <field name='sr_no' string="Sr. NO"/>
                                     <field name='penetration' string="Penetration (mm)" class="blue-input"/>
                                     <field name='container_no' string="Container No."/>
@@ -52,7 +51,7 @@
                             </field>
                         </div>
 
-                        <group invisible="ll_visible == False" style="margin-top: 10px;">
+                        <group invisible="ll_visible == False" style="margin-top: 10px; white-space: nowrap;">
                             <group>
                                 <field name="liquid_limit_result" string="Liquid Limit (%)" readonly="1"/>
                             </group>
@@ -84,7 +83,7 @@
 
                         <div invisible="wet_fineness_visible == False">
                             <field name="wet_fineness_lines" nolabel="1" class="custom_table_borders">
-                                <tree editable="bottom">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
                                     <field name='sr_no' string="Sr. NO"/>
                                     <field name='sieve_size' string="Sieve Size (mm)" class="blue-input"/>
                                     <field name='retained_wt' string="Retained Wt. (g)" class="blue-input"/>
@@ -118,7 +117,7 @@
 
                         <div invisible="dry_fineness_visible == False">
                             <field name="dry_fineness_lines" nolabel="1" class="custom_table_borders">
-                                <tree editable="bottom">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
                                     <field name='sr_no' string="Sr. NO"/>
                                     <field name='sieve_size' string="Sieve Size (mm)" class="blue-input"/>
                                     <field name='retained_wt' string="Retained Wt. (g)" class="blue-input"/>
@@ -186,7 +185,7 @@
 
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="notes_id" nolabel="1">
-                                <tree editable="bottom">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
                                     <field name="sr_no" width="100"/>
                                     <field name="notes"/>
                                 </tree>
@@ -199,32 +198,6 @@
                     </sheet>
                 </form>
             </field>
-        </record>
-
-        <record id="view_bentonite_prefill_data_form" model="ir.ui.view">
-            <field name="name">bentonite.prefill.data.form</field>
-            <field name="model">bentonite.prefill.data</field>
-            <field name="arch" type="xml">
-                <form string="Prefill Data">
-                    <group>
-                        <field name="product_id" readonly="1"/>
-                        <field name="sample_id"/>
-                    </group>
-                    <footer>
-                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_bentonite_prefill_data_wizard" model="ir.actions.act_window">
-            <field name="name">Prefill Data</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">bentonite.prefill.data</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_bentonite_prefill_data_form"/>
-            <field name="target">new</field>
         </record>
 
     </data>
