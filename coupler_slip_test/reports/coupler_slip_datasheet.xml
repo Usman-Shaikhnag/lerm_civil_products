@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="coupler_datasheet">
+<template id="coupler_slip_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.mechanical_data_sheet_header">
@@ -70,7 +70,7 @@
 							<tr>
 								
 								 <td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ad54d920-00b7-420a-ab68-7d8a37d293ec')]).parameter_name"/>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','784a8734-a7d1-42f2-aa4d-34b1bb2cdb8a')]).parameter_name"/>
                                 </td>
 								<td style="text-align: center;">
 									<span t-esc="data.diameter"/>
@@ -81,7 +81,7 @@
 							<tr>
 							
 								<td >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','b4aa7f04-295b-48fe-b3f2-c31b6582a4d5')]).parameter_name"/>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ccb87105-4cbf-4bbc-bb2b-d7f825e36746')]).parameter_name"/>
                                 </td>
 								<td style="text-align: center;">
 									<span t-esc="data.crossectional_area" t-options='{"widget": "float", "precision": 2}'/>
@@ -91,7 +91,7 @@
 							<tr>
 							
 								 <td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','286ebc4b-450c-4679-912a-4a49400e2887')]).parameter_name"/>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','4a5f3599-8e4c-4d8a-a5c3-e0026be956f7')]).parameter_name"/>
                                 </td>
 								<td style="text-align: center;">
 									<span t-esc="data.gauge_length"/>
@@ -100,20 +100,9 @@
 							</tr>
 
 							<tr>
-								
-								 <td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','aee476d0-dae1-47b2-879c-54c3fbfa9a14')]).parameter_name"/>
-                                </td>
-								<td style="text-align: center;">
-									<span t-esc="data.elongated_gauge_length"/>
-								</td>
 							
-							</tr>
-
-							<tr>
-							
-								 <td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','d898fa49-9d66-47c7-a311-7746433408f3')]).parameter_name"/>
+								 <td>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','cdb8d593-faa8-41c9-9c21-5e53aa64e31d')]).parameter_name"/>
                                 </td>
 								<td style="text-align: center;">
 									<span t-esc="data.ultimate_load"/>
@@ -121,53 +110,27 @@
 								
 							</tr>
 
-
 							<tr>
-							
-								<td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','78a837cc-25e3-460d-802f-7dd858984087')]).parameter_name"/>
-                                </td>
-								<td style="text-align: center;">
-									<span t-esc="round(data.ult_tens_strgth,2)"/>
-								</td>
-							
-							</tr>
-
-							<tr>
-								
 								<td >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','73e5f596-972c-46f8-8d2c-3149b00c57df')]).parameter_name"/>
+                                    Slip Strength, N/mm2
                                 </td>
 								<td style="text-align: center;">
-									<span t-esc="round(data.total_elongation,2)"/>
+									<span t-esc="round(data.slip_strength,2)"/>
 								</td>
-							
 							</tr>
-								<tr>
-								
-								<td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','a4201912-b583-402b-b5ea-ffb04fed436b')]).parameter_name"/>
+							<tr>
+								<td >
+                                    Ext At 20 N/MM2
                                 </td>
 								<td style="text-align: center;">
-									<span t-esc="data.distance"/>
+									<span t-esc="data.ext_at_20"/>
 								</td>
-							
 							</tr>
 
 							<tr>
 								
-								<td >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','c3b7e054-bafc-40bf-82ad-82063feabfb8')]).parameter_name"/>
-                                </td>
-								<td style="text-align: center;">
-									<span t-esc="data.location_of_failure"/>
-								</td>
-							
-							</tr>
-							<tr>
-								
-								<td  >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','dceffc67-d195-4991-8e28-e35eb27ecc34')]).parameter_name"/>
+								 <td>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','39689dfe-47ac-47f8-9a4d-4ce937d60500')]).parameter_name"/>
                                 </td>
 								<td >
 									<span t-esc="data.result_test"/>
@@ -176,28 +139,13 @@
 							</tr>
 
 
-
-						
 						</tbody>
 					</table>
 
-						<!-- <table style="margin-top:30px;" t-foreach="data" t-as="formdata" t-if="resultdata and len(resultdata) &gt; 0">
-							<tr cols="12">
-								<td colspan="6" t-foreach="resultdata" t-as="result">
-									<span>
-										<t t-esc="result[1]"/>
-									</span> : 
-									<![CDATA[&nbsp;]]>
-									<span>
-										<t t-esc="formdata[result[0]]" />
-									</span>
-								</td>
-							</tr>
-						</table> -->
-						   
+						
                     <!-- authorizeRowDataSheet -->
                     
-                     <div class="authorizeRowDataSheet">
+                    <div class="authorizeRowDataSheet">
 
                         <div>
                             <div>
