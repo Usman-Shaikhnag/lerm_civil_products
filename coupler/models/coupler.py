@@ -40,45 +40,19 @@ class MechanicalCoupler(models.Model):
         ('non-satisfactory', 'Non-Satisfactory')],"Result",store=True)
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
-    
-    # re_bend_test = fields.Selection([
-    #     ('satisfactory', 'Satisfactory'),
-    #     ('non-satisfactory', 'Non-Satisfactory')],"Re-Bend Test",store=True)
-    
-      
 
-    # @api.depends('bend_test')
-    # def _compute_bend_test_text(self):
-    #     for record in self:
-    #         if record.bend_test == '1':
-    #             record.bend_test_text = 'Satisfactory'
-    #         elif record.bend_test == '2':
-    #             record.bend_test_text = 'Non-Satisfactory'
-    #         else:
-    #             record.bend_test_text = 'Undefined'
+
+
+    @api.depends('sample_parameters')
+    def _compute_visible(self):
+        for record in self:
+            record.slip_test_visible = False
+            for sample in record.sample_parameters:
+                if sample.internal_id == 'b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6':
+                    record.slip_test_visible = True
+
     
 
-
-  
-    # location_of_failure_visible = fields.Boolean("Location of failure",compute="_compute_visible")
-    # result_test_visible = fields.Boolean("Result",compute="_compute_visible")
-
-  
-   
-
-    # @api.depends('eln_ref','sample_parameters')
-    # def _compute_visible(self):
-    #     for record in self:
-    #         record.location_of_failure_visible = False
-    #         record.result_test_visible  = False  
-          
-    #         for sample in record.sample_parameters:
-    #             print("Samples internal id",sample.internal_id)
-    #             if sample.internal_id == 'c3b7e054-bafc-40bf-82ad-82063feabfb8':
-    #                 record.location_of_failure_visible = True
-    #             if sample.internal_id == 'dceffc67-d195-4991-8e28-e35eb27ecc34':
-    #                 record.result_test_visible = True
-               
 
     # @api.depends('diameter')
     # def _compute_crossectional_area(self):
@@ -220,8 +194,35 @@ class MechanicalCoupler(models.Model):
                 record.total_elongation_nabl = 'fail'
 
 
+
+
+
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        current_user = self.env.user
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            if result.parameter.internal_id == '78a837cc-25e3-460d-802f-7dd858984087':
+                result.result_char = round(self.ult_tens_strgth,2)
+                result.calculated = True
+                if self.ult_tens_strgth_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '73e5f596-972c-46f8-8d2c-3149b00c57df':
+                result.result_char = round(self.total_elongation,2)
+                result.calculated = True
+                if self.total_elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
 
         return {
                 'view_mode': 'form',
@@ -236,7 +237,7 @@ class MechanicalCoupler(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(CouplerLine, self).create(vals)
+        record = super(MechanicalCoupler, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record

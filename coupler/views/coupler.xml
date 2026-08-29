@@ -15,8 +15,8 @@
                         <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
-                        <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
+                        <field name="slip_test_visible" invisible="1"/>
                     </group>
 
                     <div class="custom_table_borders" style="margin-top: 15px;">
@@ -87,6 +87,14 @@
                                         <td><label for="result_test"></label></td>
                                         <td><field name="result_test"/></td>
                                     </tr>
+                                    <tr invisible="not slip_test_visible">
+                                        <td><label for="slip_strength"></label></td>
+                                        <td><field name="slip_strength"/></td>
+                                    </tr>
+                                    <tr invisible="not slip_test_visible">
+                                        <td><label for="ext_at_20"></label></td>
+                                        <td><field name="ext_at_20"/></td>
+                                    </tr>
                                     
 
                                 </tbody>
@@ -130,6 +138,25 @@
                                             <field name="total_elongation_conformity" string="Elongation Confirmity"
                                                 decoration-success="total_elongation_conformity == 'pass'"
                                                 decoration-danger="total_elongation_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr invisible="not slip_test_visible">
+                                        <td><label for="slip_strength_nabl" string="Slip Strength Requirement"></label></td>
+                                        <td><field name="slip_strength" string="Slip Strength Value" readonly="1"/></td>
+                                        <td><label for="slip_strength_nabl"></label></td>
+                                        <td>
+                                            <field name="slip_strength_nabl" string="Slip NABL"
+                                                decoration-success="slip_strength_nabl == 'pass'"
+                                                decoration-danger="slip_strength_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="slip_strength_conformity"></label></td>
+                                        <td>
+                                            <field name="slip_strength_conformity" string="Slip Conformity"
+                                                decoration-success="slip_strength_conformity == 'pass'"
+                                                decoration-danger="slip_strength_conformity == 'fail'"
                                                 readonly="1"/>
                                         </td>
                                     </tr>

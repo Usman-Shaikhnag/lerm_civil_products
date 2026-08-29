@@ -196,7 +196,7 @@ class Microsilica(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
             }),
         ]
 
@@ -288,7 +288,7 @@ class Microsilica(models.Model):
     accelerated_pozzolanic_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_accelerated_pozzolanic_conformity")
 
     accelerated_pozzolanic_nabl = fields.Selection([
@@ -304,7 +304,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table
             for material in materials:
-                
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.accelerated_pozzolanic_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -361,6 +363,7 @@ class Microsilica(models.Model):
     oversize_retained_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_oversize_retained_conformity")
 
     oversize_retained_nabl = fields.Selection([
@@ -376,7 +379,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table
             for material in materials:
-                
+                if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.oversize_retained_conformity = '--'
+                        break
                 req_min = material.req_min
                 req_max = material.req_max
                 mu_value = line.mu_value
@@ -449,6 +454,7 @@ class Microsilica(models.Model):
     specific_gravity_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_conformity")
 
     specific_gravity_nabl = fields.Selection([
@@ -464,7 +470,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table
             for material in materials:
-                
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -665,6 +673,7 @@ class Microsilica(models.Model):
     comp_strngth_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_comp_strngth_7_days_conformity")
 
     comp_strngth_7_days_nabl = fields.Selection([
@@ -680,7 +689,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table
             for material in materials:
-                
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.comp_strngth_7_days_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -788,6 +799,7 @@ class Microsilica(models.Model):
     oversize_percent_retain_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_oversize_percent_retain_conformity")
 
     oversize_percent_retain_nabl = fields.Selection([
@@ -803,7 +815,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table
             for material in materials:
-                
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.oversize_percent_retain_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -855,6 +869,7 @@ class Microsilica(models.Model):
     bulk_density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_bulk_density_conformity")
 
     bulk_density_nabl = fields.Selection([
@@ -870,7 +885,9 @@ class Microsilica(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table
             for material in materials:
-                
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.bulk_density_conformity = '--'
+                        break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

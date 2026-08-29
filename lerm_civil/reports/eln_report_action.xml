@@ -526,7 +526,7 @@
 </record>
 
 <record id="drying_shrinkage_repprt_action" model="ir.actions.report">
-    <field name="name"> Drying Shrinkage Report </field>
+    <field name="name">Drying Shrinkage Report </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_drying_shrinkage.drying_shrinkage_repprt</field>
@@ -536,7 +536,7 @@
     <field name="binding_type">report</field>
 </record>
 <record id="drying_shrinkage_datasheet_action" model="ir.actions.report">
-    <field name="name"> Drying Shrinkage DataSheet </field>
+    <field name="name">Drying Shrinkage DataSheet </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_drying_shrinkage.drying_shrinkage_datasheet</field>
@@ -1162,12 +1162,12 @@
 </record>
 
 
-<record id="concrete_beam_report_action" model="ir.actions.report">
+<record id="fextural_strength_report_action" model="ir.actions.report">
         <field name="name">Concrete Beam Report</field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">concrete_flexural_strength.lerm_cocncrete_beam_report</field>
-        <field name="report_file">concrete_flexural_strength.lerm_cocncrete_beam_report</field>
+        <field name="report_name">concrete_flexural_strength.fextural_strength_report</field>
+        <field name="report_file">concrete_flexural_strength.fextural_strength_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <!-- <field name="binding_model_id" eval="False"/> -->
         <field name="binding_type">report</field>
@@ -1442,6 +1442,30 @@
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
+
+<record id="coupler_slip_test_datasheet_action" model="ir.actions.report">
+    <field name="name">Coupler Slip Test DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">coupler_slip_test.coupler_slip_datasheet</field>
+    <field name="report_file">coupler_slip_test.coupler_slip_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="coupler_slip_test_report_action" model="ir.actions.report">
+    <field name="name">Coupler Slip Test Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">coupler_slip_test.coupler_slip_report</field>
+    <field name="report_file">coupler_slip_test.coupler_slip_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+
+
 
 
 
