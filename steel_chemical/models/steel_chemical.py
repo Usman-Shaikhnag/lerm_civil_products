@@ -108,7 +108,7 @@ class SteelChemical(models.Model):
     carbon_calculation4 = fields.Float(string="Calculation= (A - B) X F",compute="_compute_carbon_calculation"  )
     carbon_calculation5 = fields.Float(string="Calculation= (A - B) X F " ,compute="_compute_carbon_calculation" )
 
-    carbon_percentage = fields.Float(string="Percentage of Carbon -",compute="_compute_avg_chloride")
+    carbon_percentage = fields.Float(string="Average of Carbon -",compute="_compute_avg_chloride")
 
     @api.depends('carbon_calculation1', 'carbon_calculation2', 'carbon_calculation3', 'carbon_calculation4', 'carbon_calculation5')
     def _compute_avg_chloride(self):
@@ -320,7 +320,7 @@ class SteelChemical(models.Model):
 
 
 
-    avg_phosphorus = fields.Float(string="Percentage of phosphorus =",compute="_compute_avg_phosphorus")
+    avg_phosphorus = fields.Float(string="Average of phosphorus =",compute="_compute_avg_phosphorus")
 
     @api.depends('percentage_of_phosphorus1', 'percentage_of_phosphorus2', 'percentage_of_phosphorus3', 'percentage_of_phosphorus4', 'percentage_of_phosphorus5')
     def _compute_avg_phosphorus(self):
@@ -435,16 +435,96 @@ class SteelChemical(models.Model):
     sulpher_potassiumc5 = fields.Float(string="Normality of potassium iodate solution (C)")
 
 
-    percentage_sulpher1 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D")
-    percentage_sulpher2 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D")
-    percentage_sulpher3 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D")
-    percentage_sulpher4 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D")
-    percentage_sulpher5 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D")
+    percentage_sulpher1 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D",compute="_compute_percentage_sulphur")
+    percentage_sulpher2 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D",compute="_compute_percentage_sulphur")
+    percentage_sulpher3 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D",compute="_compute_percentage_sulphur")
+    percentage_sulpher4 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D",compute="_compute_percentage_sulphur")
+    percentage_sulpher5 = fields.Float(string="Percentage of Sulphur = [(A − B) × C × 1.6] / D",compute="_compute_percentage_sulphur")
+
+    @api.depends(
+        'sulpher_wt_sample1', 'sulpher_potassiuma1', 'sulpher_potassiumb1', 'sulpher_potassiumc1',
+        'sulpher_wt_sample2', 'sulpher_potassiuma2', 'sulpher_potassiumb2', 'sulpher_potassiumc2',
+        'sulpher_wt_sample3', 'sulpher_potassiuma3', 'sulpher_potassiumb3', 'sulpher_potassiumc3',
+        'sulpher_wt_sample4', 'sulpher_potassiuma4', 'sulpher_potassiumb4', 'sulpher_potassiumc4',
+        'sulpher_wt_sample5', 'sulpher_potassiuma5', 'sulpher_potassiumb5', 'sulpher_potassiumc5'
+    )
+    def _compute_percentage_sulphur(self):
+        for record in self:
+
+            # Sample 1
+            if record.sulpher_wt_sample1:
+                record.percentage_sulpher1 = (
+                    (record.sulpher_potassiuma1 - record.sulpher_potassiumb1)
+                    * record.sulpher_potassiumc1
+                    * 1.6
+                ) / record.sulpher_wt_sample1
+            else:
+                record.percentage_sulpher1 = 0.0
+
+            # Sample 2
+            if record.sulpher_wt_sample2:
+                record.percentage_sulpher2 = (
+                    (record.sulpher_potassiuma2 - record.sulpher_potassiumb2)
+                    * record.sulpher_potassiumc2
+                    * 1.6
+                ) / record.sulpher_wt_sample2
+            else:
+                record.percentage_sulpher2 = 0.0
+
+            # Sample 3
+            if record.sulpher_wt_sample3:
+                record.percentage_sulpher3 = (
+                    (record.sulpher_potassiuma3 - record.sulpher_potassiumb3)
+                    * record.sulpher_potassiumc3
+                    * 1.6
+                ) / record.sulpher_wt_sample3
+            else:
+                record.percentage_sulpher3 = 0.0
+
+            # Sample 4
+            if record.sulpher_wt_sample4:
+                record.percentage_sulpher4 = (
+                    (record.sulpher_potassiuma4 - record.sulpher_potassiumb4)
+                    * record.sulpher_potassiumc4
+                    * 1.6
+                ) / record.sulpher_wt_sample4
+            else:
+                record.percentage_sulpher4 = 0.0
+
+            # Sample 5
+            if record.sulpher_wt_sample5:
+                record.percentage_sulpher5 = (
+                    (record.sulpher_potassiuma5 - record.sulpher_potassiumb5)
+                    * record.sulpher_potassiumc5
+                    * 1.6
+                ) / record.sulpher_wt_sample5
+            else:
+                record.percentage_sulpher5 = 0.0
 
     
    
 
-    avg_sulphur = fields.Float(string="Percentage of Sulphur =")
+    avg_sulphur = fields.Float(string="Average of Sulphur =",compute="_compute_avg_sulphur")
+
+    @api.depends('percentage_sulpher1', 'percentage_sulpher2', 'percentage_sulpher3', 'percentage_sulpher4', 'percentage_sulpher5')
+    def _compute_avg_sulphur(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            sulphur = [
+                rec.percentage_sulpher1,
+                rec.percentage_sulpher2,
+                rec.percentage_sulpher3,
+                rec.percentage_sulpher4,
+                rec.percentage_sulpher5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_sulphur = [c for c in sulphur if c]  # ya (c for c in sulphur if c not in [False, None, 0.0])
+            
+            if valid_sulphur:
+                rec.avg_sulphur = sum(valid_sulphur) / len(valid_sulphur)
+            else:
+                rec.avg_sulphur = 0.0
 
 
     
@@ -533,13 +613,91 @@ class SteelChemical(models.Model):
     manganese_sodiumb4 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
     manganese_sodiumb5 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
 
-    manganese_percentage1 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)")
-    manganese_percentage2 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)")
-    manganese_percentage3 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)")
-    manganese_percentage4 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)")
-    manganese_percentage5 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)")
+    manganese_percentage1 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
+    manganese_percentage2 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
+    manganese_percentage3 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
+    manganese_percentage4 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
+    manganese_percentage5 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
 
-    avg_manganese = fields.Float(string="Percentage of Manganese =")
+
+    @api.depends(
+        'manganese_wt_samplec1', 'manganese_sodiuma1', 'manganese_sodiumb1',
+        'manganese_wt_samplec2', 'manganese_sodiuma2', 'manganese_sodiumb2',
+        'manganese_wt_samplec3', 'manganese_sodiuma3', 'manganese_sodiumb3',
+        'manganese_wt_samplec4', 'manganese_sodiuma4', 'manganese_sodiumb4',
+        'manganese_wt_samplec5', 'manganese_sodiuma5', 'manganese_sodiumb5'
+    )
+    def _compute_percentage_manganese(self):
+        for record in self:
+
+            # Sample 1
+            if record.manganese_wt_samplec1:
+                record.manganese_percentage1 = (
+                    (record.manganese_sodiuma1 * record.manganese_sodiumb1)
+                    / record.manganese_wt_samplec1
+                ) * 100
+            else:
+                record.manganese_percentage1 = 0.0
+
+            # Sample 2
+            if record.manganese_wt_samplec2:
+                record.manganese_percentage2 = (
+                    (record.manganese_sodiuma2 * record.manganese_sodiumb2)
+                    / record.manganese_wt_samplec2
+                ) * 100
+            else:
+                record.manganese_percentage2 = 0.0
+
+            # Sample 3
+            if record.manganese_wt_samplec3:
+                record.manganese_percentage3 = (
+                    (record.manganese_sodiuma3 * record.manganese_sodiumb3)
+                    / record.manganese_wt_samplec3
+                ) * 100
+            else:
+                record.manganese_percentage3 = 0.0
+
+            # Sample 4
+            if record.manganese_wt_samplec4:
+                record.manganese_percentage4 = (
+                    (record.manganese_sodiuma4 * record.manganese_sodiumb4)
+                    / record.manganese_wt_samplec4
+                ) * 100
+            else:
+                record.manganese_percentage4 = 0.0
+
+            # Sample 5
+            if record.manganese_wt_samplec5:
+                record.manganese_percentage5 = (
+                    (record.manganese_sodiuma5 * record.manganese_sodiumb5)
+                    / record.manganese_wt_samplec5
+                ) * 100
+            else:
+                record.manganese_percentage5 = 0.0
+
+    avg_manganese = fields.Float(string="Average of Manganese =",compute="_compute_avg_manganese")
+
+
+
+    @api.depends('manganese_percentage1', 'manganese_percentage2', 'manganese_percentage3', 'manganese_percentage4', 'manganese_percentage5')
+    def _compute_avg_manganese(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            manganese = [
+                rec.manganese_percentage1,
+                rec.manganese_percentage2,
+                rec.manganese_percentage3,
+                rec.manganese_percentage4,
+                rec.manganese_percentage5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_manganese = [c for c in manganese if c]  # ya (c for c in manganese if c not in [False, None, 0.0])
+            
+            if valid_manganese:
+                rec.avg_manganese = sum(valid_manganese) / len(valid_manganese)
+            else:
+                rec.avg_manganese = 0.0
 
     
 
@@ -627,15 +785,92 @@ class SteelChemical(models.Model):
     mass_of_siliconb4 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
     mass_of_siliconb5 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
 
-    percent_of_silicon1 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C")
-    percent_of_silicon2 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C")
-    percent_of_silicon3 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C")
-    percent_of_silicon4 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C")
-    percent_of_silicon5 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C")
+    percent_of_silicon1 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+    percent_of_silicon2 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+    percent_of_silicon3 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+    percent_of_silicon4 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+    percent_of_silicon5 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+
+
+    @api.depends(
+        'wt_of_silicon1', 'mas_of_silicon1', 'mass_of_siliconb1',
+        'wt_of_silicon2', 'mas_of_silicon2', 'mass_of_siliconb2',
+        'wt_of_silicon3', 'mas_of_silicon3', 'mass_of_siliconb3',
+        'wt_of_silicon4', 'mas_of_silicon4', 'mass_of_siliconb4',
+        'wt_of_silicon5', 'mas_of_silicon5', 'mass_of_siliconb5'
+    )
+    def _compute_percent_of_silicon(self):
+        for record in self:
+
+            # Sample 1
+            if record.wt_of_silicon1:
+                record.percent_of_silicon1 = (
+                    (record.mas_of_silicon1 - record.mass_of_siliconb1)
+                    * 46.75
+                ) / record.wt_of_silicon1
+            else:
+                record.percent_of_silicon1 = 0.0
+
+            # Sample 2
+            if record.wt_of_silicon2:
+                record.percent_of_silicon2 = (
+                    (record.mas_of_silicon2 - record.mass_of_siliconb2)
+                    * 46.75
+                ) / record.wt_of_silicon2
+            else:
+                record.percent_of_silicon2 = 0.0
+
+            # Sample 3
+            if record.wt_of_silicon3:
+                record.percent_of_silicon3 = (
+                    (record.mas_of_silicon3 - record.mass_of_siliconb3)
+                    * 46.75
+                ) / record.wt_of_silicon3
+            else:
+                record.percent_of_silicon3 = 0.0
+
+            # Sample 4
+            if record.wt_of_silicon4:
+                record.percent_of_silicon4 = (
+                    (record.mas_of_silicon4 - record.mass_of_siliconb4)
+                    * 46.75
+                ) / record.wt_of_silicon4
+            else:
+                record.percent_of_silicon4 = 0.0
+
+            # Sample 5
+            if record.wt_of_silicon5:
+                record.percent_of_silicon5 = (
+                    (record.mas_of_silicon5 - record.mass_of_siliconb5)
+                    * 46.75
+                ) / record.wt_of_silicon5
+            else:
+                record.percent_of_silicon5 = 0.0
 
     
 
-    avg_silicon = fields.Float(string="PERCENTAGE OF SILICON % =")
+    avg_silicon = fields.Float(string="Average Of Silicon =",compute="_compute_avg_silicon")
+
+
+    @api.depends('percent_of_silicon1', 'percent_of_silicon2', 'percent_of_silicon3', 'percent_of_silicon4', 'percent_of_silicon5')
+    def _compute_avg_silicon(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            silicon = [
+                rec.percent_of_silicon1,
+                rec.percent_of_silicon2,
+                rec.percent_of_silicon3,
+                rec.percent_of_silicon4,
+                rec.percent_of_silicon5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_silicon = [c for c in silicon if c]  # ya (c for c in silicon if c not in [False, None, 0.0])
+            
+            if valid_silicon:
+                rec.avg_silicon = sum(valid_silicon) / len(valid_silicon)
+            else:
+                rec.avg_silicon = 0.0
 
     
     avg_silicon_conformity = fields.Selection([
@@ -735,14 +970,94 @@ class SteelChemical(models.Model):
     chromium_masse4 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
     chromium_masse5 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
 
-    percent_chromium1 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E")
-    percent_chromium2 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E")
-    percent_chromium3 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E")
-    percent_chromium4 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E")
-    percent_chromium5 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E")
+    percent_chromium1 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+    percent_chromium2 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+    percent_chromium3 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+    percent_chromium4 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+    percent_chromium5 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+
+    @api.depends(
+        'chromium_voluma_1', 'chromium_volumb_1', 'chromium_volumc1', 'chromium_masse1',
+        'chromium_voluma_2', 'chromium_volumb_2', 'chromium_volumc2', 'chromium_masse2',
+        'chromium_voluma_3', 'chromium_volumb_3', 'chromium_volumc3', 'chromium_masse3',
+        'chromium_voluma_4', 'chromium_volumb_4', 'chromium_volumc4', 'chromium_masse4',
+        'chromium_voluma_5', 'chromium_volumb_5', 'chromium_volumc5', 'chromium_masse5'
+    )
+    def _compute_percent_chromium(self):
+        for record in self:
+
+            # Sample 1
+            if record.chromium_masse1:
+                record.percent_chromium1 = (
+                    ((record.chromium_voluma_1 * record.chromium_volumb_1) - record.chromium_volumc1)
+                    * 0.01733
+                    * 100
+                ) / record.chromium_masse1
+            else:
+                record.percent_chromium1 = 0.0
+
+            # Sample 2
+            if record.chromium_masse2:
+                record.percent_chromium2 = (
+                    ((record.chromium_voluma_2 * record.chromium_volumb_2) - record.chromium_volumc2)
+                    * 0.01733
+                    * 100
+                ) / record.chromium_masse2
+            else:
+                record.percent_chromium2 = 0.0
+
+            # Sample 3
+            if record.chromium_masse3:
+                record.percent_chromium3 = (
+                    ((record.chromium_voluma_3 * record.chromium_volumb_3) - record.chromium_volumc3)
+                    * 0.01733
+                    * 100
+                ) / record.chromium_masse3
+            else:
+                record.percent_chromium3 = 0.0
+
+            # Sample 4
+            if record.chromium_masse4:
+                record.percent_chromium4 = (
+                    ((record.chromium_voluma_4 * record.chromium_volumb_4) - record.chromium_volumc4)
+                    * 0.01733
+                    * 100
+                ) / record.chromium_masse4
+            else:
+                record.percent_chromium4 = 0.0
+
+            # Sample 5
+            if record.chromium_masse5:
+                record.percent_chromium5 = (
+                    ((record.chromium_voluma_5 * record.chromium_volumb_5) - record.chromium_volumc5)
+                    * 0.01733
+                    * 100
+                ) / record.chromium_masse5
+            else:
+                record.percent_chromium5 = 0.0
 
 
-    avg_chromium = fields.Float(string="PERCENTAGE OF Chromium % =")
+    avg_chromium = fields.Float(string="Average Of Chromium % =",compute="_compute_avg_chromium")
+
+    @api.depends('percent_chromium1', 'percent_chromium2', 'percent_chromium3', 'percent_chromium4', 'percent_chromium5')
+    def _compute_avg_chromium(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            chromium = [
+                rec.percent_chromium1,
+                rec.percent_chromium2,
+                rec.percent_chromium3,
+                rec.percent_chromium4,
+                rec.percent_chromium5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_chromium = [c for c in chromium if c]  # ya (c for c in chromium if c not in [False, None, 0.0])
+            
+            if valid_chromium:
+                rec.avg_chromium = sum(valid_chromium) / len(valid_chromium)
+            else:
+                rec.avg_chromium = 0.0
 
 
     
@@ -826,15 +1141,86 @@ class SteelChemical(models.Model):
     mass_nickelb4 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
     mass_nickelb5 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
 
-    percent_nickel_1 = fields.Float(string="Percent of Nickel= (A X 20.32)/B")
-    percent_nickel_2 = fields.Float(string="Percent of Nickel= (A X 20.32)/B")
-    percent_nickel_3 = fields.Float(string="Percent of Nickel= (A X 20.32)/B")
-    percent_nickel_4 = fields.Float(string="Percent of Nickel= (A X 20.32)/B")
-    percent_nickel_5 = fields.Float(string="Percent of Nickel= (A X 20.32)/B")
+    percent_nickel_1 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+    percent_nickel_2 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+    percent_nickel_3 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+    percent_nickel_4 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+    percent_nickel_5 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+
+    @api.depends(
+        'mass_nickela1', 'mass_nickelb1',
+        'mass_nickela2', 'mass_nickelb2',
+        'mass_nickela3', 'mass_nickelb3',
+        'mass_nickela4', 'mass_nickelb4',
+        'mass_nickela5', 'mass_nickelb5'
+    )
+    def _compute_percent_nickel(self):
+        for record in self:
+
+            # Sample 1
+            if record.mass_nickelb1:
+                record.percent_nickel_1 = (
+                    record.mass_nickela1 * 20.32
+                ) / record.mass_nickelb1
+            else:
+                record.percent_nickel_1 = 0.0
+
+            # Sample 2
+            if record.mass_nickelb2:
+                record.percent_nickel_2 = (
+                    record.mass_nickela2 * 20.32
+                ) / record.mass_nickelb2
+            else:
+                record.percent_nickel_2 = 0.0
+
+            # Sample 3
+            if record.mass_nickelb3:
+                record.percent_nickel_3 = (
+                    record.mass_nickela3 * 20.32
+                ) / record.mass_nickelb3
+            else:
+                record.percent_nickel_3 = 0.0
+
+            # Sample 4
+            if record.mass_nickelb4:
+                record.percent_nickel_4 = (
+                    record.mass_nickela4 * 20.32
+                ) / record.mass_nickelb4
+            else:
+                record.percent_nickel_4 = 0.0
+
+            # Sample 5
+            if record.mass_nickelb5:
+                record.percent_nickel_5 = (
+                    record.mass_nickela5 * 20.32
+                ) / record.mass_nickelb5
+            else:
+                record.percent_nickel_5 = 0.0
 
     
 
-    avg_nickel = fields.Float(string="PERCENTAGE OF Nickel % =")
+    avg_nickel = fields.Float(string="Average Of Nickel % =",compute="_compute_avg_nickel")
+
+
+    @api.depends('percent_nickel_1', 'percent_nickel_2', 'percent_nickel_3', 'percent_nickel_4', 'percent_nickel_5')
+    def _compute_avg_nickel(self):
+        for rec in self:
+            # Sagle values ek list madhe gheun fakt non-zero/valid values filter karu
+            nickel = [
+                rec.percent_nickel_1,
+                rec.percent_nickel_2,
+                rec.percent_nickel_3,
+                rec.percent_nickel_4,
+                rec.percent_nickel_5
+            ]
+            
+            # Fakt tyach values count hotil jya fields madhe data ahe (non-zero / truthy)
+            valid_nickel = [c for c in nickel if c]  # ya (c for c in nickel if c not in [False, None, 0.0])
+            
+            if valid_nickel:
+                rec.avg_nickel = sum(valid_nickel) / len(valid_nickel)
+            else:
+                rec.avg_nickel = 0.0
 
 
     

@@ -2,7 +2,7 @@
 <odoo>
 	
 	
-	<template id="waste_water_chemical_report">
+	<template id="steel_chemical_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			
@@ -267,26 +267,26 @@
 								</tr>
 							</thead>
 						<tbody >
-								<!-- ph_visible -->
-							<tr t-if="data.ph_visible and (data.ph_average_nabl == 'pass' and nabl or (data.ph_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- carbon_visible -->
+							<tr t-if="data.carbon_visible and (data.carbon_percentage_nabl == 'pass' and nabl or (data.carbon_percentage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</td>
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','62147hjy-645d-4794-a0fd-3daa0124rtyu')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1b8c8615-978b-483c-99dd-271530e3884e')]).parameter_name"/>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','62147hjy-645d-4794-a0fd-3daa0124rtyu')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1b8c8615-978b-483c-99dd-271530e3884e')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-                                        <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','62147hjy-645d-4794-a0fd-3daa0124rtyu')]).parameter_table" t-as="parameter">
+                                        <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1b8c8615-978b-483c-99dd-271530e3884e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -296,13 +296,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.ph_average" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.carbon_percentage" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','62147hjy-645d-4794-a0fd-3daa0124rtyu')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1b8c8615-978b-483c-99dd-271530e3884e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -311,14 +311,14 @@
 								</td>
 
                                 <td t-if="eln.conformity">
-								<span t-field="data.ph_average_conformity"/>
+								<span t-field="data.carbon_percentage_conformity"/>
 							</td>
 								
 							</tr>
 
-								<!-- suspended_solids_visible -->
+								<!-- phosphorus_visible -->
 
-							<tr t-if="data.suspended_solids_visible and (data.avg_suspended_solids_nabl == 'pass' and nabl or (data.avg_suspended_solids_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.phosphorus_visible and (data.avg_phosphorus_nabl == 'pass' and nabl or (data.avg_phosphorus_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -327,18 +327,18 @@
 								
 
 								<td >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','325478ht-645d-4794-a0fd-3daa012410tr')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ecdf1d7-5f58-494b-a898-28a0bb3f8242')]).parameter_name"/>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','325478ht-645d-4794-a0fd-3daa012410tr')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ecdf1d7-5f58-494b-a898-28a0bb3f8242')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','325478ht-645d-4794-a0fd-3daa012410tr')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ecdf1d7-5f58-494b-a898-28a0bb3f8242')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -348,13 +348,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_suspended_solids" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_phosphorus" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','325478ht-645d-4794-a0fd-3daa012410tr')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ecdf1d7-5f58-494b-a898-28a0bb3f8242')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -363,15 +363,15 @@
 								</td>
 
                                   <td t-if="eln.conformity">
-								<span t-field="data.avg_suspended_solids_conformity"/>
+								<span t-field="data.avg_phosphorus_conformity"/>
 							</td>
 								
 								
 							</tr>
 
-								<!-- oxygen_demand_visible -->
+								<!-- sulphur_steel_visible -->
 
-							<tr t-if="data.oxygen_demand_visible and (data.avg_oxygen_demand_nabl == 'pass' and nabl or (data.avg_oxygen_demand_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.sulphur_steel_visible and (data.avg_sulphur_nabl == 'pass' and nabl or (data.avg_sulphur_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -379,16 +379,16 @@
 								
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','98745jyt-645d-4794-a0fd-3daa0123214hyt')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2de1cf5a-ef5d-46e7-8183-048b1d415c86')]).parameter_name"/>
 								</td>
 									<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','98745jyt-645d-4794-a0fd-3daa0123214hyt')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2de1cf5a-ef5d-46e7-8183-048b1d415c86')]).unit.name"/>
 									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','98745jyt-645d-4794-a0fd-3daa0123214hyt')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2de1cf5a-ef5d-46e7-8183-048b1d415c86')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -397,13 +397,13 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_oxygen_demand" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_sulphur" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 							
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','98745jyt-645d-4794-a0fd-3daa0123214hyt')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2de1cf5a-ef5d-46e7-8183-048b1d415c86')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -412,13 +412,13 @@
 								</td>
 
                                   <td t-if="eln.conformity">
-								<span t-field="data.avg_oxygen_demand_conformity"/>
+								<span t-field="data.avg_sulphur_conformity"/>
 							</td>
 								
 							</tr>
 
-								<!-- biooxygen_demand_visible-->
-							<tr t-if="data.biooxygen_demand_visible and (data.avg_biooxygen_demand_nabl == 'pass' and nabl or (data.avg_biooxygen_demand_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- manganese_visible-->
+							<tr t-if="data.manganese_visible and (data.avg_manganese_nabl == 'pass' and nabl or (data.avg_manganese_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
@@ -427,17 +427,17 @@
 								
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','65478iuy-645d-4794-a0fd-3daa01232ygtr1')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','9ad149fa-9fa0-4ff7-8168-c27d2505323e')]).parameter_name"/>
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','65478iuy-645d-4794-a0fd-3daa01232ygtr1')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','9ad149fa-9fa0-4ff7-8168-c27d2505323e')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','65478iuy-645d-4794-a0fd-3daa01232ygtr1')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9ad149fa-9fa0-4ff7-8168-c27d2505323e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -447,13 +447,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_biooxygen_demand" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_manganese" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','65478iuy-645d-4794-a0fd-3daa01232ygtr1')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9ad149fa-9fa0-4ff7-8168-c27d2505323e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -462,13 +462,13 @@
 								</td>
 
                                  <td t-if="eln.conformity">
-								<span t-field="data.avg_biooxygen_demand_conformity"/>
+								<span t-field="data.avg_manganese_conformity"/>
 							</td>
 								
 							</tr>
 
-								<!-- grease_visible -->
-							<tr t-if="data.grease_visible and (data.avg_grease_nabl == 'pass' and nabl or (data.avg_grease_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- silicon_visible -->
+							<tr t-if="data.silicon_visible and (data.avg_silicon_nabl == 'pass' and nabl or (data.avg_silicon_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -480,18 +480,18 @@
 								</td> -->
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','36547bbn-645d-4794-a0fd-3daa01232yertv')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','8e03281c-9961-44db-bd32-52bbdea0b56e')]).parameter_name"/>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','36547bbn-645d-4794-a0fd-3daa01232yertv')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','8e03281c-9961-44db-bd32-52bbdea0b56e')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','36547bbn-645d-4794-a0fd-3daa01232yertv')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','8e03281c-9961-44db-bd32-52bbdea0b56e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -501,13 +501,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_grease" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_silicon" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','36547bbn-645d-4794-a0fd-3daa01232yertv')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','8e03281c-9961-44db-bd32-52bbdea0b56e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -516,14 +516,14 @@
 								</td>
 
                                 <td t-if="eln.conformity">
-								<span t-field="data.avg_grease_conformity"/>
+								<span t-field="data.avg_silicon_conformity"/>
 							</td>
 								
 							</tr>
 
 
-                            <!-- calcium_visible -->
-							<tr t-if="data.calcium_visible and (data.avg_calcium_nabl == 'pass' and nabl or (data.avg_calcium_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                            <!-- chromium_visible -->
+							<tr t-if="data.chromium_visible and (data.avg_chromium_nabl == 'pass' and nabl or (data.avg_chromium_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -535,18 +535,18 @@
 								</td> -->
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32147h-ba0b-4e64-84d1-e3b23f3ty5610')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6cb22710-89a6-44a0-8df1-379ef6230a4e')]).parameter_name"/>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32147h-ba0b-4e64-84d1-e3b23f3ty5610')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6cb22710-89a6-44a0-8df1-379ef6230a4e')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32147h-ba0b-4e64-84d1-e3b23f3ty5610')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6cb22710-89a6-44a0-8df1-379ef6230a4e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -556,13 +556,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_calcium" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_chromium" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32147h-ba0b-4e64-84d1-e3b23f3ty5610')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6cb22710-89a6-44a0-8df1-379ef6230a4e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -571,15 +571,15 @@
 								</td>
 
                                 <td t-if="eln.conformity">
-								<span t-field="data.avg_calcium_conformity"/>
+								<span t-field="data.avg_chromium_conformity"/>
 							</td>
 								
 							</tr>
 
 
 
-                            <!-- chloride_visible -->
-							<tr t-if="data.chloride_visible and (data.avg_chloride_nabl == 'pass' and nabl or (data.avg_chloride_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                            <!-- nickel_visible -->
+							<tr t-if="data.nickel_visible and (data.avg_nickel_nabl == 'pass' and nabl or (data.avg_nickel_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -591,18 +591,18 @@
 								</td> -->
 								
 								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2211bv-ba0b-4e64-84d1-e3b23ft301yr')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','942ccb3a-4104-4a84-839e-0535d8dd39bc')]).parameter_name"/>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2211bv-ba0b-4e64-84d1-e3b23ft301yr')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','942ccb3a-4104-4a84-839e-0535d8dd39bc')]).unit.name"/>
 									</span>
 								</td>
 
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2211bv-ba0b-4e64-84d1-e3b23ft301yr')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','942ccb3a-4104-4a84-839e-0535d8dd39bc')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
@@ -612,13 +612,13 @@
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.avg_chloride" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_nickel" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2211bv-ba0b-4e64-84d1-e3b23ft301yr')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','942ccb3a-4104-4a84-839e-0535d8dd39bc')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
@@ -627,126 +627,14 @@
 								</td>
 
                                 <td t-if="eln.conformity">
-								<span t-field="data.avg_chloride_conformity"/>
+								<span t-field="data.avg_nickel_conformity"/>
 							</td>
 								
 							</tr>
 
 
 
-                            <!-- sodium_visible -->
-							<tr t-if="data.sodium_visible and (data.sodium_average_nabl == 'pass' and nabl or (data.sodium_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-								<!-- <td>
-									<span>
-										pH (25°C)
-									</span>
-								</td> -->
-								
-								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','777bbbf-ba0b-4e64-84d1-e3b23f32147tr')]).parameter_name"/>
-								</td>
-
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','777bbbf-ba0b-4e64-84d1-e3b23f32147tr')]).unit.name"/>
-									</span>
-								</td>
-
-								<td style="text-align: center;">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','777bbbf-ba0b-4e64-84d1-e3b23f32147tr')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                            </t>
-                                        </t>
-									</span>
-								</td>
-								
-								<td style="text-align: center;">
-									<span>
-										<span t-field="data.sodium_average" t-options='{"widget": "float", "precision": 2}'/>
-									</span>									
-								</td>
-								
-								<td style="text-align: center;">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','777bbbf-ba0b-4e64-84d1-e3b23f32147tr')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                            </t>
-                                        </t>
-									</span>
-								</td>
-
-                                <td t-if="eln.conformity">
-								<span t-field="data.sodium_average_conformity"/>
-							</td>
-								
-							</tr>
-
-
-                            <!-- potassium_visible -->
-							<tr t-if="data.potassium_visible and (data.potassium_average_nabl == 'pass' and nabl or (data.potassium_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-								<!-- <td>
-									<span>
-										pH (25°C)
-									</span>
-								</td> -->
-								
-								<td  >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','333yyy-ba0b-4e64-84d1-e3b23f32rtefg')]).parameter_name"/>
-								</td>
-
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','333yyy-ba0b-4e64-84d1-e3b23f32rtefg')]).unit.name"/>
-									</span>
-								</td>
-
-								<td style="text-align: center;">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','333yyy-ba0b-4e64-84d1-e3b23f32rtefg')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                            </t>
-                                        </t>
-									</span>
-								</td>
-								
-								<td style="text-align: center;">
-									<span>
-										<span t-field="data.potassium_average" t-options='{"widget": "float", "precision": 2}'/>
-									</span>									
-								</td>
-								
-								<td style="text-align: center;">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','333yyy-ba0b-4e64-84d1-e3b23f32rtefg')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                            </t>
-                                        </t>
-									</span>
-								</td>
-
-                                <td t-if="eln.conformity">
-								<span t-field="data.potassium_average_conformity"/>
-							</td>
-								
-							</tr>
-
-
-							
-
-
+                          
 							
 						</tbody>
 					</table>

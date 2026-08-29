@@ -13,7 +13,9 @@ This module contains all the common features of Steel Chemical.
     'depends': ['base','lerm_civil'],
     'data': [
                'sequrity/ir.model.access.csv',
-               'views/steel_chemical.xml'
+               'views/steel_chemical.xml',
+               'reports/steel_chemical_datasheet.xml',
+               'reports/steel_chemical_report.xml'
     ],
 
     'installable': True,

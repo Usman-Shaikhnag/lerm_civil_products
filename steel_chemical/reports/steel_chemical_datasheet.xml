@@ -1,0 +1,1255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="steel_chemical_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                   Steel Chemical Chemical Datasheet
+                </div>
+				
+				<div class="container_eln" style="margin-top:5px">
+
+					<table style="margin-top:20px">
+						<tr>
+							<td colspan="6">Job No  :  <span t-field="eln.kes_no"></span>
+							</td>
+							<td colspan="6">Grade  :  <span t-field="data.grade"></span>
+							</td>
+							
+						</tr>
+						<tr>
+							<td colspan="4">Material: <span t-field="eln.material"></span>
+							</td>
+							<td colspan="4">Test Start Date  :  <span t-field="eln.start_date"></span>
+							</td>
+							<td colspan="4">Test End Date   :  <span t-field="eln.end_date"></span>
+							</td>
+						</tr>
+						<tr style="height:50px" cols="12">
+							<td colspan="4">Performed By :
+								<![CDATA[&nbsp;]]>
+								<span t-field="eln.technician.name"/>
+							</td>
+							<td colspan="4">Witness Name :
+								<![CDATA[&nbsp;]]>
+								<span t-field="eln.witness_name"/>
+							</td>
+							<td colspan="4">Witness Signature :
+								<![CDATA[&nbsp;]]>
+								<span style='padding:20px'></span>
+							</td>
+						</tr>
+					</table>
+
+               		 <!-- % carbon_visible -->
+					<div t-if="data.carbon_visible">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','1b8c8615-978b-483c-99dd-271530e3884e')]).parameter_name"/>
+						</div>
+						
+
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           
+                             <td>Nomenclature</td>
+                             <td>Dia (mm)</td>
+                             <td>Bar. Pressure</td>
+                             <td>Ambient Temp.</td>
+                             <td>Pressure-Temp. Correction Factor (F)</td>
+                            
+                           </tr>
+                           <tr>
+                             
+                             <td><span t-field="data.nomenclature"/></td>
+							 <td><span t-field="data.dia"/></td>
+							 <td><span t-field="data.pressure"/></td>
+							 <td><span t-field="data.ambient"/></td>
+							 <td><span t-field="data.correction_factor"/></td>
+                             
+                           </tr>
+
+                         </tbody>
+                      </table>
+
+					  <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                              <td>Sr. No.</td>
+                             <td>Type of sample</td>
+                             <td>Wt. of sample (W)</td>
+                             <td>Burette Reading for sample (A)</td>
+                             <td>Burette Reading for Blank (B)	</td>
+                             <td>Calculation= (A - B) X F "</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.type_of_sample1"/></td>
+                             <td><span t-field="data.wt_of_sample1" /></td>
+                             <td><span t-field="data.br_reading_a1" /></td>
+							 <td><span t-field="data.br_reading_b1"/></td>
+                             <td><span t-field="data.carbon_calculation1"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.type_of_sample2"/></td>
+                             <td><span t-field="data.wt_of_sample2" /></td>
+                             <td><span t-field="data.br_reading_a2" /></td>
+							 <td><span t-field="data.br_reading_b2"/></td>
+                             <td><span t-field="data.carbon_calculation2"/></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.type_of_sample3"/></td>
+                             <td><span t-field="data.wt_of_sample3" /></td>
+                             <td><span t-field="data.br_reading_a3" /></td>
+							 <td><span t-field="data.br_reading_b3"/></td>
+                             <td><span t-field="data.carbon_calculation3"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.type_of_sample4"/></td>
+                             <td><span t-field="data.wt_of_sample4" /></td>
+                             <td><span t-field="data.br_reading_a4" /></td>
+							 <td><span t-field="data.br_reading_b4"/></td>
+                             <td><span t-field="data.carbon_calculation4"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.type_of_sample5"/></td>
+                             <td><span t-field="data.wt_of_sample5" /></td>
+                             <td><span t-field="data.br_reading_a5" /></td>
+							 <td><span t-field="data.br_reading_b5"/></td>
+                             <td><span t-field="data.carbon_calculation5"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average of Carbon</span></td>
+                          <!-- <td style="padding: 8px;"> <span t-field="data.carbon_percentage " /></td> -->
+                           <td><span t-field="data.carbon_percentage" /></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					 <div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1b8c8615-978b-483c-99dd-271530e3884e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1b8c8615-978b-483c-99dd-271530e3884e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1b8c8615-978b-483c-99dd-271530e3884e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+                      <!-- phosphorus_visible -->
+                    <div t-if="data.phosphorus_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3ecdf1d7-5f58-494b-a898-28a0bb3f8242')]).parameter_name"/>
+						</div>
+						
+
+                        
+
+					  <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                              <td>Sr. No.</td>
+                             <td>Weight of sample taken in gm (D)</td>
+                             <td>Std. HNO3 solution consumed in sample in ml (A)</td>
+                             <td>Std. HNO3 solution consumed in Blank in ml (B)</td>
+                             <td>Phosphorus equivalent of 1 ml std. HNO3 solution (C)</td>
+                             <td>Percentage of phosphorus ((B - A) × C / D) × 100</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.wt_sample_taken1"/></td>
+                             <td><span t-field="data.hno3_a1" /></td>
+                             <td><span t-field="data.hno3_b1" /></td>
+							 <td><span t-field="data.hno3_c1"/></td>
+                             <td><span t-field="data.percentage_of_phosphorus1"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.wt_sample_taken2"/></td>
+                             <td><span t-field="data.hno3_a2" /></td>
+                             <td><span t-field="data.hno3_b2" /></td>
+							 <td><span t-field="data.hno3_c2"/></td>
+                             <td><span t-field="data.percentage_of_phosphorus2"/></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.wt_sample_taken3"/></td>
+                             <td><span t-field="data.hno3_a3" /></td>
+                             <td><span t-field="data.hno3_b3" /></td>
+							 <td><span t-field="data.hno3_c3"/></td>
+                             <td><span t-field="data.percentage_of_phosphorus3"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.wt_sample_taken4"/></td>
+                             <td><span t-field="data.hno3_a4" /></td>
+                             <td><span t-field="data.hno3_b4" /></td>
+							 <td><span t-field="data.hno3_c4"/></td>
+                             <td><span t-field="data.percentage_of_phosphorus4"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.wt_sample_taken5"/></td>
+                             <td><span t-field="data.hno3_a5" /></td>
+                             <td><span t-field="data.hno3_b5" /></td>
+							 <td><span t-field="data.hno3_c5"/></td>
+                             <td><span t-field="data.percentage_of_phosphorus5"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average of phosphorus</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_phosphorus" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3ecdf1d7-5f58-494b-a898-28a0bb3f8242')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3ecdf1d7-5f58-494b-a898-28a0bb3f8242')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3ecdf1d7-5f58-494b-a898-28a0bb3f8242')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+                       <!-- sulphur_steel_visible -->
+					<div t-if="data.sulphur_steel_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2de1cf5a-ef5d-46e7-8183-048b1d415c86')]).parameter_name"/>
+						</div>
+						
+				
+						
+
+
+
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+						    <td>Sr. No</td>
+                              <td>Weight of sample taken in gm (D)</td>
+                             <td>Volume in ml, of potassium iodate solution used (B)</td>
+                             <td>Volume in ml, of potassium iodate solution added (A)</td>
+                             <td>Normality of potassium iodate solution (C)</td>
+                             <td>Percentage of Sulphur = [(A − B) × C × 1.6] / D</td>
+                            
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.sulpher_wt_sample1"/></td>
+                             <td><span t-field="data.sulpher_potassiumb1" /></td>
+                             <td><span t-field="data.sulpher_potassiuma1" /></td>
+							 <td><span t-field="data.sulpher_potassiumc1"/></td>
+                             <td><span t-field="data.percentage_sulpher1"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.sulpher_wt_sample2"/></td>
+                             <td><span t-field="data.sulpher_potassiumb2" /></td>
+                             <td><span t-field="data.sulpher_potassiuma2" /></td>
+							 <td><span t-field="data.sulpher_potassiumc2"/></td>
+                             <td><span t-field="data.percentage_sulpher2"/></td>
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.sulpher_wt_sample3"/></td>
+                             <td><span t-field="data.sulpher_potassiumb3" /></td>
+                             <td><span t-field="data.sulpher_potassiuma3" /></td>
+							 <td><span t-field="data.sulpher_potassiumc3"/></td>
+                             <td><span t-field="data.percentage_sulpher3"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.sulpher_wt_sample4"/></td>
+                             <td><span t-field="data.sulpher_potassiumb4" /></td>
+                             <td><span t-field="data.sulpher_potassiuma4" /></td>
+							 <td><span t-field="data.sulpher_potassiumc4"/></td>
+                             <td><span t-field="data.percentage_sulpher4"/></td>
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.sulpher_wt_sample5"/></td>
+                             <td><span t-field="data.sulpher_potassiumb5" /></td>
+                             <td><span t-field="data.sulpher_potassiuma5" /></td>
+							 <td><span t-field="data.sulpher_potassiumc5"/></td>
+                             <td><span t-field="data.percentage_sulpher5"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average of Sulphur</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_sulphur" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '2de1cf5a-ef5d-46e7-8183-048b1d415c86')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '2de1cf5a-ef5d-46e7-8183-048b1d415c86')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '2de1cf5a-ef5d-46e7-8183-048b1d415c86')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+
+                      
+
+
+
+
+					  <!-- manganese_visible -->
+					<div t-if="data.manganese_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9ad149fa-9fa0-4ff7-8168-c27d2505323e')]).parameter_name"/>
+						</div>
+						
+				
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                          <td>Sr. No</td>
+                             <td>Weight of sample taken in gm (C)</td>
+                             <td>Std. Sodium arsenite solution consumed in sample in ml (A)</td>
+                             <td>Manganese equipment of std. sodium arsenite solution (B) gm/ml</td>
+                             <td>% of Manganese = ([(A × B) / C] × 100)</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.manganese_wt_samplec1"/></td>
+                             <td><span t-field="data.manganese_sodiuma1"/></td>
+                             <td><span t-field="data.manganese_sodiumb1"/></td>
+							 <td><span t-field="data.manganese_percentage1"/></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.manganese_wt_samplec2"/></td>
+                             <td><span t-field="data.manganese_sodiuma2"/></td>
+                             <td><span t-field="data.manganese_sodiumb2"/></td>
+							 <td><span t-field="data.manganese_percentage2"/></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.manganese_wt_samplec3"/></td>
+                             <td><span t-field="data.manganese_sodiuma3"/></td>
+                             <td><span t-field="data.manganese_sodiumb3"/></td>
+							 <td><span t-field="data.manganese_percentage3"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.manganese_wt_samplec4"/></td>
+                             <td><span t-field="data.manganese_sodiuma4"/></td>
+                             <td><span t-field="data.manganese_sodiumb4"/></td>
+							 <td><span t-field="data.manganese_percentage4"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.manganese_wt_samplec5"/></td>
+                             <td><span t-field="data.manganese_sodiuma5"/></td>
+                             <td><span t-field="data.manganese_sodiumb5"/></td>
+							 <td><span t-field="data.manganese_percentage5"/></td>
+                           
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average of Manganese </span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_manganese" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9ad149fa-9fa0-4ff7-8168-c27d2505323e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9ad149fa-9fa0-4ff7-8168-c27d2505323e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9ad149fa-9fa0-4ff7-8168-c27d2505323e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+
+
+					  <!-- silicon_visible -->
+					<div t-if="data.silicon_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8e03281c-9961-44db-bd32-52bbdea0b56e')]).parameter_name"/>
+						</div>
+						
+				
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                             <td>Sr. No.</td>
+
+                             <td>Weight of sample taken in gm (C)</td>
+                             <td>Mass in gm. Of silica obtained in sample (A)</td>
+                             <td>Mass in gm. Of silica obtained in blank (B)</td>
+                             <td>PERCENTAGE OF SILICON % =</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.wt_of_silicon1"/></td>
+                             <td><span t-field="data.mas_of_silicon1"/></td>
+                             <td><span t-field="data.mass_of_siliconb1"/></td>
+							 <td><span t-field="data.percent_of_silicon1"/></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.wt_of_silicon2"/></td>
+                             <td><span t-field="data.mas_of_silicon2"/></td>
+                             <td><span t-field="data.mass_of_siliconb2"/></td>
+							 <td><span t-field="data.percent_of_silicon2"/></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.wt_of_silicon3"/></td>
+                             <td><span t-field="data.mas_of_silicon3"/></td>
+                             <td><span t-field="data.mass_of_siliconb3"/></td>
+							 <td><span t-field="data.percent_of_silicon3"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.wt_of_silicon4"/></td>
+                             <td><span t-field="data.mas_of_silicon4"/></td>
+                             <td><span t-field="data.mass_of_siliconb4"/></td>
+							 <td><span t-field="data.percent_of_silicon4"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.wt_of_silicon5"/></td>
+                             <td><span t-field="data.mas_of_silicon5"/></td>
+                             <td><span t-field="data.mass_of_siliconb5"/></td>
+							 <td><span t-field="data.percent_of_silicon5"/></td>
+                           
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Silicon</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_silicon" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '8e03281c-9961-44db-bd32-52bbdea0b56e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '8e03281c-9961-44db-bd32-52bbdea0b56e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '8e03281c-9961-44db-bd32-52bbdea0b56e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+
+
+                      <!-- chromium_visible -->
+					<div t-if="data.chromium_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6cb22710-89a6-44a0-8df1-379ef6230a4e')]).parameter_name"/>
+						</div>
+						
+				
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                               <td>Sr. No.</td>
+
+                             <td>Volume in ml of std. Ferrous ammonium sulphate solution added, (A)</td>
+                             <td>Volume in ml of std. Potassium permanganate solution equivalent to 1 ml of Ferrous ammonium sulphate solution, (B)</td>
+                             <td>Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)</td>
+                             <td>Normality of Std. Potassium Permanganate solution, (D) </td>
+							 <td>Mass in gm of the sample taken for Test, (E) </td>
+							 <td>Percent of Chromium= ((AB-C) X 0.01733 X 100)/E</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.chromium_voluma_1"/></td>
+                             <td><span t-field="data.chromium_volumb_1"/></td>
+                             <td><span t-field="data.chromium_volumc1"/></td>
+							 <td><span t-field="data.chromium_normalityd1"/></td>
+							 <td><span t-field="data.chromium_masse1"/></td>
+							 <td><span t-field="data.percent_chromium1"/></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.chromium_voluma_2"/></td>
+                             <td><span t-field="data.chromium_volumb_2"/></td>
+                             <td><span t-field="data.chromium_volumc2"/></td>
+							 <td><span t-field="data.chromium_normalityd2"/></td>
+							 <td><span t-field="data.chromium_masse2"/></td>
+							 <td><span t-field="data.percent_chromium2"/></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.chromium_voluma_3"/></td>
+                             <td><span t-field="data.chromium_volumb_3"/></td>
+                             <td><span t-field="data.chromium_volumc3"/></td>
+							 <td><span t-field="data.chromium_normalityd3"/></td>
+							 <td><span t-field="data.chromium_masse3"/></td>
+							 <td><span t-field="data.percent_chromium3"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.chromium_voluma_4"/></td>
+                             <td><span t-field="data.chromium_volumb_4"/></td>
+                             <td><span t-field="data.chromium_volumc4"/></td>
+							 <td><span t-field="data.chromium_normalityd4"/></td>
+							 <td><span t-field="data.chromium_masse4"/></td>
+							 <td><span t-field="data.percent_chromium4"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.chromium_voluma_5"/></td>
+                             <td><span t-field="data.chromium_volumb_5"/></td>
+                             <td><span t-field="data.chromium_volumc5"/></td>
+							 <td><span t-field="data.chromium_normalityd5"/></td>
+							 <td><span t-field="data.chromium_masse5"/></td>
+							 <td><span t-field="data.percent_chromium5"/></td>
+                           
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Chromium</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_chromium" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6cb22710-89a6-44a0-8df1-379ef6230a4e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6cb22710-89a6-44a0-8df1-379ef6230a4e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '6cb22710-89a6-44a0-8df1-379ef6230a4e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+
+                     <!-- nickel_visible -->
+					<div t-if="data.nickel_visible" style="margin-top:20px; page-break-before: always;">
+					
+						<div style="text-align:center;font-size:18px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','942ccb3a-4104-4a84-839e-0535d8dd39bc')]).parameter_name"/>
+						</div>
+						
+				
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                               <td>Sr. No.</td>
+
+                             <td>Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)</td>
+                             <td>Mass in gm of the sample of aliquot representing the sample taken, (B)</td>
+                             <td>Percent of Nickel= (A X 20.32)/B</td>
+                            
+                           </tr>
+                           <tr>
+                             <td>1</td>
+                             <td><span t-field="data.mass_nickela1"/></td>
+                             <td><span t-field="data.mass_nickelb1"/></td>
+                             <td><span t-field="data.percent_nickel_1"/></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td>2</td>
+                             <td><span t-field="data.mass_nickela2"/></td>
+                             <td><span t-field="data.mass_nickelb2"/></td>
+                             <td><span t-field="data.percent_nickel_2"/></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td>3</td>
+                             <td><span t-field="data.mass_nickela3"/></td>
+                             <td><span t-field="data.mass_nickelb3"/></td>
+                             <td><span t-field="data.percent_nickel_3"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>4</td>
+                             <td><span t-field="data.mass_nickela4"/></td>
+                             <td><span t-field="data.mass_nickelb4"/></td>
+                             <td><span t-field="data.percent_nickel_4"/></td>
+                            
+                           </tr>
+
+                           <tr>
+                             <td>5</td>
+                             <td><span t-field="data.mass_nickela5"/></td>
+                             <td><span t-field="data.mass_nickelb5"/></td>
+                             <td><span t-field="data.percent_nickel_5"/></td>
+                           
+                           </tr>
+                         </tbody>
+                      </table>
+
+
+                      <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Nickel</span></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_nickel" t-options='{"widget": "float", "precision": 2}'/></td>
+                         </tr>
+                       
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '942ccb3a-4104-4a84-839e-0535d8dd39bc')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '942ccb3a-4104-4a84-839e-0535d8dd39bc')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '942ccb3a-4104-4a84-839e-0535d8dd39bc')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						</div>
+
+					</div>
+
+
+
+
+					
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>
