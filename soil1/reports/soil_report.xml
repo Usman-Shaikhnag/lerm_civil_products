@@ -138,13 +138,18 @@
 				<t t-set="name_avg_nmc" t-value="[o.avg_nmc for o in (data.moisture_ids or []) if o.avg_nmc]"/>
 			<t t-set="n_avg_nmc" t-value="0"/>
 
-			<t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/>
+			<!-- <t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/> -->
+			<t t-set="ll_lines" t-value="data.ll_child_lines or []"/>
 			<t t-set="ll_index" t-value="0"/>
 
-			<t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/>
+           
+
+			<!-- <t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/> -->
+			<t t-set="pl_vals" t-value="data.pl_child_lines or []"/>
 			<t t-set="pl_index" t-value="0"/>
 			
-			<t t-set="sl_vals" t-value="[o.shrinkage_avg for o in (data.sl_child_lines or []) if o.shrinkage_avg]"/>
+			<!-- <t t-set="sl_vals" t-value="[o.shrinkage_avg for o in (data.sl_child_lines or []) if o.shrinkage_avg]"/> -->
+			<t t-set="sl_vals" t-value="data.sl_child_lines or []"/>
 			<t t-set="sl_index" t-value="0"/>
 
 			<t t-set="bh_vals" t-value="[g.bh_id for g in (data.gsa_child_lines or []) if g.bh_id]"/>
@@ -213,7 +218,7 @@
 								len(silt_vals or []),
 								len(sand_vals or []),
 								len(silt_clay_vals or []),
-								len(ll_vals or []),
+								len(ll_lines or []),
 								len(pl_vals or []),
 								len(sl_vals or []),
 								len(grav_vals or []),
@@ -873,28 +878,166 @@
 						<t t-set="silt_clay_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
+					
 					</td>
 
                   <!-- Atterberg Limits -->
 					<!-- LL -->
-					<td style="text-align:center;">
+					<!-- <td style="text-align:center;">
+					
 						<t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
 						<t t-if="ll_vals and li &lt; len(ll_vals)">
 						    <t t-esc="int((ll_vals[li] or 0) + 0.5)"/>
-							<!-- <t t-esc="'%.2f' % ll_vals[li]"/> -->
+							
 							<t t-set="ll_index" t-value="li + 1"/>
 						</t>
-						<t t-else="">--</t>
-					</td>
+						<t t-else=""></t>
+					</td> -->
 
-					<td style="text-align:center;">
+					<!-- LL -->
+                 <td style="text-align:center; vertical-align: middle;">
+				   <t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
+				    <t t-if="ll_lines and li &lt; len(ll_lines)">
+
+                    <!-- Get current ll.line record -->
+				  	 <t t-set="current_ll" t-value="ll_lines[li]"/>
+
+					<!-- PLASTIC -->
+					 <t t-if="current_ll.plasticity == 'plastic'">
+					 <t t-if="current_ll.liquid_avg">
+					 <t t-esc="int((current_ll.liquid_avg or 0) + 0.5)"/>
+					</t>
+
+                    <t t-else="">
+                       --
+                    </t>
+				  </t>
+
+                  <!-- NON PLASTIC -->
+                  <t t-elif="current_ll.plasticity == 'non_plastic'">
+                      NP
+                   </t>
+
+                  <!-- ^ -->
+                  <t t-elif="current_ll.plasticity == 'na'">
+                      ^
+                    </t>
+
+                 <!-- EMPTY -->
+                  <t t-else="">
+                      --
+                  </t>
+
+                  <!-- Move to next LL record -->
+                 <t t-set="ll_index" t-value="li + 1"/>
+				 </t>
+
+                <t t-else="">
+                    --
+                   </t>
+
+               </td>
+
+
+			   <!-- PL -->
+
+			   <td style="text-align:center; vertical-align: middle;">
+				   <t t-set="li" t-value="pl_index if pl_index is not None else 0"/>
+				    <t t-if="pl_vals and li &lt; len(pl_vals)">
+
+                    <!-- Get current pl.line record -->
+				  	 <t t-set="current_pl" t-value="pl_vals[li]"/>
+
+					<!-- PLASTIC -->
+					 <t t-if="current_pl.plasticity == 'plastic'">
+					 <t t-if="current_pl.plastic_avg">
+					 <t t-esc="int((current_pl.plastic_avg or 0) + 0.5)"/>
+					</t>
+
+                    <t t-else="">
+                       --
+                    </t>
+				  </t>
+
+                  <!-- NON PLASTIC -->
+                  <t t-elif="current_pl.plasticity == 'non_plastic'">
+                      NP
+                   </t>
+
+                  <!-- ^ -->
+                  <t t-elif="current_pl.plasticity == 'na'">
+                      ^
+                    </t>
+
+                 <!-- EMPTY -->
+                  <t t-else="">
+                      --
+                  </t>
+
+                  <!-- Move to next PL record -->
+                 <t t-set="pl_index" t-value="li + 1"/>
+				 </t>
+
+                <t t-else="">
+                    --
+                   </t>
+
+               </td>
+
+
+			   <!-- SL -->
+
+			   <td style="text-align:center; vertical-align: middle;">
+				   <t t-set="li" t-value="sl_index if sl_index is not None else 0"/>
+				    <t t-if="sl_vals and li &lt; len(sl_vals)">
+
+                    <!-- Get current pl.line record -->
+				  	 <t t-set="current_sl" t-value="sl_vals[li]"/>
+
+					<!-- PLASTIC -->
+					 <t t-if="current_sl.plasticity == 'plastic'">
+					 <t t-if="current_sl.shrinkage_avg">
+					 <t t-esc="int((current_sl.shrinkage_avg or 0) + 0.5)"/>
+					</t>
+
+                    <t t-else="">
+                       --
+                    </t>
+				  </t>
+
+                  <!-- NON PLASTIC -->
+                  <t t-elif="current_sl.plasticity == 'non_plastic'">
+                      NP
+                   </t>
+
+                  <!-- ^ -->
+                  <t t-elif="current_sl.plasticity == 'na'">
+                      ^
+                    </t>
+
+                 <!-- EMPTY -->
+                  <t t-else="">
+                      --
+                  </t>
+
+                  <!-- Move to next PL record -->
+                 <t t-set="sl_index" t-value="li + 1"/>
+				 </t>
+
+                <t t-else="">
+                    --
+                   </t>
+
+               </td>
+
+					<!-- <td style="text-align:center;">
 						<t t-set="li" t-value="pl_index if pl_index is not None else 0"/>
 						<t t-if="pl_vals and li &lt; len(pl_vals)">
 						    <t t-esc="int((pl_vals[li] or 0) + 0.5)"/>
-							<!-- <t t-esc="'%.2f' % pl_vals[li]"/> -->
+							
 							<t t-set="pl_index" t-value="li + 1"/>
 						</t>
-						<t t-else="">--</t>
+						<t t-else=""></t>
 					</td>
 
 					<td style="text-align:center;">
@@ -903,11 +1046,11 @@
 
 							<t t-esc="int((sl_vals[li] or 0) + 0.5)"/>
 
-							<!-- <t t-esc="'%.2f' % sl_vals[li]"/> -->
+							
 							<t t-set="sl_index" t-value="li + 1"/>
 						</t>
-						<t t-else="">--</t>
-					</td>
+						<t t-else=""></t>
+					</td> -->
 
 					<!-- IS Class -->
 					<td style="text-align:center;"></td>

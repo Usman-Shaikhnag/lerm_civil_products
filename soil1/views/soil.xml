@@ -1819,8 +1819,18 @@
                         </table>
                         
                     </div>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="plasticity"></label></td>
+                                    <td><field name="plasticity" class="blue-input" decoration-info="plasticity != 0"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
 
-                    <field name="ll_line_ids" nolabel="1">
+                    <field name="ll_line_ids" nolabel="1"  readonly="plasticity != 'plastic'">
                         <tree editable="bottom" class="custom_table_borders">
                      
                             <field name="serial_no" string="Test No." width="50px"/>
@@ -1962,7 +1972,18 @@
                         
                     </div>
 
-                    <field name="pl_line_ids" nolabel="1">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="plasticity"></label></td>
+                                    <td><field name="plasticity" class="blue-input" decoration-info="plasticity != 0"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                    <field name="pl_line_ids" nolabel="1" readonly="plasticity != 'plastic'">
    
                     <tree editable="bottom" class="custom_table_borders">
                     
@@ -2105,7 +2126,18 @@
                         
                     </div>
 
-                     <field name="sl_line_ids" nolabel="1">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="plasticity"></label></td>
+                                    <td><field name="plasticity" class="blue-input" decoration-info="plasticity != 0"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                     <field name="sl_line_ids" nolabel="1" readonly="plasticity != 'plastic'">
                         <tree editable="bottom" class="custom_table_borders">
                         
 

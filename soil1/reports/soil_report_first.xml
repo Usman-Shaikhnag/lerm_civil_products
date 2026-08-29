@@ -73,8 +73,11 @@
             <t t-set="name_avg_nmc" t-value="[o.avg_nmc for o in (data.moisture_ids or []) if o.avg_nmc]"/>
 			<t t-set="n_avg_nmc" t-value="0"/>
 
-			<t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/>
+			<!-- <t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/> -->
+            <t t-set="ll_lines" t-value="data.ll_child_lines or []"/>
 			<t t-set="ll_index" t-value="0"/>
+
+            
 
 			<t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/>
 			<t t-set="pl_index" t-value="0"/>
@@ -148,7 +151,7 @@
 								len(silt_vals or []),
 								len(sand_vals or []),
 								len(silt_clay_vals or []),
-								len(ll_vals or []),
+								len(ll_lines or []),
 								len(pl_vals or []),
 								len(sl_vals or []),
 								len(grav_vals or []),
@@ -814,7 +817,10 @@
 
                         <!-- Atterberg Limits -->
                             <!-- LL -->
+
+                            
                             <td style="text-align:center;vertical-align: middle;">
+                                <t t-if="ll_line.plasticity == 'plastic'">
                                 <t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
                                 <t t-if="ll_vals and li &lt; len(ll_vals)">
                                     <t t-esc="int((ll_vals[li] or 0) + 0.5)"/>
@@ -822,7 +828,22 @@
                                     <t t-set="ll_index" t-value="li + 1"/>
                                 </t>
                                 <t t-else="">--</t>
-                            </td>
+                           
+                            </t>
+
+                            <t t-elif="ll_line.plasticity == 'non_plastic'">
+                               NP
+                            </t>
+                             <!-- ^ -->
+                             <t t-elif="ll_line.plasticity == 'na'">
+                               ^
+                            </t>
+
+                          <!-- No selection -->
+                          <t t-else="">
+                            --
+                          </t>
+                        </td>
 
                             <td style="text-align:center;vertical-align: middle;">
                                 <t t-set="li" t-value="pl_index if pl_index is not None else 0"/>

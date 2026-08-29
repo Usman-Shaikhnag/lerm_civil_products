@@ -9070,6 +9070,8 @@ class LLLine(models.Model):
     blows = fields.Float(string="No. of Blows", digits=(10, 0))
     water_content = fields.Float(string="Water Content (%)", digits=(16, 2))
 
+    
+
 
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):
@@ -9109,61 +9111,7 @@ class LLLine(models.Model):
                 rec.ll_graph = False
                 rec.ll_value = 0.0
 
-    # def _generate_line_chart_liquid(self):
-    #     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
-    #     if len(data) < 3:
-    #         return False, 0.0
-
-    #     data.sort(key=lambda x: x[0])
-    #     blows = np.array([d[0] for d in data], dtype=float)
-    #     water = np.array([d[1] for d in data], dtype=float)
-
-    #     log_blows = np.log10(blows)
-    #     slope, intercept = np.polyfit(log_blows, water, 1)
-        
-    #     ll_value = 62.0  # ✅ Exactly 62
-
-    #     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
-    #     y_fit = slope * x_fit + intercept
-
-    #     y_pred = slope * log_blows + intercept
-    #     ss_res = np.sum((water - y_pred) ** 2)
-    #     ss_tot = np.sum((water - np.mean(water)) ** 2)
-    #     r2 = 1 - ss_res / ss_tot
-
-    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-    #     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
-    #     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
-    #     ax.axvline(25, color='green', linestyle='--', linewidth=1)
-
-    #     # ✅ FIXED: X-axis labels completely removed
-    #     ax.set_xscale('log')
-    #     ax.set_xlim(10, 100)
-    #     ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
-    #     ax.set_ylim(min(water) - 1, max(water) + 1)
-
-    #     ax.set_xlabel("No. of Blows", fontsize=11)
-    #     ax.set_ylabel("Moisture Content (%)", fontsize=11)
-
-    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-    #     ax.xaxis.grid(False)
-
-    #     for spine in ax.spines.values():
-    #         spine.set_color('black')
-    #         spine.set_linewidth(1)
-
-    #     # eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
-    #     # ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
-
-    #     buffer = BytesIO()
-    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-    #     buffer.seek(0)
-    #     image = base64.b64encode(buffer.read())
-    #     buffer.close()
-    #     plt.close(fig)
-
-    #     return image, ll_value
+    
 
     def _generate_line_chart_liquid(self):
 
@@ -9282,6 +9230,17 @@ class LLLine(models.Model):
     
     blows = fields.Float(string="No. of Blows", digits=(10, 0))
     water_content = fields.Float(string="Water Content (%)", digits=(16, 2))
+
+    plasticity = fields.Selection(
+    [
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+        ('na', '^'),
+    ],
+    string='Sample Type',
+    default='plastic',
+    required=True,
+)
     
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
     
@@ -9738,7 +9697,18 @@ class PLLine(models.Model):
         default=False
     )
     start_date = fields.Date(string="Start Date") 
-    end_date = fields.Date(string="End Date")      
+    end_date = fields.Date(string="End Date")  
+
+    plasticity = fields.Selection(
+    [
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+        ('na', '^'),
+    ],
+    string='Sample Type',
+    default='plastic',
+    required=True,
+)    
 
     
     def action_submit(self):
@@ -9810,7 +9780,19 @@ class SLLine(models.Model):
         default=False
     )
     start_date = fields.Date(string="Start Date")  
-    end_date = fields.Date(string="End Date")      
+    end_date = fields.Date(string="End Date")   
+
+
+    plasticity = fields.Selection(
+    [
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+        ('na', '^'),
+    ],
+    string='Sample Type',
+    default='plastic',
+    required=True,
+)   
 
     
     def action_submit(self):
