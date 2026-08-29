@@ -1433,9 +1433,15 @@
     <field name="binding_type">report</field>
 </record>
 
-
-
-
+    <record id="ev2_plate_load_test_report_action" model="ir.actions.report">
+        <field name="name">Ev2 Plate Load Test Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ev2.ev2_plate_load_test_report</field>
+        <field name="report_file">ev2.ev2_plate_load_test_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
 
 
 
