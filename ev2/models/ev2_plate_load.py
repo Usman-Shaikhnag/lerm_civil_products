@@ -827,48 +827,84 @@ class Ev2ReportContent(models.Model):
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    def _render_qweb_pdf(self, res_ids=None, data=None):
+    def _render_qweb_pdf(self, report_ref, docids, data=None):
+        content, content_type = super()._render_qweb_pdf(report_ref, docids, data=data)
+        if report_ref == 'ev2.ev2_plate_load_test_report':
+            content = self._append_ev2_report_uploads(docids, content, data=data)
+        return content, content_type
 
-        pdf_content, content_type = super()._render_qweb_pdf(
-            res_ids=res_ids,
-            data=data
-        )
-        # import wdb;wdb.set_trace()
-        # Only modify pile integrity report
-        if self.report_name != 'ev2.ev2_plate_load_test_report':
-            return pdf_content, content_type
+    def _append_ev2_report_uploads(self, docids, content, data=None):
+        if isinstance(docids, int):
+            docids = [docids]
 
-        sample = self.env['lerm.srf.sample'].browse(
-            data['context']['active_id']
-        )
+        eln_model = self.env['lerm.eln'].sudo()
+        sample_model = self.env['lerm.srf.sample'].sudo()
+        eln_ids = set()
 
-        eln = sample.eln_id
+        # data['sample'] / context['active_id'] are SAMPLE ids (same as _get_report_values)
+        sample_candidates = []
+        if data:
+            if data.get('sample'):
+                sample_candidates.append(data['sample'])
+            ctx = data.get('context') or {}
+            if ctx.get('active_id'):
+                sample_candidates.append(ctx['active_id'])
+        for cid in sample_candidates:
+            sample = sample_model.browse(cid)
+            if sample.exists() and sample.eln_id:
+                eln_ids.add(sample.eln_id.id)
 
-        ev2 = self.env['ev2.plate.load.test'].browse(
-            eln.model_id
-        )
-        merger = PdfFileMerger()
+        # docids are ELN ids (report bound to lerm.eln)
+        for eln_id in docids or []:
+            eln = eln_model.browse(eln_id)
+            if eln.exists():
+                eln_ids.add(eln_id)
 
-        merger.append(
-            BytesIO(pdf_content),
-            import_bookmarks=False
-        )
+        uploads = self.env['ir.attachment'].sudo()
+        for eln_id in eln_ids:
+            eln = eln_model.browse(eln_id)
+            ev2 = self.env['ev2.plate.load.test'].sudo().search(
+                [('eln_ref', '=', eln_id)], limit=1
+            )
+            if ev2:
+                uploads |= ev2.ev2_report_upload
+            if eln:
+                uploads |= eln.file_upload
+                if eln.sample_id:
+                    uploads |= eln.sample_id.file_upload | eln.sample_id.report_upload
 
-        for attachment in ev2.ev2_report_upload:
+        pdfs = []
+        for att in uploads.sorted('id'):
+            if att.datas and (att.mimetype or '').startswith('application/pdf'):
+                pdfs.append(b64decode(att.datas))
+        if not pdfs:
+            return content
 
-            if attachment.mimetype == 'application/pdf':
+        # Prefer Odoo's merge_pdf: it picks the most capable PDF backend available.
+        try:
+            from odoo.tools.pdf import merge_pdf
+            return merge_pdf([content] + pdfs)
+        except Exception:
+            pass
 
-                merger.append(
-                        BytesIO(base64.b64decode(attachment.datas)),
-                        import_bookmarks=False
-                    )
+        if not PdfFileMerger:
+            return content
 
-        output = BytesIO()
+        try:
+            merger = PdfFileMerger()
+            merger.append(BytesIO(content), import_bookmarks=False)
+            for pdf in pdfs:
+                try:
+                    merger.append(BytesIO(pdf), import_bookmarks=False)
+                except Exception:
+                    continue
+            output = BytesIO()
+            merger.write(output)
+            merger.close()
+            return output.getvalue()
+        except Exception:
+            return content
 
-        merger.write(output)
-        merger.close()
-
-        return output.getvalue(), content_type
 
 
 class Ev2PlateLoadTestReport(models.AbstractModel):

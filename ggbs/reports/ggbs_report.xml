@@ -446,7 +446,9 @@
 							</tr>
 							<!-- Slag Activity index  -->
 							<tr t-if="ggbs.slag_activity_7_visible and ggbs.slag_7days_nabl == 'pass' and nabl and not fromEln">
-								<td style="border-bottom:none;text-align: center;">
+								<td rowspan="6" style="text-align:center;vertical-align:middle;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
 								</td>
 								
@@ -472,7 +474,7 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none">
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -480,7 +482,8 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.specification"/>
@@ -488,15 +491,19 @@
 									</t>
 								</td>
 								
+								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
 									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
 								</td>
 								
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_7_visible and (ggbs.slag_7days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
-								<td style="border-bottom:none;text-align: center;">
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;">  -->
+								<td rowspan="6" style="text-align:center;vertical-align:middle;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
 								</td>
 								
@@ -522,7 +529,9 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none">
+								<!-- <td style="text-align: center;border-bottom:none"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
+
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -530,7 +539,8 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.specification"/>
@@ -539,14 +549,17 @@
 								</td>
 								
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
+								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
 									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
 								</td>
 								
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_7_visible and fromEln">
-								<td style="border-bottom:none;text-align: center;">
+								<td rowspan="6" style="text-align:center;vertical-align:middle;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
 								</td>
 								
@@ -572,7 +585,8 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none">
+								<!-- <td style="text-align: center;border-bottom:none"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -580,16 +594,18 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 								
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
+								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
 									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
 								</td>
 								
@@ -597,10 +613,10 @@
 
 							<tr t-if="ggbs.slag_activity_7_visible and ggbs.slag_7days_nabl == 'pass' and nabl and not fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										Control Sample 7 days
@@ -622,35 +638,35 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_7_visible and (ggbs.slag_7days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 
 								<td style="text-align: center;">
 									<span>
@@ -674,34 +690,34 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_7_visible and fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 
 								<td style="text-align: center;">
 									<span>
@@ -725,35 +741,35 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_7_visible and ggbs.slag_7days_nabl == 'pass' and nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -775,30 +791,30 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none;">
+								<!-- <td style="border-top:none;">
 									<span>
 										
 									</span>
 								</td>
 								<td style="text-align: center;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								<td style="text-align: center;border-top:none" t-if="eln.conformity">
 									<span t-field="ggbs.slag_7days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_7_visible and (ggbs.slag_7days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -820,7 +836,7 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none">
+								<!-- <td style="border-top:none">
 									<span>
 										
 									</span>
@@ -832,15 +848,15 @@
 								</td>
 								<td style="text-align: center;border-top:none" t-if="eln.conformity">
 									<span t-field="ggbs.slag_7days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_7_visible and fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -862,7 +878,7 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none">
+								<!-- <td style="border-top:none">
 									<span>
 										
 									</span>
@@ -874,14 +890,14 @@
 								</td>
 								<td style="text-align: center;border-top:none" t-if="eln.conformity">
 									<span t-field="ggbs.slag_7days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 							<!-- 28 days  -->
 
 							<tr t-if="ggbs.slag_activity_28_visible and ggbs.slag_28days_nabl == 'pass' and nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;">
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;">
 									
-								</td>
+								</td> -->
 								
 								<td style="text-align: center;" >
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_name"/>
@@ -905,7 +921,8 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -913,7 +930,8 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.specification"/>
@@ -922,17 +940,18 @@
 								</td>
 								
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
+								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
+									<span t-field="ggbs.fineness_confirmity"/>
 								</td>
 								
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_28_visible and (ggbs.slag_28days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;">
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;">
 									
-								</td>
+								</td> -->
 								
 								<td style="text-align: center;" >
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_name"/>
@@ -956,7 +975,8 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -964,7 +984,8 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.specification"/>
@@ -973,16 +994,17 @@
 								</td>
 								
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
+								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
+									<span t-field="ggbs.fineness_confirmity"/>
 								</td>
 								
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_28_visible and fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;">
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;">
 									
-								</td>
+								</td> -->
 								
 								<td style="text-align: center;" >
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_name"/>
@@ -1006,7 +1028,8 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.permissable_limit"/>
@@ -1014,7 +1037,8 @@
 									</t>
 								</td>
 								
-								<td style="text-align: center;border-bottom:none;">
+								<!-- <td style="text-align: center;border-bottom:none;"> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
 											<span t-field="parameter.specification"/>
@@ -1023,18 +1047,18 @@
 								</td>
 								
 								
-								<td style="text-align: center;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
+								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
+									<span t-field="ggbs.fineness_confirmity"/>
 								</td>
 								
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_28_visible and ggbs.slag_28days_nabl == 'pass' and nabl and not fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										Control Sample 28 days
@@ -1056,35 +1080,35 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-top:none;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_28_visible and (ggbs.slag_28days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 
 								<td style="text-align: center;">
 									<span>
@@ -1108,34 +1132,34 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-top:none;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_28_visible and fromEln">
 
-								<td style="border-bottom:none;border-top:none">
+								<!-- <td style="border-bottom:none;border-top:none">
 									<span></span>
 									
-								</td>
+								</td> -->
 
 								<td style="text-align: center;">
 									<span>
@@ -1159,35 +1183,35 @@
 									</span>									
 								</td>
 
-								<td style="text-align: center;border-bottom:none;border-top:none;">
+								<!-- <td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.permissable_limit"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
 									</t>
 								</td>
 								
 								<td style="text-align: center;border-bottom:none;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								
 								
 								<td style="text-align: center;border-top:none;border-bottom:none;" t-if="eln.conformity">
-									<!-- <span t-field="ggbs.fineness_confirmity"/> -->
-								</td>
+									<span t-field="ggbs.fineness_confirmity"/>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_28_visible and ggbs.slag_28days_nabl == 'pass' and nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -1209,30 +1233,30 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none">
+								<!-- <td style="border-top:none">
 									<span>
 										
 									</span>
 								</td>
 								<td style="text-align: center;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								<td style="text-align: center;border-top:none;" t-if="eln.conformity">
 									<span t-field="ggbs.slag_28days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 
 
 							<tr t-if="ggbs.slag_activity_28_visible and (ggbs.slag_28days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -1254,29 +1278,29 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none">
+								<!-- <td style="border-top:none">
 									<span>
 										
 									</span>
 								</td>
 								<td style="text-align: center;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								<td style="text-align: center;border-top:none;" t-if="eln.conformity">
 									<span t-field="ggbs.slag_28days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 
 							<tr t-if="ggbs.slag_activity_28_visible and fromEln">
-								<td style="border-bottom:none;border-top:none;text-align: center;"> 
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
+								<!-- <td style="border-bottom:none;border-top:none;text-align: center;"> 
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										In Percent
@@ -1298,21 +1322,21 @@
 									</span>									
 								</td>
 								
-								<td style="border-top:none">
+								<!-- <td style="border-top:none">
 									<span>
 										
 									</span>
 								</td>
 								<td style="text-align: center;border-top:none;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<!-- <span t-field="parameter.specification"/> -->
-										<!-- </t> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
 									</t>
 								</td>
 								<td style="text-align: center;border-top:none;" t-if="eln.conformity">
 									<span t-field="ggbs.slag_28days_conformity"/>
-								</td>
+								</td> -->
 							</tr>
 						
 						</tbody>
