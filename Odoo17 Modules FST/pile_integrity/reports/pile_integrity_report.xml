@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="pile_integrity_report_py3o" model="ir.actions.report">
+        <field name="name">Pile Integrity Report</field>
+        <field name="model">pile.integrity.test</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pile_integrity.pile_integrity_report</field>
+        <field name="report_file">pile_integrity.pile_integrity_report</field>
+        <field name="print_report_name">'Pile_Integrity_Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_pile_integrity_test"/>
+    </record>
+
+    <template id="pile_integrity_report">
+        <t t-call="web.html_container">
+            <t t-set="o" t-value="docs and docs[0]"/>
+
+            <div class="header" style="padding:0; width:100%; margin:0;">
+                <div class="lab-header" style="text-align:center; background-color:#244061; color:#ffffff; padding:10px 0; font-size:13pt; font-weight:bold; letter-spacing:1px;">
+                    FST ENGINEERING SERVICES PVT. LTD.
+                </div>
+                <table style="width:100%;" class="text-center">
+                    <tr>
+                        <td>Test Report No :</td>
+                        <td><t t-esc="o.report_no"/></td>
+                        <td>Report Issue Date :</td>
+                        <td><t t-esc="o.rec_date"/></td>
+                        <td>ULR No.</td>
+                        <td><t t-esc="o.ulr_no"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="footer text-center">
+                Testing Location: Taloja Laboratory [Shop No 11, Skyline Sapphire, Sector 7, Taloja Phase 1, Navi Mumbai- 410208]<br/>
+                Regd. Office: Shop no. 3 &amp; 105 Bldg. B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai- 400037<br/>
+                Tel.: +91 22 2401 0040 | Email: sales@knackengineeringservices.com | Website: www.knackengineeringservices.com<br/>
+                Page <span class="page"/> of <span class="topage"/>
+            </div>
+
+            <style>
+                body { font-family: 'Times New Roman', serif; font-size: 12pt; color: #000000; margin: 0; padding: 0; }
+                h2.report-title { text-align: center; font-size: 16pt; font-weight: bold; margin: 14px 0 10px 0; text-transform: uppercase; letter-spacing: 1px; }
+                h3.section-heading { font-size: 12pt; font-weight: bold; margin: 16px 0 8px 0; }
+                .page { padding: 25px; }
+                table.report-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+                table.report-table td { border: 1px solid #000000; padding: 8px; vertical-align: top; }
+                table.report-table td.label { width: 35%; }
+                p.section-text { font-size: 12pt; line-height: 2; text-align: justify; text-justify: inter-word; }
+                .page-break { page-break-before: always; }
+                .text-center { text-align: center; }
+            </style>
+
+            <main>
+
+                <!-- ═════ COVER PAGE ═════ -->
+                <div class="page" style="margin-top:60px; padding-top:25px;">
+                    <div style="text-align:center; margin-bottom:30px;">
+                        <h2 style="font-size:28px;">
+                            LOW STRAIN PILE INTEGRITY TEST REPORT
+                        </h2>
+                    </div>
+
+                    <table class="report-table">
+
+                        <tr>
+                            <td class="label"><strong>ULR No.</strong></td>
+                            <td><span t-field="o.ulr_no"/></td>
+                            <td><strong>Date of Testing</strong></td>
+                            <td><span t-field="o.test_date"/></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><strong>Date of Report</strong></td>
+                            <td><span t-field="o.rec_date"/></td>
+                            <td><strong>Report No.</strong></td>
+                            <td><span t-field="o.report_no"/></td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><strong>Customer Name &amp; Address</strong></td>
+                            <td colspan="3">
+                                <span t-field="o.customer_name"/><br/>
+                                <span t-field="o.customer_address"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><strong>PMC</strong></td>
+                            <td colspan="3">
+                                <span t-field="o.principal_client"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><strong>Client</strong></td>
+                            <td colspan="3">
+                                <span t-field="o.client"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label"><strong>Site Name &amp; Address</strong></td>
+                            <td colspan="3">
+                                <span t-field="o.site_name_addr"/>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <!-- ═════ CONTENTS ═════ -->
+                <div class="page page-break">
+                    <div style="text-align:center; margin-bottom:30px;">
+                        <h2>Contents</h2>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr t-foreach="o.content_ids" t-as="i">
+                            <td style="text-align:center;padding:6px;"><span t-esc="i['seq']"/></td>
+                            <td style="text-align:left;padding:6px;"><span t-esc="i['name']"/></td>
+                            <td style="text-align:center;padding:6px;"><span t-esc="i['page_no']"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- ═════ 1. INTRODUCTION ═════ -->
+                <div class="page page-break">
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>1. INTRODUCTION</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.introduction">
+                            <t t-raw="o.introduction.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>2. PILE DETAIL</b>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+                        <tr>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                Type of Pile
+                            </td>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                <span t-field="o.pile_type"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                Pile Diameter
+                            </td>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                <span t-field="o.pile_diameter"/> mm
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                Pile Depths From test Level
+                            </td>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                <span t-field="o.pile_depth"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                Concrete Grade
+                            </td>
+                            <td style="border:1px solid black; padding:8px;text-align:center;">
+                                <span t-field="o.concrete_grade"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>3. OVERVIEW</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.principle_details">
+                            <t t-raw="o.principle_details.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>4. EQUIPMENT DETAILS</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.equipment_details">
+                            <t t-raw="o.equipment_details.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>5. METHODOLOGY</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.procedure">
+                            <t t-raw="o.procedure.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>6. INTERPRETATION OF RESULTS</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.interpretation_result">
+                            <t t-raw="o.interpretation_result.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- ═════ FIGURES 1a / 1b ═════ -->
+                <div class="page page-break">
+                    <div style="text-align:center;"><b>Figure 1a</b></div>
+                    <div style="text-align:center;">
+                        <img t-att-src="fig1a" style="width:100%;"/>
+                    </div>
+
+                    <div style="text-align:center; margin-top:20px;"><b>Figure 1b</b></div>
+                    <div style="text-align:center;">
+                        <img t-att-src="fig1b" style="width:100%;"/>
+                    </div>
+                </div>
+
+                <!-- ═════ FIGURES 1c / 1d ═════ -->
+                <div class="page page-break">
+                    <div style="text-align:center;"><b>Figure 1c</b></div>
+                    <div style="text-align:center;">
+                        <img t-att-src="fig1c" style="width:100%;"/>
+                    </div>
+
+                    <div style="text-align:center; margin-top:20px;"><b>Figure 1d</b></div>
+                    <div style="text-align:center;">
+                        <img t-att-src="fig1d" style="width:100%;"/>
+                    </div>
+                </div>
+
+                <!-- ═════ 7. LIMITATIONS / 8. DISCUSSION / 9. CONCLUSION ═════ -->
+                <div class="page page-break">
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>7. LIMITATIONS OF PILE INTEGRITY TEST</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.limitations">
+                            <t t-raw="o.limitations.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>8. DISCUSSION OF TEST RESULTS</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.test_result">
+                            <t t-raw="o.test_result.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="font-size:18px;font-weight:bold;text-align:left;margin-top:25px;margin-bottom:15px;">
+                        <b>9. CONCLUSION</b>
+                    </div>
+
+                    <div style="font-size:14px;
+                        font-family:'Times New Roman', serif;
+                        line-height:2;
+                        text-align:justify;
+                        text-justify:inter-word;
+                    ">
+                        <t t-if="o.conclusion">
+                            <t t-raw="o.conclusion.replace('\n','&lt;br/&gt;')"/>
+                        </t>
+                    </div>
+
+                    <div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer">
+                        <div>
+                            <div>
+                                <b>Checked By</b>
+                            </div>
+                            <div>
+                                <b><span t-esc="o.signatory_name"/></b>
+                            </div>
+                            <div>
+                                <b>(<span t-esc="o.signatory_designation"/>)</b>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <b>Approved By</b>
+                            </div>
+                            <div>
+                                <b><span t-esc="o.signatory_name"/></b>
+                            </div>
+                            <div>
+                                <b>(<span t-esc="o.signatory_designation"/>)</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═════ APPENDIX I ═════ -->
+                <div class="page page-break">
+                    <table style="width: 100%; height: 842px; border-collapse: collapse; border: none;">
+                        <tr>
+                            <td style="
+                                text-align: center;
+                                vertical-align: middle;
+                                font-size: 32px;
+                                font-weight: bold;
+                                line-height: 1.8;
+                                border: none;
+                            ">
+                                <b>APPENDIX - I</b><br/>
+                                <b>PILE INTEGRITY TEST RESULTS</b>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="page page-break">
+                    <div style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                            PILE INTEGRITY TEST RESULTS
+                        </div>
+
+                        <table style="width:100%;margin-top:20px;border-collapse:collapse;font-size:12px;text-align:center;">
+                            <thead style="background-color: #d3d3d3;">
+                                <tr cols="12">
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Sr No</th>
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Pile ID</th>
+                                    <th t-if="show_doc_column"
+                                        style="text-align:center;border:1px solid #000;padding:6px;">
+                                        DOC
+                                    </th>
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Dia (MM)</th>
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Cut Off Length (M)</th>
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Wave Speed (m/s)</th>
+                                    <th style="text-align:center;border:1px solid #000;padding:6px;">Shaft Cross-Section &amp; Soil Changes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="i" t-value="0"/>
+                                <tr t-foreach="o.pile_integrity_test_table" t-as="r">
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;" colspan="1">
+                                        <div>
+                                            <span t-esc="i + 1"/>
+                                            <t t-set="i" t-value="i+1"/>
+                                        </div>
+                                    </td>
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;"><span t-esc="r['pile_id']"/></td>
+                                    <td t-if="show_doc_column"
+                                        style="text-align:center;border:1px solid #000;padding:6px;">
+                                        <span t-esc="r['doc']"/>
+                                    </td>
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;"><span t-esc="r['pile_dia']"/></td>
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;"><span t-esc="r['cut_off']"/></td>
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;"><span t-esc="r['wave_speed']"/></td>
+                                    <td style="text-align:center;border:1px solid #000;padding:6px;"><span t-esc="r['shaft_cross']"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="page-break-before:always;text-align:center;padding-top:25px;">
+                        <h3>10. SITE PHOTOGRAPHS</h3>
+
+                        <t t-foreach="o.image_ids" t-as="img">
+                            <div class="page" style="padding-top:25px;">
+                                <div style="width:100%; text-align:center;">
+                                    <img t-if="img.image"
+                                        t-att-src="'data:image/png;base64,%s' % img.image.decode('utf-8')"
+                                        style="max-width:100%; max-height:650px; display:block; margin:auto;"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="page page-break">
+                        <div style="text-align:center;font-size:32px;font-weight:bold;margin-top:250px;line-height:1.8;">
+                            <b>APPENDIX - II</b><br/>
+                            <b>REFLECTOGRAM OF PILES</b>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </t>
+    </template>
+
+</odoo>

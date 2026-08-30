@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_pile_integrity_test" model="ir.actions.act_window">
+        <field name="name">Pile Integrity Tests</field>
+        <field name="res_model">pile.integrity.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_pile_integrity_root"
+              name="Pile Integrity"
+              sequence="45"/>
+    <menuitem id="menu_pile_integrity_tests"
+              name="Tests"
+              parent="menu_pile_integrity_root"
+              action="action_pile_integrity_test"
+              sequence="10"
+              groups="group_pile_integrity_user"/>
+
+    <record id="pile_integrity_tree" model="ir.ui.view">
+        <field name="name">pile.integrity.test.tree</field>
+        <field name="model">pile.integrity.test</field>
+        <field name="arch" type="xml">
+            <tree string="Pile Integrity Test Reports">
+                <field name="name"/>
+                <field name="report_no"/>
+                <field name="customer_name"/>
+                <field name="test_date"/>
+                <field name="rec_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="pile_integrity_form" model="ir.ui.view">
+        <field name="name">pile.integrity.test.form</field>
+        <field name="model">pile.integrity.test</field>
+        <field name="arch" type="xml">
+            <form create="true">
+                <header>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                    <button name="action_prefill_contents" string="Prefill Report Text" type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+
+                    <group style="white-space: nowrap; width:80%">
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+
+                    <group col="4">
+                        <field name="report_no"/>
+                        <field name="ulr_no"/>
+                        <field name="test_date"/>
+                        <field name="rec_date"/>
+                    </group>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="customer_name">Customer Name :</label></td>
+                                    <td style="width:80%;"><field name="customer_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="customer_address">Customer Address :</label></td>
+                                    <td style="width:80%;"><field name="customer_address"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="client">Client :</label></td>
+                                    <td style="width:80%;"><field name="client"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="site_name_addr">Site Address :</label></td>
+                                    <td style="width:80%;"><field name="site_name_addr"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <group style="white-space: nowrap; width:80%">
+                        <h1>
+                            <field name="pile_integrity_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+
+                    <div>
+                        <field name="content_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="seq"/>
+                                <field name="name"/>
+                                <field name="page_no"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="code_ref">Code of Reference :</label></td>
+                                    <td style="width:80%;"><field name="code_ref"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="introduction">Introduction :</label></td>
+                                    <td style="width:80%;"><field name="introduction"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="principle_details">Principle :</label></td>
+                                    <td style="width:80%;"><field name="principle_details"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;">
+                                        <label for="equipment_details">Equipment Details :</label>
+                                    </td>
+                                    <td style="width:80%;">
+                                        <field name="equipment_details"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="procedure">METHODOLOGY :</label></td>
+                                    <td style="width:80%;"><field name="procedure"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="influences_result">Influences Of Test Result :</label></td>
+                                    <td style="width:80%;"><field name="influences_result"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="interpretation_result">Interpretation Of Test Result :</label></td>
+                                    <td style="width:80%;"><field name="interpretation_result" widget="html"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="pile_diameter">Pile Diameter (mm)</label></td>
+                                    <td><field name="pile_diameter"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pile_depth">Pile Depth (m)</label></td>
+                                    <td><field name="pile_depth"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="pile_type">Type of Pile</label></td>
+                                    <td><field name="pile_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="principal_client">PMC</label></td>
+                                    <td><field name="principal_client"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <group style="white-space: nowrap; width:80%">
+                        <h1>
+                            <field name="pile_integrity_test_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temperature">Temperature °C</label></td>
+                                    <td><field name="temperature"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="instrument">Instrument</label></td>
+                                    <td><field name="instrument"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <field name="pile_integrity_test_table">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="serial_no"/>
+                            <field name="pile_id"/>
+                            <field name="doc"/>
+                            <field name="pile_dia"/>
+                            <field name="cut_off"/>
+                            <field name="wave_speed"/>
+                            <field name="shaft_cross"/>
+                        </tree>
+                    </field>
+
+                    <field name="image_ids">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="name"/>
+                            <field name="image" widget="image"/>
+                        </tree>
+                    </field>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;">
+                                        <label for="limitations">Limitations :</label>
+                                    </td>
+                                    <td style="width:80%;">
+                                        <field name="limitations"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="test_result">DISCUSSION OF TEST RESULTS:</label></td>
+                                    <td style="width:80%;"><field name="test_result" widget="html"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;">
+                                        <label for="conclusion">Conclusion :</label>
+                                    </td>
+                                    <td style="width:80%;">
+                                        <field name="conclusion"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <group col="4">
+                        <field name="signatory_name" string="Authorized Signatory"/>
+                        <field name="signatory_designation" string="Designation"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
