@@ -298,10 +298,10 @@
 										</td>
 										
 										<td>
-											<span t-esc="r.intial_surface10"/>
+											<span t-esc="r.intial_surface10" t-options='{"widget": "float", "precision": 2}'/>
 										</td>
 										<td>
-											<span t-esc="r.intial_surface_corrected"/>
+											<span t-esc="r.intial_surface_corrected" t-options='{"widget": "float", "precision": 2}'/>
 										</td>
 										<t t-if="r.intial_surface30">
 										<td>
@@ -328,10 +328,13 @@
 					
 					</div>
 
-					<div style="page-break-inside: avoid;">
-						<div style="page-break-inside: avoid;">
-								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+					<div style="margin-top:5px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
 									<ul>
+									   
 										<t t-if="data.notes_id">
 											<t t-foreach="data.notes_id" t-as="n">
 												<li>
@@ -347,7 +350,8 @@
 										</li>
 									</ul>
 								</div>
-							</div>
+				</div>
+
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -415,7 +419,7 @@
 						</div>
 					</div>
 
-				</div>
+				<!-- </div> -->
 				</t>
 			</t>
 		</t>

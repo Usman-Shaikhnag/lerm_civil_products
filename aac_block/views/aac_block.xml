@@ -78,6 +78,13 @@
                                     <td><label class="text-bold" for="average_length">Average Length</label></td>
                                     <td><field name="average_length"/></td>
                                 </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="length_conformity">Conformity</label></td>
+                                    <td><field name="length_conformity"
+                                            decoration-success="length_conformity == 'pass'" 
+                                            decoration-danger="length_conformity == 'fail'" 
+                                            readonly="1"/></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -88,6 +95,13 @@
                                     <td><label class="text-bold" for="average_width">Average Width</label></td>
                                     <td><field name="average_width"/></td>
                                 </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="width_conformity">Conformity</label></td>
+                                    <td><field name="width_conformity"
+                                            decoration-success="width_conformity == 'pass'" 
+                                            decoration-danger="width_conformity == 'fail'" 
+                                            readonly="1"/></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -97,6 +111,13 @@
                                 <tr>
                                     <td><label class="text-bold" for="average_height">Average Height</label></td>
                                     <td><field name="average_height"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="height_conformity">Conformity</label></td>
+                                    <td><field name="height_conformity"
+                                            decoration-success="height_conformity == 'pass'" 
+                                            decoration-danger="height_conformity == 'fail'" 
+                                            readonly="1"/></td>
                                 </tr>
                             </tbody>
                         </table>

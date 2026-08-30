@@ -212,7 +212,9 @@
 								<span t-field="data.length_grade2"/>
 							</td>
 							
-                            <td t-if="eln.conformity"></td>
+                            <td t-if="eln.conformity">
+                                <span t-field="data.length_conformity"/>
+                            </td>
 
 						</tr>
 						<tr t-if="data.dimension_visible">
@@ -253,7 +255,9 @@
 								
 								<span t-field="data.width_grade2"/>
 							</td>
-                            <td t-if="eln.conformity"></td>
+                            <td t-if="eln.conformity">
+                                <span t-field="data.width_conformity"/>
+                            </td>
 
 						</tr>
 						<tr t-if="data.dimension_visible">
@@ -295,9 +299,8 @@
 								<span t-field="data.height_grade2"/>
 							</td>
                             <td t-if="eln.conformity">
-								<span t-field="data.moisture_confirmity"/>
+								<span t-field="data.height_conformity"/>
 							</td>
-                            <td t-if="eln.conformity"></td>
 
 						</tr>
 						<tr t-if="data.moisture_visible and data.moisture_nabl == 'pass' and nabl" >
@@ -340,20 +343,18 @@
 									</t>
 								</span>
 							</td> -->
-								<td colspan="1" style=" text-align: center; vertical-align: middle;">
+							<td colspan="1" style=" text-align: center; vertical-align: middle;">
 
 								<span t-field="data.moisture_grade1"/>
 							</td >
-								<td colspan="1" style=" text-align: center; vertical-align: middle;"> 
-								
+							<td colspan="1" style=" text-align: center; vertical-align: middle;"> 
+							
 								<span t-field="data.moisture_grade2"/>
 							</td>
                             <td t-if="eln.conformity">
 								<span t-field="data.moisture_confirmity"/>
 							</td>
-                            <td t-if="eln.conformity">
-								<span t-field="data.moisture_confirmity"/>
-							</td>
+                            
 
 						</tr>
 
@@ -829,7 +830,7 @@
 								    	<!-- a. The information marked with an # received from customer<br/><br/>
 							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
 							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+							        	d. This document shall not be reproduced in part or full without the approval of Knack. -->
 
 										<t t-if="data.notes_id">
 										<t t-foreach="data.notes_id" t-as="n">

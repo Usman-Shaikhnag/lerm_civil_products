@@ -133,23 +133,6 @@
 							
 							</tr>
 
-							<tr t-if="data.slip_test_visible">
-								<td >
-                                    Slip Strength, N/mm2
-                                </td>
-								<td style="text-align: center;">
-									<span t-esc="round(data.slip_strength,2)"/>
-								</td>
-							</tr>
-							<tr t-if="data.slip_test_visible">
-								<td >
-                                    Ext At 20 N/MM2
-                                </td>
-								<td style="text-align: center;">
-									<span t-esc="data.ext_at_20"/>
-								</td>
-							</tr>
-
 							<tr>
 								
 								<td >
@@ -215,31 +198,29 @@
                     <!-- authorizeRowDataSheet -->
                     
                      <div class="authorizeRowDataSheet">
-						<div>
+
+                        <div>
                             <div>
                                 <b>
                                     Tested By 
                                 </b>
                                 
                             </div>
-                             <div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+							<div style="height:40px">
 								<t t-if="eln.tested_by_signature_datasheet">
-
-									<div t-if="eln.sample_id.filled_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
-									
 								</t>
-							</div>
+                            </div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="eln.technician.job_title"/>)
                                 </b>
                             </div>
                         </div>
