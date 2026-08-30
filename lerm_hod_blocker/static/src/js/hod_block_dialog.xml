@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="lerm_hod_blocker.HodBlockDialog">
+        <Dialog title="props.title" size="'lg'">
+            <div>
+                <div t-if="props.status.blocked" class="alert alert-warning mb-2">
+                    You have pending samples from previous days that must be allotted before you can continue.
+                </div>
+                <div t-else="" class="mb-2">
+                    New samples are waiting to be allotted to a technician.
+                </div>
+                <p t-if="props.status.pending_count" class="text-muted">
+                    <t t-esc="props.status.pending_count"/> pending sample(s)
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>UID</th>
+                                <th>Client</th>
+                                <th>Material</th>
+                                <th>Received Date</th>
+                                <th class="text-end">Allot</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="props.status.samples" t-as="sample" t-key="sample.id">
+                                <td t-esc="sample.kes_no"/>
+                                <td t-esc="sample.client"/>
+                                <td t-esc="sample.material_name"/>
+                                <td t-esc="sample.received_date"/>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        t-on-click="() => this.allotSample(sample.id)"
+                                        t-att-disabled="allotting">
+                                        <t t-esc="allotting ? 'Allotting...' : 'Allot'"/>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button t-if="!props.status.blocked" class="btn btn-secondary"
+                    t-on-click="() => props.close()">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
