@@ -16,13 +16,19 @@ class LermHodBlock(models.Model):
         return bool(hod_group and self.env.user in hod_group.users)
 
     @api.model
-    def _get_interval_hours(self):
+    def _get_interval_minutes(self):
         value = self.env['ir.config_parameter'].sudo().get_param(
-            'hod_blocker.check_interval_hours', '2')
+            'hod_blocker.check_interval_minutes', '120')
         try:
             return max(1, int(float(value)))
         except (TypeError, ValueError):
-            return 2
+            return 120
+
+    @api.model
+    def _is_enabled(self):
+        value = self.env['ir.config_parameter'].sudo().get_param(
+            'hod_blocker.enabled', 'False')
+        return str(value).lower() in ('1', 'true', 'yes', 'on')
 
     @api.model
     def _get_pending_samples(self):
@@ -38,11 +44,12 @@ class LermHodBlock(models.Model):
 
     @api.model
     def check_hod_block(self):
+        enabled = self._is_hod_user() and self._is_enabled()
         samples = self._get_pending_samples()
         if not samples:
             return {
-                'enabled': self._is_hod_user(),
-                'interval_hours': self._get_interval_hours(),
+                'enabled': enabled,
+                'interval_minutes': self._get_interval_minutes(),
                 'blocked': False,
                 'pending_count': 0,
                 'samples': [],
@@ -52,8 +59,8 @@ class LermHodBlock(models.Model):
             sample.create_date and sample.create_date.date() < today
             for sample in samples)
         return {
-            'enabled': True,
-            'interval_hours': self._get_interval_hours(),
+            'enabled': enabled,
+            'interval_minutes': self._get_interval_minutes(),
             'blocked': blocked,
             'pending_count': len(samples),
             'samples': [{

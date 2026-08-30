@@ -5,7 +5,7 @@ import { patch } from "@web/core/utils/patch";
 import { WebClient } from "@web/webclient/webclient";
 import { HodBlockDialog } from "./hod_block_dialog";
 
-const HOUR_MS = 3600 * 1000;
+const MINUTE_MS = 60 * 1000;
 const RETRY_MS = 60 * 1000;
 
 patch(WebClient.prototype, {
@@ -31,8 +31,8 @@ patch(WebClient.prototype, {
     },
 
     _hodBlockIntervalMs(status) {
-        const hours = Number(status.interval_hours) || 2;
-        return Math.max(1, hours) * HOUR_MS;
+        const minutes = Number(status.interval_minutes) || 120;
+        return Math.max(1, minutes) * MINUTE_MS;
     },
 
     _scheduleHodBlockCheck(delayMs) {

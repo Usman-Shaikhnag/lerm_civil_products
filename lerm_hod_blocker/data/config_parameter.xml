@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="hod_blocker_check_interval_hours" model="ir.config_parameter">
-            <field name="key">hod_blocker.check_interval_hours</field>
-            <field name="value">2</field>
+        <record id="hod_blocker_check_interval_minutes" model="ir.config_parameter">
+            <field name="key">hod_blocker.check_interval_minutes</field>
+            <field name="value">120</field>
+        </record>
+        <record id="hod_blocker_enabled" model="ir.config_parameter">
+            <field name="key">hod_blocker.enabled</field>
+            <field name="value">False</field>
         </record>
     </data>
 </odoo>
