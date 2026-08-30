@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sample_allotment_wizard_report_due_date" model="ir.ui.view">
+        <field name="name">sample.allotment.wizard.report.due.date</field>
+        <field name="model">sample.allotment.wizard</field>
+        <field name="inherit_id" ref="lerm_civil.srf_sample_allotment_wizard"/>
+        <field name="arch" type="xml">
+            <field name="allocation_type" position="after">
+                <field name="report_due_date" required="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>
