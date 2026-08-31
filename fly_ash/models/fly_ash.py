@@ -223,7 +223,7 @@ class FlyaschNormalConsistency(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
             }),
         ]
 

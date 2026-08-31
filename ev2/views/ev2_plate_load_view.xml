@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="view_ev2_plate_load_test_form" model="ir.ui.view">
+            <field name="name">ev2.plate.load.test.form</field>
+            <field name="model">ev2.plate.load.test</field>
+            <field name="arch" type="xml">
+
+                <form string="EV2 Plate Load Test">
+                    <style>
+                        /* ===================================================== */
+                        /* SECTION TABLES - collapsed borders so lines never      */
+                        /* double up or "leak" between adjacent cells/tables      */
+                        /* ===================================================== */
+                        .custom_table_borders {
+                            border-collapse: collapse !important;
+                            width: 100%;
+                            table-layout: fixed;
+                            margin-bottom: 0 !important;
+                        }
+                        .custom_table_borders td,
+                        .custom_table_borders th {
+                            border: 1px solid #d0d3d9 !important;
+                            padding: 6px 10px;
+                            vertical-align: middle;
+                            word-wrap: break-word;
+                        }
+                        .custom_table_borders h3 {
+                            margin: 0;
+                            padding: 6px 4px;
+                            font-size: 15px;
+                            font-weight: 600;
+                            color: #1f2937;
+                            background-color: #eef1f5;
+                        }
+                        .custom_table_borders h4 {
+                            margin: 0;
+                            padding: 4px 4px;
+                            font-size: 13px;
+                            font-weight: 600;
+                            color: #374151;
+                            background-color: #f6f7f9;
+                        }
+                        .custom_table_borders .fw-bold {
+                            color: #374151;
+                        }
+
+                        /* Cells that host a nested editable list (tree) must not add
+                           their own padding/border on top of the list's own grid -
+                           that mismatch is what causes borders to "leak" outside the
+                           section table. The nested list's border is suppressed and
+                           the outer cell's border becomes the single visible edge. */
+                        .custom_table_borders td.o_td_nested_list {
+                            padding: 0 !important;
+                            border: 1px solid #d0d3d9 !important;
+                            overflow: hidden;
+                        }
+                        .custom_table_borders td.o_td_nested_list .o_list_view,
+                        .custom_table_borders td.o_td_nested_list .o_list_renderer,
+                        .custom_table_borders td.o_td_nested_list table.o_list_table {
+                            border: none !important;
+                            margin: 0 !important;
+                        }
+
+                        /* ===================================================== */
+                        /* PLAIN TEXT SECTIONS (Introduction / Scope / etc.)      */
+                        /* Bold label on the left, borderless content on the      */
+                        /* right, generous spacing - no grid look.                */
+                        /* ===================================================== */
+                        .content_plain_table {
+                            border: none !important;
+                            width: 100%;
+                            border-collapse: collapse;
+                            table-layout: auto;
+                            white-space: normal !important;
+                        }
+                        .content_plain_table td {
+                            border: none !important;
+                            padding: 18px 12px;
+                            vertical-align: top;
+                            white-space: normal !important;
+                        }
+                        .content_plain_table td.o_td_section_label {
+                            width: 190px;
+                            min-width: 190px;
+                        }
+                        .content_plain_table td.o_td_section_label span {
+                            font-size: 14px;
+                            font-weight: 700;
+                            color: #111827;
+                        }
+                        .content_plain_table td.o_td_section_content,
+                        .content_plain_table td.o_td_section_content * {
+                            color: #33475b;
+                            line-height: 1.6;
+                        }
+                        .content_plain_table td.o_td_section_content ul {
+                            margin: 0;
+                            padding-left: 18px;
+                        }
+                        .content_plain_table td.o_td_section_content li {
+                            margin-bottom: 6px;
+                        }
+
+                        /* ===================================================== */
+                        /* HIGHLIGHTED / EDITABLE INPUTS                          */
+                        /* ===================================================== */
+                        .blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+                        .o_list_view .o_data_cell.blue-input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
+                    </style>
+                    <sheet>
+
+                        <!-- ===================================================== -->
+                        <!-- PROJECT DETAILS -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders"
+                               style="white-space:nowrap;">
+
+                            <tr>
+                                <td colspan="4">
+                                    <h3>Project Details</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="fw-bold" for="project_name">Project Name</span></td>
+                                <td><field name="project_name" readonly="1"/></td>
+
+                                <td><span class="fw-bold" for="client">Client</span></td>
+                                <td><field name="client" readonly="1"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="fw-bold" for="consultant">Consultant</span></td>
+                                <td><field name="consultant" readonly="1"/></td>
+
+                                <td><span class="fw-bold" for="epc_contractor">EPC Contractor</span></td>
+                                <td><field name="epc_contractor" readonly="1"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="fw-bold" for="site_address">Site Address</span></td>
+                                <td><field name="site_address" readonly="1"/></td>
+
+                                <td><span class="fw-bold" for="test_start_date">Test Start Date</span></td>
+                                <td><field name="test_start_date" readonly="1"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="fw-bold" for="test_end_date">Test End Date</span></td>
+                                <td><field name="test_end_date" readonly="1"/></td>
+
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- TEST DETAILS -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3"
+                               style="white-space:nowrap;">
+
+                            <tr>
+                                <td colspan="4">
+                                    <h3>Test Details</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span class="fw-bold" for="plate_diameter_mm">
+                                        Plate Diameter (mm)
+                                    </span>
+                                </td>
+                                <td>
+                                    <field name="plate_diameter_mm"/>
+                                </td>
+
+                                <td>
+                                    <span class="fw-bold" for="plate_size">
+                                        Plate Size
+                                    </span>
+                                </td>
+                                <td>
+                                    <field name="plate_size"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span class="fw-bold" for="initial_reading">
+                                        Initial Reading
+                                    </span>
+                                </td>
+                                <td>
+                                    <field name="initial_reading"/>
+                                </td>
+
+                                <td>
+                                    <span class="fw-bold" for="references">
+                                        References
+                                    </span>
+                                </td>
+                                <td>
+                                    <field name="references"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- OBSERVATION TABLE -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3"
+                               style="white-space:nowrap;">
+
+                            <tr>
+                                <td colspan="7">
+                                    <h3>Observation Table</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="7">
+                                    <h4>Table 1 - First Loading + Rebound</h4>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="7" class="o_td_nested_list">
+                                    <field name="line_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="stage_no"/>
+                                            <field name="cycle_type"/>
+                                            <field name="load_kn"/>
+                                            <field name="nominal_stress"/>
+                                            <field name="pressure_gauge_reading"/>
+                                            <field name="dial_gauge_reading"
+                                                   string="Settlement Indicator"/>
+                                            <field name="settlement" readonly="1"/>
+                                        </tree>
+                                    </field>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- RESULTS -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3"
+                               style="white-space:nowrap;">
+
+                            <tr>
+                                <td colspan="4">
+                                    <h3>Results</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="ev1">
+                                        EV1
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev1" readonly="1"/>
+                                </td>
+
+                                <td>
+                                    <label class="fw-bold" for="ev2">
+                                        EV2
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev2" readonly="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="ev_ratio">
+                                        EV Ratio
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev_ratio" readonly="1"/>
+                                </td>
+
+                                <td>
+                                    <label class="fw-bold" for="sigma_max_ev1">
+                                        Sigma Max EV1
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="sigma_max_ev1" readonly="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="sigma_max_ev2">
+                                        Sigma Max EV2
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="sigma_max_ev2" readonly="1"/>
+                                </td>
+
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- POLYNOMIAL COEFFICIENTS -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3"
+                               style="white-space:nowrap;">
+
+                            <tr>
+                                <td colspan="4">
+                                    <h3>Polynomial Coefficients</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="ev1_a0">
+                                        EV1 A0
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev1_a0" readonly="1"/>
+                                </td>
+
+                                <td>
+                                    <label class="fw-bold" for="ev1_a1">
+                                        EV1 A1
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev1_a1" readonly="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="ev1_a2">
+                                        EV1 A2
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev1_a2" readonly="1"/>
+                                </td>
+
+                                <td>
+                                    <label class="fw-bold" for="ev2_a0">
+                                        EV2 A0
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev2_a0" readonly="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="ev2_a1">
+                                        EV2 A1
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev2_a1" readonly="1"/>
+                                </td>
+
+                                <td>
+                                    <label class="fw-bold" for="ev2_a2">
+                                        EV2 A2
+                                    </label>
+                                </td>
+                                <td>
+                                    <field name="ev2_a2" readonly="1"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- GRAPHS -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3">
+
+                            <tr>
+                                <td>
+                                    <h3>Graphs</h3>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align:center;">
+                                    <span class="o_form_label fw-bold">Main Graph</span>
+                                    <br/>
+                                    <field name="main_graph"
+                                        widget="image"
+                                        readonly="1"
+                                        nolabel="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align:center;">
+                                    <span class="o_form_label fw-bold">EV1 Graph</span>
+                                    <br/>
+                                    <field name="ev1_graph"
+                                        widget="image"
+                                        readonly="1"
+                                        nolabel="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align:center;">
+                                    <span class="o_form_label fw-bold">EV2 Graph</span>
+                                    <br/>
+                                    <field name="ev2_graph"
+                                        widget="image"
+                                        readonly="1"
+                                        nolabel="1"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- REPORT CONTENT -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3">
+
+                            <tr>
+                                <td colspan="4">
+                                    <h3>Report Content</h3>
+                                </td>
+                            </tr>
+
+                            <!-- CONTENT IDS -->
+
+                            <tr>
+                                <td colspan="4">
+                                    <h4>Report Sections</h4>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="4" class="o_td_nested_list">
+                                    <field name="content_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="sequence"/>
+                                            <field name="title"/>
+                                            <field name="page_no"/>
+                                        </tree>
+                                    </field>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- INTRODUCTION / SCOPE / EQUIPMENT / PROCEDURE -->
+
+                        <table class="table table-sm content_plain_table mt-3">
+
+                            <tr>
+                                <td class="o_td_section_label">
+                                    <span for="introduction">Introduction</span>
+                                </td>
+                                <td class="o_td_section_content">
+                                    <field name="introduction" widget="html" nolabel="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="o_td_section_label">
+                                    <span for="scope">Scope</span>
+                                </td>
+                                <td class="o_td_section_content">
+                                    <field name="scope" widget="html" nolabel="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="o_td_section_label">
+                                    <span for="setup_equipment">Setup &amp; Equipments Used</span>
+                                </td>
+                                <td class="o_td_section_content">
+                                    <field name="setup_equipment" widget="html" nolabel="1"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="o_td_section_label">
+                                    <span for="test_procedure">Test Procedure</span>
+                                </td>
+                                <td class="o_td_section_content">
+                                    <field name="test_procedure" widget="html" nolabel="1"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                        <!-- ===================================================== -->
+                        <!-- REPORT UPLOAD -->
+                        <!-- ===================================================== -->
+
+                        <table class="table table-sm table-bordered custom_table_borders mt-3">
+
+                            <tr>
+                                <td colspan="2"><h3>Report Upload</h3></td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="o_form_label fw-bold">EV2 Report Files</span></td>
+                                <td><field name="ev2_report_upload" widget="many2many_binary"/></td>
+                            </tr>
+
+                        </table>
+
+                    </sheet>
+                </form>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

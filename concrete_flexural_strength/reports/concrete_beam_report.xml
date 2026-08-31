@@ -2,7 +2,7 @@
 <odoo>
 	
 	
-	<template id="lerm_cocncrete_beam_report">
+	<template id="fextural_strength_report">
 
 		<t t-call="web.html_container">
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
@@ -99,12 +99,12 @@
 							<tr>
 							    <td colspan="6" >#Age in Days :
 									<![CDATA[&nbsp;]]>
-									<span t-field="concrete_beam.age_of_test"/>
+									<span t-field="data.age_of_test"/>
 								</td>
 								
 								<td colspan="6" >#Date of Casting :
 									<![CDATA[&nbsp;]]>
-									<span t-field="concrete_beam.date_of_casting"/>
+									<span t-field="data.date_of_casting"/>
 								</td>
 								
 							</tr>
@@ -112,11 +112,16 @@
 					</div>
 		
 			
-					<div style="padding-top:10px">
-						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>
-						
-						
+					<div style="padding-top:5px">
+						<span style="font-weight: bold;" t-field="eln.material.method_reference"/>:   	
 							
+						
+						
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a3c54810-53a6-4113-9C05-c996fb0c34c9')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
 						
 					</div>
 
@@ -160,7 +165,7 @@
                             </tr>
                             
 							<t t-set="k" t-value="0"/>
-							<tr t-foreach="concrete_beam.child_lines" t-as="r">
+							<tr t-foreach="data.child_lines" t-as="r">
 								<td colspan="2" style="text-align: center;">
 									<div>
 										<span t-esc="k + 1" />
@@ -206,12 +211,12 @@
                             <tr cols="12">
                                     <td colspan="2" style="font-weight: bold;">Result - Avg Flexural Strength in N/mm2  
                                         <![CDATA[&nbsp;]]> :  
-										<span t-field="concrete_beam.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
 
                                     </td>
                                     <!-- <td colspan="2" style="text-align: center;">
                                         <![CDATA[&nbsp;]]>
-                                        <span t-field="concrete_beam.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
+                                        <span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
                                     </td> -->
                             </tr>
                         </table>
@@ -221,114 +226,18 @@
 				<div>
 
 				</div>
-				<!-- <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-					<div>
-						<b>Remarks: -</b>
-					</div>
-					<div>
-						<ul>
-							<li>
-								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-							</li>
-							<li>
-								Sample(s) was/were not drawn by laboratory.
-							</li>
-							<li>
-								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-							</li>
-								<li>
-										# - Information provided by the customer.
-									</li>
-							<li t-if="eln.has_witness">
-								Test witnessed by : <span t-esc="eln.witness_name"/>
-							</li>
-							<li t-if="eln.remarks">
-									<span t-esc="eln.remarks"/>
-							</li>
-						</ul>
-					</div>
-				</div>
-
-
-				<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
-					
-					<div>
-						<div>
-							<b>
-								Checked By
-							</b>
-						</div>
-						<div style="height: 40px;">
-							<t t-if="eln.sample_id.checkby_signature_required">
-								<div t-if="eln.sample_id.check_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-						<div>
-							<b>
-								<span t-esc="eln.sample_id.check_by.name"/>
-							</b>
-						</div>
-						<div>
-							<b>
-								(<span t-esc="eln.sample_id.check_by.job_title"/>)
-							</b>
-						</div>
-					</div>
-					<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
-					<div>
-						<div>
-							<b>
-								Approved By 
-							</b>
-							
-						</div>
-						<div style="height: 40px;">
-							<t t-if="eln.sample_id.approveby_signature_required">
-								<div t-if="eln.sample_id.approved_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-						<div>
-							<b>
-							<span t-esc="eln.sample_id.approved_by.name"/>
-							</b>
-						</div>
-						<div>
-							<b>
-								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-							</b>
-						</div>
-						
-					</div>
-				</div>
-
-				<div style="margin-top: 50px; text-align: center;">
-					<p style="border-top: 1px dashed #000; padding-top: 10px;">
-						...... End Of Report......
-					</p>
-				</div>
 				
-														
-				</div> -->
 
 
-				<div style="page-break-inside: avoid;">
-								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+				 <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
 									<ul>
-										<t t-if="concrete_beam.notes_id">
-											<t t-foreach="concrete_beam.notes_id" t-as="n">
+									   
+										<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
 												<li>
 													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
 												</li>
@@ -342,7 +251,7 @@
 										</li>
 									</ul>
 								</div>
-							</div>
+				</div>
 
 
 							<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">

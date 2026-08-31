@@ -7,8 +7,11 @@
         <field name="model">pile.integrity</field>
         <field name="arch" type="xml">
             <form create="false">
-
-                  
+                <header>
+                    <button name="action_generate_demo_data" string="Generate Demo Data" type="object" class="btn-secondary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                    <button name="action_prefill_contents" string="Prefill Report Text" type="object" class="btn-secondary"/>
+                </header>
                 <sheet>
 
                 <group style="white-space: nowrap; width:80%" >
@@ -32,6 +35,29 @@
                                 </tree>
                             </field>
                         </div>
+
+                    <div >
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="customer_name">Customer Name :</label></td>
+                                    <td style="width:80%;"><field name="customer_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="customer_address">Customer Address :</label></td>
+                                    <td style="width:80%;"><field name="customer_address"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="client">Client :</label></td>
+                                    <td style="width:80%;"><field name="client"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%;"><label for="site_name_addr">Site Name &amp; Address :</label></td>
+                                    <td style="width:80%;"><field name="site_name_addr"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     
                     <!-- Dimension -->
 
@@ -42,6 +68,16 @@
                             
                         </h1>
                     </group>
+
+                    <div >
+                        <field name="content_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="seq"/>
+                                <field name="name"/>
+                                <field name="page_no"/>
+                            </tree>
+                        </field>
+                    </div>
 
                     <div >
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
@@ -59,6 +95,18 @@
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                             <tbody>
                                 <tr>
+                                    <td style="width:20%;"><label for="introduction">Introduction :</label></td>
+                                    <td style="width:80%;"><field name="introduction"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div >
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
                                     <td style="width:20%;"><label for="principle_details">Principle :</label></td>
                                     <td style="width:80%;"><field name="principle_details"/></td>
                                 </tr>
@@ -66,17 +114,18 @@
                             </tbody>
                         </table>
                     </div>
-                    
 
-
-                       
-                        <div style="text-align: right; margin-top: 20px;">
-                            <field name="instrument_image"
-                                widget="image"
-                                class="img-fluid"
-                                style="max-width:400px; max-height:400px; object-fit: contain;"/>
-                        </div>
-
+                    <div >
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="equipment_details">Equipment Details :</label></td>
+                                    <td style="width:80%;"><field name="equipment_details"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
                    
 
                     <div >
@@ -122,14 +171,34 @@
                         </table>
                     </div>
                      
-                    <div style="text-align: right; margin-top: 20px;">
-                    <field name="instrument_description_image"
-                        widget="image"
-                        class="img-fluid"
-                        style="max-width:400px; max-height:400px; object-fit: contain;"/>
-                </div>
 
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="pile_type">Type of Pile</label></td>
+                                    <td><field name="pile_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pile_diameter">Pile Diameter (mm)</label></td>
+                                    <td><field name="pile_diameter"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="pile_depth">Pile Depth From Test Level (m)</label></td>
+                                    <td><field name="pile_depth"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="principal_client">PMC</label></td>
+                                    <td><field name="principal_client"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                         <group style="white-space: nowrap; width:80%">
                         <h1>
@@ -170,9 +239,17 @@
                           <field name="doc"/>
                           <field name="pile_dia"/>
                           <field name="cut_off"/>
+                          <field name="wave_speed"/>
                           <field name="shaft_cross"/>
                      
                         </tree>
+                        </field>
+
+                        <field name="image_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="name"/>
+                                <field name="image" widget="image"/>
+                            </tree>
                         </field>
 
                      <group >
@@ -190,6 +267,30 @@
                                 <tr>
                                     <td style="width:20%;"><label for="test_result">TEST RESULT  :</label></td>
                                     <td style="width:80%;"><field name="test_result"  widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                      <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="limitations">Limitations :</label></td>
+                                    <td style="width:80%;"><field name="limitations"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                      <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="conclusion">Conclusion :</label></td>
+                                    <td style="width:80%;"><field name="conclusion"/></td>
                                 </tr>
                                
                             </tbody>

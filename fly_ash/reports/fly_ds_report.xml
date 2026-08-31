@@ -802,6 +802,72 @@
 							</table>
 						</div>
 
+						<!-- Soundness by Autoclave Method -->
+					<div t-if="data.fly_ash_soundness_visible" style="margin-top:20px; page-break-before: always;">
+						<div style="text-align:center;font-size:18px">
+							Soundness by Autoclave Method
+						</div>
+						
+						<table style="margin-top: 20px">
+						
+								<tr>
+									<td style="font-weight: bold;">Wt. of Cement (g)</td>
+									<td style="text-align: center;"><span t-field="data.wt_cement_fly_ash"/></td>
+								</tr>
+								<tr>
+									<td style="font-weight: bold;">Wt. of water required (g)</td>
+									<td style="text-align: center;"><span t-field="data.water_required_fly_ash"/></td>
+								</tr>
+
+						
+						</table>
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td style="font-weight: bold;" colspan="3">Sr No 
+								</td>
+								<td style="font-weight: bold;" colspan="3">Length of Bar after Immersion in Water (L1)
+								</td>
+								<td style="font-weight: bold;" colspan="2">Final Length (L2)
+								</td>
+								<td style="font-weight: bold;" colspan="2">Original Length
+								</td>
+								<td style="font-weight: bold;" colspan="2">Expansion ((L2-L1)/L3)x 100, %
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.fly_ash_soundness_table" t-as="r">
+								<td style="text-align: center;" colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<td style="text-align: center;" colspan="3">
+									<span t-esc="r['intial_length']"/>
+								</td>
+								<td style="text-align: center;" colspan="2">
+									<span t-esc="r['final_length']"/>
+								</td>
+								<td style="text-align: center;" colspan="2">
+									<span t-esc="r['original_length']"/>
+								</td>
+								<td style="text-align: center;" colspan="2">
+									<span t-esc="r['expantion']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td style="font-weight: bold;" colspan="6">Average Expansion % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.avg_expantion_fly_ash" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
 
 
 							<!-- Per-parameter signature removed - signature now only at end of datasheet -->
@@ -2053,6 +2119,97 @@
 								</td>
 							</tr>
 
+							<!-- Autoclave -->
+							<tr t-if="flyash.fly_ash_soundness_visible and (flyash.avg_expantion_fly_ash_nabl == 'pass' and nabl or (flyash.avg_expantion_fly_ash_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln">
+								<td style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1" />
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_name"/>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span t-field="flyash.avg_expantion_fly_ash"/>
+									</div>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="flyash.avg_expantion_fly_ash_conformity"/>
+								</td>
+							</tr>
+
+							<tr t-if="flyash.fly_ash_soundness_visible and fromEln">
+								<td style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1" />
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_name"/>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span t-field="flyash.avg_expantion_fly_ash" />
+									</div>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="flyash.avg_expantion_fly_ash_conformity"/>
+								</td>
+							</tr>
+
 
 
 
@@ -2671,7 +2828,7 @@
 								    	<!-- a. The information marked with an # received from customer<br/><br/>
 							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
 							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+							        	d. This document shall not be reproduced in part or full without the approval of Knack. -->
 
 										<t t-if="flyash.notes_id">
 										<t t-foreach="flyash.notes_id" t-as="n">

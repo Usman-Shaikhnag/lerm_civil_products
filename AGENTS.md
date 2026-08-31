@@ -48,14 +48,15 @@ Production is an Odoo 17 Docker stack. Access is via SSH as root.
   - `db` (postgres:15) — the single production database is `demo_db` (psql: `docker exec db psql -U odoo -d demo_db`).
   - `document_management-dms-backend-1` (FastAPI) → `:8000` — the DMS backend for the `document_management` module.
 - The checkout may have **uncommitted production-specific edits** (e.g. `door/models/door.py` internal_ids that only exist in this DB). Never reset/checkout blindly — reconcile those changes first.
-- Deploy = update the checkout, install/upgrade changed modules, restart:
+- Deploy = update the checkout, install/upgrade changed modules, restart. **Run the git pull inside the odoo container** (never on the host — the repo checkout lives at `/mnt/extra-addons` in the container):
   ```bash
   ssh knack17_0426Esehat
-  cd /var/lib/docker/volumes/prod-data/_data && git pull
+  docker exec odoo sh -c 'cd /mnt/extra-addons && git pull'
   docker exec odoo odoo -d demo_db -u <changed_modules> --stop-after-init \
     --db_host=db --db_user=odoo --db_password=odoo
   docker restart odoo
   ```
+  Note: the `odoo` container must have `git` installed for the pull to work.
 - DMS backend health: `curl http://localhost:8000/api/v1/health`. Config lives in `ir_config_parameter` (`document_management.*`); the Odoo container is attached to the `document_management_default` network so it reaches the backend via `http://dms-backend:8000`.
 - **After changing `ir_config_parameter` via raw SQL, `docker restart odoo`** — the running Odoo process caches config params in memory and will keep serving the stale value (e.g. DMS previews kept failing after `fastapi_url` was updated directly in Postgres until Odoo was restarted).
 - **DMS uploads fail with "Access Denied by ACLs ... model: dms.file"** for any user who is not in a DMS group (`group_dms_user`/`group_dms_uploader`/`group_dms_manager`). Assign the DMS/User (or higher) group via Settings → Users; the user must re-login for it to take effect.

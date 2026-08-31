@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="ev2_plate_load_test_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+
+
+				<div class="page" style="margin-top:60px;padding-top:25px;" t-foreach="eln" t-as="o">
+
+					<table style="width:100%; border-collapse:collapse;">
+
+						<tr>
+							<td style="border:1px solid black; padding:8px; width:35%;">
+								<strong>ULR No.</strong>
+							</td>
+							<td style="border:1px solid black; padding:8px;">
+								<span t-field="o.sample_id.ulr_no"/>
+							</td>
+
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Date of Testing</strong>
+							</td>
+							<td style="border:1px solid black; padding:8px;">
+								<span t-field="o.start_date"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Date of Report</strong>
+							</td>
+							<td style="border:1px solid black; padding:8px;">
+								<span t-field="o.sample_id.report_due_date"/>
+							</td>
+
+							<!-- <td style="border:1px solid black; padding:8px;">
+								<strong>Report No.</strong>
+							</td>
+							<td style="border:1px solid black; padding:8px;">
+								<span t-field="o.sample_id.kes_no"/>
+							</td> -->
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Customer Name &amp; Address</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+
+								<span t-field="o.srf_id.customer.name"/><br/>
+
+								<span t-field="o.srf_id.customer.street"/>
+								<span t-field="o.srf_id.customer.street2"/>
+
+								<span t-field="o.srf_id.customer.city"/>
+
+								<span t-if="o.srf_id.customer.zip">
+									- <span t-field="o.srf_id.customer.zip"/>
+								</span>
+
+								<span t-field="o.srf_id.customer.state_id"/>
+								<span t-field="o.srf_id.customer.country_id"/>
+
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Client</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.srf_id.client"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Site Name &amp; Address</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.srf_id.site_address"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Discipline</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.discipline"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Group</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.group.group"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Type Of Material</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.material.name"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="border:1px solid black; padding:8px;">
+								<strong>Test Method</strong>
+							</td>
+							<td colspan="3" style="border:1px solid black; padding:8px;">
+								<span t-field="o.material.method_reference"/>
+							</td>
+						</tr>
+
+					</table>
+
+				</div>
+				
+				<div class="page" style="page-break-before: always; margin-top:60px;padding-top:25px;">
+
+					<h3 style="text-align:center;">
+						<b>TABLE OF CONTENTS</b>
+					</h3>
+
+					<table style="width:60%; border:none;margin:20px auto;text-align:center">
+
+						<t t-foreach="data.content_ids.sorted('sequence')" t-as="line">
+
+							<tr>
+								<td style="border:none;text-align:left; width:10%;">
+									<span t-esc="line.sequence"/>.
+								</td>
+								<td style="border:none; text-align:left; width:80%;">
+									<span t-esc="line.title"/>
+								</td>
+
+								<td style="border:none; text-align:right; width:10%;">
+									<span t-esc="line.page_no"/>
+								</td>
+							</tr>
+
+						</t>
+
+					</table>
+
+				</div>
+
+				<div class="page" style="page-break-before: always; margin-top:60px;padding-top:25px;">
+
+					<h4>1. INTRODUCTION</h4>
+					<div style="line-height:1.6;">
+						<div t-out="data.introduction"/>
+					</div>
+
+					<h4>2. SCOPE</h4>
+					<div style="line-height:1.6;">
+						<div t-out="data.scope"/>
+					</div>
+
+					<h4>3. SETUP &amp; EQUIPMENTS USED</h4>
+					<div style="line-height:1.6;">
+						<div t-out="data.setup_equipment"/>
+					</div>
+
+					<h4>4. TEST PROCEDURE</h4>
+					<div style="line-height:1.6;">
+						<div t-out="data.test_procedure"/>
+					</div>
+
+				</div>
+				<div class="page" style="page-break-before: always; margin-top:60px;padding-top:25px;">
+
+					<t t-set="loading1"
+						t-value="data.line_ids.filtered(lambda l: l.cycle_type in ['loading_1','rebound'])"/>
+					<table class="table table-bordered" style="width:100%; border-collapse:collapse;">
+						<thead>
+							<tr>
+								<th>Loading Stage No</th>
+								<th>Load kN</th>
+								<th>Normal Stress MN/m²</th>
+								<th>Pressure Gauge Reading kg/cm²</th>
+								<th>Settlement of Loading Plate (mm)</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<t t-foreach="data.line_ids.filtered(lambda l: l.cycle_type == 'loading_1' or (l.cycle_type == 'rebound' and l.stage_no != 9))" t-as="line">
+								<tr>
+									<td><span t-esc="line.stage_no"/></td>
+									<td><span t-esc="line.load_kn"/></td>
+									<td><span t-esc="'%.3f' % line.nominal_stress"/></td>
+									<td><span t-esc="line.pressure_gauge_reading"/></td>
+									<td><span t-esc="line.settlement"/></td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+					<t t-set="loading2"
+							t-value="data.line_ids.filtered(lambda l: l.cycle_type == 'loading_2')"/>
+					<table class="table table-bordered" style="width:100%; border-collapse:collapse;">
+						<thead>
+							<tr>
+								<th>Loading Stage No</th>
+								<th>Load kN</th>
+								<th>Normal Stress MN/m²</th>
+								<th>Pressure Gauge Reading kg/cm²</th>
+								<th>Settlement of Loading Plate (mm)</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<t t-foreach="loading2" t-as="line">
+								<tr>
+									<td><span t-esc="line.stage_no"/></td>
+									<td><span t-esc="line.load_kn"/></td>
+									<td><span t-esc="'%.3f' % line.nominal_stress"/></td>
+									<td><span t-esc="line.pressure_gauge_reading"/></td>
+									<td><span t-esc="line.settlement"/></td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="page" style="page-break-before: always; margin-top:60px;padding-top:25px;">
+					<table style="width:100%; border-collapse:collapse; border: 1px solid black; font-size:11px;">
+
+						<!-- Title Row -->
+						<tr>
+							<td colspan="4" style="text-align:center; font-weight:bold; border: 1px solid black; padding:4px;">
+								Table 3 : Computation of result
+							</td>
+						</tr>
+
+						<!-- Header Row -->
+						<tr>
+							<th colspan="2" style="border: 1px solid black; padding:4px; text-align:center;">Parameters</th>
+							<th style="border: 1px solid black; padding:4px; text-align:center;">1<sup>st</sup> loading cycle</th>
+							<th style="border: 1px solid black; padding:4px; text-align:center;">2<sup>nd</sup> loading cycle</th>
+						</tr>
+
+						<tr>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black; border-right: none; padding:4px; text-align:left;"><b>σ<sub>0 max</sub></b></td>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: none; border-right: 1px solid black; padding:4px; text-align:right;">MN/m²</td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.2f' % data.sigma_max_ev1"/>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.2f' % data.sigma_max_ev2"/>
+						</tr>
+
+						<tr>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black; border-right: none; padding:4px; text-align:left;"><b>a<sub>0</sub></b></td>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: none; border-right: 1px solid black; padding:4px; text-align:right;">mm</td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev1_a0"/>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev2_a0"/>
+						</tr>
+
+						<tr>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black; border-right: none; padding:4px; text-align:left;"><b>a<sub>1</sub></b></td>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: none; border-right: 1px solid black; padding:4px; text-align:right;">mm / (MN/m²)</td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev1_a1"/>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev2_a1"/>
+						</tr>
+
+						<tr>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black; border-right: none; padding:4px; text-align:left;"><b>a<sub>2</sub></b></td>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: none; border-right: 1px solid black; padding:4px; text-align:right;">mm / (MN²/m⁴)</td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev1_a2"/>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.4f' % data.ev2_a2"/>
+						</tr>
+
+						<tr>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: 1px solid black; border-right: none; padding:4px; text-align:left;">
+								<b>E<sub>v</sub> = 1.5 × r
+									<span style="display:inline-block; text-align:center; vertical-align:middle; margin-left:4px;">
+										<span style="display:block; border-bottom:1px solid black; font-size:9px;">1</span>
+										<span style="display:block; font-size:9px;">a<sub>1</sub>+a<sub>2</sub>×σ<sub>0max</sub></span>
+									</span>
+								</b>
+							</td>
+							<td style="border-top: 1px solid black; border-bottom: 1px solid black; border-left: none; border-right: 1px solid black; padding:4px; text-align:right;">MN/m²</td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.2f' % data.ev1"/>
+							<td style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.2f' % data.ev2"/>
+						</tr>
+
+						<!-- K Value row - single merged value across both cycle columns -->
+						<!-- <tr>
+							<td style="border: 1px solid black; padding:4px;"><b>K Value</b></td>
+							<td style="border: 1px solid black; padding:4px; text-align:center;">MN/m³</td>
+							<td colspan="2" style="border: 1px solid black; padding:4px; text-align:center;" t-esc="'%.0f' % data.k_value"/>
+						</tr> -->
+
+					</table>
+					<div style="text-align:center;margin-top:15px;">
+						<img t-if="data.main_graph"
+							t-att-src="image_data_uri(data.main_graph)"
+							style="width:75%;"/>
+					</div>
+
+					<p style="text-align:center;">
+						<b>Fig 1 : Nature of Load vs Settlement curve</b>
+					</p>
+				</div>
+				<div class="page" style="page-break-before: always; margin-top:60px;padding-top:25px;">
+					<table style="width:100%; border:none;">
+						<tr>
+							<td style="width:50%; text-align:center; border:none;">
+								<img t-if="data.ev1_graph"
+									t-att-src="image_data_uri(data.ev1_graph)"
+									style="width:90%;"/>
+							</td>
+
+							<td style="width:50%; text-align:center; border:none;">
+								<img t-if="data.ev2_graph"
+									t-att-src="image_data_uri(data.ev2_graph)"
+									style="width:90%;"/>
+							</td>
+						</tr>
+					</table>
+
+					<p style="text-align:center;">
+						<b>Fig 2 : Ev-1 &amp; Ev-2 Graphs</b>
+					</p>
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							 <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.filled_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+					<div style="text-align:center; margin-top:120px;">
+						<div>Format NO.: KES/FM/51/Ev-2</div>
+						<br/>
+						<b>***END OF REPORT***</b>
+					</div>
+				</div>
+
+
+			</t>
+		</t>
+	</template>
+</odoo>

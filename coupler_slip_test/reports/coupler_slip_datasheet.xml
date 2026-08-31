@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="coupler_slip_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    COUPLER Datasheet
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							 <tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+						
+						</table>
+					</div>
+
+
+						<table>
+						<thead>
+							<tr>
+								<th style="text-align: center;">
+									<span>
+										Parameter
+									</span>
+								</th>
+								
+								<th style="text-align: center;">
+									<span>
+										Observation-1
+									</span>
+								</th>
+							
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								
+								 <td  >
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','784a8734-a7d1-42f2-aa4d-34b1bb2cdb8a')]).parameter_name"/>
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.diameter"/>
+								</td>
+							
+							</tr>
+						
+							<tr>
+							
+								<td >
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ccb87105-4cbf-4bbc-bb2b-d7f825e36746')]).parameter_name"/>
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.crossectional_area" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							
+							</tr>
+							<tr>
+							
+								 <td  >
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','4a5f3599-8e4c-4d8a-a5c3-e0026be956f7')]).parameter_name"/>
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.gauge_length"/>
+								</td>
+							
+							</tr>
+
+							<tr>
+							
+								 <td>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','cdb8d593-faa8-41c9-9c21-5e53aa64e31d')]).parameter_name"/>
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.ultimate_load"/>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td >
+                                    Slip Strength, N/mm2
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="round(data.slip_strength,2)"/>
+								</td>
+							</tr>
+							<tr>
+								<td >
+                                    Ext At 20 N/MM2
+                                </td>
+								<td style="text-align: center;">
+									<span t-esc="data.ext_at_20"/>
+								</td>
+							</tr>
+
+							<tr>
+								
+								 <td>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','39689dfe-47ac-47f8-9a4d-4ce937d60500')]).parameter_name"/>
+                                </td>
+								<td >
+									<span t-esc="data.result_test"/>
+								</td>
+								
+							</tr>
+
+
+						</tbody>
+					</table>
+
+						
+                    <!-- authorizeRowDataSheet -->
+                    
+                    <div class="authorizeRowDataSheet">
+
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+							<div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.technician.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.technician.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+</template>
+</odoo>

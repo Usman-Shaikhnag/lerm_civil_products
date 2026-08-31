@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_hod_blocker" model="ir.ui.view">
+        <field name="name">res.config.settings.hod.blocker</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="HOD Block" string="HOD Block" name="hod_blocker">
+                    <block title="Sample Allotment Blocker">
+                        <setting string="Enable HOD Sample Allotment Popup"
+                                 help="Show the pending-sample popup to HODs. When disabled, the popup never appears and samples are only allotted manually.">
+                            <field name="hod_blocker_enabled"/>
+                        </setting>
+                        <setting string="Check Interval (minutes)"
+                                 help="How often the pending-sample check runs. Minimum 1 minute.">
+                            <div class="content-group">
+                                <field name="hod_blocker_check_interval_minutes" class="oe_inline"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
