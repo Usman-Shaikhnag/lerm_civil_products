@@ -504,6 +504,46 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="act_datasheet_action" model="ir.actions.report">
+    <field name="name">ACT DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">act_concrete_cube.act_datasheet</field>
+    <field name="report_file">act_concrete_cube.act_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="act_report_action" model="ir.actions.report">
+    <field name="name">Act Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">act_concrete_cube.act_report</field>
+    <field name="report_file">act_concrete_cube.act_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="concrete_splite_tensile_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete Split Tensile Strength Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_split_tensile.concrete_splite_tensile_datasheet</field>
+    <field name="report_file">concrete_split_tensile.concrete_splite_tensile_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="concrete_splite_tensile_report_action" model="ir.actions.report">
+    <field name="name">Concrete Split Tensile Strength Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_split_tensile.concrete_splite_tensile_report</field>
+    <field name="report_file">concrete_split_tensile.concrete_splite_tensile_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="door_datasheet_action" model="ir.actions.report">
     <field name="name">Door DataSheet </field>
     <field name="model">lerm.eln</field>
