@@ -295,40 +295,117 @@ class ChemicalCoal(models.Model):
             else:
                 rec.avg_ash = 0.0
 
+    # @api.depends(
+    # 'ash_dishw1_1','ash_dishw2_1','ash_dishw3_1','ash_dishw4_1',
+    # 'ash_dishw1_2','ash_dishw2_2','ash_dishw3_2','ash_dishw4_2',
+    # 'ash_dishw1_3','ash_dishw2_3','ash_dishw3_3','ash_dishw4_3',
+    # 'ash_dishw1_4','ash_dishw2_4','ash_dishw3_4','ash_dishw4_4',
+    # 'ash_dishw1_5','ash_dishw2_5','ash_dishw3_5','ash_dishw4_5',
+    # )
+    # def _compute_ash_dish(self):
+    #     for rec in self:
+
+    #         rec.ash_1 = (
+    #             ((rec.ash_dishw3_1 - rec.ash_dishw4_1) * 100) /
+    #             (rec.ash_dishw2_1 - rec.ash_dishw1_1)
+    #         ) if (rec.ash_dishw2_1 - rec.ash_dishw1_1) else 0.0
+
+    #         rec.ash_2 = (
+    #             ((rec.ash_dishw3_2 - rec.ash_dishw4_2) * 100) /
+    #             (rec.ash_dishw2_2 - rec.ash_dishw1_2)
+    #         ) if (rec.ash_dishw2_2 - rec.ash_dishw1_2) else 0.0
+
+    #         rec.ash_3 = (
+    #             ((rec.ash_dishw3_3 - rec.ash_dishw4_3) * 100) /
+    #             (rec.ash_dishw2_3 - rec.ash_dishw1_3)
+    #         ) if (rec.ash_dishw2_3 - rec.ash_dishw1_3) else 0.0
+
+    #         rec.ash_4 = (
+    #             ((rec.ash_dishw3_4 - rec.ash_dishw4_4) * 100) /
+    #             (rec.ash_dishw2_4 - rec.ash_dishw1_4)
+    #         ) if (rec.ash_dishw2_4 - rec.ash_dishw1_4) else 0.0
+
+    #         rec.ash_5 = (
+    #             ((rec.ash_dishw3_5 - rec.ash_dishw4_5) * 100) /
+    #             (rec.ash_dishw2_5 - rec.ash_dishw1_5)
+    #         ) if (rec.ash_dishw2_5 - rec.ash_dishw1_5) else 0.0
+
     @api.depends(
-    'ash_dishw1_1','ash_dishw2_1','ash_dishw3_1','ash_dishw4_1',
-    'ash_dishw1_2','ash_dishw2_2','ash_dishw3_2','ash_dishw4_2',
-    'ash_dishw1_3','ash_dishw2_3','ash_dishw3_3','ash_dishw4_3',
-    'ash_dishw1_4','ash_dishw2_4','ash_dishw3_4','ash_dishw4_4',
-    'ash_dishw1_5','ash_dishw2_5','ash_dishw3_5','ash_dishw4_5',
+    'ash_dishw1_1',
+    'ash_dishw1_2',
+    'ash_dishw1_3',
+    'ash_dishw1_4',
+    'ash_dishw1_5',
+    'ash_dishw2_1',
+    'ash_dishw2_2',
+    'ash_dishw2_3',
+    'ash_dishw2_4',
+    'ash_dishw2_5',
+    'ash_dishw3_1',
+    'ash_dishw3_2',
+    'ash_dishw3_3',
+    'ash_dishw3_4',
+    'ash_dishw3_5',
+    'ash_dishw4_1',
+    'ash_dishw4_2',
+    'ash_dishw4_3',
+    'ash_dishw4_4',
+    'ash_dishw4_5',
     )
     def _compute_ash_dish(self):
-        for rec in self:
+        for record in self:
 
-            rec.ash_1 = (
-                ((rec.ash_dishw3_1 - rec.ash_dishw4_1) * 100) /
-                (rec.ash_dishw2_1 - rec.ash_dishw1_1)
-            ) if (rec.ash_dishw2_1 - rec.ash_dishw1_1) else 0.0
+            record.ash_1 = 0.0
+            record.ash_2 = 0.0
+            record.ash_3 = 0.0
+            record.ash_4 = 0.0
+            record.ash_5 = 0.0
 
-            rec.ash_2 = (
-                ((rec.ash_dishw3_2 - rec.ash_dishw4_2) * 100) /
-                (rec.ash_dishw2_2 - rec.ash_dishw1_2)
-            ) if (rec.ash_dishw2_2 - rec.ash_dishw1_2) else 0.0
+            if record.ash_dishw2_1 != record.ash_dishw1_1:
+                record.ash_1 = (
+                    (
+                        (record.ash_dishw3_1 - record.ash_dishw4_1)
+                        / (record.ash_dishw2_1 - record.ash_dishw1_1)
+                    ) * 100
+                )
+                record.ash_1 = int(record.ash_1 * 100) / 100
 
-            rec.ash_3 = (
-                ((rec.ash_dishw3_3 - rec.ash_dishw4_3) * 100) /
-                (rec.ash_dishw2_3 - rec.ash_dishw1_3)
-            ) if (rec.ash_dishw2_3 - rec.ash_dishw1_3) else 0.0
+            if record.ash_dishw2_2 != record.ash_dishw1_2:
+                record.ash_2 = (
+                    (
+                        (record.ash_dishw3_2 - record.ash_dishw4_2)
+                        / (record.ash_dishw2_2 - record.ash_dishw1_2)
+                    ) * 100
+                )
+                record.ash_2 = int(record.ash_2 * 100) / 100
 
-            rec.ash_4 = (
-                ((rec.ash_dishw3_4 - rec.ash_dishw4_4) * 100) /
-                (rec.ash_dishw2_4 - rec.ash_dishw1_4)
-            ) if (rec.ash_dishw2_4 - rec.ash_dishw1_4) else 0.0
+            if record.ash_dishw2_3 != record.ash_dishw1_3:
+                record.ash_3 = (
+                    (
+                        (record.ash_dishw3_3 - record.ash_dishw4_3)
+                        / (record.ash_dishw2_3 - record.ash_dishw1_3)
+                    ) * 100
+                )
+                record.ash_3 = int(record.ash_3 * 100) / 100
 
-            rec.ash_5 = (
-                ((rec.ash_dishw3_5 - rec.ash_dishw4_5) * 100) /
-                (rec.ash_dishw2_5 - rec.ash_dishw1_5)
-            ) if (rec.ash_dishw2_5 - rec.ash_dishw1_5) else 0.0
+            if record.ash_dishw2_4 != record.ash_dishw1_4:
+                record.ash_4 = (
+                    (
+                        (record.ash_dishw3_4 - record.ash_dishw4_4)
+                        / (record.ash_dishw2_4 - record.ash_dishw1_4)
+                    ) * 100
+                )
+                record.ash_4 = int(record.ash_4 * 100) / 100
+
+            if record.ash_dishw2_5 != record.ash_dishw1_5:
+                record.ash_5 = (
+                    (
+                        (record.ash_dishw3_5 - record.ash_dishw4_5)
+                        / (record.ash_dishw2_5 - record.ash_dishw1_5)
+                    ) * 100
+                )
+                record.ash_5 = int(record.ash_5 * 100) / 100
+
 
     
 
@@ -454,44 +531,105 @@ class ChemicalCoal(models.Model):
                 rec.avg_volatile_matter = 0.0
 
     @api.depends(
-    'volatile_matter_cruciblew1_1','volatile_matter_cruciblew2_1','volatile_matter_cruciblew3_1','volatile_matter_driedw4_1',
-    'volatile_matter_cruciblew1_2','volatile_matter_cruciblew2_2','volatile_matter_cruciblew3_2','volatile_matter_driedw4_2',
-    'volatile_matter_cruciblew1_3','volatile_matter_cruciblew2_3','volatile_matter_cruciblew3_3','volatile_matter_driedw4_3',
-    'volatile_matter_cruciblew1_4','volatile_matter_cruciblew2_4','volatile_matter_cruciblew3_4','volatile_matter_driedw4_4',
-    'volatile_matter_cruciblew1_5','volatile_matter_cruciblew2_5','volatile_matter_cruciblew3_5','volatile_matter_driedw4_5',
+    'volatile_matter_cruciblew1_1',
+    'volatile_matter_cruciblew1_2',
+    'volatile_matter_cruciblew1_3',
+    'volatile_matter_cruciblew1_4',
+    'volatile_matter_cruciblew1_5',
+    'volatile_matter_cruciblew2_1',
+    'volatile_matter_cruciblew2_2',
+    'volatile_matter_cruciblew2_3',
+    'volatile_matter_cruciblew2_4',
+    'volatile_matter_cruciblew2_5',
+    'volatile_matter_cruciblew3_1',
+    'volatile_matter_cruciblew3_2',
+    'volatile_matter_cruciblew3_3',
+    'volatile_matter_cruciblew3_4',
+    'volatile_matter_cruciblew3_5',
+    'volatile_matter_driedw4_1',
+    'volatile_matter_driedw4_2',
+    'volatile_matter_driedw4_3',
+    'volatile_matter_driedw4_4',
+    'volatile_matter_driedw4_5',
     )
     def _compute_volatile_matter(self):
-        for rec in self:
+        for record in self:
+            record.volatile_matter_1 = 0.0
+            record.volatile_matter_2 = 0.0
+            record.volatile_matter_3 = 0.0
+            record.volatile_matter_4 = 0.0
+            record.volatile_matter_5 = 0.0
 
-            rec.volatile_matter_1 = (
-                ((rec.volatile_matter_cruciblew2_1 - rec.volatile_matter_cruciblew3_1) *
-                (100 - rec.volatile_matter_driedw4_1)) /
-                (rec.volatile_matter_cruciblew2_1 - rec.volatile_matter_cruciblew1_1)
-            ) if (rec.volatile_matter_cruciblew2_1 - rec.volatile_matter_cruciblew1_1) else 0.0
+            if record.volatile_matter_cruciblew2_1 != record.volatile_matter_cruciblew1_1:
+                record.volatile_matter_1 = (
+                    (
+                        (record.volatile_matter_cruciblew2_1
+                        - record.volatile_matter_cruciblew3_1)
+                        / (record.volatile_matter_cruciblew2_1
+                        - record.volatile_matter_cruciblew1_1)
+                    ) * 100
+                    - record.volatile_matter_driedw4_1
+                )
+                record.volatile_matter_1 = int(
+                    record.volatile_matter_1 * 100
+                ) / 100
 
-            rec.volatile_matter_2 = (
-                ((rec.volatile_matter_cruciblew2_2 - rec.volatile_matter_cruciblew3_2) *
-                (100 - rec.volatile_matter_driedw4_2)) /
-                (rec.volatile_matter_cruciblew2_2 - rec.volatile_matter_cruciblew1_2)
-            ) if (rec.volatile_matter_cruciblew2_2 - rec.volatile_matter_cruciblew1_2) else 0.0
+            if record.volatile_matter_cruciblew2_2 != record.volatile_matter_cruciblew1_2:
+                record.volatile_matter_2 = (
+                    (
+                        (record.volatile_matter_cruciblew2_2
+                        - record.volatile_matter_cruciblew3_2)
+                        / (record.volatile_matter_cruciblew2_2
+                        - record.volatile_matter_cruciblew1_2)
+                    ) * 100
+                    - record.volatile_matter_driedw4_2
+                )
+                record.volatile_matter_2 = int(
+                    record.volatile_matter_2 * 100
+                ) / 100
 
-            rec.volatile_matter_3 = (
-                ((rec.volatile_matter_cruciblew2_3 - rec.volatile_matter_cruciblew3_3) *
-                (100 - rec.volatile_matter_driedw4_3)) /
-                (rec.volatile_matter_cruciblew2_3 - rec.volatile_matter_cruciblew1_3)
-            ) if (rec.volatile_matter_cruciblew2_3 - rec.volatile_matter_cruciblew1_3) else 0.0
+            if record.volatile_matter_cruciblew2_3 != record.volatile_matter_cruciblew1_3:
+                record.volatile_matter_3 = (
+                    (
+                        (record.volatile_matter_cruciblew2_3
+                        - record.volatile_matter_cruciblew3_3)
+                        / (record.volatile_matter_cruciblew2_3
+                        - record.volatile_matter_cruciblew1_3)
+                    ) * 100
+                    - record.volatile_matter_driedw4_3
+                )
+                record.volatile_matter_3 = int(
+                    record.volatile_matter_3 * 100
+                ) / 100
 
-            rec.volatile_matter_4 = (
-                ((rec.volatile_matter_cruciblew2_4 - rec.volatile_matter_cruciblew3_4) *
-                (100 - rec.volatile_matter_driedw4_4)) /
-                (rec.volatile_matter_cruciblew2_4 - rec.volatile_matter_cruciblew1_4)
-            ) if (rec.volatile_matter_cruciblew2_4 - rec.volatile_matter_cruciblew1_4) else 0.0
+            if record.volatile_matter_cruciblew2_4 != record.volatile_matter_cruciblew1_4:
+                record.volatile_matter_4 = (
+                    (
+                        (record.volatile_matter_cruciblew2_4
+                        - record.volatile_matter_cruciblew3_4)
+                        / (record.volatile_matter_cruciblew2_4
+                        - record.volatile_matter_cruciblew1_4)
+                    ) * 100
+                    - record.volatile_matter_driedw4_4
+                )
+                record.volatile_matter_4 = int(
+                    record.volatile_matter_4 * 100
+                ) / 100
 
-            rec.volatile_matter_5 = (
-                ((rec.volatile_matter_cruciblew2_5 - rec.volatile_matter_cruciblew3_5) *
-                (100 - rec.volatile_matter_driedw4_5)) /
-                (rec.volatile_matter_cruciblew2_5 - rec.volatile_matter_cruciblew1_5)
-            ) if (rec.volatile_matter_cruciblew2_5 - rec.volatile_matter_cruciblew1_5) else 0.0
+            if record.volatile_matter_cruciblew2_5 != record.volatile_matter_cruciblew1_5:
+                record.volatile_matter_5 = (
+                    (
+                        (record.volatile_matter_cruciblew2_5
+                        - record.volatile_matter_cruciblew3_5)
+                        / (record.volatile_matter_cruciblew2_5
+                        - record.volatile_matter_cruciblew1_5)
+                    ) * 100
+                    - record.volatile_matter_driedw4_5
+                )
+                record.volatile_matter_5 = int(
+                    record.volatile_matter_5 * 100
+                ) / 100
+
 
     
 
