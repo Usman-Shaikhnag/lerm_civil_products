@@ -698,35 +698,35 @@ class ChemicalCoal(models.Model):
     carbon_name = fields.Char("Name",default="DETERMINATION OF Fixed Carbon")
     carbon_visible = fields.Boolean("DETERMINATION OF Fixed Carbon",compute="_compute_visible")
 
-    carbon_mosturem_1 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture", store=True)
-    carbon_mosturem_2 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture", store=True)
-    carbon_mosturem_3 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture", store=True)
-    carbon_mosturem_4 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture", store=True)
-    carbon_mosturem_5 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture", store=True)
+    carbon_mosturem_1 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture")
+    carbon_mosturem_2 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture")
+    carbon_mosturem_3 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture")
+    carbon_mosturem_4 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture")
+    carbon_mosturem_5 = fields.Float(string="Moisture % (M %)",compute="_compute_carbon_moisture")
 
     
 
-    carbon_vm_1 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm", store=True)
-    carbon_vm_2 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm", store=True)
-    carbon_vm_3 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm", store=True)
-    carbon_vm_4 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm", store=True)
-    carbon_vm_5 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm", store=True)
+    carbon_vm_1 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm")
+    carbon_vm_2 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm")
+    carbon_vm_3 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm")
+    carbon_vm_4 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm")
+    carbon_vm_5 = fields.Float(string="Volatile Matter % (VM %)",compute="_compute_carbon_vm")
 
-    carbon_asha_1 = fields.Float(string="Ash % (A %)",compute="_compute_carbon_ash", store=True)
-    carbon_asha_2 = fields.Float(string="Ash % (A %)",compute="_compute_carbon_ash", store=True)
-    carbon_asha_3 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash", store=True)
-    carbon_asha_4 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash", store=True)
-    carbon_asha_5 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash", store=True)
+    carbon_asha_1 = fields.Float(string="Ash % (A %)",compute="_compute_carbon_ash")
+    carbon_asha_2 = fields.Float(string="Ash % (A %)",compute="_compute_carbon_ash")
+    carbon_asha_3 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash")
+    carbon_asha_4 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash")
+    carbon_asha_5 = fields.Float(string="Ash % (A %)" ,compute="_compute_carbon_ash")
 
     
 
-    carbon_1 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon", store=True)
-    carbon_2 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon", store=True)
-    carbon_3 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon", store=True)
-    carbon_4 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon", store=True)
-    carbon_5 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon", store=True)
+    carbon_1 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon")
+    carbon_2 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon")
+    carbon_3 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon")
+    carbon_4 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon")
+    carbon_5 = fields.Float(string="Fixed Carbon %",  compute="_compute_fixed_carbon")
 
-    avg_carbon = fields.Float(string="Average Fixed Carbon % ",compute="_compute_avg_fc",store=True)
+    avg_carbon = fields.Float(string="Average Fixed Carbon % ",compute="_compute_avg_fc")
 
 
     @api.depends('carbon_1', 'carbon_2', 'carbon_3', 'carbon_4', 'carbon_5')
@@ -800,44 +800,76 @@ class ChemicalCoal(models.Model):
 
 
     @api.depends(
-    'carbon_mosturem_1','carbon_vm_1','carbon_asha_1',
-    'carbon_mosturem_2','carbon_vm_2','carbon_asha_2',
-    'carbon_mosturem_3','carbon_vm_3','carbon_asha_3',
-    'carbon_mosturem_4','carbon_vm_4','carbon_asha_4',
-    'carbon_mosturem_5','carbon_vm_5','carbon_asha_5',
+    'carbon_mosturem_1', 'carbon_vm_1', 'carbon_asha_1',
+    'carbon_mosturem_2', 'carbon_vm_2', 'carbon_asha_2',
+    'carbon_mosturem_3', 'carbon_vm_3', 'carbon_asha_3',
+    'carbon_mosturem_4', 'carbon_vm_4', 'carbon_asha_4',
+    'carbon_mosturem_5', 'carbon_vm_5', 'carbon_asha_5',
     )
     def _compute_fixed_carbon(self):
         for rec in self:
 
-            rec.carbon_1 = 100 - (
-                (rec.carbon_mosturem_1 or 0.0) +
-                (rec.carbon_vm_1 or 0.0) +
-                (rec.carbon_asha_1 or 0.0)
-            )
+            rec.carbon_1 = 0.0
+            rec.carbon_2 = 0.0
+            rec.carbon_3 = 0.0
+            rec.carbon_4 = 0.0
+            rec.carbon_5 = 0.0
 
-            rec.carbon_2 = 100 - (
-                (rec.carbon_mosturem_2 or 0.0) +
-                (rec.carbon_vm_2 or 0.0) +
-                (rec.carbon_asha_2 or 0.0)
-            )
+            if (
+                rec.carbon_mosturem_1
+                or rec.carbon_vm_1
+                or rec.carbon_asha_1
+            ):
+                rec.carbon_1 = 100 - (
+                    (rec.carbon_mosturem_1 or 0.0) +
+                    (rec.carbon_vm_1 or 0.0) +
+                    (rec.carbon_asha_1 or 0.0)
+                )
 
-            rec.carbon_3 = 100 - (
-                (rec.carbon_mosturem_3 or 0.0) +
-                (rec.carbon_vm_3 or 0.0) +
-                (rec.carbon_asha_3 or 0.0)
-            )
+            if (
+                rec.carbon_mosturem_2
+                or rec.carbon_vm_2
+                or rec.carbon_asha_2
+            ):
+                rec.carbon_2 = 100 - (
+                    (rec.carbon_mosturem_2 or 0.0) +
+                    (rec.carbon_vm_2 or 0.0) +
+                    (rec.carbon_asha_2 or 0.0)
+                )
 
-            rec.carbon_4 = 100 - (
-                (rec.carbon_mosturem_4 or 0.0) +
-                (rec.carbon_vm_4 or 0.0) +
-                (rec.carbon_asha_4 or 0.0)
-            )
+            if (
+                rec.carbon_mosturem_3
+                or rec.carbon_vm_3
+                or rec.carbon_asha_3
+            ):
+                rec.carbon_3 = 100 - (
+                    (rec.carbon_mosturem_3 or 0.0) +
+                    (rec.carbon_vm_3 or 0.0) +
+                    (rec.carbon_asha_3 or 0.0)
+                )
 
-            rec.carbon_5 = 100 - (
-                (rec.carbon_mosturem_5 or 0.0) +
-                (rec.carbon_vm_5 or 0.0) +
-                (rec.carbon_asha_5 or 0.0)
-            )
+            if (
+                rec.carbon_mosturem_4
+                or rec.carbon_vm_4
+                or rec.carbon_asha_4
+            ):
+                rec.carbon_4 = 100 - (
+                    (rec.carbon_mosturem_4 or 0.0) +
+                    (rec.carbon_vm_4 or 0.0) +
+                    (rec.carbon_asha_4 or 0.0)
+                )
+
+            if (
+                rec.carbon_mosturem_5
+                or rec.carbon_vm_5
+                or rec.carbon_asha_5
+            ):
+                rec.carbon_5 = 100 - (
+                    (rec.carbon_mosturem_5 or 0.0) +
+                    (rec.carbon_vm_5 or 0.0) +
+                    (rec.carbon_asha_5 or 0.0)
+                )
+
 
 
     avg_carbon_conformity = fields.Selection([
