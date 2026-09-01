@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_atc_compressive_strength_concrete_cube_view" model="ir.ui.view">
+        <field name="name">mechanical.act.compressive.form</field>
+        <field name="model">mechanical.act.compressive</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                 <div>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/>  
+                        <field name="eln_state" /> 
+                    </group>
+                       
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_of_casting"></label></td>
+                                    <td><field name="date_of_casting" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_of_testing"></label></td>
+                                    <td><field name="date_of_testing" class="blue-input" decoration-info="date_of_testing != 0" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="age_of_days"></label></td>
+                                    <td><field name="age_of_days" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="age_of_test"></label></td>
+                                    <td><field name="age_of_test" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="difference"></label></td>
+                                    <td><field name="difference" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                       
+                        </div>
+
+                        <field name="child_lines" nolabel="1" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name='sr_no' string="Sr. NO"/>
+                                <field name='id_mark' string="ID Mark/Location" class="blue-input" decoration-info="id_mark != 0"/>
+                                <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
+                                <field name='width' string="Width (mm)" class="blue-input" decoration-info="width != 0"/>
+                                <field name='area' string="Area (mm²)"/>
+                                
+                                <field name='weight_sample' string="Weight of Sample in kg" class="blue-input" decoration-info="weight_sample != 0"/>
+                                <field name="crushing_load" string="Crushing Load in kN" class="blue-input" decoration-info="crushing_load != 0"/>
+                                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
+                                <!-- <field name='average_tensile'/> -->
+                                
+                            </tree>
+                            
+                        </field> 
+
+                         <div class="d-flex gap-2" >
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_compr_strength"></label></td>
+                                    <td><field name="average_compr_strength"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="act_compressive"></label></td>
+                                    <td><field name="act_compressive"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                        <div >
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="confirmity"></label></td>
+                            <td><field name='confirmity'
+                               decoration-success="confirmity == 'pass'" 
+                               decoration-danger="confirmity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="nabl"></label></td>
+                            <td><field name='nabl'
+                               decoration-success="nabl == 'pass'" 
+                               decoration-danger="nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+
+                        <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+                   
+
+
+
+
+
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="mechanical_concrete_act_line_view" model="ir.ui.view">
+        <field name="name">mechanical.act.compressive.line.form</field>
+        <field name="model">mechanical.act.compressive.line</field>
+        <field name="arch" type="xml">
+            <form>
+            <group>
+            <group>
+            <field name='sr_no' string="Sr. NO"/>
+                <field name='id_mark' string="ID Mark/Location"/>
+                <field name='length' string="Length (mm)"/>
+                <field name='width' string="Width (mm)"/>
+                <field name='area' string="Area (mm²)"/>
+            </group>
+            <group>
+                <field name='weight_sample' string="Weight of Sample in kg"/>
+                <field name="crushing_load" string="Crushing Load in kN"/>
+                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
+                <field name="parent_id" invisible="1"/>
+            </group>
+            </group>
+                
+            </form>
+        </field>
+    </record>
+  
+
+
+    </data>
+</odoo>

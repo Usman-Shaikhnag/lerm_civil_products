@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="act_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Compressive Strength of Concrete Cube By ACT <span t-esc="eln.material.test_parameter "/> 
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+				 <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+				<tr>
+					<td colspan="4">Age in Days :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.age_of_test"/>
+						<span> Days</span>
+					</td>
+					<td colspan="8">Date of Casting :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.date_of_casting"/>
+					</td>
+				</tr>
+			</table>
+
+	
+
+				<!-- Compressive Strength  -->
+				<div style="margin-top:10px">
+					<!-- <div style="text-align:center;font-size:18px">
+						Compressive Strength of Concrete Cube By ACT
+					</div> -->
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="2">Sr no 
+							</td>
+							<td colspan="2">ID Mark
+							</td>
+                            <td colspan="2">Length 
+							</td>
+                            <td colspan="2">Width
+							</td>
+                            <td colspan="2">Area
+							</td>
+							<td colspan="4">Weight of Sample in kgs
+							</td>
+							<td colspan="3">Crushing Load in kN
+							</td>
+							<td colspan="3">Compressive Strength in N/mm2
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines" t-as="r">
+							<td colspan="2">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['id_mark']"/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['length']"/>
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['width']"/>
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['area']"/>
+							</td>
+                            
+
+							<td colspan="4">
+								<span t-esc="r['weight_sample']"/>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['crushing_load']"/>
+							</td>
+                            <td colspan="3">
+								<span t-esc="r['compressive_strength']"  t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Compressive Strength Avg. N/mm² Ra:
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.average_compr_strength"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">ACT Compressive  N/mm² 8.09 + 1.64 * Ra:
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.act_compressive"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+				</div>
+
+				   <!-- authorizeRowDataSheet -->
+                    <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checked_by_signature_datasheet">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+			</t>
+		</t>
+	</template>
+</odoo>
