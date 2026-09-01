@@ -19,11 +19,34 @@
                                         />
                             </group>
                     </page>
+                    <page name="lerm_access_rights" string="LERM Access Rights"
+                          groups="lerm_civil.kes_admin_access_group">
+                        <group>
+                            <group string="Security Groups">
+                                <field name="lerm_group_ids" widget="many2many_tags"
+                                       nolabel="1" colspan="2"
+                                       options="{'color_field': 'color', 'no_create': True}"
+                                       invisible="not user_id"/>
+                                <div invisible="user_id"
+                                     colspan="2">
+                                    <p class="text-muted">
+                                        <i class="fa fa-info-circle"/>
+                                        This employee has no linked user account.
+                                        Please set the <b>Related User</b> field
+                                        in the HR Settings tab first.
+                                    </p>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
                     
                 </xpath>
                 <xpath expr="//field[@name='work_email']" position="after">
                     <field name="lab_ids" widget="many2many_tags"/>
                     <field name="company_ids" widget="many2many_tags"/>
+                    <field name="is_support_team"
+                           groups="lerm_civil.lerm_software_support_group"
+                           widget="boolean_toggle"/>
                 </xpath>
 
                 <xpath expr="//field[@name='department_id']" position="attributes">

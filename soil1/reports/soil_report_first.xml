@@ -79,10 +79,12 @@
 
             
 
-			<t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/>
+			<!-- <t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/> -->
+            <t t-set="pl_vals" t-value="data.pl_child_lines or []"/>
 			<t t-set="pl_index" t-value="0"/>
 			
-			<t t-set="sl_vals" t-value="[o.shrinkage_avg for o in (data.sl_child_lines or []) if o.shrinkage_avg]"/>
+			<!-- <t t-set="sl_vals" t-value="[o.shrinkage_avg for o in (data.sl_child_lines or []) if o.shrinkage_avg]"/> -->
+            <t t-set="sl_vals" t-value="data.sl_child_lines or []"/>
 			<t t-set="sl_index" t-value="0"/>
 
 			<t t-set="bh_vals" t-value="[g.bh_id for g in (data.gsa_child_lines or []) if g.bh_id]"/>
