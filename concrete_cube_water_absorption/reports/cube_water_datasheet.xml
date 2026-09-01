@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="cube_absorption_datasheet">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+				<div style="text-align:center;font-size:18px">
+                    Concrete Cube Water Absorption 
+					 <span>
+						<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2002fc5d-b01c-47c1-a37c-332e37a412a7')]).parameter_table" t-as="parameter">
+							<t t-if="parameter.grade.id == eln.grade_id.id">
+								<span t-field="parameter.specification"/>
+							</t>
+						</t>
+					</span>
+					<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','eb26db03-17c1-48ac-8462-9671e4d3d09f')]).parameter_name"/> -->
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<!-- <td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.witness_name"/>
+								</td> -->
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+						</table>
+						<div style="text-align:center;font-size:18px;margin-top:25px">
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2002fc5d-b01c-47c1-a37c-332e37a412a7')]).parameter_name"/>
+							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>
+						</div>
+					</div>
+						<table style="margin-top:10px">
+				
+							
+							<tr>
+								<td colspan="6">Date of Casting  :  <span t-field="data.date_of_casting"></span>
+								</td>
+								<!-- <td colspan="6">Date of Testing  :  <span t-field="data.date_of_testing"></span>
+								</td> -->
+								<td colspan="6">Age of Test, Days :  <span t-field="data.age_of_test"></span>
+								</td>
+							</tr>
+							<!-- <tr cols="12">
+								<td colspan="6">Age of Test, Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.age_of_test"/>
+								</td>
+							</tr> -->
+						</table>
+						<table style="margin-top:30px;">
+						<thead>
+							<tr>
+								<th style="text-align: center;"> 
+									<span style="font-weight: bold;">
+										Sr. No
+									</span>
+								</th>
+								<th	style="text-align: center;">
+									<span style="font-weight: bold;">
+										Sample ID	
+									</span>
+								</th>
+								
+								<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Oven Dry Weight (kg)	
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Weight of Immersion in water after 30 Minutes (kg)	
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Water Absorption  %	
+									</span>
+								</th>
+								
+								
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td style="text-align: center;">
+									<span t-esc="r.sr_no"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.sample_id"/>
+								</td>
+								
+								<td style="text-align: center;">
+									<span t-esc="r.oven_dry_weight" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.weight_immersion" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.water_absorption_percent" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								
+							</tr>
+						</tbody>
+					</table>
+
+					<div style="margin-top:10px">
+						<table>
+							<tr>
+								<td colspan="12" >
+								<span style="font-weight: bold;">Average Water Absorption %	 :</span>
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.average_concrete_cube_water" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                           <tr>
+								<td colspan="12">
+									<span style="font-weight: bold;">Correction Factor As Per Graph :</span>
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.correction_factor"/>
+								</td>
+							</tr>
+                            <tr>
+								<td colspan="12" >
+								   <span style="font-weight: bold;">Water Absorption after correction Factor :</span><![CDATA[&nbsp;]]>
+									<span t-field="data.water_correction_factor"  t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div style="text-align:center;margin-top:25px">
+						......End of Report......
+					</div> -->
+
+					
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

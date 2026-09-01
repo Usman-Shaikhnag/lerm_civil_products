@@ -504,6 +504,46 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="act_datasheet_action" model="ir.actions.report">
+    <field name="name">ACT DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">act_concrete_cube.act_datasheet</field>
+    <field name="report_file">act_concrete_cube.act_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="act_report_action" model="ir.actions.report">
+    <field name="name">Act Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">act_concrete_cube.act_report</field>
+    <field name="report_file">act_concrete_cube.act_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="concrete_splite_tensile_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete Split Tensile Strength Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_split_tensile.concrete_splite_tensile_datasheet</field>
+    <field name="report_file">concrete_split_tensile.concrete_splite_tensile_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="concrete_splite_tensile_report_action" model="ir.actions.report">
+    <field name="name">Concrete Split Tensile Strength Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_split_tensile.concrete_splite_tensile_report</field>
+    <field name="report_file">concrete_split_tensile.concrete_splite_tensile_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="door_datasheet_action" model="ir.actions.report">
     <field name="name">Door DataSheet </field>
     <field name="model">lerm.eln</field>
@@ -526,7 +566,7 @@
 </record>
 
 <record id="drying_shrinkage_repprt_action" model="ir.actions.report">
-    <field name="name"> Drying Shrinkage Report </field>
+    <field name="name">Drying Shrinkage Report </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_drying_shrinkage.drying_shrinkage_repprt</field>
@@ -536,7 +576,7 @@
     <field name="binding_type">report</field>
 </record>
 <record id="drying_shrinkage_datasheet_action" model="ir.actions.report">
-    <field name="name"> Drying Shrinkage DataSheet </field>
+    <field name="name">Drying Shrinkage DataSheet </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_drying_shrinkage.drying_shrinkage_datasheet</field>
@@ -1162,12 +1202,12 @@
 </record>
 
 
-<record id="concrete_beam_report_action" model="ir.actions.report">
+<record id="fextural_strength_report_action" model="ir.actions.report">
         <field name="name">Concrete Beam Report</field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">concrete_flexural_strength.lerm_cocncrete_beam_report</field>
-        <field name="report_file">concrete_flexural_strength.lerm_cocncrete_beam_report</field>
+        <field name="report_name">concrete_flexural_strength.fextural_strength_report</field>
+        <field name="report_file">concrete_flexural_strength.fextural_strength_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <!-- <field name="binding_model_id" eval="False"/> -->
         <field name="binding_type">report</field>
@@ -1433,6 +1473,15 @@
     <field name="binding_type">report</field>
 </record>
 
+    <record id="ev2_plate_load_test_report_action" model="ir.actions.report">
+        <field name="name">Ev2 Plate Load Test Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ev2.ev2_plate_load_test_report</field>
+        <field name="report_file">ev2.ev2_plate_load_test_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
 
 <record id="coupler_slip_test_datasheet_action" model="ir.actions.report">
     <field name="name">Coupler Slip Test DataSheet</field>
@@ -1450,6 +1499,27 @@
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">coupler_slip_test.coupler_slip_report</field>
     <field name="report_file">coupler_slip_test.coupler_slip_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="cube_absorption_datasheet_action" model="ir.actions.report">
+    <field name="name">Cube Water Absorption DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_water_absorption.cube_absorption_datasheet</field>
+    <field name="report_file">concrete_cube_water_absorption.cube_absorption_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="cube_absorption_report_action" model="ir.actions.report">
+    <field name="name">Cube Water Absorption Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube_water_absorption.cube_absorption_report</field>
+    <field name="report_file">concrete_cube_water_absorption.cube_absorption_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>

@@ -16,7 +16,7 @@ class NaturalBuildingStone(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-    notes_id = fields.One2many('mechanical.precast.kerb.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.natural.bulding.stone.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
