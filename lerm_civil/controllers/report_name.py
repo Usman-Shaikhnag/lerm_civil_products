@@ -895,7 +895,7 @@ class ReportDownloadControllerPaver(http.Controller):
 
 class ReportDownloadControllerSoil1(http.Controller):
     @http.route(['/download_report/soil1/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
-    def download_report_nabl_paver(self, eln_id, **kw):
+    def download_report_nabl_soil1(self, eln_id, **kw):
         try:
             eln = request.env['lerm.eln'].sudo().browse(eln_id)
             if not eln.exists():
@@ -921,7 +921,7 @@ class ReportDownloadControllerSoil1(http.Controller):
             )
 
     @http.route(['/download_report/soil1/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
-    def download_report_nonnabl_paver(self, eln_id, **kw):
+    def download_report_nonnabl_soil1(self, eln_id, **kw):
         try:
             eln = request.env['lerm.eln'].sudo().browse(eln_id)
             if not eln.exists():
