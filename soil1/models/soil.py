@@ -9070,6 +9070,17 @@ class LLLine(models.Model):
     blows = fields.Float(string="No. of Blows", digits=(10, 0))
     water_content = fields.Float(string="Water Content (%)", digits=(16, 2))
 
+    plasticity = fields.Selection(
+    [
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+        ('na', '^'),
+    ],
+    string='Sample Type',
+    default='plastic',
+    required=True,
+)
+
     
 
 
