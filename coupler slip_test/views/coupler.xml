@@ -3,8 +3,8 @@
     <data>
 
     <record id="mechanical_coupler_form" model="ir.ui.view">
-        <field name="name">mechanical.coupler.form</field>
-        <field name="model">mechanical.coupler</field>
+        <field name="name">coupler.slip.test.form</field>
+        <field name="model">coupler.slip.test</field>
         <field name="arch" type="xml">
             <form create="false"> 
 
@@ -14,7 +14,7 @@
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
-                        <field name="size_id"/>
+                        <field name="size_id" readonly="1"/>
                         <field name="eln_state" />
                     </group>
 
@@ -59,34 +59,23 @@
                                         <td><field name="gauge_length"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="elongated_gauge_length"></label></td>
-                                        <td><field name="elongated_gauge_length"/></td>
-                                    </tr>
-                                    <tr>
                                         <td><label for="ultimate_load"></label></td>
                                         <td><field name="ultimate_load"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="distance"></label></td>
-                                        <td><field name="distance"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="ult_tens_strgth"></label></td>
-                                        <td><field name="ult_tens_strgth"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="total_elongation"></label></td>
-                                        <td><field name="total_elongation"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="location_of_failure"></label></td>
-                                        <td><field name="location_of_failure"/></td>
                                     </tr>
                                     <tr>
                                         <td><label for="result_test"></label></td>
                                         <td><field name="result_test"/></td>
                                     </tr>
-                                   
+                                    <tr>
+                                        <td><label for="slip_strength"></label></td>
+                                        <td><field name="slip_strength"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ext_at_20"></label></td>
+                                        <td><field name="ext_at_20"/></td>
+                                    </tr>
+                                    
+
                                 </tbody>
                             </table>
 
@@ -128,6 +117,25 @@
                                             <field name="total_elongation_conformity" string="Elongation Confirmity"
                                                 decoration-success="total_elongation_conformity == 'pass'"
                                                 decoration-danger="total_elongation_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr invisible="not slip_test_visible">
+                                        <td><label for="slip_strength_nabl" string="Slip Strength Requirement"></label></td>
+                                        <td><field name="slip_strength" string="Slip Strength Value" readonly="1"/></td>
+                                        <td><label for="slip_strength_nabl"></label></td>
+                                        <td>
+                                            <field name="slip_strength_nabl" string="Slip NABL"
+                                                decoration-success="slip_strength_nabl == 'pass'"
+                                                decoration-danger="slip_strength_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="slip_strength_conformity"></label></td>
+                                        <td>
+                                            <field name="slip_strength_conformity" string="Slip Conformity"
+                                                decoration-success="slip_strength_conformity == 'pass'"
+                                                decoration-danger="slip_strength_conformity == 'fail'"
                                                 readonly="1"/>
                                         </td>
                                     </tr>
