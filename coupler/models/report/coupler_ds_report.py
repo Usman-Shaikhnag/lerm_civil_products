@@ -7,7 +7,7 @@ from lxml import etree
 
 
 class CouplerDatasheet(models.AbstractModel):
-    _name = 'report.coupler.coupler_datasheet'
+    _name = 'report.coupler_slip_test.coupler_slip_datasheet'
     _description = 'Coupler DataSheet'
     
     @api.model
@@ -39,7 +39,7 @@ class CouplerDatasheet(models.AbstractModel):
 
 
 class BrickReport(models.AbstractModel):
-    _name = 'report.coupler.coupler_report'
+    _name = 'report.coupler_slip_test.coupler_slip_report'
     _description = 'Coupler Report'
     
     @api.model

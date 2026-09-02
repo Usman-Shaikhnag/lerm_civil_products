@@ -154,6 +154,12 @@
 										
 									</span>
 								</th>
+
+								<th style="text-align: center;font-weight: bold;" t-if="eln.conformity">
+									<span>
+										Conformity
+									</span>
+								</th>
 							</tr>
 						</thead>
 					<tbody>
@@ -210,6 +216,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.accelerated_pozzolanic_conformity and microsilica.accelerated_pozzolanic_conformity.lower() == 'pass' else ('red' if microsilica.accelerated_pozzolanic_conformity and microsilica.accelerated_pozzolanic_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.accelerated_pozzolanic_conformity"/>
+											
+								</td>
 						</tr>
 
 
@@ -263,6 +275,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.accelerated_pozzolanic_conformity and microsilica.accelerated_pozzolanic_conformity.lower() == 'pass' else ('red' if microsilica.accelerated_pozzolanic_conformity and microsilica.accelerated_pozzolanic_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.accelerated_pozzolanic_conformity"/>
+											
+								</td>
 						</tr>
 							<!--2 Oversize % Retained on 45 Micron wet sieve -->
 						<tr t-if="microsilica.oversize_retain_visible and (microsilica.oversize_retained_nabl == 'pass' and nabl or (microsilica.oversize_retained_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
@@ -325,6 +343,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.oversize_retained_conformity and microsilica.oversize_retained_conformity.lower() == 'pass' else ('red' if microsilica.oversize_retained_conformity and microsilica.oversize_retained_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.oversize_retained_conformity"/>
+											
+								</td>
 						</tr>
 
 						<tr t-if="microsilica.oversize_retain_visible and fromEln">
@@ -387,6 +411,11 @@
 									</t>
 								</t>
 							</td>
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.oversize_retained_conformity and microsilica.oversize_retained_conformity.lower() == 'pass' else ('red' if microsilica.oversize_retained_conformity and microsilica.oversize_retained_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.oversize_retained_conformity"/>
+											
+								</td>
 						</tr>
 
 
@@ -442,6 +471,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.specific_gravity_conformity and microsilica.specific_gravity_conformity.lower() == 'pass' else ('red' if microsilica.specific_gravity_conformity and microsilica.specific_gravity_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.specific_gravity_conformity"/>
+											
+								</td>
 							
 						</tr>
 
@@ -496,6 +531,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.specific_gravity_conformity and microsilica.specific_gravity_conformity.lower() == 'pass' else ('red' if microsilica.specific_gravity_conformity and microsilica.specific_gravity_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.specific_gravity_conformity"/>
+											
+								</td>
 							
 						</tr>
 							<!--4 Compressive Strength -->
@@ -584,6 +625,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.comp_strngth_7_days_conformity and microsilica.comp_strngth_7_days_conformity.lower() == 'pass' else ('red' if microsilica.comp_strngth_7_days_conformity and microsilica.comp_strngth_7_days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.comp_strngth_7_days_conformity"/>
+											
+								</td>
 						</tr>
 
 						<tr t-if="microsilica.compressive_strength_visible and fromEln">	
@@ -671,6 +718,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.comp_strngth_7_days_conformity and microsilica.comp_strngth_7_days_conformity.lower() == 'pass' else ('red' if microsilica.comp_strngth_7_days_conformity and microsilica.comp_strngth_7_days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.comp_strngth_7_days_conformity"/>
+											
+								</td>
 						</tr>
 
 							<!--5 Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
@@ -734,6 +787,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.oversize_percent_retain_conformity and microsilica.oversize_percent_retain_conformity.lower() == 'pass' else ('red' if microsilica.oversize_percent_retain_conformity and microsilica.oversize_percent_retain_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.oversize_percent_retain_conformity"/>
+											
+								</td>
 						</tr>
 
 						<tr t-if="microsilica.oversize_percent_retain_visible and fromEln">
@@ -796,6 +855,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.oversize_percent_retain_conformity and microsilica.oversize_percent_retain_conformity.lower() == 'pass' else ('red' if microsilica.oversize_percent_retain_conformity and microsilica.oversize_percent_retain_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.oversize_percent_retain_conformity"/>
+											
+								</td>
 						</tr>
 
 							<!--6 Dry Loose Bulk Density -->
@@ -859,6 +924,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'pass' else ('red' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.bulk_density_conformity"/>
+											
+								</td>
 						</tr>
 
 						<tr t-if="microsilica.bulk_density_visible and fromEln">
@@ -921,6 +992,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<span t-attf-style="color: #{'green' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'pass' else ('red' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.bulk_density_conformity"/>
+											
+								</td>
 						</tr>
 
 						<!--  -->
@@ -960,6 +1037,12 @@
 									</t>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
+									
+								<!-- <span t-attf-style="color: #{'green' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'pass' else ('red' if microsilica.bulk_density_conformity and microsilica.bulk_density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="microsilica.bulk_density_conformity"/> -->
+											
+								</td>
 						</tr>
 
 
@@ -1004,30 +1087,30 @@
 
 					 <!-- Remarks Section -->
 
-                    <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a. The information marked with an # received from customer<br/><br/>
-							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Knack. -->
-
+                    <div style="margin-top:10px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
+									<ul>
+									   
 										<t t-if="microsilica.notes_id">
-										<t t-foreach="microsilica.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+											<t t-foreach="microsilica.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
 										</t>
-									</t>
-								</td>
-							</tr>
-							</table  >
-						</div>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+				</div>
+
 
 
 
@@ -1064,9 +1147,9 @@
 						</div>
 
 						<div>
-						<div>
+						<!-- <div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
+						</div> -->
 						<div style="padding-top:5px">
 							Format No. <span t-esc="eln.material.test_format_no"/>
 						</div>

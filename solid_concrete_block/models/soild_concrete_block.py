@@ -405,8 +405,194 @@ class SolidConcreteBlock(models.Model):
  
     average_length = fields.Float(string="Average Length", compute="_compute_average_length",digits=(16,1))
 
+
+    average_length_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
+
+
+
+    @api.depends('average_length','eln_ref','grade')
+    def _compute_average_length_conformity(self):
+        
+        for record in self:
+            record.average_length_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','085e1df4-a0fd-40bc-ac92-b6118328c2e8')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','085e1df4-a0fd-40bc-ac92-b6118328c2e8')]).parameter_table
+            for material in materials:
+
+                if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_length_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_length - record.average_length*mu_value
+                    upper = record.average_length + record.average_length*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_length_conformity = 'pass'
+                        break
+                    else:
+                        record.average_length_conformity = 'fail'
+
+    average_length_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Length NABL", compute="_compute_average_length_nabl", store=True)
+
+    @api.depends('average_length','eln_ref','grade')
+    def _compute_average_length_nabl(self):
+        
+        for record in self:
+            record.average_length_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','085e1df4-a0fd-40bc-ac92-b6118328c2e8')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','085e1df4-a0fd-40bc-ac92-b6118328c2e8')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_length - record.average_length*mu_value
+                    upper = record.average_length + record.average_length*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_length_nabl = 'pass'
+                        break
+                    else:
+                        record.average_length_nabl = 'fail'
+
     avreage_height2 = fields.Float(string="Average Thickness",compute="_compute_average_hight", digits=(16, 1))
+
+    avreage_height2_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Thickness Conformity", compute="_compute_avreage_height2_conformity", store=True)
+
+
+
+    @api.depends('avreage_height2','eln_ref','grade')
+    def _compute_avreage_height2_conformity(self):
+        
+        for record in self:
+            record.avreage_height2_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e237cad-9411-4b06-b9f3-26e96747a582')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e237cad-9411-4b06-b9f3-26e96747a582')]).parameter_table
+            for material in materials:
+
+                if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.avreage_height2_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avreage_height2 - record.avreage_height2*mu_value
+                    upper = record.avreage_height2 + record.avreage_height2*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avreage_height2_conformity = 'pass'
+                        break
+                    else:
+                        record.avreage_height2_conformity = 'fail'
+
+    avreage_height2_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Thickness NABL", compute="_compute_avreage_height2_nabl", store=True)
+
+    @api.depends('avreage_height2','eln_ref','grade')
+    def _compute_avreage_height2_nabl(self):
+        
+        for record in self:
+            record.avreage_height2_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e237cad-9411-4b06-b9f3-26e96747a582')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e237cad-9411-4b06-b9f3-26e96747a582')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avreage_height2 - record.avreage_height2*mu_value
+                    upper = record.avreage_height2 + record.avreage_height2*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avreage_height2_nabl = 'pass'
+                        break
+                    else:
+                        record.avreage_height2_nabl = 'fail'
+
+
     average_width = fields.Float(string="Average Width", compute="_compute_average_width",digits=(16,1))
+
+
+    average_width_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
+
+
+
+    @api.depends('average_width','eln_ref','grade')
+    def _compute_average_width_conformity(self):
+        
+        for record in self:
+            record.average_width_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5630893a-6e66-4825-8fbb-f92c897025d3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5630893a-6e66-4825-8fbb-f92c897025d3')]).parameter_table
+            for material in materials:
+
+                if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_width_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_width - record.average_width*mu_value
+                    upper = record.average_width + record.average_width*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_width_conformity = 'pass'
+                        break
+                    else:
+                        record.average_width_conformity = 'fail'
+
+    average_width_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Width NABL", compute="_compute_average_width_nabl", store=True)
+
+    @api.depends('average_width','eln_ref','grade')
+    def _compute_average_width_nabl(self):
+        
+        for record in self:
+            record.average_width_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5630893a-6e66-4825-8fbb-f92c897025d3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5630893a-6e66-4825-8fbb-f92c897025d3')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_width - record.average_width*mu_value
+                    upper = record.average_width + record.average_width*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_width_nabl = 'pass'
+                        break
+                    else:
+                        record.average_width_nabl = 'fail'
+
+
     
 
     @api.depends('dimension_child_lines.length')
@@ -634,11 +820,11 @@ class SolidConcreteBlock(models.Model):
             if result.parameter.internal_id == '085e1df4-a0fd-40bc-ac92-b6118328c2e8':
                 result.result_char = round(self.average_length,2)
                 result.calculated = True
-                # if self.water_absorption_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                if self.average_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
 
 
@@ -646,11 +832,11 @@ class SolidConcreteBlock(models.Model):
             if result.parameter.internal_id == '8e237cad-9411-4b06-b9f3-26e96747a582':
                 result.result_char = round(self.avreage_height2,2)
                 result.calculated = True
-                # if self.water_absorption_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                if self.avreage_height2_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
 
 
@@ -658,11 +844,11 @@ class SolidConcreteBlock(models.Model):
             if result.parameter.internal_id == '5630893a-6e66-4825-8fbb-f92c897025d3':
                 result.result_char = round(self.average_width,2)
                 result.calculated = True
-                # if self.water_absorption_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                if self.average_width_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
             
 
 

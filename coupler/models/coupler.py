@@ -21,7 +21,7 @@ class MechanicalCoupler(models.Model):
     elongated_gauge_length = fields.Float(string="Gauge Length  at Maximum Force, mm")
     ultimate_load = fields.Float(string="Ultimate Tensile Load, KN")
     distance = fields.Float(string="Distance of fracture From center of Coupler")
-    ult_tens_strgth = fields.Float(string="Ultimate Tensile Strength, N/mm2",compute="_compute_ult_tens_strgth",store=True)
+    ult_tens_strgth = fields.Float(string="Static Tensile Strength, N/mm2",compute="_compute_ult_tens_strgth",store=True)
     total_elongation = fields.Float(string="Total Elongation at maximum force(%)",compute="_compute_elongation_percent",store=True)
  
     # fracture = fields.Char("Fracture (Within Gauge Length)",default="W.G.L")
@@ -42,16 +42,6 @@ class MechanicalCoupler(models.Model):
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
-
-    @api.depends('sample_parameters')
-    def _compute_visible(self):
-        for record in self:
-            record.slip_test_visible = False
-            for sample in record.sample_parameters:
-                if sample.internal_id == 'b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6':
-                    record.slip_test_visible = True
-
-    
 
 
     # @api.depends('diameter')

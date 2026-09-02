@@ -226,7 +226,7 @@
 								</td>
 							</tr>
 
-							<tr t-if="data.slip_test_visible and (data.slip_strength_nabl == 'pass' and nabl or (data.slip_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr>
 								<td >
                                     <span t-field="env['lerm.parameter.master'].search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_name"/>
                                 </td>
@@ -272,11 +272,7 @@
 								<td >
                                     <span t-field="env['lerm.parameter.master'].search([('internal_id','=','39689dfe-47ac-47f8-9a4d-4ce937d60500')]).parameter_name"/>
                                 </td>
-								<td style="text-align: center; vertical-align: middle;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','39689dfe-47ac-47f8-9a4d-4ce937d60500')]).unit.name"/>
-									</span>
-								</td>
+								
 								<td style="text-align: center;">
 									<span t-esc="data.result_test"/>
 								</td>
