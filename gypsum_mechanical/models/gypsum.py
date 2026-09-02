@@ -351,7 +351,7 @@ class GypsumMechanical(models.Model):
 
 
 
-    @api.depends('tests')
+    @api.depends('tests', 'sample_parameters')
     def _compute_visible(self):
         normal_consistency_test = self.env['mechanical.gypsum.test'].sudo().search([('name', '=', 'Normal Consistency')])
         setting_time_test = self.env['mechanical.gypsum.test'].sudo().search([('name', '=', 'Setting Time')])

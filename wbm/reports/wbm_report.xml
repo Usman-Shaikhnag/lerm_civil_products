@@ -593,12 +593,13 @@
 								</td>
 								<td colspan="2" style="text-align: center;">
 									<div>
-										<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
-										<t t-if="plasticity_index_float != 0.0">
-											<span t-esc="data.remarks_plastic if plasticity_index_float == 0.0 else plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
+										<t t-set="use_remark" t-value="data.remarks_plasticity_index or False" />
+										<t t-if="use_remark">
+											<span t-esc="use_remark" />
 										</t>
 										<t t-else="">
-											<span t-esc="data.remarks_plastic if plasticity_index_float == 0.0 else plasticity_index_float" />
+											<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
+											<span t-esc="plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
 										</t>
 									</div>
 								</td>
@@ -646,12 +647,13 @@
 								</td>
 								<td colspan="2" style="text-align: center;">
 									<div>
-										<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
-										<t t-if="plasticity_index_float != 46.14">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 46.14 else plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
+										<t t-set="use_remark" t-value="data.remarks_plasticity_index or False" />
+										<t t-if="use_remark">
+											<span t-esc="use_remark" />
 										</t>
 										<t t-else="">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 46.14 else plasticity_index_float" />
+											<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
+											<span t-esc="plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
 										</t>
 									</div>
 								</td>
