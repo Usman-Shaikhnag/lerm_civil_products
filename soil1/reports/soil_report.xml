@@ -62,10 +62,9 @@
 								<td colspan="3"><strong>Project Name</strong>: </td>
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-								<td colspan="3"><strong>Date of Report</strong>: </td>
-									
+								<td colspan="3"><strong>Starting Date</strong>: </td>
 								<td colspan="3">
-								<span t-field="o.end_date" style="margin-right:10px;"/> 		
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
 								</td>
 							
 							</tr>
@@ -82,9 +81,10 @@
 								
 								
 
-								<td colspan="3"><strong>Starting Date</strong>: </td>
+								
+								<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
-							        <span t-field="o.start_date" style="margin-right:10px;"/>
+								<span t-field="o.end_date" />
 								</td>
 							
 							</tr>
@@ -97,9 +97,11 @@
 								<span>DS/SPT/UDS</span>
 								</td>
 
-							<td colspan="3"><strong>Completion Date</strong>: </td>
+							
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
 								<td colspan="3">
-								<span t-field="o.end_date" />
+								<span t-field="o.end_date" style="margin-right:10px;"/> 		
 								</td>
 						</tr>
 
@@ -256,14 +258,38 @@
 				 <th colspan="2" style="text-align:center;">Bulk Density</th>
 				  <th colspan="1" style="text-align:center;">Natural Moisture Content</th>
                 <!-- <th colspan="3"> FSI / NMC</th> -->
-                <th colspan="2" style="text-align:center;"> Proctor⁺</th>
-                <th colspan="2" style="text-align:center;" >UCS</th>
-                <th colspan="2" style="text-align:center;">Direct Shear⁺</th>
-                <th colspan="2" style="text-align:center;">Triaxial Test (UU)⁺</th>
-                <th colspan="2" style="text-align:center;">Consolidation⁺</th>
-                <th colspan="1" style="text-align:center;">California Bearing Ratio⁺</th>
-                <th colspan="1" style="text-align:center;">Swelling Pressure⁺</th>
+
+				<t t-if="data.soil_light_heavy_visible">
+                  <th colspan="2" style="text-align:center;"> Proctor⁺</th>
+				</t>
+
+				<t t-if="data.ucs_visible">
+                  <th colspan="2" style="text-align:center;" >UCS</th>
+				</t>
+
+				<t t-if="data.direct_shear_visible">
+                  <th colspan="2" style="text-align:center;">Direct Shear⁺</th>
+				</t>
+
+				<t t-if="data.triaxial_test_visible">
+                  <th colspan="2" style="text-align:center;">Triaxial Test (UU)⁺</th>
+				</t>
+
+				<t t-if="data.consolidation_visible">
+                  <th colspan="2" style="text-align:center;">Consolidation⁺</th>
+				</t>
+
+                <t t-if="data.soil_visible">
+				  <th colspan="1" style="text-align:center;">California Bearing Ratio⁺</th>
+				</t>
+
+				<t t-if="data.swelling_pressure_visible">
+                   <th colspan="1" style="text-align:center;">Swelling Pressure⁺</th>
+				</t>
+
+				<t t-if="data.permeability_falling_visible">
                 <th colspan="1" style="text-align:center;">Permeability</th>
+				</t>
               </tr>
               <tr>
                 <th style="text-align:center;">G</th>
@@ -278,18 +304,34 @@
 				<th style="text-align:center;" colspan="2">FSI</th>
 				<th style="text-align:center;" colspan="2">γb</th>
 				<th style="text-align:center;">NMC</th>
-                <th style="text-align:center;">MDD</th>
-				<th style="text-align:center;">OMC</th>
-				<th style="text-align:center;" colspan="2">qᵤ</th>
-                <th style="text-align:center;">C</th>
-				<th style="text-align:center;">ϕ</th>
-                <th style="text-align:center;">C</th>
-				<th style="text-align:center;">ϕ</th>
-                <th style="text-align:center;">Pc</th>
-				<th style="text-align:center;">Cc</th>
-				<th style="text-align:center;">CBR</th>
-				<th style="text-align:center;"></th>
-				<th style="text-align:center;">k</th>
+				<t t-if="data.soil_light_heavy_visible">
+                  <th style="text-align:center;">MDD</th>
+			  	  <th style="text-align:center;">OMC</th>
+				</t>
+				<t t-if="data.ucs_visible">
+				  <th style="text-align:center;" colspan="2">qᵤ</th>
+				</t>
+				<t t-if="data.direct_shear_visible">
+                  <th style="text-align:center;">C</th>
+				  <th style="text-align:center;">ϕ</th>
+				</t>
+				<t t-if="data.triaxial_test_visible">
+                  <th style="text-align:center;">C</th>
+				  <th style="text-align:center;">ϕ</th>
+				</t>
+				<t t-if="data.consolidation_visible">
+                  <th style="text-align:center;">Pc</th>
+				  <th style="text-align:center;">Cc</th>
+				</t>
+				<t t-if="data.soil_visible">
+				  <th style="text-align:center;">CBR</th>
+				</t>
+				<t t-if="data.swelling_pressure_visible">
+				  <th style="text-align:center;"></th>
+				</t>
+				<t t-if="data.permeability_falling_visible">
+				 <th style="text-align:center;">k</th>
+				</t>
               </tr>
 			  <tr>
 			  <!-- GSA -->
@@ -356,37 +398,48 @@
 				</span>
 			</td>
 			<!-- proctor MDD -->
+			<t t-if="data.soil_light_heavy_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','jkt56888hhhllly1-ca64-44dd-b0ae-23120147g')]).unit.name"/>
 				</span>
 			</td>
+			</t>
+			<t t-if="data.soil_light_heavy_visible">
 			<!-- OMC -->
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).unit.name"/>
 				</span>
 			</td>
+			</t>
 			<!-- UCS -->
+			<t t-if="data.ucs_visible">
 			<td style="text-align:center;" colspan="2">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).unit.name"/>
 				</span>
 			</td>
+			</t>
 			 <!-- Direct Shear -->
+			 <t t-if="data.direct_shear_visible">
 			 <td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk')]).unit.name"/>
 				</span>
 			</td>
+	    	</t>
 
+			<t t-if="data.direct_shear_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).unit.name"/>
 				</span> 
 			</td>
+			</t>
 
 			<!-- Traxial  -->
+			<t t-if="data.triaxial_test_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-78888921457r')]).unit.name"/>
@@ -398,7 +451,9 @@
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).unit.name"/>
 				</span> 
 			</td>
+			</t>
 			<!-- Consolidation -->
+			<t t-if="data.consolidation_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145888hhhllly1-ca64-44dd-b0ae-2578886oopp')]).unit.name"/>
@@ -410,25 +465,32 @@
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).unit.name"/>
 				</span> 
 			</td>
+			</t>
 
 			<!-- CBR -->
+			<t t-if="data.soil_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).unit.name"/>
 				</span>
 			</td>
+			</t>
 			<!-- Swelling -->
+			<t t-if="data.swelling_pressure_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).unit.name"/>
 				</span>
 			</td>
+			</t>
 			<!-- Permability -->
+			 <t t-if="data.permeability_falling_visible">
 			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).unit.name"/>
 				</span>
 			</td>
+			</t>
 			
 			  </tr>
 			 
@@ -585,6 +647,7 @@
 						</t>
 					</th>
 					<!-- Proctor -->
+					<t t-if="data.soil_light_heavy_visible">
 					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -609,7 +672,9 @@
 						</t>
 					
 					</th>
-					<!-- UCS -->
+					</t>
+                    <!-- UCS -->
+                    <t t-if="data.ucs_visible">
 					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -634,7 +699,9 @@
 						</t>
 					
 					</th>
-					<!-- Direct Shear -->
+					 </t>
+                    <!-- Direct Shear -->
+                    <t t-if="data.direct_shear_visible">
 					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -658,7 +725,9 @@
 							</t>
 						</t>
 					</th>
-					<!-- Triaxial -->
+					</t>
+                    <!-- Triaxial -->
+                    <t t-if="data.triaxial_test_visible">
 					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -682,7 +751,9 @@
 							</t>
 						</t>
 					</th>
-					<!-- Consolidation -->
+					</t>
+                    <!-- Consolidation -->
+                    <t t-if="data.consolidation_visible">
 					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -706,7 +777,9 @@
 							</t>
 						</t>
 					</th>
-					<!-- CBR -->
+					</t>
+                    <!-- CBR -->
+                    <t t-if="data.soil_visible">
 					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -730,7 +803,9 @@
 							</t>
 						</t>
 					</th>
-					<!-- Swelling -->
+					</t>
+                    <!-- Swelling -->
+                    <t t-if="data.swelling_pressure_visible">
 					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -754,7 +829,10 @@
 							</t>
 						</t>
 					</th>
+					</t>
 					<!-- permability -->
+
+					<t t-if="data.permeability_falling_visible">
 					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
@@ -778,6 +856,7 @@
 							</t>
 						</t>
 					</th>
+					</t>
 			</tr>
             </thead>
             <tbody>
@@ -1111,6 +1190,7 @@
 					<td></td> -->
 
 					<!--  / Proctor -->
+					<t t-if="data.soil_light_heavy_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="proctormdd_index if proctormdd_index is not None else 0"/>
 
@@ -1130,8 +1210,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- UCS -->
+					<t t-if="data.ucs_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;" colspan="2">
 						<t t-set="di" t-value="usc_index if usc_index is not None else 0"/>
 
@@ -1141,8 +1223,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- Direct Shear -->
+					<t t-if="data.direct_shear_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="diarect_index if diarect_index is not None else 0"/>
 
@@ -1164,8 +1248,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- Triaxial -->
+					<t t-if="data.triaxial_test_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
@@ -1186,8 +1272,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- Consolidation -->
+					<t t-if="data.consolidation_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="consolidation_index if consolidation_index is not None else 0"/>
 
@@ -1206,8 +1294,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- CBR -->
+					<t t-if="data.soil_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="cbr_index if cbr_index is not None else 0"/>
 
@@ -1217,8 +1307,10 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- Swelling -->
+					<t t-if="data.swelling_pressure_visible">
 					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="swelling_index if swelling_index is not None else 0"/>
 
@@ -1228,10 +1320,12 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
 
 					<!-- k -->
 
-					<td style="min-width: 20px; width: 20px;text-align:center;">
+					 <t t-if="data.permeability_falling_visible">
+					 <td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="perm_head_index if perm_head_index is not None else 0"/>
 
 						<t t-if="perm_head_vals and di &lt; len(perm_head_vals)">
@@ -1241,6 +1335,7 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
+					</t>
                 </tr>
               </t>
             </tbody>
