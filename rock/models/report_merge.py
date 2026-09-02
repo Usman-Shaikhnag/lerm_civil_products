@@ -6,13 +6,13 @@ import io
 class ReportMerge(models.AbstractModel):
     _inherit = 'ir.actions.report'
 
-    def _render_qweb_pdf(self, report_ref, docids=None, data=None):
+    def _render_qweb_pdf(self, report_ref, res_ids=None, data=None):
 
         if report_ref == 'rock.rock_report':
 
 
-            pdf1, _ = super()._render_qweb_pdf('lerm_civil.rock_report_first_action', docids, data=data)
-            pdf2, _ = super()._render_qweb_pdf('lerm_civil.rock_report_rest_action', docids, data=data)
+            pdf1, _ = super()._render_qweb_pdf('lerm_civil.rock_report_first_action', res_ids, data=data)
+            pdf2, _ = super()._render_qweb_pdf('lerm_civil.rock_report_rest_action', res_ids, data=data)
             merger = PdfFileMerger()
             merger.append(io.BytesIO(pdf1))
             merger.append(io.BytesIO(pdf2))
@@ -23,4 +23,4 @@ class ReportMerge(models.AbstractModel):
 
             return output.getvalue(), 'pdf'
 
-        return super()._render_qweb_pdf(report_ref, docids, data=data)
+        return super()._render_qweb_pdf(report_ref, res_ids, data=data)
