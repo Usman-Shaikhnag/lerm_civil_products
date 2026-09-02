@@ -318,6 +318,10 @@ class WbmReport1(models.AbstractModel):
             max_y = 0
             max_x = 0
         
+        # Save density chart MDD/OMC before CBR section overwrites max_y/max_x
+        mdd_value = max_y
+        omc_value = max_x
+        
         
       
         # Prepare data for the chart
@@ -422,8 +426,8 @@ class WbmReport1(models.AbstractModel):
             # 'graphCbr' : cbr_graph_image,
             # 'load2' : cbry_values[5] if cbry_values else 0,
             # 'load5' : cbry_values[8] if cbry_values else 0,
-            'mdd': max_y if cbry_values else 0,
-            'omc': max_x if cbrx_values else 0,
+            'mdd': mdd_value,
+            'omc': omc_value,
             'graphCbr': cbr_graph_image,
             'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
             'load5': cbry_values[8] if len(cbry_values) > 8 else 0,

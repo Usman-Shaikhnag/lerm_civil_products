@@ -52,8 +52,10 @@
                     </style>
                     
                     <!-- Dry Gradation -->
-
                     <div invisible="not dry_gradation_visible">
+
+
+                    <div>
                         <h1>
                             <field name="dry_gradation_name" readonly="1" nolabel="1"/>
                             <field name="dry_gradation_visible" invisible="1"/>
@@ -61,7 +63,7 @@
                     </div>
                     <group/>
 
-                    <group invisible="not dry_gradation_visible">
+                    <group>
                         <field name="dry_gradation_table" colspan="2" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders" style="margin-top: 15px;">
                           <field name="sieve_size" />
@@ -94,8 +96,11 @@
                    
                     
 
+                                        </div>
                     <!-- Water Absorbtion  -->
                     <div invisible="not water_absorbtion_visible">
+
+                    <div>
                         <h1>
                             <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
                             <field name="water_absorbtion_visible" invisible="1"/>
@@ -143,8 +148,11 @@
 
                    
 
+                                        </div>
                     <!-- Elongation and Flakiness  -->
-                    <div  modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <div invisible="not elongation_visible and not flakiness_visible">
+
+                    <div>
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
@@ -155,7 +163,7 @@
                     </div>
                     <group/>
 
-                    <div class="custom_table_borders" style="margin-top: 15px;" modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="elongation_table" colspan="2" nolabel="1">
                         <tree editable="bottom" >
                           <field name="sieve_size"/>
@@ -232,8 +240,11 @@
 
                    
 
+                                        </div>
                     <!-- Impact Value  -->
                     <div invisible="not impact_visible">
+
+                    <div>
                         <h1>
                             <field name="impact_value_name" readonly="1" nolabel="1"/>
                             <field name="impact_visible" invisible="1"/>
@@ -242,7 +253,7 @@
                     </div>
                     <group/>
 
-                    <div invisible="not impact_visible" class="custom_table_borders">
+                    <div class="custom_table_borders">
                     <field name="impact_value_child_lines" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='sample_no'/>
@@ -283,8 +294,11 @@
                   
                 
 
-                <!-- Abrasion Value  -->
-                <div invisible="not abrasion_visible">
+                                    </div>
+                    <!-- Abrasion Value  -->
+                    <div invisible="not abrasion_visible">
+
+                <div>
                         <h1>
                             <field name="abrasion_value_name" readonly="1" nolabel="1"/>
                             <field name="abrasion_visible" invisible="1"/>
@@ -340,8 +354,11 @@
 
                 
 
-                <!-- Liquid Limit -->
-                <div invisible="not liquid_limit_visible">
+                                    </div>
+                    <!-- Liquid Limit -->
+                    <div invisible="not liquid_limit_visible">
+
+                <div>
                         <h1>
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
@@ -350,7 +367,7 @@
                 </div>
                 <group/>
 
-                <group invisible="not liquid_limit_visible" class="custom_table_borders">
+                <group class="custom_table_borders">
                     <field name="liquid_limit_table" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
@@ -379,9 +396,19 @@
                            </tbody>                    
                           </table>
                 </div>
+                <div style="width:50%;" >
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Remarks</span></td>
+                                    <td><field name="remarks_liquid_limit" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 <group/>
 
-                     <group invisible="not liquid_limit_visible" style="width:50%;white-space:nowrap;">
+                     <group style="width:50%;white-space:nowrap;">
                      <!-- <field name="liquid_limit" width="50%" /> -->
                         <field name="are_child_lines_filled" invisible="1"/>
                         <button type="object" name="liquid_calculation" class="btn btn-primary mb-2" modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'>
@@ -430,8 +457,11 @@
                    
                     
 
-                <!-- Plastic Limit -->
-                <div invisible="not plastic_visible">
+                                    </div>
+                    <!-- Plastic Limit -->
+                    <div invisible="not plastic_visible">
+
+                <div>
                       <h1>
                         <field name="plastic_name" readonly="1" nolabel="1"/>
                         <field name="plastic_visible" invisible="1"/>
@@ -439,7 +469,7 @@
                 </div>
                 <group/>
 
-                <div class="custom_table_borders" invisible="not plastic_visible">
+                <div class="custom_table_borders">
                     <field name="plastic_table" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
@@ -470,12 +500,15 @@
                       </div>
                       <group/>
 
-                    <!-- <group invisible="not plastic_visible">
+                    <!-- <group>
                         <field name="average_plastic_moisture"/>
                         <field name="remarks_plastic"/>
                     </group> -->
 
-                <!-- Plasticity index  -->
+                                    </div>
+                    <!-- Plasticity index  -->
+                    <div invisible="not plasticity_index_visible">
+
 
                 <div>
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -514,8 +547,11 @@
 
                 
 
-                <!-- Density Relation Heavy Compaction  -->
-                <div invisible="not density_relation_visible">
+                                    </div>
+                    <!-- Density Relation Heavy Compaction  -->
+                    <div invisible="not density_relation_visible">
+
+                <div>
                         <h1>
                             <field name="density_relation_name" readonly="1" nolabel="1"/>
                             <field name="density_relation_visible" invisible="1"/>
@@ -525,7 +561,7 @@
                 <group/>
 
                 <div>
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                            <tr>
                              <td><span>Weight of Mould in gm</span></td>
@@ -536,13 +572,14 @@
                             <td><span>Volume of Mould in cc</span></td>
                             <td><field name="vl_of_modul" class="blue-input" /></td>
                            </tr>
-                           </tbody>
-                          </table>
-                      </div>
-                      <group/>
+                        </tbody>
+                    </table>
+                  </div>
+                  
+                  <group/>
 
                 
-                <div class="custom_table_borders" invisible="not density_relation_visible">
+                <div class="custom_table_borders">
                     <field name="density_relation_table" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='determination_no' class="blue-input" decoration-info="determination_no != 0"/>
@@ -562,15 +599,18 @@
                     </div>
                     <group/>
 
-                    <group invisible="not density_relation_visible">
+                    <group>
                     <field name="chart_image_density" widget="image" readonly="1" />
                     </group>
                 
                 
 
 
-                <!-- CBR -->
-                <div invisible="not cbr_visible">
+                                    </div>
+                    <!-- CBR -->
+                    <div invisible="not cbr_visible">
+
+                <div>
                         <h1>
                             <field name="cbr_name" readonly="1" nolabel="1"/>
                             <field name="cbr_visible" invisible="1"/>
@@ -579,7 +619,7 @@
                 </div>
                 <group/>
 
-                <div class="custom_table_borders" invisible="not cbr_visible">
+                <div class="custom_table_borders">
                     <field name="cbr_table" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='penetration' class="blue-input" decoration-info="penetration != 0" />
@@ -588,7 +628,7 @@
                             </tree>      
                     </field> 
                 </div>
-                <group invisible="not cbr_visible">
+                <group>
                     <field name="chart_image_cbr" widget="image" readonly="1"/>
                 </group>
 
@@ -596,7 +636,8 @@
 
 
                 
-                           <notebook>
+                                               </div>
+                    <notebook>
 
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
