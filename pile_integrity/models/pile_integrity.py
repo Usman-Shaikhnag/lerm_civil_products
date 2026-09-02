@@ -718,10 +718,10 @@ class PileIntegrityReport(models.AbstractModel):
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    def _render_qweb_pdf(self, report_ref, docids, data=None):
-        content, content_type = super()._render_qweb_pdf(report_ref, docids, data=data)
+    def _render_qweb_pdf(self, report_ref, res_ids=None, data=None):
+        content, content_type = super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
         if report_ref == 'pile_integrity.pile_integrity_report':
-            content = self._append_pile_report_uploads(docids, content, data=data)
+            content = self._append_pile_report_uploads(res_ids, content, data=data)
         return content, content_type
 
     def _append_pile_report_uploads(self, docids, content, data=None):

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mechanical_gypsum_form" model="ir.ui.view">
+            <field name="name">mechanical.gypsum.form</field>
+            <field name="model">mechanical.gypsum</field>
+            <field name="arch" type="xml">
+                <form string="Mechanical Gypsum Form" create="false">
+                    <sheet>
+                        <group>
+                            <h1>
+                                <field name="name" readonly="1" nolabel="1"/>
+                            </h1>
+                        </group>
+                        <group>
+                            <field name="srf_id" invisible="1"/>
+                            <field name="sample_id" readonly="1"/>
+                            <field name="eln_ref" readonly="1"/>
+                            <field name="parameter_id" invisible="1"/>
+                            <field name="eln_state"/>
+                        </group>
+                        <div class="custom_table_borders">
+                            <field name="sample_parameters" readonly="1">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+                        
+                        <!-- 1. Normal Consistency -->
+                        <group invisible="not normal_consistency_visible">
+                            <h1>
+                                <field name="normal_consistency_name" readonly="1" nolabel="1"/>
+                                <field name="normal_consistency_visible" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not normal_consistency_visible">
+                            <group>
+                                <field name="temp_normal"/>
+                                <field name="start_date_normal"/>
+                            </group>
+                            <group>
+                                <field name="humidity_normal"/>
+                                <field name="end_date_normal"/>
+                            </group>
+                        </group>
+                        
+                        <div invisible="not normal_consistency_visible">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="wt_gypsum_plaster">Wt. of Gypsum Plaster (g)</label></td>
+                                        <td><field name="wt_gypsum_plaster"/></td>
+                                        <td><label for="wt_water_req">Wt. of water required (g)</label></td>
+                                        <td><field name="wt_water_req"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="penetration_vicat">Penetraion of vicat's Plunger (mm)</label></td>
+                                        <td><field name="penetration_vicat"/></td>
+                                        <td><label for="normal_consistency">Normal Consistency %</label></td>
+                                        <td><field name="normal_consistency" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 2. Setting Time -->
+                        <group invisible="not setting_time_visible">
+                            <h1>
+                                <field name="setting_time_name" readonly="1" nolabel="1"/>
+                                <field name="setting_time_visible" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not setting_time_visible">
+                            <group>
+                                <field name="temp_setting"/>
+                                <field name="start_date_setting"/>
+                            </group>
+                            <group>
+                                <field name="humidity_setting"/>
+                                <field name="end_date_setting"/>
+                            </group>
+                        </group>
+                        
+                        <div invisible="not setting_time_visible">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_water_added">The Time When water is added to cement (t1)</label></td>
+                                        <td><field name="time_water_added"/></td>
+                                        <td><label for="time_needle_penetrate">The time at which needle fails to penetrate the test block (t2)</label></td>
+                                        <td><field name="time_needle_penetrate"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="setting_time_minutes">Setting Time (Minutes)</label></td>
+                                        <td colspan="3"><field name="setting_time_minutes" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 3. Dry Bulk Density -->
+                        <group invisible="not dry_bulk_visible">
+                            <h1>
+                                <field name="dry_bulk_name" readonly="1" nolabel="1"/>
+                                <field name="dry_bulk_visible" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not dry_bulk_visible">
+                            <group>
+                                <field name="temp_dry_bulk"/>
+                                <field name="start_date_dry_bulk"/>
+                            </group>
+                            <group>
+                                <field name="humidity_dry_bulk"/>
+                                <field name="end_date_dry_bulk"/>
+                            </group>
+                        </group>
+
+                        <div invisible="not dry_bulk_visible">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Trial 1</th>
+                                        <th>Trial 2</th>
+                                        <th>Trial 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="wt_empty_cylinder_trial1">Wt of Empty Cylinder w1</label></td>
+                                        <td><field name="wt_empty_cylinder_trial1"/></td>
+                                        <td><field name="wt_empty_cylinder_trial2"/></td>
+                                        <td><field name="wt_empty_cylinder_trial3"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="wt_empty_cylinder_gypsum_trial1">Weight of empty Cylinder + Gypsum (w2)</label></td>
+                                        <td><field name="wt_empty_cylinder_gypsum_trial1"/></td>
+                                        <td><field name="wt_empty_cylinder_gypsum_trial2"/></td>
+                                        <td><field name="wt_empty_cylinder_gypsum_trial3"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="wt_empty_gypsum_trial1">Wt of Gypsum</label></td>
+                                        <td><field name="wt_empty_gypsum_trial1" readonly="1"/></td>
+                                        <td><field name="wt_empty_gypsum_trial2" readonly="1"/></td>
+                                        <td><field name="wt_empty_gypsum_trial3" readonly="1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="volume_of_cylinder_trial1">Volume of Cylinder</label></td>
+                                        <td><field name="volume_of_cylinder_trial1"/></td>
+                                        <td><field name="volume_of_cylinder_trial2"/></td>
+                                        <td><field name="volume_of_cylinder_trial3"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="dry_loose_bulf_density_trial1">Dry Bulk Density (kg/m³)</label></td>
+                                        <td><field name="dry_loose_bulf_density_trial1" readonly="1"/></td>
+                                        <td><field name="dry_loose_bulf_density_trial2" readonly="1"/></td>
+                                        <td><field name="dry_loose_bulf_density_trial3" readonly="1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="average_dry_loose_bulk_density">Average Dry Bulk Density (kg/m³)</label></td>
+                                        <td colspan="3"><field name="average_dry_loose_bulk_density" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 4. Free From Coarse Particle -->
+                        <group invisible="not coarse_particle_visible">
+                            <h1>
+                                <field name="coarse_particle_name" readonly="1" nolabel="1"/>
+                                <field name="coarse_particle_visible" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not coarse_particle_visible">
+                            <group>
+                                <field name="temp_coarse_particle"/>
+                                <field name="start_date_coarse_particle"/>
+                            </group>
+                            <group>
+                                <field name="humidity_coarse_particle"/>
+                                <field name="end_date_coarse_particle"/>
+                            </group>
+                        </group>
+
+                        <div invisible="not coarse_particle_visible" class="custom_table_borders">
+                            <field name="coarse_particle_table">
+                                <tree editable="bottom">
+                                    <field name="sample_weight"/>
+                                    <field name="retained_weight"/>
+                                    <field name="coarse_particle" readonly="1"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <group invisible="not coarse_particle_visible">
+                            <group>
+                                <field name="average_coarse_particle" readonly="1"/>
+                            </group>
+                            <group/>
+                        </group>
+
+                        <!-- 5. Compressive Strength -->
+                        <group invisible="not compressive_visible">
+                            <h1>
+                                <field name="compressive_name" readonly="1" nolabel="1"/>
+                                <field name="compressive_visible" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not compressive_visible">
+                            <group>
+                                <field name="temp_percent_compressive"/>
+                                <field name="start_date_compressive"/>
+                            </group>
+                            <group>
+                                <field name="humidity_percent_compressive"/>
+                                <field name="end_date_compressive"/>
+                            </group>
+                        </group>
+
+                        <div invisible="not compressive_visible">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="wt_of_gypsum_compressive">Wt. of Gypsum(g)</label></td>
+                                        <td><field name="wt_of_gypsum_compressive"/></td>
+                                        <td><label for="wt_of_standard_sand_grade1">Weight of Standard Sand (g) Grade-I</label></td>
+                                        <td><field name="wt_of_standard_sand_grade1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="wt_of_standard_sand_grade2">Weight of Standard Sand (g) Grade-II</label></td>
+                                        <td><field name="wt_of_standard_sand_grade2"/></td>
+                                        <td><label for="wt_of_standard_sand_grade3">Weight of Standard Sand (g) Grade-III</label></td>
+                                        <td><field name="wt_of_standard_sand_grade3"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="total_weight">Total Weight</label></td>
+                                        <td><field name="total_weight" readonly="1"/></td>
+                                        <td><label for="quantity_of_water">Quantity of Water</label></td>
+                                        <td><field name="quantity_of_water" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 1 Days Casting -->
+                        <group invisible="not compressive_visible">
+                            <h1>
+                                <field name="casting_1_name" readonly="1" nolabel="1"/>
+                                <field name="days_1_done" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not compressive_visible">
+                            <group>
+                                <field name="casting_date_1days"/>
+                            </group>
+                            <group>
+                                <field name="testing_date_1days"/>
+                            </group>
+                        </group>
+
+                        <div invisible="not compressive_visible" class="custom_table_borders">
+                            <field name="casting_1_days_tables">
+                                <tree editable="bottom">
+                                    <field name="length"/>
+                                    <field name="width"/>
+                                    <field name="crosssectional_area" readonly="1"/>
+                                    <field name="wt_of_cement_cube"/>
+                                    <field name="crushing_load"/>
+                                    <field name="compressive_strength" readonly="1"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <group invisible="not compressive_visible">
+                            <group>
+                                <field name="average_casting_1days" readonly="1"/>
+                                <field name="compressive_strength_1_days"/>
+                                <field name="status_1days"/>
+                            </group>
+                            <group/>
+                        </group>
+                        
+                        <!-- 7 Days Casting -->
+                        <group invisible="not compressive_visible">
+                            <h1>
+                                <field name="casting_7_name" readonly="1" nolabel="1"/>
+                                <field name="days_7_done" invisible="1"/>
+                            </h1>
+                        </group>
+                        <group invisible="not compressive_visible">
+                            <group>
+                                <field name="casting_date_7days"/>
+                            </group>
+                            <group>
+                                <field name="testing_date_7days"/>
+                            </group>
+                        </group>
+
+                        <div invisible="not compressive_visible" class="custom_table_borders">
+                            <field name="casting_7_days_tables">
+                                <tree editable="bottom">
+                                    <field name="length"/>
+                                    <field name="width"/>
+                                    <field name="crosssectional_area" readonly="1"/>
+                                    <field name="wt_of_cement_cube"/>
+                                    <field name="crushing_load"/>
+                                    <field name="compressive_strength" readonly="1"/>
+                                </tree>
+                            </field>
+                        </div>
+                        <group invisible="not compressive_visible">
+                            <group>
+                                <field name="average_casting_7days" readonly="1"/>
+                                <field name="status_7days"/>
+                            </group>
+                            <group/>
+                        </group>
+                        
+                        
+
+                        <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
