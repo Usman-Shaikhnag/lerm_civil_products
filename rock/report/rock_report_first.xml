@@ -161,6 +161,23 @@
 									len(abrasivity_vals or []),
 									len(abrasivityclass_vals or [])
 									"/>
+
+
+					 <!-- <t t-set="rock_lines" t-value="data.rock_child_lines or []"/>
+
+                      <t t-foreach="range(0, len(rock_lines), 5)" t-as="start"> -->
+
+					   <!-- Remove None values first -->
+<t t-set="rock_lines"
+   t-value="[line for line in (data.rock_child_lines or []) if line]"/>
+
+<!-- Serial number starts ONLY ONCE -->
+<t t-set="f" t-value="0"/>
+
+<!-- 5 rows per page -->
+<t t-foreach="range(0, len(rock_lines), 5)" t-as="start">
+
+
                         <table>
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
@@ -325,79 +342,89 @@
 								</td>
 								</t>
 
-								<!-- <t t-if="data.elasticity_visible"> -->
-								<td  colspan="2" style="text-align: center;">
 								<t t-if="data.elasticity_visible">
-								<span>
+								<td  colspan="2" style="text-align: center;">
+							   	<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
 								</span>
-								</t>
-
-								 <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
+								 <!-- <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
+								 </t> -->
+								 </td>
 								 </t>
-								</td>
-								<!-- </t> -->
 
-								<td  colspan="2" style="text-align: center;">
-								<t t-if="data.tensile_strength_visible">
+								 <t t-if="data.tensile_strength_visible">
+								 <td  rowspan="2" style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_name"/>
 								</span>
-								</t>
-
-								 <t t-else="">Tensile Srength
-								 </t>
+								 <!-- <t t-else="">Tensile Srength
+								 </t> -->
 								 </td>
+								 </t>
 
-								<td  colspan="2" style="text-align: center;">
 								<t t-if="data.triaxial_visible">
+								<td  colspan="2" style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_name"/>
 								</span>
-								</t>
-
-								 <t t-else="">
+								 <!-- <t t-else="">
 								  <span>TRIAXIAL SHEAR TEST</span>
-								 </t>
+								 </t> -->
 								</td>
+								</t>
+								
 
-								<td  colspan="2" style="text-align: center;">
+									
 								<t t-if="data.slake_durability_visible">
+								<td  colspan="2" style="text-align: center;">
+								
 								 <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_name"/>
 								 </span>
-								</t>
-								<t t-else="">
+								
+								<!-- <t t-else="">
 								  <span>DETERMINATION OF SLAKE DURABILITY OF ROCK</span>
-								 </t>
+								 </t> -->
 								</td>
+								</t>
+								
 
-									
-								<td  colspan="2" style="text-align: center;">
 								<t t-if="data.cerchar_abrasivity_visible">
+								<td  colspan="2" style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_name"/>
 								</span>
-								</t>
-								<t t-else="">
+								
+								<!-- <t t-else="">
 								  <span>Determination of CERCHAR Abrasivity Index of Rock</span>
-								 </t>
+								 </t> -->
 								</td>
-								
-								
-								<!-- <td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td> -->
+								</t>
+
+
 								
                             </tr>
 							<tr style="background-color:#f9f9f9;">
-							 <th style="text-align:center;vertial-align:middle;">E</th>
-							<th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
-                            <th style="text-align:center;vertial-align:middle;">ϕ</th>
-							<th style="text-align:center;vertial-align:middle;">C</th>
+							 <t t-if="data.elasticity_visible">
+							  <th style="text-align:center;vertial-align:middle;">E</th>
+							   <th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
+							</t>
+
+                            <t t-if="data.triaxial_visible">
+							  <th style="text-align:center;vertial-align:middle;">ϕ</th>
+							  <th style="text-align:center;vertial-align:middle;">C</th>
+							</t>
+
+							<t t-if="data.slake_durability_visible">
 							 <th style="text-align:center;vertial-align:middle;">Id</th>
 							 <th style="text-align:center;vertial-align:middle;">CL</th>
+							</t>
 
+							 
+							<t t-if="data.cerchar_abrasivity_visible">
 							 <th style="text-align:center;vertial-align:middle;">CAI</th>
 							 <th style="text-align:center;vertial-align:middle;">CL</th>
+							</t>
 							
 							</tr>
 
@@ -562,121 +589,134 @@
 							</t>
 							
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.elasticity_visible">
-							<span>
+							  <td  colspan="1" style="text-align: center;">
+							   <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">GPa
-								 </t>
-							</td>
+								
+								<!-- <t t-else="">GPa
+								 </t> -->
+							  </td>
+							</t>
 							
 
 							
-							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.elasticity_visible">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/>
-									
+							<t t-if="data.elasticity_visible">
+							 <td  colspan="1" style="text-align: center;">
+							  <span>
+									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).unit.name"/> -->
+
+									--
+								
 								</span>
-								</t>
-								<t t-else="">--
-								 </t>
 							</td>
+							</t>
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.tensile_strength_visible">
+							<td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">MPa
-								 </t>
+								
+								<!-- <t t-else="">MPa
+								 </t> -->
 							</td>
+							</t>
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.triaxial_visible">
+							<td  colspan="1" style="text-align: center;">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6315f914-f6f5-4b5b-bfc2-34792cf1a237')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">Degree
-								 </t>
+								
+								<!-- <t t-else="">Degree
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
+							<t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.triaxial_visible">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">MPa
-								 </t>
-							</td> 
+								
+								<!-- <t t-else="">MPa
+								 </t> -->
+							</td>  
+							</t>
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.slake_durability_visible">
+							<td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">
-								 </t>
+								
+								<!-- <t t-else="">
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
-							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.slake_durability_visible">
+							<t t-if="data.slake_durability_visible">
+							 <td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else=""> 
-								 </t>
+								
+								<!-- <t t-else=""> 
+								 </t> -->
 							</td> 
+							</t>
 
 							
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.cerchar_abrasivity_visible">
+							<td  colspan="1" style="text-align: center;">
+							
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else="">
-								 </t>
+								
+								<!-- <t t-else="">
+								 </t> -->
 							</td>
+							</t>
 							
 
 							
+							<t t-if="data.cerchar_abrasivity_visible">
 							<td  colspan="1" style="text-align: center;">
-							 <t t-if="data.cerchar_abrasivity_visible">
+							 
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
 									
 								</span>
-								</t>
-								<t t-else=""> 
-								 </t>
-							</td>
+								
+								<!-- <t t-else=""> 
+								 </t> -->
+							</td> 
+							</t>
 
 						
 						</tr>
 
 						<tr style="background-color:#f9f9f9;">
 								
-								<td colspan="11" style="text-align: center; "><b>Test Method/Reference</b></td>
+								<td colspan="8" style="text-align: center;vertical-align:middle; "><b>Test Method/Reference</b></td>
 								<!-- <t t-if="data.avg_dia_visible">
 								<td colspan="1" style="text-align: center; ">
 								<span>
@@ -724,6 +764,43 @@
 
 								<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
 								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
+
+
+								<t t-if="data.avg_dia_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
+
+								<t t-if="data.avg_height_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
+
+								<t t-if="data.hd_visible">
+								<td  colspan="1" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span> --
+								</td>
+								</t>
 								<t t-if="data.bulk_density_visible">
 								<td  colspan="6" style="text-align: center; ">
 								<span>
@@ -891,8 +968,9 @@
 							</td> 
 							</t>
 
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.elasticity_visible">
+							<td  colspan="2" style="text-align: center;">
+							
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -900,13 +978,14 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 9221
-								 </t>
+								
+								<!-- <t t-else="">IS 9221
+								 </t> -->
 							</td> 
+							</t>
 
-							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.tensile_strength_visible">
+							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b448cca3-37d8-40d5-9599-87a2f0a8d267')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -914,13 +993,18 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 10082
-								 </t>
+								
+								<!-- <t t-else="">IS 10082
+								 </t> -->
 							</td> 
+							</t>
 
-							<td  colspan="2" style="text-align: center;">
+
+
+							
 							<t t-if="data.triaxial_visible">
+							<td  colspan="2" style="text-align: center;">
+							
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -928,10 +1012,12 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 13047: 1991
-								 </t>
-							</td> 
+								
+								<!-- <t t-else="">IS 13047: 1991
+								 </t> -->
+							</td>
+							</t> 
+							
 
 							<!-- <t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
@@ -945,9 +1031,9 @@
 							</td> 
 							</t> -->
 
-							
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.slake_durability_visible">
+							<td  colspan="2" style="text-align: center;">
+							
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -955,10 +1041,11 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">IS 10050: 1981
-								 </t>
-							</td> 
+								
+								<!-- <t t-else="">IS 10050: 1981
+								 </t> -->
+							</td>
+							</t> 
 							
 							<!-- <t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
@@ -973,8 +1060,8 @@
 							</t> -->
 
 							
-							<td  colspan="2" style="text-align: center;">
 							<t t-if="data.cerchar_abrasivity_visible">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -982,35 +1069,27 @@
                                         </t>
 									</t>
 								</span>
-								</t>
-								<t t-else="">ASTMD7625-10: 2022
-								 </t>
+								<!-- <t t-else="">ASTMD7625-10: 2022
+								 </t> -->
 							</td> 
-							
+							</t>
 
-
-							
-
-							<!-- <t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t> -->
 
 							</tr>
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.rock_child_lines" t-as="r">
+
+							 <!-- <t t-foreach="lines[start:start + 5]" t-as="line"> -->
+
+                            <!-- <t t-set="f" t-value="0"/> -->
+                            <!-- <tr t-foreach="data.rock_child_lines[start:start + 5]" t-as="r"  -->
+							 <tr t-foreach="rock_lines[start:start + 5]" t-as="r">
+							
                                 <td colspan="1" style="text-align: center;">
-                                    <div>
+                                    <!-- <div> -->
                                         <span t-esc="f + 1" />
                                         <t t-set="f" t-value="f + 1"/>
-                                    </div>
+
+										
+                                    <!-- </div> -->
                                 </td>
                                 <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['bh_no']" width="200"/>
@@ -1148,17 +1227,20 @@
                                 </td>      -->
 
 
-								<td colspan="1" style="text-align: center;">
-								<t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
+								<t t-if="data.elasticity_visible">
+							    	<td colspan="1" style="text-align: center;">
+								   <t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
 
-								<t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
+								    <t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
 									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
 									<t t-esc="round(elasticitye_vals[di])"/>
 									<t t-set="elasticitye_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
+								   </t>
+								   <t t-else="">--</t>
+							   </td>
+							   </t>
 
+								<t t-if="data.elasticity_visible">
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
 
@@ -1168,8 +1250,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
-
+							<t t-if="data.tensile_strength_visible">
 							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="tensile_strength_index if tensile_strength_index is not None else 0"/>
 
@@ -1179,39 +1262,51 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
-							
+							</t>
+
+
 							
 
+
+
+								<t t-if="data.triaxial_visible">
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 								<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
-									<t t-esc="'%.3f' % triaxialp_vals[di]"/>
+									<!-- <t t-esc="'%.3f' % triaxialp_vals[di]"/> -->
+									<t t-esc="round(triaxialp_vals[di])"/>
 									<t t-set="triaxialp_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+								<t t-if="data.triaxial_visible">
 								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 								<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-									<t t-esc="'%.3f' % triaxialc_vals[di]"/>
+									<t t-esc="'%.1f' % triaxialc_vals[di]"/>
 									<t t-set="triaxialc_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+							<t t-if="data.slake_durability_visible">
 							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="slackfirst_index if slackfirst_index is not None else 0"/>
 
 								<t t-if="slackfirst_vals and di &lt; len(slackfirst_vals)">
-									<t t-esc="'%.3f' % slackfirst_vals[di]"/>
+									<t t-esc="'%.2f' % slackfirst_vals[di]"/>
 									<t t-set="slackfirst_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+							<t t-if="data.slake_durability_visible">
 								<td colspan="1" style="text-align: center;">
 								 <t t-if="slackclass_vals and slackclass_index &lt; len(slackclass_vals)">
 									<t t-set="val" t-value="slackclass_vals[slackclass_index]"/>
@@ -1224,8 +1319,10 @@
 
 								<t t-else="">--</t>
 							</td>
+							</t>
 
 
+							<t t-if="data.cerchar_abrasivity_visible">
 							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="abrasivity_index if abrasivity_index is not None else 0"/>
 
@@ -1235,7 +1332,9 @@
 								</t>
 								<t t-else="">--</t>
 							</td>
+							</t>
 
+								<t t-if="data.cerchar_abrasivity_visible">
 								<td colspan="1" style="text-align: center;">
 								 <t t-if="abrasivityclass_vals and abrasivityclass_index &lt; len(abrasivityclass_vals)">
 									<t t-set="val" t-value="abrasivityclass_vals[abrasivityclass_index]"/>
@@ -1248,20 +1347,22 @@
 
 								<t t-else="">--</t>
 							</td>
+							</t>
+
+
 
 
 							
+
+
 
 
                                 
                             </tr>
+							 <!-- </t> -->
                         </table>
 
-
-						
-						
-							
-							<div style="margin-top:50px" class="noteContainer">
+						<div style="margin-top:50px" class="noteContainer">
 						<table >
 							<tr>
 							
@@ -1343,6 +1444,94 @@
 						
 				
 					</div>
+
+						<t t-if="start + 5 &lt; len(rock_lines)">
+        <div style="page-break-after:always;"></div>
+    </t>
+
+
+	</t>
+
+
+						
+						
+							
+							<!-- <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    
+									   1. Refer to Annexure- I to know environmental and test conditions<br/>
+										2.  *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
+										3.  Mode of failure for UCS test: A] Axial B] Shear C] Multiple Fracturing D] Along foliation  E] Y shaped <br/>
+										4.  Orientation of sample for Point load strength index test:  A1] Axial B1] Diametric<br/>
+										5. Abbreviation-D - Average Diameter / Distance between Platens,W - Average Width,H - Average height,Is/Il (50) - Point load strength index,E - Modulus of Elasticity,µ - Poissions Ratio,Ø - Angle of internal friction,c - Cohesion,CL - Classification<br/>
+
+
+									<b>Notes:-</b><br/><br/>
+											<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
+										</t>
+									</t>
+
+								</td>
+							</tr>
+							</table  >
+						</div>
+
+						<div class="signatureContainer girdgird">
+                        <table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						    <tr style="height:100px;">
+							
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								 <b>
+										
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b><br/>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b><br/>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+						
+				
+					</div> -->
 						
 					</div>
 
