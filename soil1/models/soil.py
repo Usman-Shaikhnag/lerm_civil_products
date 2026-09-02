@@ -32,6 +32,14 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 import math
 
+from odoo import api, fields, models
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import make_interp_spline
+import io
+import base64
+from matplotlib.ticker import MultipleLocator
+
 
 
 
@@ -2126,198 +2134,291 @@ class Soil(models.Model):
     max_dry_density = fields.Float(string="Maximum Dry Density", compute="_compute_mdd")
     optimum_moisture = fields.Float(string="Optimum Moisture Content", compute="_compute_mdd")
 
-
-    @api.depends('heavy_line_ids.dry_density', 'heavy_line_ids.water_content')
-    def _compute_mdd(self):
-     import numpy as np
-
-     for rec in self:
-        x = []
-        y = []
-
-        # -------------------------------
-        # COLLECT DATA
-        # -------------------------------
-        for line in rec.heavy_line_ids:
-            if line.water_content and line.dry_density:
-                x.append(float(line.water_content))
-                y.append(float(line.dry_density))
-
-        if len(x) < 3:
-            rec.max_dry_density = 0
-            rec.optimum_moisture = 0
-            continue
-
-        # Convert to numpy
-        x = np.array(x)
-        y = np.array(y)
-
-        # -------------------------------
-        # SORT DATA (important)
-        # -------------------------------
-        idx = np.argsort(x)
-        x = x[idx]
-        y = y[idx]
-
-        # -------------------------------
-        # REMOVE DUPLICATES (same moisture)
-        # -------------------------------
-        x_unique, indices = np.unique(x, return_index=True)
-        y_unique = y[indices]
-
-        if len(x_unique) < 3:
-            rec.max_dry_density = max(y_unique)
-            rec.optimum_moisture = x_unique[np.argmax(y_unique)]
-            continue
-
-        # -------------------------------
-        # PARABOLIC FIT
-        # -------------------------------
-        coeffs = np.polyfit(x_unique, y_unique, 2)
-        a, b, c = coeffs
-
-        # -------------------------------
-        # PEAK (OMC & MDD)
-        # -------------------------------
-        if a < 0:  # valid parabola (opens downward)
-            omc = -b / (2 * a)
-            mdd = a * omc**2 + b * omc + c
-
-            # Ensure OMC lies within data range
-            if not (min(x_unique) <= omc <= max(x_unique)):
-                omc = x_unique[np.argmax(y_unique)]
-                mdd = max(y_unique)
-        else:
-            # fallback if curve is not proper
-            omc = x_unique[np.argmax(y_unique)]
-            mdd = max(y_unique)
-
-        # -------------------------------
-        # SAVE VALUES
-        # -------------------------------
-        rec.optimum_moisture = round(float(omc), 2)
-        rec.max_dry_density = round(float(mdd), 3)
-
-
-
     heavy_graph_image = fields.Binary("Graph", attachment=True)
     show_heavy_graph2 = fields.Boolean(string="Show Heavy Compaction Graph")
 
+    
+
+    # ---------------------------------------------------------
+    # 1. COMPUTE METHOD (Fields la values denyasathi)
+    # ---------------------------------------------------------
+    @api.depends('heavy_line_ids.water_content', 'heavy_line_ids.dry_density')
+    def _compute_mdd(self):
+        for rec in self:
+            x = []
+            y = []
+            for line in rec.heavy_line_ids:
+                if line.water_content and line.dry_density:
+                    x.append(float(line.water_content))
+                    y.append(float(line.dry_density))
+
+            if len(x) < 3:
+                rec.optimum_moisture = 0.0
+                rec.max_dry_density = 0.0
+                continue
+
+            x = np.array(x)
+            y = np.array(y)
+
+            # Handle duplicate X values
+            unique_x = np.unique(x)
+            if len(unique_x) < len(x):
+                y = np.array([np.mean(y[x == ux]) for ux in unique_x])
+                x = unique_x
+
+            # Sort data
+            idx = np.argsort(x)
+            x = x[idx]
+            y = y[idx]
+
+            # Find max point
+            max_idx = np.argmax(y)
+            rec.optimum_moisture = float(x[max_idx])
+            rec.max_dry_density = float(y[max_idx])
+
+
+    # ---------------------------------------------------------
+    # 2. GRAPH GENERATION METHOD
+    # ---------------------------------------------------------
     def generate_line_chart_light_omc(self):
-     import numpy as np
-     import matplotlib.pyplot as plt
-     from scipy.interpolate import make_interp_spline
-     import io
-     import base64
-     from matplotlib.ticker import MultipleLocator
+        for rec in self:
+            x = []
+            y = []
 
-     for rec in self:
+            for line in rec.heavy_line_ids:
+                if line.water_content and line.dry_density:
+                    x.append(float(line.water_content))
+                    y.append(float(line.dry_density))
 
-        x = []
-        y = []
+            if len(x) < 3:
+                rec.heavy_graph_image = False
+                continue
 
-        # -------------------------------
-        # DATA
-        # -------------------------------
-        for line in rec.heavy_line_ids:
-            if line.water_content and line.dry_density:
-                x.append(float(line.water_content))
-                y.append(float(line.dry_density))
+            x = np.array(x)
+            y = np.array(y)
 
-        if len(x) < 3:
-            rec.heavy_graph_image = False
-            continue
+            # Handle duplicate X values
+            unique_x = np.unique(x)
+            if len(unique_x) < len(x):
+                y = np.array([np.mean(y[x == ux]) for ux in unique_x])
+                x = unique_x
 
-        x = np.array(x)
-        y = np.array(y)
+            idx = np.argsort(x)
+            x = x[idx]
+            y = y[idx]
 
-        # Sort data
-        idx = np.argsort(x)
-        x = x[idx]
-        y = y[idx]
+            # Computed field varun values ghene (direct max_x & max_y)
+            max_x = rec.optimum_moisture
+            max_y = rec.max_dry_density
 
-        # -------------------------------
-        # ✅ PARABOLA (FOR OMC/MDD)
-        # -------------------------------
-        coeffs = np.polyfit(x, y, 2)
-        a, b, c = coeffs
+            if not max_x or not max_y:
+                continue
 
-        if a < 0:
-            max_x = -b / (2 * a)
-            max_y = a * max_x**2 + b * max_x + c
-        else:
-            max_y = float(np.max(y))
-            max_x = float(x[np.argmax(y)])
+            # Add peak into curve data
+            if max_x not in x:
+                x_aug = np.append(x, max_x)
+                y_aug = np.append(y, max_y)
+                idx = np.argsort(x_aug)
+                x_aug = x_aug[idx]
+                y_aug = y_aug[idx]
+            else:
+                x_aug = x
+                y_aug = y
 
-        # -------------------------------
-        # ✅ ADD PEAK INTO CURVE DATA
-        # -------------------------------
-        x_aug = np.append(x, max_x)
-        y_aug = np.append(y, max_y)
+            # Spline curve
+            k_val = min(2, len(x_aug) - 1)
+            x_smooth = np.linspace(min(x_aug), max(x_aug), 300)
+            spline = make_interp_spline(x_aug, y_aug, k=k_val)
+            y_smooth = spline(x_smooth)
 
-        idx = np.argsort(x_aug)
-        x_aug = x_aug[idx]
-        y_aug = y_aug[idx]
+            # Plotting
+            plt.figure(figsize=(10, 5))
+            plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+            plt.scatter(x, y, color='orange', s=50, zorder=5)
 
-        # -------------------------------
-        # ✅ SPLINE (PASS THROUGH ALL POINTS + PEAK)
-        # -------------------------------
-        x_smooth = np.linspace(min(x_aug), max(x_aug), 300)
-        spline = make_interp_spline(x_aug, y_aug, k=2)
-        y_smooth = spline(x_smooth)
+            plt.axhline(y=max_y, color='black', linewidth=1, linestyle='--')
+            plt.axvline(x=max_x, color='black', linewidth=1, linestyle='--')
 
-        # -------------------------------
-        # PLOT
-        # -------------------------------
-        plt.figure(figsize=(10, 5))
+            # Peak point & Annotation
+            plt.scatter(max_x, max_y, color='red', s=80, zorder=6)
+            
+            peak_text = f"OMC: {max_x:.2f}%\nMDD: {max_y:.3f} gm/cc"
+            plt.annotate(
+                peak_text,
+                xy=(max_x, max_y),
+                xytext=(20, 20),
+                textcoords='offset points',
+                fontsize=9,
+                fontweight='bold',
+                bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', edgecolor='black', alpha=0.9),
+                arrowprops=dict(facecolor='black', arrowstyle='->', lw=1)
+            )
 
-        # Curve
-        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+            # Grid & Layout
+            ax = plt.gca()
+            ax.xaxis.set_minor_locator(MultipleLocator(0.2))
+            ax.yaxis.set_minor_locator(MultipleLocator(0.01))
 
-        # Data points
-        plt.scatter(x, y, color='orange', s=50, zorder=5)
+            plt.grid(which='major', color='black', linewidth=0.6)
+            plt.grid(which='minor', color='green', linestyle='--', linewidth=0.3)
 
-        # Peak lines
-        plt.axhline(y=max_y, color='black', linewidth=1)
-        plt.axvline(x=max_x, color='black', linewidth=1)
+            plt.xlim(min(x) - 0.5, max(x) + 1)
+            plt.ylim(min(y) - 0.05, max(y) + 0.05)
 
-        # Peak point
-        plt.scatter(max_x, max_y, color='black', zorder=6)
+            plt.title("MODIFIED PROCTOR TEST", fontsize=14)
+            plt.xlabel("Optimum Moisture Content (%)")
+            plt.ylabel("Maximum Dry Density (gm/cc)")
 
-        # -------------------------------
-        # GRID (LAB STYLE)
-        # -------------------------------
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-        ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+            plt.tight_layout()
 
-        plt.grid(which='major', color='black', linewidth=0.6)
-        plt.grid(which='minor', color='green', linestyle='--', linewidth=0.3)
+            # Save image
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png', dpi=120)
+            plt.close()
+            buf.seek(0)
 
-        # -------------------------------
-        # AXIS LIMITS (DYNAMIC)
-        # -------------------------------
-        plt.xlim(min(x) - 0.5, max(x) + 1)
-        plt.ylim(min(y) - 0.05, max(y) + 0.05)
+            rec.heavy_graph_image = base64.b64encode(buf.read())
 
-        # -------------------------------
-        # LABELS
-        # -------------------------------
-        plt.title("MODIFIED PROCTOR TEST", fontsize=14)
-        plt.xlabel("Optimum Moisture Content (%)")
-        plt.ylabel("Maximum Dry Density (gm/cc)")
 
-        plt.tight_layout()
+    
 
-        # -------------------------------
-        # SAVE IMAGE
-        # -------------------------------
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png', dpi=120)
-        plt.close()
-        buf.seek(0)
+    # def generate_line_chart_light_omc(self):
+    #     import numpy as np
+    #     import matplotlib.pyplot as plt
+    #     from scipy.interpolate import make_interp_spline
+    #     import io
+    #     import base64
+    #     from matplotlib.ticker import MultipleLocator
 
-        rec.heavy_graph_image = base64.b64encode(buf.read())
+    #     for rec in self:
+
+    #         x = []
+    #         y = []
+
+    #         # -------------------------------
+    #         # DATA
+    #         # -------------------------------
+    #         for line in rec.heavy_line_ids:
+    #             if line.water_content and line.dry_density:
+    #                 x.append(float(line.water_content))
+    #                 y.append(float(line.dry_density))
+
+    #         if len(x) < 3:
+    #             rec.heavy_graph_image = False
+    #             continue
+
+    #         x = np.array(x)
+    #         y = np.array(y)
+
+    #         # -------------------------------
+    #         # ✅ HANDLE DUPLICATE X VALUES
+    #         # -------------------------------
+    #         # If multiple rows have the same water content, average their dry densities
+    #         unique_x = np.unique(x)
+    #         if len(unique_x) < len(x):
+    #             y = np.array([np.mean(y[x == ux]) for ux in unique_x])
+    #             x = unique_x
+
+    #         # Sort data
+    #         idx = np.argsort(x)
+    #         x = x[idx]
+    #         y = y[idx]
+
+    #         # -------------------------------
+    #         # ✅ EXACT MAX POINT (DATA MADHLI HIGHEST VALUE)
+    #         # -------------------------------
+    #         max_idx = np.argmax(y)
+    #         max_x = float(x[max_idx])
+    #         max_y = float(y[max_idx])
+
+    #         # -------------------------------
+    #         # ✅ ADD PEAK INTO CURVE DATA (Ensure no duplicate if max_x already exists)
+    #         # -------------------------------
+    #         if max_x not in x:
+    #             x_aug = np.append(x, max_x)
+    #             y_aug = np.append(y, max_y)
+    #             idx = np.argsort(x_aug)
+    #             x_aug = x_aug[idx]
+    #             y_aug = y_aug[idx]
+    #         else:
+    #             x_aug = x
+    #             y_aug = y
+
+    #         # -------------------------------
+    #         # ✅ SPLINE (PASS THROUGH ALL POINTS)
+    #         # -------------------------------
+    #         # Note: k must be less than the number of unique points
+    #         k_val = min(2, len(x_aug) - 1)
+    #         x_smooth = np.linspace(min(x_aug), max(x_aug), 300)
+    #         spline = make_interp_spline(x_aug, y_aug, k=k_val)
+    #         y_smooth = spline(x_smooth)
+
+    #         # -------------------------------
+    #         # PLOT
+    #         # -------------------------------
+    #         plt.figure(figsize=(10, 5))
+
+    #         # Curve
+    #         plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+
+    #         # Data points
+    #         plt.scatter(x, y, color='orange', s=50, zorder=5)
+
+    #         # Peak lines
+    #         plt.axhline(y=max_y, color='black', linewidth=1, linestyle='--')
+    #         plt.axvline(x=max_x, color='black', linewidth=1, linestyle='--')
+
+    #         # -------------------------------
+    #         # ✅ PEAK POINT & VALUE ANNOTATION
+    #         # -------------------------------
+    #         plt.scatter(max_x, max_y, color='red', s=80, zorder=6)
+            
+    #         peak_text = f"OMC: {max_x:.2f}%\nMDD: {max_y:.3f} gm/cc"
+    #         plt.annotate(
+    #             peak_text,
+    #             xy=(max_x, max_y),
+    #             xytext=(20, 20),
+    #             textcoords='offset points',
+    #             fontsize=9,
+    #             fontweight='bold',
+    #             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', edgecolor='black', alpha=0.9),
+    #             arrowprops=dict(facecolor='black', arrowstyle='->', lw=1)
+    #         )
+
+    #         # -------------------------------
+    #         # GRID (LAB STYLE)
+    #         # -------------------------------
+    #         ax = plt.gca()
+    #         ax.xaxis.set_minor_locator(MultipleLocator(0.2))
+    #         ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+
+    #         plt.grid(which='major', color='black', linewidth=0.6)
+    #         plt.grid(which='minor', color='green', linestyle='--', linewidth=0.3)
+
+    #         # -------------------------------
+    #         # AXIS LIMITS (DYNAMIC)
+    #         # -------------------------------
+    #         plt.xlim(min(x) - 0.5, max(x) + 1)
+    #         plt.ylim(min(y) - 0.05, max(y) + 0.05)
+
+    #         # -------------------------------
+    #         # LABELS
+    #         # -------------------------------
+    #         plt.title("MODIFIED PROCTOR TEST", fontsize=14)
+    #         plt.xlabel("Optimum Moisture Content (%)")
+    #         plt.ylabel("Maximum Dry Density (gm/cc)")
+
+    #         plt.tight_layout()
+
+    #         # -------------------------------
+    #         # SAVE IMAGE
+    #         # -------------------------------
+    #         buf = io.BytesIO()
+    #         plt.savefig(buf, format='png', dpi=120)
+    #         plt.close()
+    #         buf.seek(0)
+
+    #         rec.heavy_graph_image = base64.b64encode(buf.read())
 
     max_dry_density_conformity = fields.Selection([
             ('pass', 'Pass'),
