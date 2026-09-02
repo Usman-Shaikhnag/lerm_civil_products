@@ -147,14 +147,14 @@
 					<tbody>
 
 
-					<tr t-if="data.dimension_visible">
+					<tr t-if="data.dimension_visible and (data.average_length_nabl == 'pass' and nabl or (data.average_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','085e1df4-a0fd-40bc-ac92-b6118328c2e8')]).parameter_name"/>
 							</td>
 
@@ -189,21 +189,19 @@
 
 							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
 									
-								<span> -- </span>
-					           <!-- <span t-attf-style="color: #{'green' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'pass' else ('red' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
-														t-esc="data.normal_consistency_conformity"/> -->
+								<span t-attf-style="color: #{'green' if data.average_length_conformity and data.average_length_conformity.lower() == 'pass' else ('red' if data.average_length_conformity and data.average_length_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.average_length_conformity"/>
 											
 								</td>
 						</tr>
 
 
-						<tr t-if="data.dimension_visible ">
+						<tr t-if="data.dimension_visible and (data.average_width_nabl == 'pass' and nabl or (data.average_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5630893a-6e66-4825-8fbb-f92c897025d3')]).parameter_name"/>
 							</td>
 							
@@ -235,21 +233,19 @@
 
 							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
 									
-								<span> -- </span>
-								<!-- <span t-attf-style="color: #{'green' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'pass' else ('red' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
-														t-esc="data.normal_consistency_conformity"/> -->
+							<span t-attf-style="color: #{'green' if data.average_width_conformity and data.average_width_conformity.lower() == 'pass' else ('red' if data.average_width_conformity and data.average_width_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.average_width_conformity"/>
 											
 								</td>
 						</tr>
 
-						<tr t-if="data.dimension_visible ">
+						<tr t-if="data.dimension_visible and (data.avreage_height2_nabl == 'pass' and nabl or (data.avreage_height2_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','8e237cad-9411-4b06-b9f3-26e96747a582')]).parameter_name"/>
 							</td>
 							
@@ -284,9 +280,7 @@
 
 							<td t-if="eln.conformity" style="text-align: center; vertical-align: middle;">
 									
-								<span> -- </span>
-								<!-- <span t-attf-style="color: #{'green' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'pass' else ('red' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
-														t-esc="data.normal_consistency_conformity"/> -->
+							<span t-attf-style="color: #{'green' if data.avreage_height2_conformity and data.avreage_height2_conformity.lower() == 'pass' else ('red' if data.avreage_height2_conformity and data.avreage_height2_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.avreage_height2_conformity"/>
 											
 								</td>
 						</tr>
@@ -304,7 +298,7 @@
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','e2190504-cc89-4334-a001-4766f9c65e24')]).parameter_name"/>
 							</td>
 							
@@ -354,7 +348,7 @@
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','89acdd9a-0b60-4ab4-92fa-3b7756bab153')]).parameter_name"/>
 							</td>
 							
@@ -405,7 +399,7 @@
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32aee782-8018-4833-a365-d72ccb6f47bd')]).parameter_name"/>
 							</td>
 							
@@ -461,7 +455,7 @@
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0faf6556-4902-4926-a6bd-ed0024dc5929')]).parameter_name"/>
 							</td>
 							
@@ -512,7 +506,7 @@
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
+							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3402d345-b96e-4ed1-a545-dd5b2a6e259a')]).parameter_name"/>
 							</td>
 							
@@ -557,9 +551,13 @@
                          </tbody>  
                     </table>
 
-					<div style="page-break-inside: avoid;">
-								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+					 <div style="margin-top:10px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
 									<ul>
+									   
 										<t t-if="data.notes_id">
 											<t t-foreach="data.notes_id" t-as="n">
 												<li>
@@ -575,10 +573,10 @@
 										</li>
 									</ul>
 								</div>
-							</div>
+				</div>
 
 
-							<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
 									<div>
 										<div>
 											<b>
@@ -645,7 +643,7 @@
 							<!-- <div style="text-align:center;margin-top:25px">
 								......End of Report......
 							</div> -->
-							<div style="margin-top: 20px; text-align: center;">
+							<div style="margin-top: 10px; text-align: center;">
 								<p style="border-top: 1px dashed #000; padding-top: 10px;">
 									...... End Of Report......
 								</p>
