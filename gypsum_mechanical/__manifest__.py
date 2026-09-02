@@ -3,12 +3,12 @@
 
 
 {
-    'name': 'Gypsum Chemical',
+    'name': 'Gypsum Mechanical',
     'version': '1.2',
     'category': 'LERM CIVIL',
-    'summary': 'Gypsum Chemical',
+    'summary': 'Gypsum Mechanical',
     'description': """
-This module contains all the common features of Gypsum Chemical.
+This module contains all the common features of Gypsum Mechanical.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
@@ -20,7 +20,7 @@ This module contains all the common features of Gypsum Chemical.
 
     'assets': {
     'web.assets_backend': [
-        'gypsum_chemical/static/src/css/custom_styles.css',
+        'gypsum_mechanical/static/src/css/custom_styles.css',
     ],
    },
   

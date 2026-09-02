@@ -1526,6 +1526,27 @@
 
 
 
+<record id="gypsum_mechanical_datasheet_action" model="ir.actions.report">
+    <field name="name">Gypsum DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gypsum_mechanical.gypsum_datasheet</field>
+    <field name="report_file">gypsum_mechanical.gypsum_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gypsum_mechanical_report_action" model="ir.actions.report">
+    <field name="name">Gypsum Mechanical Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gypsum_mechanical.gypsum_report</field>
+    <field name="report_file">gypsum_mechanical.gypsum_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 
 
 
