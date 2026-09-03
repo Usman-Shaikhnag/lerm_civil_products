@@ -55,287 +55,7 @@
                         </tree>
                       </field>
                     </div>
-                   
 
-                    <!-- Dimension -->
-                    <div invisible="not dimension_visible">
-                        <h1 class="text-center">
-                            <field name="dimension_name" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                    <div class="custom_table_borders" invisible="not dimension_visible">
-                        <field name="dimension_child_lines" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
-                                <field name='sr_no'/>
-                                <field name='length' class="blue-input" decoration-info="length != 0"/>
-                                <field name='width' class="blue-input" decoration-info="width != 0"/>
-                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
-                            </tree> 
-                         </field>   
-                    </div>
-                    <group/>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td style="text-align:center;width:20%"><label class="fw-bold" for="dimension_remarks" ></label></td>
-                                  <td style="text-align:center;width:80%;"><field name="dimension_remarks" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <div class="d-flex gap-3" invisible="dimension_visible == False"> 
-                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False" style="white-space:nowrap;">
-                            <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_length">Average Length (mm)</label></td>
-                                  <td><field name="avg_length"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_length_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_length_confirmity"
-                                        decoration-success="avg_length_confirmity == 'pass'" 
-                                        decoration-danger="avg_length_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_length_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_length_nabl"
-                                        decoration-success="avg_length_nabl == 'pass'" 
-                                        decoration-danger="avg_length_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_width">Average Width (mm)</label></td>
-                                  <td><field name="avg_width"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_width_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_width_confirmity"
-                                        decoration-success="avg_width_confirmity == 'pass'" 
-                                        decoration-danger="avg_width_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_width_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_width_nabl"
-                                        decoration-success="avg_width_nabl == 'pass'" 
-                                        decoration-danger="avg_width_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_thickness">Average Thickness (mm)</label></td>
-                                  <td><field name="avg_thickness"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_thickness_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_thickness_confirmity"
-                                        decoration-success="avg_thickness_confirmity == 'pass'" 
-                                        decoration-danger="avg_thickness_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_thickness_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_thickness_nabl"
-                                        decoration-success="avg_thickness_nabl == 'pass'" 
-                                        decoration-danger="avg_thickness_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                    <group/>
-
-
-                    <!-- Flatness -->
-                    <!-- <div invisible="not flatness_visible">
-                        <h1 class="text-center">
-                            <field name="flatness_name" readonly="1" nolabel="1"/>
-                            <field name="flatness_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                    <div class="custom_table_borders" invisible="not flatness_visible">
-                     <h3>A.Concavity Measurement</h3>
-                        <field name="flat_concavity_child_lines" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
-                                <field name='sr_no' width="120"/>
-                                <field name='gap_diagonal_1' class="blue-input" decoration-info="gap_diagonal_1 != 0" width="120"/>
-                                <field name='gap_diagonal_2' class="blue-input" decoration-info="gap_diagonal_2 != 0" width="120"/>
-                                <field name='maximum_gap' width="120"/>
-                                <field name='requirement' class="blue-input" decoration-info="requirement != 0" width="120"/>
-                                <field name='result' width="150"/>
-                            </tree> 
-                         </field>   
-                    </div>
-                    <group/>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="flatness_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="sample_concavity">Concavity of Sample</label></td>
-                                  <td><field name="sample_concavity"/><span>  mm</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <div class="custom_table_borders" invisible="not flatness_visible">
-                     <h3>B. Convexity Measurement	</h3>
-                        <field name="flat_convexity_child_lines" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
-                                <field name='sr_no' width="120"/>
-                                <field name='gap_diagonal_1' class="blue-input" decoration-info="gap_diagonal_1 != 0" width="120"/>
-                                <field name='gap_diagonal_2' class="blue-input" decoration-info="gap_diagonal_2 != 0" width="120"/>
-                                <field name='maximum_gap' width="120"/>
-                                <field name='requirement' class="blue-input" decoration-info="requirement != 0" width="120"/>
-                                <field name='result' width="150"/>
-                            </tree> 
-                         </field>   
-                    </div>
-                    <group/>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="flatness_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="sample_convexity">Convexity of Sample</label></td>
-                                  <td><field name="sample_convexity"/><span>  mm</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="flatness_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td style="text-align:center;font-weight:bold;"><span class="fw-bold">Parameter</span></td>
-                                <td style="text-align:center;font-weight:bold;"><span class="fw-bold">Observed Value</span></td>
-                                <td style="text-align:center;font-weight:bold;"><span class="fw-bold">Permissible Limit (mm)</span></td>
-                                <td style="text-align:center;font-weight:bold;"><span class="fw-bold">Result</span></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;"><span class="fw-bold">Concavity</span></td>
-                                <td style="text-align:center;"><field name="sample_concavity"/></td>
-                                <td style="text-align:center;"><span class="fw-bold">&lt;= 1</span></td>
-                                <td style="text-align:center;"><field name="concavity_result"/></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;"><span class="fw-bold">Convexity</span></td>
-                                <td style="text-align:center;"><field name="sample_convexity"/></td>
-                                <td style="text-align:center;"><span class="fw-bold">&lt;= 1</span></td>
-                                <td style="text-align:center;"><field name="convexity_result"/></td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-
-                    <!-- Perpendicularity -->
-                    <!-- <div invisible="not perpendicularity_visible">
-                        <h1 class="text-center">
-                            <field name="perpendicularity_name" readonly="1" nolabel="1"/>
-                            <field name="perpendicularity_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                    <div class="custom_table_borders" invisible="not perpendicularity_visible">
-                        <field name="perpendicularity_line_ids" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
-                                <field name='sr_no' width="120"/>
-                                <field name='edge_length' class="blue-input" decoration-info="edge_length != 0" width="120"/>
-                                <field name='gap_side_1' class="blue-input" decoration-info="gap_side_1 != 0" width="120"/>
-                                <field name='gap_opposite_side_1' class="blue-input" decoration-info="gap_opposite_side_1 != 0" width="120"/>
-
-                                <field name='largest_gap' width="120"/>
-                                
-                                <field name='permissible_gap' width="150"/>
-                                <field name='maximum_gap_observed' width="120"/>
-                            </tree> 
-                         </field>   
-                    </div>
-                    <group/>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="perpendicularity_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="maximum_gap_observed">Maximum Gap Observed (mm)</label></td>
-                                  <td><field name="maximum_gap_observed"/><span>  mm</span></td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-
-
-                    <!-- Straightness -->
-                    <div invisible="not straightness_visible">
-                        <h1 class="text-center">
-                            <field name="straightness_name" readonly="1" nolabel="1"/>
-                            <field name="straightness_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                    <div class="custom_table_borders" invisible="not straightness_visible">
-                        <field name="straightness_line_ids" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
-                                <field name='sr_no' width="120"/>
-                                <field name='edge_length' class="blue-input" decoration-info="edge_length != 0" width="120"/>
-                                <field name='permissible_gap' width="150"/>
-                                <field name='edge_1_gap' class="blue-input" decoration-info="edge_1_gap != 0" width="120"/>
-                                <field name='edge_2_gap' class="blue-input" decoration-info="edge_2_gap != 0" width="120"/>
-                                <field name='edge_3_gap' class="blue-input" decoration-info="edge_3_gap != 0" width="120"/>
-                                <field name='edge_4_gap' class="blue-input" decoration-info="edge_4_gap != 0" width="120"/>
-                
-                                <field name='maximum_gap_observed' width="120"/>
-                            </tree> 
-                         </field>   
-                    </div>
-                    <group/>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="straightness_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="straightness_max_gap">Maximum Gap Observed (mm)</label></td>
-                                  <td><field name="straightness_max_gap"/><span>  mm</span></td>
-                            </tr>
-
-                            <tr>
-                                <td><label class="fw-bold" for="straightness_max_gap_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="straightness_max_gap_confirmity"
-                                        decoration-success="straightness_max_gap_confirmity == 'pass'" 
-                                        decoration-danger="straightness_max_gap_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="straightness_max_gap_nabl">NABL</label></td>
-                                <td>
-                                    <field name="straightness_max_gap_nabl"
-                                        decoration-success="straightness_max_gap_nabl == 'pass'" 
-                                        decoration-danger="straightness_max_gap_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
 
                     <!-- Water Absorption  -->
@@ -354,7 +74,6 @@
                                 <field name='sr_no'/>
                                 <field name='dry_mass_w1' class="blue-input" decoration-info="dry_mass_w1 != 0"/>
                                 <field name='saturated_mass_w2' class="blue-input" decoration-info="saturated_mass_w2 != 0"/>
-                                <field name='gain_in_mass'/>
                                 <field name='water_absorption'/>
                                   
                             </tree>  
@@ -365,7 +84,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="average_water_absorption">Average Water Absorption (%)</label></td>
-                                  <td><field name="average_water_absorption"/><span>  mm</span></td>
+                                  <td><field name="average_water_absorption"/><span>  (%)</span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="average_water_absorption_confirmity">Conformity</label></td>
@@ -389,56 +108,58 @@
 
 
 
-
-                    <!-- Bulk Density  -->
-
-                       <div invisible="not bulk_density_visible">
+                    <!-- Straightness -->
+                    <div invisible="not straightness_visible">
                         <h1 class="text-center">
-                            <field name="bulk_density_name" readonly="1" nolabel="1"/>
-                            <field name="bulk_density_visible" invisible="1"/>
+                            <field name="straightness_name" readonly="1" nolabel="1"/>
+                            <field name="straightness_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
 
-                       <div class="custom_table_borders" invisible="not bulk_density_visible">
-                        <field name="bulk_density_line_ids" nolabel="1" colspan="2">
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='m1' class="blue-input" decoration-info="m1 != 0"/>
-                                <field name='m2' class="blue-input" decoration-info="m2 != 0"/>
-                                <field name='m3' class="blue-input" decoration-info="m3 != 0"/>
-                                <field name='volume'/>
-                                <field name='bulk_density'/>
-                                  
-                            </tree>  
-                         </field>    
-                    </div>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="bulk_density_visible == False" style="white-space:nowrap;">
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="straightness_visible == False" style="white-space:nowrap;">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="avg_bulk_density">Average Bulk Density ,g/cc</label></td>
-                                  <td><field name="avg_bulk_density"/><span>  g/cc</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_bulk_density_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_bulk_density_confirmity"
-                                        decoration-success="avg_bulk_density_confirmity == 'pass'" 
-                                        decoration-danger="avg_bulk_density_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_bulk_density_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_bulk_density_nabl"
-                                        decoration-success="avg_bulk_density_nabl == 'pass'" 
-                                        decoration-danger="avg_bulk_density_nabl == 'fail'"/>
-                                </td>
+                                <td><label class="fw-bold" for="straightness_report_type"></label></td>
+                                  <td><field name="straightness_report_type" class="blue-input" decoration-info="straightness_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
+
+                     <div class="d-flex gap-2">
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="straightness_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="straightness_length"></label></td>
+                                  <td><field name="straightness_length" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="straightness_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="straightness_width"></label></td>
+                                  <td><field name="straightness_width" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    
+                    <div class="custom_table_borders" invisible="not straightness_visible">
+                        <field name="straightness_line_ids" nolabel="1" colspan="2" >
+                            <tree editable="bottom" >
+                                <field name='sr_no' width="120"/>
+                                <field name='side1' class="blue-input" decoration-info="side1 != 0" width="120"/>
+                                <field name='side2' class="blue-input" decoration-info="side2 != 0" width="120"/>
+                                <field name='side3' class="blue-input" decoration-info="side3 != 0" width="120"/>
+                                <field name='side4' class="blue-input" decoration-info="side4 != 0" width="120"/>
+                                <field name='deviation_length' width="120"/>
+                                <field name='deviation_width' width="120"/>
+                                <field name='average' width="120"/>
+                            </tree> 
+                         </field>   
+                    </div>
+                    <group/>
 
 
                     <!-- Rectangularity -->
@@ -448,55 +169,53 @@
                             <field name="rectangularity_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="rectangularity_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="rectangularity_report_type"></label></td>
+                                  <td><field name="rectangularity_report_type" class="blue-input" decoration-info="rectangularity_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2">
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="rectangularity_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="rectangularity_length"></label></td>
+                                  <td><field name="rectangularity_length" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="rectangularity_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="rectangularity_width"></label></td>
+                                  <td><field name="rectangularity_width" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
                     
                     <div class="custom_table_borders" invisible="not rectangularity_visible">
                         <field name="rectangularity_line_ids" nolabel="1" colspan="2" >
                             <tree editable="bottom" >
                                 <field name='sr_no' width="120"/>
-                                <field name='corner_1' class="blue-input" decoration-info="corner_1 != 0" width="120"/>
-                                <field name='corner_2' class="blue-input" decoration-info="corner_2 != 0" width="120"/>
-                                <field name='corner_3' class="blue-input" decoration-info="corner_3 != 0" width="120"/>
-                                <field name='corner_4' class="blue-input" decoration-info="corner_4 != 0" width="120"/>
-                                <field name='max_delta' width="120"/>
-                                <field name='length_width' class="blue-input" decoration-info="length_width != 0" width="120"/>
-                
-                                <field name='rectangularity' width="120"/>
-
-                                <field name='result' width="120"/>
+                                <field name='side1' class="blue-input" decoration-info="side1 != 0" width="120"/>
+                                <field name='side2' class="blue-input" decoration-info="side2 != 0" width="120"/>
+                                <field name='side3' class="blue-input" decoration-info="side3 != 0" width="120"/>
+                                <field name='side4' class="blue-input" decoration-info="side4 != 0" width="120"/>
+                                <field name='deviation_length' width="120"/>
+                                <field name='deviation_width' width="120"/>
+                                <field name='average' width="120"/>
                             </tree> 
                          </field>   
                     </div>
                     <group/>
 
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="rectangularity_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="average_rectangularity">Average Rectangularity (%)</label></td>
-                                  <td><field name="average_rectangularity"/><span>  (%)</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="average_rectangularity_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="average_rectangularity_confirmity"
-                                        decoration-success="average_rectangularity_confirmity == 'pass'" 
-                                        decoration-danger="average_rectangularity_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="average_rectangularity_nabl">NABL</label></td>
-                                <td>
-                                    <field name="average_rectangularity_nabl"
-                                        decoration-success="average_rectangularity_nabl == 'pass'" 
-                                        decoration-danger="average_rectangularity_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
-
-
-                     <!-- Deviation in Length and Width  -->
+                    <!-- Deviation in Length and Width  -->
 
                        <div invisible="not deviation_visible">
                         <h1 class="text-center">
@@ -505,6 +224,15 @@
                         </h1>
                     </div>
                     <group/>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="deviation_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="deviation_report_type"></label></td>
+                                  <td><field name="deviation_report_type" class="blue-input" decoration-info="deviation_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <div class="d-flex gap-2" invisible="deviation_visible == False"> 
                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="deviation_visible == False" style="white-space:nowrap;">
@@ -531,88 +259,284 @@
                         <field name="deviation_line_ids" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='sr_no' width="120"/>
-                                <field name='length' class="blue-input" decoration-info="length != 0" width="120"/>
-                                <field name='width' class="blue-input" decoration-info="width != 0" width="120"/>
-                                <field name='length_deviation' width="120"/>
-                                <field name='width_deviation' width="120"/>
-                                <field name='result' class="blue-input" decoration-info="result != 0" width="120"/>
+                                <field name='side1' class="blue-input" decoration-info="side1 != 0" width="120"/>
+                                <field name='side2' class="blue-input" decoration-info="side2 != 0" width="120"/>
+                                <field name='side3' class="blue-input" decoration-info="side3 != 0" width="120"/>
+                                <field name='side4' class="blue-input" decoration-info="side4 != 0" width="120"/>
+                                <field name='deviation_length' width="120"/>
+                                <field name='deviation_width' width="120"/>
+                                <field name='average' width="120"/>
                                   
                             </tree>  
                          </field>    
                     </div>
 
-                    <div class="d-flex gap-2" invisible="deviation_visible == False"> 
-                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="deviation_visible == False" style="white-space:nowrap;">
-                            <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_length_deviation">Average Length Deviation (%)</label></td>
-                                  <td><field name="avg_length_deviation"/></td>
-                            </tr>
-                              <tr>
-                                <td><label class="fw-bold" for="avg_length_deviation_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_length_deviation_confirmity"
-                                        decoration-success="avg_length_deviation_confirmity == 'pass'" 
-                                        decoration-danger="avg_length_deviation_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_length_deviation_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_length_deviation_nabl"
-                                        decoration-success="avg_length_deviation_nabl == 'pass'" 
-                                        decoration-danger="avg_length_deviation_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="deviation_visible == False" style="white-space:nowrap;">
+
+                    <!-- Thickness -->
+
+
+                    <div invisible="not thickness_visible">
+                        <h1 class="text-center">
+                            <field name="thickness_name" readonly="1" nolabel="1"/>
+                            <field name="thickness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="thickness_visible == False" style="white-space:nowrap;">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="avg_width_deviation">Average Width Deviation (%)</label></td>
-                                  <td><field name="avg_width_deviation"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_width_deviation_confirmity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_width_deviation_confirmity"
-                                        decoration-success="avg_width_deviation_confirmity == 'pass'" 
-                                        decoration-danger="avg_width_deviation_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                               <td><label class="fw-bold" for="avg_width_deviation_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_width_deviation_nabl"
-                                        decoration-success="avg_width_deviation_nabl == 'pass'" 
-                                        decoration-danger="avg_width_deviation_nabl == 'fail'"/>
-                                </td>
+                                <td><label class="fw-bold" for="thickness_report_type"></label></td>
+                                  <td><field name="thickness_report_type" class="blue-input" decoration-info="thickness_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="thickness_visible == False" style="white-space:nowrap;">
+                            <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="nominal_thickness">Nominal Thickness</label></td>
+                                  <td><field name="nominal_thickness"  class="blue-input"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+
+                       <div class="custom_table_borders" invisible="not thickness_visible">
+                        <field name="thickness_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="120"/>
+                                <field name='t1' class="blue-input" decoration-info="t1 != 0" width="120"/>
+                                <field name='t2' class="blue-input" decoration-info="t2 != 0" width="120"/>
+                                <field name='t3' class="blue-input" decoration-info="t3 != 0" width="120"/>
+                                <field name='t4' class="blue-input" decoration-info="t4 != 0" width="120"/>
+                                <field name='average' width="120"/>
+                                <field name='deviation' width="120"/>
+                                  
+                            </tree>  
+                         </field>    
+                    </div>
+                    
+
+                    <!-- Center Curvature -->
+
+
+                    <div invisible="not center_curvature_visible">
+                        <h1 class="text-center">
+                            <field name="center_curvature_name" readonly="1" nolabel="1"/>
+                            <field name="center_curvature_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="center_curvature_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="center_curvature_report_type"></label></td>
+                                  <td><field name="center_curvature_report_type" class="blue-input" decoration-info="center_curvature_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                        <div class="d-flex gap-2" invisible="center_curvature_visible == False"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="center_curvature_visible == False" style="white-space:nowrap;">
+                            <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="center_curvature_length">Length</label></td>
+                                  <td><field name="center_curvature_length"  class="blue-input"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="center_curvature_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="center_curvature_width">Width</label></td>
+                                  <td><field name="center_curvature_width"  class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                   </div>
+
+
+                       <div class="custom_table_borders" invisible="not center_curvature_visible">
+                        <field name="center_curvature_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="120"/>
+                                <field name='center1' class="blue-input" decoration-info="center1 != 0" width="120"/>
+                                <field name='center2' class="blue-input" decoration-info="center2 != 0" width="120"/>
+                                <field name='center3' class="blue-input" decoration-info="center3 != 0" width="120"/>
+                                <field name='center4' class="blue-input" decoration-info="center4 != 0" width="120"/>
+                                <field name='diagonal' width="120"/>
+                                <field name='deviation1' width="120"/>
+                                <field name='deviation2' width="120"/>
+                                <field name='average_percent' width="120"/>
+                                  
+                            </tree>  
+                         </field>    
                     </div>
 
 
-                   
 
-                     
-                   
+                    <!-- Edge Curvature -->
+
+
+                    <div invisible="not edge_curvature_visible">
+                        <h1 class="text-center">
+                            <field name="edge_curvature_name" readonly="1" nolabel="1"/>
+                            <field name="edge_curvature_visible" invisible="1"/>
+                        </h1>
+                    </div>
                     
+                    
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="edge_curvature_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="edge_curvature_report_type"></label></td>
+                                  <td><field name="edge_curvature_report_type" class="blue-input" decoration-info="edge_curvature_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
+                        <div class="d-flex gap-2" invisible="edge_curvature_visible == False"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="edge_curvature_visible == False" style="white-space:nowrap;">
+                            <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="edge_curvature_length">Length</label></td>
+                                  <td><field name="edge_curvature_length"  class="blue-input"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="edge_curvature_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="edge_curvature_width">Width</label></td>
+                                  <td><field name="edge_curvature_width"  class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                   </div>
+
+
+                       <div class="custom_table_borders" invisible="not edge_curvature_visible">
+                        <field name="edge_curvature_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="120"/>
+                                <field name='edge1' class="blue-input" decoration-info="edge1 != 0" width="120"/>
+                                <field name='edge2' class="blue-input" decoration-info="edge2 != 0" width="120"/>
+                                <field name='edge3' class="blue-input" decoration-info="edge3 != 0" width="120"/>
+                                <field name='edge4' class="blue-input" decoration-info="edge4 != 0" width="120"/>
+                                <field name='deviation1' width="120"/>
+                                <field name='deviation2' width="120"/>
+                                <field name='average_percent' width="120"/>
+                                  
+                            </tree>  
+                         </field>    
+                    </div>
+
+
+                    <!-- Warpage -->
+
+
+                    <div invisible="not warpage_visible">
+                        <h1 class="text-center">
+                            <field name="warpage_name" readonly="1" nolabel="1"/>
+                            <field name="warpage_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="warpage_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="warpage_report_type"></label></td>
+                                  <td><field name="warpage_report_type" class="blue-input" decoration-info="warpage_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                        <div class="d-flex gap-2" invisible="warpage_visible == False"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="warpage_visible == False" style="white-space:nowrap;">
+                            <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="warpage_length">Length</label></td>
+                                  <td><field name="warpage_length"  class="blue-input" /></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="warpage_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="warpage_width">Width</label></td>
+                                  <td><field name="warpage_width"  class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                   </div>
+
+
+                       <div class="custom_table_borders" invisible="not warpage_visible">
+                        <field name="warpage_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="120"/>
+                                <field name='corner1' class="blue-input" decoration-info="corner1 != 0" width="120"/>
+                                <field name='corner2' class="blue-input" decoration-info="corner2 != 0" width="120"/>
+                                <field name='corner3' class="blue-input" decoration-info="corner3 != 0" width="120"/>
+                                <field name='corner4' class="blue-input" decoration-info="corner4 != 0" width="120"/>
+                                <field name='diagonal' width="120"/>
+                                <field name='deviation1' width="120"/>
+                                <field name='deviation2' width="120"/>
+                                <field name='average_percent' width="120"/>
+                                  
+                            </tree>  
+                         </field>    
+                    </div>
+
+
+                    <!--  MOHS Hardness -->
+
+
+                    <div invisible="not mohs_hardness_visible">
+                        <h1 class="text-center">
+                            <field name="mohs_hardness_name" readonly="1" nolabel="1"/>
+                            <field name="mohs_hardness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="mohs_hardness_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="mohs_hardness_report_type"></label></td>
+                                  <td><field name="mohs_hardness_report_type" class="blue-input" decoration-info="mohs_hardness_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div class="custom_table_borders" invisible="not mohs_hardness_visible">
+                        <field name="mohs_hardness_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="120"/>
+                                <field name='mohs_hardness' class="blue-input" decoration-info="mohs_hardness != 0" width="120"/>
+                                  
+                            </tree>  
+                         </field>    
+                    </div>
+
+
+
+                    
                    
 
-
-
-
-
-
-
-                   
-
+                    
 
                 
 

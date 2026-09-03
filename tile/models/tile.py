@@ -58,364 +58,6 @@ class Tile(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-    # Dimension
-
-    dimension_name = fields.Char("Name",default="Dimension")
-    dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible") 
-
-    
-    dimension_child_lines = fields.One2many('mechanical.dimension.tile.line','parent_id',string="Parameter")
-
-
-    avg_length = fields.Float(string="Average Length (mm)",compute="_compute_avg_dimensions",store=True,digits=(12,3))
-    avg_width = fields.Float(string="Average Width (mm)",compute="_compute_avg_dimensions",store=True,digits=(12,3))
-    avg_thickness = fields.Float(string="Average Thckness (mm)",compute="_compute_avg_dimensions",store=True,digits=(12,3))
-    dimension_remarks = fields.Char(string="Remarks")
-
-    @api.depends(
-        'dimension_child_lines.length',
-        'dimension_child_lines.width',
-        'dimension_child_lines.thickness'
-    )
-    def _compute_avg_dimensions(self):
-        for rec in self:
-            lines = rec.dimension_child_lines
-
-            if lines:
-                rec.avg_length = sum(lines.mapped('length')) / len(lines)
-                rec.avg_width = sum(lines.mapped('width')) / len(lines)
-                rec.avg_thickness = sum(lines.mapped('thickness')) / len(lines)
-            else:
-                rec.avg_length = 0.0
-                rec.avg_width = 0.0
-                rec.avg_thickness = 0.0
-
-
-    avg_length_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_length_confirmity")
-    
-    @api.depends('avg_length','eln_ref','grade')
-    def _compute_avg_length_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_length_confirmity = 'na'
-                continue
-            record.avg_length_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4a2a0491-0292-4331-98ac-9f79d7fc8705')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4a2a0491-0292-4331-98ac-9f79d7fc8705')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_length - record.avg_length*mu_value
-                    upper = record.avg_length + record.avg_length*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_length_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_length_confirmity = 'fail'
-
-    avg_length_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_length_nabl",store=True)
-
-    @api.depends('avg_length','eln_ref','grade')
-    def _compute_avg_length_nabl(self):
-        
-        for record in self:
-            record.avg_length_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4a2a0491-0292-4331-98ac-9f79d7fc8705')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4a2a0491-0292-4331-98ac-9f79d7fc8705')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_length - record.avg_length*mu_value
-                    upper = record.avg_length + record.avg_length*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_length_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_length_nabl = 'fail'
-
-
-    avg_width_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_width_confirmity")
-    
-    @api.depends('avg_width','eln_ref','grade')
-    def _compute_avg_width_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_width_confirmity = 'na'
-                continue
-            record.avg_width_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9163a2a2-d969-44f7-8455-66c0799cc61a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9163a2a2-d969-44f7-8455-66c0799cc61a')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_width - record.avg_width*mu_value
-                    upper = record.avg_width + record.avg_width*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_width_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_width_confirmity = 'fail'
-
-    avg_width_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_width_nabl",store=True)
-
-    @api.depends('avg_width','eln_ref','grade')
-    def _compute_avg_width_nabl(self):
-        
-        for record in self:
-            record.avg_width_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9163a2a2-d969-44f7-8455-66c0799cc61a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9163a2a2-d969-44f7-8455-66c0799cc61a')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_width - record.avg_width*mu_value
-                    upper = record.avg_width + record.avg_width*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_width_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_width_nabl = 'fail'
-
-
-    avg_thickness_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_thickness_confirmity")
-    
-    @api.depends('avg_thickness','eln_ref','grade')
-    def _compute_avg_thickness_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_thickness_confirmity = 'na'
-                continue
-            record.avg_thickness_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9bf7c4a0-641f-4ea5-918a-313315486ad7')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9bf7c4a0-641f-4ea5-918a-313315486ad7')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_thickness - record.avg_thickness*mu_value
-                    upper = record.avg_thickness + record.avg_thickness*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_thickness_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_thickness_confirmity = 'fail'
-
-    avg_thickness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_thickness_nabl",store=True)
-
-    @api.depends('avg_thickness','eln_ref','grade')
-    def _compute_avg_thickness_nabl(self):
-        
-        for record in self:
-            record.avg_thickness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9bf7c4a0-641f-4ea5-918a-313315486ad7')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9bf7c4a0-641f-4ea5-918a-313315486ad7')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_thickness - record.avg_thickness*mu_value
-                    upper = record.avg_thickness + record.avg_thickness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_thickness_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_thickness_nabl = 'fail'
-
-
-
-    # Flatness
-
-#     flatness_name = fields.Char("Name",default="Flatness")
-#     flatness_visible = fields.Boolean("Flatness Visible",compute="_compute_visible") 
-
-    
-#     flat_concavity_child_lines = fields.One2many('tile.concavity.line','parent_id',string="Parameter")
-
-
-#     sample_concavity = fields.Float(
-#         string='Concavity of Sample = Maximum recorded gap among the six tiles = ',
-#         compute='_compute_sample_concavity',
-#         store=True
-#     )
-
-#     @api.depends('flat_concavity_child_lines.maximum_gap')
-#     def _compute_sample_concavity(self):
-#         for rec in self:
-#             rec.sample_concavity = max(
-#                 rec.flat_concavity_child_lines.mapped('maximum_gap') or [0.0]
-#             )
-
-
-#     flat_convexity_child_lines = fields.One2many('tile.convexity.line','parent_id',string="Parameter")
-
-#     sample_convexity = fields.Float(
-#         string='Convexity of Sample = Maximum recorded gap among the six tiles = ',
-#         compute='_compute_sample_convexity',
-#         store=True
-#     )
-
-#     @api.depends('flat_convexity_child_lines.maximum_gap')
-#     def _compute_sample_convexity(self):
-#         for rec in self:
-#             rec.sample_convexity = max(
-#                 rec.flat_convexity_child_lines.mapped('maximum_gap') or [0.0]
-#             )
-
-
-#     concavity_result = fields.Selection(
-#     [('pass', 'PASS'), ('fail', 'FAIL')],
-#     compute='_compute_concavity_result',
-#     store=True
-# )
-
-#     @api.depends('sample_concavity')
-#     def _compute_concavity_result(self):
-#      for rec in self:
-#         rec.concavity_result = (
-#             'pass' if rec.sample_concavity <= 1.0 else 'fail'
-#         )
-
-#     convexity_result = fields.Selection(
-#     [('pass', 'PASS'), ('fail', 'FAIL')],
-#     compute='_compute_convexity_result',
-#     store=True
-# )
-
-#     @api.depends('sample_convexity')
-#     def _compute_convexity_result(self):
-#      for rec in self:
-#         rec.convexity_result = (
-#             'pass' if rec.sample_convexity <= 1.0 else 'fail'
-#         )
-
-
-
-    # Perpendicularity
-
-    # perpendicularity_name = fields.Char("Name",default="Perpendicularity")
-    # perpendicularity_visible = fields.Boolean("Perpendicularity Visible",compute="_compute_visible") 
-
-
-    # perpendicularity_line_ids = fields.One2many(
-    #     'tile.perpendicularity.line',
-    #     'parent_id',
-    #     string='Perpendicularity Lines'
-    # )
-
-    # maximum_gap_observed = fields.Float(
-    #     string='Maximum Gap Observed (mm)',
-    #     compute='_compute_maximum_gap_observed',
-    #     store=True
-    # )
-
-    # @api.depends('perpendicularity_line_ids.largest_gap')
-    # def _compute_maximum_gap_observed(self):
-    #  for rec in self:
-    #     gaps = rec.perpendicularity_line_ids.mapped('largest_gap')
-    #     rec.maximum_gap_observed = max(gaps) if gaps else 0.0
-
-
-    # Straightness
-
-    straightness_name = fields.Char("Name",default="Straightness")
-    straightness_visible = fields.Boolean("Straightness Visible",compute="_compute_visible") 
-
-    straightness_line_ids = fields.One2many(
-        'mechanical.straightness.tile.line',
-        'parent_id',
-        string='Straightness Lines'
-    )
-
-    straightness_max_gap = fields.Float(
-        string='Maximum Gap Observed (mm)',
-        compute='_compute_straightness_max_gap',
-        store=True
-    )
-
-    @api.depends('straightness_line_ids.maximum_gap_observed')
-    def _compute_straightness_max_gap(self):
-        for rec in self:
-            gaps = rec.straightness_line_ids.mapped('maximum_gap_observed')
-            rec.straightness_max_gap = max(gaps) if gaps else 0.0
-
-
-    straightness_max_gap_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_straightness_max_gap_confirmity")
-    
-    @api.depends('straightness_max_gap','eln_ref','grade')
-    def _compute_straightness_max_gap_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.straightness_max_gap_confirmity = 'na'
-                continue
-            record.straightness_max_gap_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.straightness_max_gap - record.straightness_max_gap*mu_value
-                    upper = record.straightness_max_gap + record.straightness_max_gap*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.straightness_max_gap_confirmity = 'pass'
-                        break
-                    else:
-                        record.straightness_max_gap_confirmity = 'fail'
-
-    straightness_max_gap_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_straightness_max_gap_nabl",store=True)
-
-    @api.depends('straightness_max_gap','eln_ref','grade')
-    def _compute_straightness_max_gap_nabl(self):
-        
-        for record in self:
-            record.straightness_max_gap_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.straightness_max_gap - record.straightness_max_gap*mu_value
-                    upper = record.straightness_max_gap + record.straightness_max_gap*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.straightness_max_gap_nabl = 'pass'
-                        break
-                    else:
-                        record.straightness_max_gap_nabl = 'fail'
-
-
     # Water Absorption
     water_absorption_name = fields.Char("Name",default="Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")   
@@ -492,84 +134,111 @@ class Tile(models.Model):
                     else:
                         record.average_water_absorption_nabl = 'fail'
 
-    
 
-    # Bulk Density
-    bulk_density_name = fields.Char("Name",default="Bulk Density")
-    bulk_density_visible = fields.Boolean("Bulk Density Visible",compute="_compute_visible")   
-    
-    bulk_density_line_ids = fields.One2many(
-        'mechanical.bulk.tile.line',
+    # Straightness
+
+    straightness_name = fields.Char("Name",default="Straightness")
+    straightness_visible = fields.Boolean("Straightness Visible",compute="_compute_visible") 
+
+    straightness_length = fields.Float(
+        string='Length',
+    )
+
+    straightness_width = fields.Float(
+        string='Width',
+    )
+
+    straightness_line_ids = fields.One2many(
+        'mechanical.straightness.tile.line',
         'parent_id',
-        string='Bulk Density Lines'
+        string='Straightness Lines'
     )
 
-    avg_bulk_density = fields.Float(
-        string='Average Bulk Density (g/cc)',
-        compute='_compute_avg_bulk_density',
-        store=True
+    straightness_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
     )
 
-    @api.depends('bulk_density_line_ids.bulk_density')
-    def _compute_avg_bulk_density(self):
-        for rec in self:
-            lines = rec.bulk_density_line_ids.filtered(lambda l: l.bulk_density)
-            rec.avg_bulk_density = (
-                sum(lines.mapped('bulk_density')) / len(lines)
-                if lines else 0.0
-            )
+    straightness_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_straightness_nabl",
+    store=True
+)
 
-    avg_bulk_density_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_bulk_density_confirmity")
+    @api.depends('straightness_report_type')
+    def _compute_straightness_nabl(self):
+     for rec in self:
+        rec.straightness_nabl = 'pass' if rec.straightness_report_type == 'nabl' else 'fail'
+
+
+    # straightness_max_gap = fields.Float(
+    #     string='Maximum Gap Observed (mm)',
+    #     compute='_compute_straightness_max_gap',
+    #     store=True
+    # )
+
+    # @api.depends('straightness_line_ids.average')
+    # def _compute_straightness_max_gap(self):
+    #     for rec in self:
+    #         gaps = rec.straightness_line_ids.mapped('average')
+    #         rec.straightness_max_gap = max(gaps) if gaps else 0.0
+
+
+    # straightness_max_gap_confirmity = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_straightness_max_gap_confirmity")
     
-    @api.depends('avg_bulk_density','eln_ref','grade')
-    def _compute_avg_bulk_density_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_bulk_density_confirmity = 'na'
-                continue
-            record.avg_bulk_density_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_bulk_density - record.avg_bulk_density*mu_value
-                    upper = record.avg_bulk_density + record.avg_bulk_density*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_bulk_density_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_bulk_density_confirmity = 'fail'
+    # @api.depends('straightness_max_gap','eln_ref','grade')
+    # def _compute_straightness_max_gap_confirmity(self):
+    #     for record in self:
+    #         if not record.eln_ref or not record.eln_ref.conformity:
+    #             record.straightness_max_gap_confirmity = 'na'
+    #             continue
+    #         record.straightness_max_gap_confirmity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+    #                 lower = record.straightness_max_gap - record.straightness_max_gap*mu_value
+    #                 upper = record.straightness_max_gap + record.straightness_max_gap*mu_value
+    #                 if lower >= req_min and upper <= req_max :
+    #                     record.straightness_max_gap_confirmity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.straightness_max_gap_confirmity = 'fail'
 
-    avg_bulk_density_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_bulk_density_nabl",store=True)
+    # straightness_max_gap_nabl = fields.Selection([
+    #     ('pass', 'NABL'),
+    #     ('fail', 'Non-NABL')], string='NABL', compute="_compute_straightness_max_gap_nabl",store=True)
 
-    @api.depends('avg_bulk_density','eln_ref','grade')
-    def _compute_avg_bulk_density_nabl(self):
+    # @api.depends('straightness_max_gap','eln_ref','grade')
+    # def _compute_straightness_max_gap_nabl(self):
         
-        for record in self:
-            record.avg_bulk_density_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.straightness_max_gap_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 lab_min = line.lab_min_value
+    #                 lab_max = line.lab_max_value
+    #                 mu_value = line.mu_value
                     
-                    lower = record.avg_bulk_density - record.avg_bulk_density*mu_value
-                    upper = record.avg_bulk_density + record.avg_bulk_density*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_bulk_density_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_bulk_density_nabl = 'fail'
-
+    #                 lower = record.straightness_max_gap - record.straightness_max_gap*mu_value
+    #                 upper = record.straightness_max_gap + record.straightness_max_gap*mu_value
+    #                 if lower >= lab_min and upper <= lab_max:
+    #                     record.straightness_max_gap_nabl = 'pass'
+    #                     break
+    #                 else:
+    #                     record.straightness_max_gap_nabl = 'fail'
 
 
     # Rectangularity
@@ -581,237 +250,257 @@ class Tile(models.Model):
         'parent_id',
         string='Rectangularity Lines')
 
-    average_rectangularity = fields.Float(
-    string="Average Rectangularity (%)",
-    compute="_compute_average_rectangularity",
-    store=True,digits=(10,3))
 
-    @api.depends('rectangularity_line_ids.rectangularity')
-    def _compute_average_rectangularity(self):
-        for rec in self:
-            values = rec.rectangularity_line_ids.mapped('rectangularity')
-            rec.average_rectangularity = (
-                sum(values) / len(values)
-            ) if values else 0.0
-
-
-    average_rectangularity_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_average_rectangularity_confirmity")
-    
-    @api.depends('average_rectangularity','eln_ref','grade')
-    def _compute_average_rectangularity_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.average_rectangularity_confirmity = 'na'
-                continue
-            record.average_rectangularity_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.average_rectangularity - record.average_rectangularity*mu_value
-                    upper = record.average_rectangularity + record.average_rectangularity*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.average_rectangularity_confirmity = 'pass'
-                        break
-                    else:
-                        record.average_rectangularity_confirmity = 'fail'
-
-    average_rectangularity_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_average_rectangularity_nabl",store=True)
-
-    @api.depends('average_rectangularity','eln_ref','grade')
-    def _compute_average_rectangularity_nabl(self):
-        
-        for record in self:
-            record.average_rectangularity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_rectangularity - record.average_rectangularity*mu_value
-                    upper = record.average_rectangularity + record.average_rectangularity*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_rectangularity_nabl = 'pass'
-                        break
-                    else:
-                        record.average_rectangularity_nabl = 'fail'
-
-
-    # Deviation in Length and Width
-    deviation_name = fields.Char("Name",default="Deviation in Length and Width")
-    deviation_visible = fields.Boolean("Deviation in Length and Width Visible",compute="_compute_visible")   
-
-    work_length = fields.Float(
-        string='Work Length (mm)',
+    rectangularity_length = fields.Float(
+        string='Length',
     )
 
-    work_width = fields.Float(
-        string='Work Width (mm)',
+
+    rectangularity_width = fields.Float(
+        string='Width',
     )
-    
+
+
+    rectangularity_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    rectangularity_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_rectangularity_nabl",
+    store=True
+)
+
+    @api.depends('rectangularity_report_type')
+    def _compute_rectangularity_nabl(self):
+     for rec in self:
+        rec.rectangularity_nabl = 'pass' if rec.rectangularity_report_type == 'nabl' else 'fail'
+
+
+    # Dimension of Tiles (Measurement of Length & Width) 						
+    deviation_name = fields.Char("Name",default="Dimension of Tiles (Measurement of Length & Width) ")
+    deviation_visible = fields.Boolean("Dimension of Tiles (Measurement of Length & Width)  Visible",compute="_compute_visible")  
+
     deviation_line_ids = fields.One2many(
         'tile.length.width.line',
         'parent_id',
-        string='Deviation in Length and Width Lines')
-    
+        string='Dimension of Tiles (Measurement of Length & Width) Lines') 
 
-    avg_length_deviation = fields.Float(
-        string='Average Length Deviation (%)',
-        compute='_compute_average_deviation',
-        store=True,
-        digits=(16, 3)
+    work_length = fields.Float(
+        string='Nominal Length',
     )
 
-    avg_width_deviation = fields.Float(
-        string='Average Width Deviation (%)',
-        compute='_compute_average_deviation',
-        store=True,
-        digits=(16, 3)
+    work_width = fields.Float(
+        string='Width',
+    )
+    
+    deviation_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
     )
 
-    @api.depends(
-        'deviation_line_ids.length_deviation',
-        'deviation_line_ids.width_deviation'
+    deviation_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_deviation_nabl",
+    store=True
+)
+
+    @api.depends('deviation_report_type')
+    def _compute_deviation_nabl(self):
+     for rec in self:
+        rec.deviation_nabl = 'pass' if rec.deviation_report_type == 'nabl' else 'fail'
+
+
+    # Deviation in Thickness %
+
+    thickness_name = fields.Char("Name",default="Nominal Thickness of Tiles")
+    thickness_visible = fields.Boolean("Nominal Thickness of Tiles Visible",compute="_compute_visible") 
+
+    
+    thickness_child_lines = fields.One2many('tile.thickness.line','parent_id',string="Parameter")
+
+    nominal_thickness = fields.Float(
+        string='Nominal Thickness',
     )
-    def _compute_average_deviation(self):
-        for rec in self:
-            count = len(rec.deviation_line_ids)
 
-            if count:
-                rec.avg_length_deviation = (
-                    sum(rec.deviation_line_ids.mapped('length_deviation')) / count
-                )
-                rec.avg_width_deviation = (
-                    sum(rec.deviation_line_ids.mapped('width_deviation')) / count
-                )
-            else:
-                rec.avg_length_deviation = 0.0
-                rec.avg_width_deviation = 0.0
+    thickness_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
 
-    
-    avg_length_deviation_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_length_deviation_confirmity")
-    
-    @api.depends('avg_length_deviation','eln_ref','grade')
-    def _compute_avg_length_deviation_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_length_deviation_confirmity = 'na'
-                continue
-            record.avg_length_deviation_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_length_deviation - record.avg_length_deviation*mu_value
-                    upper = record.avg_length_deviation + record.avg_length_deviation*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_length_deviation_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_length_deviation_confirmity = 'fail'
+    thickness_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_thickness_nabl",
+    store=True
+)
 
-    avg_length_deviation_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_length_deviation_nabl",store=True)
-
-    @api.depends('avg_length_deviation','eln_ref','grade')
-    def _compute_avg_length_deviation_nabl(self):
-        
-        for record in self:
-            record.avg_length_deviation_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_length_deviation - record.avg_length_deviation*mu_value
-                    upper = record.avg_length_deviation + record.avg_length_deviation*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_length_deviation_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_length_deviation_nabl = 'fail'
+    @api.depends('thickness_report_type')
+    def _compute_thickness_nabl(self):
+     for rec in self:
+        rec.thickness_nabl = 'pass' if rec.thickness_report_type == 'nabl' else 'fail'
 
 
-    avg_width_deviation_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_width_deviation_confirmity")
-    
-    @api.depends('avg_width_deviation','eln_ref','grade')
-    def _compute_avg_width_deviation_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_width_deviation_confirmity = 'na'
-                continue
-            record.avg_width_deviation_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b59cf75-9b95-4c36-8042-75e425c80e51')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b59cf75-9b95-4c36-8042-75e425c80e51')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_width_deviation - record.avg_width_deviation*mu_value
-                    upper = record.avg_width_deviation + record.avg_width_deviation*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_width_deviation_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_width_deviation_confirmity = 'fail'
+    # Center Curvature
 
-    avg_width_deviation_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_width_deviation_nabl",store=True)
-
-    @api.depends('avg_width_deviation','eln_ref','grade')
-    def _compute_avg_width_deviation_nabl(self):
-        
-        for record in self:
-            record.avg_width_deviation_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b59cf75-9b95-4c36-8042-75e425c80e51')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b59cf75-9b95-4c36-8042-75e425c80e51')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_width_deviation - record.avg_width_deviation*mu_value
-                    upper = record.avg_width_deviation + record.avg_width_deviation*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_width_deviation_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_width_deviation_nabl = 'fail'
-
+    center_curvature_name = fields.Char("Name",default="Center Curvature")
+    center_curvature_visible = fields.Boolean("Center Curvature Visible",compute="_compute_visible") 
 
     
+    center_curvature_child_lines = fields.One2many('tile.center.curvature.line','parent_id',string="Parameter")
+
+    center_curvature_length = fields.Float(
+        string='Length',
+    )
+
+    center_curvature_width = fields.Float(
+        string='Width',
+    )
 
 
+    center_curvature_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    center_curvature_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_center_curvature_nabl",
+    store=True
+)
+
+    @api.depends('center_curvature_report_type')
+    def _compute_center_curvature_nabl(self):
+     for rec in self:
+        rec.center_curvature_nabl = 'pass' if rec.center_curvature_report_type == 'nabl' else 'fail'
 
 
+    # Edge Curvature
+
+    edge_curvature_name = fields.Char("Name",default="Edge Curvature")
+    edge_curvature_visible = fields.Boolean("Edge Curvature Visible",compute="_compute_visible") 
+
+    
+    edge_curvature_child_lines = fields.One2many('tile.edge.curvature.line','parent_id',string="Parameter")
+
+    edge_curvature_length = fields.Float(
+        string='Length',
+    )
+
+    edge_curvature_width = fields.Float(
+        string='Width',
+    )
+
+    edge_curvature_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='non_nabl',
+        required=True,
+    )
+
+    edge_curvature_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_edge_curvature_nabl",
+    store=True
+)
+
+    @api.depends('edge_curvature_report_type')
+    def _compute_edge_curvature_nabl(self):
+     for rec in self:
+        rec.edge_curvature_nabl = 'pass' if rec.edge_curvature_report_type == 'nabl' else 'fail'
 
 
+    # Warpage
+
+    warpage_name = fields.Char("Name",default="Warpage")
+    warpage_visible = fields.Boolean("Warpage Visible",compute="_compute_visible") 
+
+    
+    warpage_child_lines = fields.One2many('tile.warpage.line','parent_id',string="Parameter")
+
+    warpage_length = fields.Float(
+        string='Length',
+    )
+
+    warpage_width = fields.Float(
+        string='Width',
+    )
 
 
+    warpage_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    warpage_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_warpage_nabl",
+    store=True
+)
+
+    @api.depends('warpage_report_type')
+    def _compute_warpage_nabl(self):
+     for rec in self:
+        rec.warpage_nabl = 'pass' if rec.warpage_report_type == 'nabl' else 'fail'
+
+    # MOHS Hardness
+
+    mohs_hardness_name = fields.Char("Name",default="MOHS Hardness")
+    mohs_hardness_visible = fields.Boolean("MOHS Hardness Visible",compute="_compute_visible") 
+
+    
+    mohs_hardness_child_lines = fields.One2many('tile.mohs.hardness.line','parent_id',string="Parameter")
+
+    mohs_hardness_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    mohs_hardness_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_mohs_hardness_nabl",
+    store=True
+)
+
+    @api.depends('mohs_hardness_report_type')
+    def _compute_mohs_hardness_nabl(self):
+     for rec in self:
+        rec.mohs_hardness_nabl = 'pass' if rec.mohs_hardness_report_type == 'nabl' else 'fail'
+
+    
 
 
    ### Compute Visible
@@ -820,14 +509,16 @@ class Tile(models.Model):
         
         for record in self:
 
-            record.dimension_visible = False
-            # record.flatness_visible = False
-            # record.perpendicularity_visible = False
-            record.straightness_visible = False
             record.water_absorption_visible = False
-            record.bulk_density_visible = False
+            record.straightness_visible = False
             record.rectangularity_visible = False
             record.deviation_visible = False
+            record.thickness_visible = False
+            record.center_curvature_visible = False
+            record.edge_curvature_visible = False
+            record.warpage_visible = False
+            record.mohs_hardness_visible = False
+            
            
             
             
@@ -835,29 +526,41 @@ class Tile(models.Model):
                 print("Internal Ids",sample.internal_id)
 
                
-                if sample.internal_id == "1db41e6d-550e-4c5d-a923-7510a616beb5":
-                    record.dimension_visible = True
-
-                # if sample.internal_id == "db707c33-4b81-431a-9982-f28a825e612c":
-                #     record.flatness_visible = True
-
-                # if sample.internal_id == "0fda5ad4-7a03-4d87-9650-553d06555ee8":
-                #     record.perpendicularity_visible = True
-
-                if sample.internal_id == "19999f82-79c0-44a8-9379-f40dd33235aa":
-                    record.straightness_visible = True
-
                 if sample.internal_id == "5d81b405-ed58-4374-bda7-2825e12f307c":
                     record.water_absorption_visible = True
 
-                if sample.internal_id == "25489lku-2bb3-4821-958d-ec2c81db5698":
-                    record.bulk_density_visible = True
+                if sample.internal_id == "19999f82-79c0-44a8-9379-f40dd33235aa":
+                    record.straightness_visible = True
 
                 if sample.internal_id == "4e209b70-f6b9-49b9-bab6-f38292f64b1c":
                     record.rectangularity_visible = True
 
                 if sample.internal_id == "35777f82-79c0-44a8-9379-f40dd33235uyt":
                     record.deviation_visible = True
+
+                if sample.internal_id == "1db41e6d-550e-4c5d-a923-7510a616beb5":
+                    record.thickness_visible = True
+
+                if sample.internal_id == "873e02d1-db08-43d8-a88f-f6de09d41955":
+                    record.center_curvature_visible = True
+
+                if sample.internal_id == "2c4efee6-d22a-4eec-afbb-5435f3041f3f":
+                    record.edge_curvature_visible = True
+
+                if sample.internal_id == "91fc2258-6bd7-40d4-82d8-404af0928ae9":
+                    record.warpage_visible = True
+
+                if sample.internal_id == "ecfb0b0b-0774-4296-af7b-6151fbf4f968":
+                    record.mohs_hardness_visible = True
+
+               
+
+
+                
+
+                
+
+                
 
                 
 
@@ -879,57 +582,6 @@ class Tile(models.Model):
         for result in technician_results:
              
 
-             
-
-            # Dimension
-            if result.parameter.internal_id == '1db41e6d-550e-4c5d-a923-7510a616beb5':
-                result.calculated = True
-
-            
-            # Length
-            if result.parameter.internal_id == '4a2a0491-0292-4331-98ac-9f79d7fc8705':
-                result.calculated = True
-                result.result_char = round(self.avg_length,2)
-                if self.avg_length_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            # Width
-            if result.parameter.internal_id == '9163a2a2-d969-44f7-8455-66c0799cc61a':
-                result.calculated = True
-                result.result_char = round(self.avg_width,2)
-                if self.avg_width_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            # Thickness
-            if result.parameter.internal_id == '9bf7c4a0-641f-4ea5-918a-313315486ad7':
-                result.calculated = True
-                result.result_char = round(self.avg_thickness,2)
-                if self.avg_thickness_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-                
-
-            # Straightness
-            if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd33235aa':
-                result.calculated = True
-                result.result_char = round(self.straightness_max_gap,2)
-                if self.straightness_max_gap_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            
             # Water Absorption
             if result.parameter.internal_id == '5d81b405-ed58-4374-bda7-2825e12f307c':
                 result.calculated = True
@@ -938,14 +590,12 @@ class Tile(models.Model):
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
-                continue
+                continue 
 
-
-            # Bulk Density
-            if result.parameter.internal_id == '25489lku-2bb3-4821-958d-ec2c81db5698':
+            # Straightness
+            if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd33235aa':
                 result.calculated = True
-                result.result_char = round(self.avg_bulk_density,2)
-                if self.avg_bulk_density_nabl == 'pass':
+                if self.straightness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -954,29 +604,66 @@ class Tile(models.Model):
             # Rectangularity
             if result.parameter.internal_id == '4e209b70-f6b9-49b9-bab6-f38292f64b1c':
                 result.calculated = True
-                result.result_char = round(self.average_rectangularity,2)
-                if self.average_rectangularity_nabl == 'pass':
+                if self.rectangularity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
 
-            # Deviation in Length
+
+            # Measurement of Length & Width ( in mm) 	
             if result.parameter.internal_id == '35777f82-79c0-44a8-9379-f40dd33235uyt':
                 result.calculated = True
-                result.result_char = round(self.avg_length_deviation,2)
-                if self.avg_length_deviation_nabl == 'pass':
+                if self.deviation_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Deviation in Width
-            if result.parameter.internal_id == '0b59cf75-9b95-4c36-8042-75e425c80e51':
+
+            # Thickness
+            if result.parameter.internal_id == '1db41e6d-550e-4c5d-a923-7510a616beb5':
                 result.calculated = True
-                result.result_char = round(self.avg_width_deviation,2)
-                if self.avg_width_deviation_nabl == 'pass':
+                if self.thickness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Center Curvature
+            if result.parameter.internal_id == '873e02d1-db08-43d8-a88f-f6de09d41955':
+                result.calculated = True
+                if self.center_curvature_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Edge Curvature
+            if result.parameter.internal_id == '2c4efee6-d22a-4eec-afbb-5435f3041f3f':
+                result.calculated = True
+                if self.edge_curvature_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Warpage
+            if result.parameter.internal_id == '91fc2258-6bd7-40d4-82d8-404af0928ae9':
+                result.calculated = True
+                if self.warpage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Warpage
+            if result.parameter.internal_id == 'ecfb0b0b-0774-4296-af7b-6151fbf4f968':
+                result.calculated = True
+                if self.mohs_hardness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1093,304 +780,6 @@ class Tile(models.Model):
         ]
 
 
-class DimensionTile(models.Model):
-    _name = "mechanical.dimension.tile.line"
-    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
-
-    length = fields.Float(string="Length, mm ",digits=(12,3))
-    width = fields.Float(string="Width, mm ",digits=(12,3))
-    thickness = fields.Float(string="Thickness, mm ",digits=(12,3))
-
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(DimensionTile, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
-# class TileConcavityLine(models.Model):
-#     _name = 'tile.concavity.line'
-#     _description = 'Tile Concavity Measurement'
-#     parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Tile ID",readonly=True, copy=False, default=1)
-
-#     gap_diagonal_1 = fields.Float(string="Gap along Diagonal-1 (mm)")
-#     gap_diagonal_2 = fields.Float(string="Gap along Diagonal-2 (mm)")
-
-#     maximum_gap = fields.Float(string="Maximum Gap (mm)",compute="_compute_maximum_gap",store=True )
-
-#     requirement = fields.Float(string="Requirement (<= 1 mm)",default=1.0)
-
-#     result = fields.Selection(
-#         [
-#             ('pass', 'PASS'),
-#             ('fail', 'FAIL')
-#         ],
-#         string="Result",
-#         compute="_compute_result",
-#         store=True
-#     )
-
-#     @api.depends('gap_diagonal_1', 'gap_diagonal_2')
-#     def _compute_maximum_gap(self):
-#         for rec in self:
-#             rec.maximum_gap = max(
-#                 rec.gap_diagonal_1 or 0.0,
-#                 rec.gap_diagonal_2 or 0.0
-#             )
-
-#     @api.depends('maximum_gap')
-#     def _compute_result(self):
-#      for rec in self:
-#         rec.result = 'pass' if rec.maximum_gap <= 1.0 else 'fail'
-
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(TileConcavityLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
-
-
-# class TileConvexityLine(models.Model):
-#     _name = 'tile.convexity.line'
-#     _description = 'Tile Convexity Measurement'
-
-#     parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Tile ID",readonly=True, copy=False, default=1)
-
-#     gap_diagonal_1 = fields.Float(
-#         string='Gap along Diagonal-1 (mm)'
-#     )
-
-#     gap_diagonal_2 = fields.Float(
-#         string='Gap along Diagonal-2 (mm)'
-#     )
-
-#     maximum_gap = fields.Float(
-#         string='Maximum Gap (mm)',
-#         compute='_compute_maximum_gap',
-#         store=True
-#     )
-
-#     requirement = fields.Float(
-#         string='Requirement (≤ 1 mm)',
-#         default=1.0
-#     )
-
-#     result = fields.Selection(
-#         [
-#             ('pass', 'PASS'),
-#             ('fail', 'FAIL')
-#         ],
-#         string="Result",
-#         compute="_compute_result",
-#         store=True
-#     )
-
-#     @api.depends('gap_diagonal_1', 'gap_diagonal_2')
-#     def _compute_maximum_gap(self):
-#         for rec in self:
-#             rec.maximum_gap = max(
-#                 rec.gap_diagonal_1 or 0.0,
-#                 rec.gap_diagonal_2 or 0.0
-#             )
-
-#     @api.depends('maximum_gap')
-#     def _compute_result(self):
-#      for rec in self:
-#         rec.result = 'pass' if rec.maximum_gap <= 1.0 else 'fail'
-
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(TileConvexityLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
-
-
-
-# class TilePerpendicularityLine(models.Model):
-#     _name = 'tile.perpendicularity.line'
-#     _description = 'Tile Gap Inspection Line'
-
-#     parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Tile ID",readonly=True, copy=False, default=1)
-
-#     edge_length = fields.Float(
-#         string='Edge Length (mm)'
-#     )
-
-#     gap_side_1 = fields.Float(
-#         string='Gap on Side 1 (mm)'
-#     )
-
-#     gap_opposite_side_1 = fields.Float(
-#         string='Gap on Opposite Side-1 (mm)'
-#     )
-
-#     largest_gap = fields.Float(
-#         string='Largest Gap (mm)',
-#         compute='_compute_largest_gap',
-#         store=True
-#     )
-
-#     permissible_gap = fields.Float(
-#         string='Permissible Gap (mm)',
-#         compute='_compute_permissible_gap',
-#         store=True
-#     )
-
-#     maximum_gap_observed = fields.Float(
-#         string='Maximum Gap Observed (mm)',
-#         compute='_compute_maximum_gap_observed',
-#         store=True
-#     )
-
-#     @api.depends('gap_side_1', 'gap_opposite_side_1')
-#     def _compute_largest_gap(self):
-#         for rec in self:
-#             rec.largest_gap = max(
-#                 rec.gap_side_1 or 0.0,
-#                 rec.gap_opposite_side_1 or 0.0
-#             )
-
-#     @api.depends('edge_length')
-#     def _compute_permissible_gap(self):
-#         for rec in self:
-#             rec.permissible_gap = (rec.edge_length or 0.0) * 0.02
-
-#     @api.depends('largest_gap')
-#     def _compute_maximum_gap_observed(self):
-#         for rec in self:
-#             rec.maximum_gap_observed = rec.largest_gap
-
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(TilePerpendicularityLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
-
-
-
-
-class StraightnessTile(models.Model):
-    _name = "mechanical.straightness.tile.line"
-    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-    sr_no = fields.Integer(string="Tile ID",readonly=True, copy=False, default=1)
-
-    edge_length = fields.Float(
-        string='Edge Length (mm)'
-    )
-
-    permissible_gap = fields.Float(
-        string='Permissible Gap (mm)',
-        compute='_compute_permissible_gap',
-        store=True
-    )
-
-    edge_1_gap = fields.Float(string='Edge-1 Gap (mm)')
-    edge_2_gap = fields.Float(string='Edge-2 Gap (mm)')
-    edge_3_gap = fields.Float(string='Edge-3 Gap (mm)')
-    edge_4_gap = fields.Float(string='Edge-4 Gap (mm)')
-
-    maximum_gap_observed = fields.Float(
-        string='Maximum Gap Observed (mm)',
-        compute='_compute_maximum_gap_observed',
-        store=True
-    )
-
-    @api.depends('edge_length')
-    def _compute_permissible_gap(self):
-        for rec in self:
-            rec.permissible_gap = (rec.edge_length or 0.0) * 0.01
-
-    @api.depends(
-        'edge_1_gap',
-        'edge_2_gap',
-        'edge_3_gap',
-        'edge_4_gap'
-    )
-    def _compute_maximum_gap_observed(self):
-        for rec in self:
-            rec.maximum_gap_observed = max([
-                rec.edge_1_gap or 0.0,
-                rec.edge_2_gap or 0.0,
-                rec.edge_3_gap or 0.0,
-                rec.edge_4_gap or 0.0,
-            ])
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(StraightnessTile, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
 class TileWaterAbsorptionLine(models.Model):
     _name = "tile.water.absorption.line"
     parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
@@ -1405,11 +794,6 @@ class TileWaterAbsorptionLine(models.Model):
         string='Saturated Mass, W2 (g)'
     )
 
-    gain_in_mass = fields.Float(
-        string='Gain in Mass (g)',
-        compute='_compute_values',
-        store=True
-    )
 
     water_absorption = fields.Float(
         string='Water Absorption (%)',
@@ -1421,8 +805,6 @@ class TileWaterAbsorptionLine(models.Model):
     @api.depends('dry_mass_w1', 'saturated_mass_w2')
     def _compute_values(self):
         for rec in self:
-            rec.gain_in_mass = rec.saturated_mass_w2 - rec.dry_mass_w1
-
             if rec.dry_mass_w1:
                 rec.water_absorption = (
                     (rec.saturated_mass_w2 - rec.dry_mass_w1)
@@ -1451,6 +833,102 @@ class TileWaterAbsorptionLine(models.Model):
             record.sr_no = index + 1
 
 
+class StraightnessTile(models.Model):
+    _name = "mechanical.straightness.tile.line"
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Tile ID",readonly=True, copy=False, default=1)
+
+    side1 = fields.Float(
+        string='Side 1',
+    )
+
+    side2 = fields.Float(
+        string='Side 2',
+    )
+
+    side3 = fields.Float(
+        string='Side 3',
+    )
+
+    side4 = fields.Float(
+        string='Side 4',
+    )
+
+    deviation_length = fields.Float(
+        string='Deviation (Length) (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    deviation_width = fields.Float(
+        string='Deviation (Width) (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    average = fields.Float(
+        string='Average (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    @api.depends(
+        'side1',
+        'side2',
+        'side3',
+        'side4',
+        'parent_id.straightness_length',
+        'parent_id.straightness_width',
+    )
+    def _compute_deviation(self):
+        for line in self:
+
+            length = line.parent_id.straightness_length
+            width = line.parent_id.straightness_width
+
+            if length:
+                line.deviation_length = (
+                    ((line.side1 - line.side3) / length) * 100
+                )
+            else:
+                line.deviation_length = 0.0
+
+            if width:
+                line.deviation_width = (
+                    ((line.side2 - line.side4) / width) * 100
+                )
+            else:
+                line.deviation_width = 0.0
+
+            line.average = (
+                line.deviation_length + line.deviation_width
+            ) / 2
+
+
+            
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(StraightnessTile, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
 
 class RectangularityTile(models.Model):
     _name = "mechanical.rectangularity.tile.line"
@@ -1459,52 +937,74 @@ class RectangularityTile(models.Model):
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
     
-    corner_1 = fields.Float(string="Corner-1 δ (mm)")
-    corner_2 = fields.Float(string="Corner-2 δ (mm)")
-    corner_3 = fields.Float(string="Corner-3 δ (mm)")
-    corner_4 = fields.Float(string="Corner-4 δ (mm)")
-
-    max_delta = fields.Float(
-        string="Maximum δ (mm)",
-        compute="_compute_rectangularity",
-        store=True
+    side1 = fields.Float(
+        string='Reading 1',
     )
 
-    length_width = fields.Float(string="Length/Width L (mm)")
+    side2 = fields.Float(
+        string='Reading 2',
+    )
 
-    rectangularity = fields.Float(
-        string="Rectangularity (%)",
-        compute="_compute_rectangularity",
-        store=True,digits=(10,3))
+    side3 = fields.Float(
+        string='Reading 3',
+    )
 
-    result = fields.Selection([
-        ('pass', 'PASS'),
-        ('fail', 'FAIL')
-    ], string="Result", compute="_compute_rectangularity", store=True)
+    side4 = fields.Float(
+        string='Reading 4',
+    )
+
+    deviation_length = fields.Float(
+        string='Deviation (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    deviation_width = fields.Float(
+        string='Deviation (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    average = fields.Float(
+        string='Average (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
 
     @api.depends(
-        'corner_1', 'corner_2', 'corner_3',
-        'corner_4', 'length_width'
+        'side1',
+        'side2',
+        'side3',
+        'side4',
+        'parent_id.rectangularity_length',
+        'parent_id.rectangularity_width',
     )
-    def _compute_rectangularity(self):
-        for rec in self:
-            rec.max_delta = max([
-                rec.corner_1 or 0,
-                rec.corner_2 or 0,
-                rec.corner_3 or 0,
-                rec.corner_4 or 0
-            ])
+    def _compute_deviation(self):
+        for line in self:
 
-            if rec.length_width:
-                rec.rectangularity = (
-                    rec.max_delta / rec.length_width
-                ) * 100
+            length = line.parent_id.rectangularity_length
+            width = line.parent_id.rectangularity_width
+
+            if length:
+                line.deviation_length = (
+                    ((line.side3 - line.side1) / length) * 100
+                )
             else:
-                rec.rectangularity = 0
+                line.deviation_length = 0.0
 
-            # Example tolerance
-            rec.result = 'pass' if rec.rectangularity <= 0.6 else 'fail'
-  
+            if width:
+                line.deviation_width = (
+                    ((line.side2 - line.side4) / width) * 100
+                )
+            else:
+                line.deviation_width = 0.0
+
+            line.average = (
+                line.deviation_length + line.deviation_width
+            ) / 2
 
 
 
@@ -1526,119 +1026,82 @@ class RectangularityTile(models.Model):
             record.sr_no = index + 1
 
 
-
-
-
-class BulkTile(models.Model):
-    _name = "mechanical.bulk.tile.line"
-    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
-   
-    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
-
-    m1 = fields.Float("Mass of the dry tile(g) (m1)")
-    m2 = fields.Float("Mass of the wet tile(g) (m2)")
-    m3 = fields.Float("Mass of suspended tile (g) (m3)")
-
-    volume = fields.Float(
-        string="V = exterior volume, in cm³ (m2-m3)",
-        compute="_compute_values",
-        store=True
-    )
-
-    bulk_density = fields.Float(
-        string="Bulk Density ,g/cc",
-        compute="_compute_values",
-        store=True
-    )
-
-    @api.depends('m1', 'm2', 'm3')
-    def _compute_values(self):
-        for rec in self:
-            rec.volume = rec.m2 - rec.m3
-
-            if rec.volume:
-                rec.bulk_density = rec.m1 / rec.volume
-            else:
-                rec.bulk_density = 0.0
-
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(BulkTile, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
 class TileLengthWidthLine(models.Model):
     _name = 'tile.length.width.line'
-    _description = 'Deviation in Length and Width'
+    _description = 'Dimension of Tiles (Measurement of Length & Width)'
 
     parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
    
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
-    length = fields.Float(string='Length (mm)', digits=(16, 2))
-    width = fields.Float(string='Width (mm)', digits=(16, 2))
-
-    length_deviation = fields.Float(
-        string='Length Deviation (%)',
-        compute='_compute_deviation',
-        store=True,
-        digits=(16, 3)
+    side1 = fields.Float(
+        string='Side 1',
     )
 
-    width_deviation = fields.Float(
-        string='Width Deviation (%)',
-        compute='_compute_deviation',
-        store=True,
-        digits=(16, 3)
+    side2 = fields.Float(
+        string='Side 2',
     )
 
-    result = fields.Selection([
-        ('pass', 'PASS'),
-        ('fail', 'FAIL')
-    ], string='Result', compute='_compute_deviation', store=True)
+    side3 = fields.Float(
+        string='Side 3',
+    )
+
+    side4 = fields.Float(
+        string='Side 4',
+    )
+
+    deviation_length = fields.Float(
+        string='Deviation (Length) (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    deviation_width = fields.Float(
+        string='Deviation (Width) (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
+
+    average = fields.Float(
+        string='Average (%)',
+        digits=(16, 2),
+        compute='_compute_deviation',
+        store=True,
+    )
 
     @api.depends(
-        'length',
-        'width',
+        'side1',
+        'side2',
+        'side3',
+        'side4',
         'parent_id.work_length',
-        'parent_id.work_width'
+        'parent_id.work_width',
     )
     def _compute_deviation(self):
-        for rec in self:
-            work_length = rec.parent_id.work_length or 0.0
-            work_width = rec.parent_id.work_width or 0.0
+        for line in self:
 
-            rec.length_deviation = (
-                ((rec.length - work_length) / work_length) * 100
-                if work_length else 0.0
-            )
+            length = line.parent_id.work_length
+            width = line.parent_id.work_width
 
-            rec.width_deviation = (
-                ((rec.width - work_width) / work_width) * 100
-                if work_width else 0.0
-            )
+            if length:
+                line.deviation_length = (
+                    ((line.side1 - line.side3) / length) * 100
+                )
+            else:
+                line.deviation_length = 0.0
 
-            # Example tolerance ±0.5%
-            rec.result = (
-                'pass'
-                if abs(rec.length_deviation) <= 0.5
-                and abs(rec.width_deviation) <= 0.5
-                else 'fail'
-            )
+            if width:
+                line.deviation_width = (
+                    ((line.side2 - line.side4) / width) * 100
+                )
+            else:
+                line.deviation_width = 0.0
+
+            line.average = (
+                line.deviation_length + line.deviation_width
+            ) / 2
 
 
     @api.model
@@ -1657,6 +1120,444 @@ class TileLengthWidthLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class TileThicknessLine(models.Model):
+    _name = 'tile.thickness.line'
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    t1 = fields.Float(string='T1 mm')
+    t2 = fields.Float(string='T2 mm')
+    t3 = fields.Float(string='T3 mm')
+    t4 = fields.Float(string='T4 mm')
+
+    average = fields.Float(
+        string='Average of Each Tile mm',
+        compute='_compute_average',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation = fields.Float(
+        string='% Deviation',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends('t1', 't2', 't3', 't4')
+    def _compute_average(self):
+        for line in self:
+            values = [line.t1, line.t2, line.t3, line.t4]
+            line.average = sum(values) / 4
+
+    @api.depends('average', 'parent_id.nominal_thickness')
+    def _compute_deviation(self):
+        for line in self:
+            nominal = line.parent_id.nominal_thickness
+
+            if nominal:
+                line.deviation = (
+                    (line.average - nominal) / nominal
+                ) * 100
+            else:
+                line.deviation = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(TileThicknessLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+class TileCenterCurvatureLine(models.Model):
+    _name = 'tile.center.curvature.line'
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    center1 = fields.Float(
+        string='Center 1'
+    )
+
+    center2 = fields.Float(
+        string='Center 2'
+    )
+
+    center3 = fields.Float(
+        string='Center 3'
+    )
+
+    center4 = fields.Float(
+        string='Center 4'
+    )
+
+    diagonal = fields.Float(
+        string='Diagonal',
+        compute='_compute_diagonal',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation1 = fields.Float(
+        string='% Deviation 1',
+        compute='_compute_deviations',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation2 = fields.Float(
+        string='% Deviation 2',
+        compute='_compute_deviations',
+        store=True,
+        digits=(16, 2)
+    )
+
+    average_percent = fields.Float(
+        string='Average %',
+        compute='_compute_deviations',
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends('parent_id.center_curvature_length', 'parent_id.center_curvature_width')
+    def _compute_diagonal(self):
+        for line in self:
+            length = line.parent_id.center_curvature_length or 0.0
+            width = line.parent_id.center_curvature_width or 0.0
+
+            line.diagonal = math.sqrt(
+                (length ** 2) + (width ** 2)
+            )
+
+    @api.depends(
+        'center1',
+        'center2',
+        'center3',
+        'center4','parent_id.center_curvature_length', 'parent_id.center_curvature_width'
+    )
+    def _compute_deviations(self):
+        for line in self:
+            length = line.parent_id.center_curvature_length or 0.0
+            width = line.parent_id.center_curvature_width or 0.0
+
+            line.diagonal = math.sqrt(
+                (length ** 2) + (width ** 2)
+            )
+
+            # Center 1 vs Center 3
+            if line.diagonal:
+                line.deviation1 = (
+                    (line.center1 - line.center3)
+                    / line.diagonal
+                ) * 100
+            else:
+                line.deviation1 = 0.0
+
+            # Center 2 vs Center 4
+            if line.diagonal:
+                line.deviation2 = (
+                    (line.center2 - line.center4)
+                    / line.diagonal
+                ) * 100
+            else:
+                line.deviation2 = 0.0
+
+            # Average of both deviations
+            line.average_percent = (
+                line.deviation1 + line.deviation2
+            ) / 2
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(TileCenterCurvatureLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+class TileEdgeCurvatureLine(models.Model):
+    _name = 'tile.edge.curvature.line'
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    edge1 = fields.Float(
+        string='Edge 1'
+    )
+
+    edge2 = fields.Float(
+        string='Edge 2'
+    )
+
+    edge3 = fields.Float(
+        string='Edge 3'
+    )
+
+    edge4 = fields.Float(
+        string='Edge 4'
+    )
+
+    deviation1 = fields.Float(
+        string='% Deviation 1',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation2 = fields.Float(
+        string='% Deviation 2',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    average_percent = fields.Float(
+        string='Average%',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends(
+        'edge1',
+        'edge2',
+        'edge3',
+        'edge4','parent_id.center_curvature_length', 'parent_id.center_curvature_width'
+    )
+    def _compute_deviation(self):
+        for line in self:
+
+            length = line.parent_id.center_curvature_length or 0.0
+            width = line.parent_id.center_curvature_width or 0.0
+
+            # Edge 2 and Edge 4 deviation
+            if length:
+                line.deviation1 = (
+                    (line.edge2 - line.edge4)
+                    / length
+                ) * 100
+            else:
+                line.deviation1 = 0.0
+
+            # Edge 1 and Edge 3 deviation
+            if width:
+                line.deviation2 = (
+                    (line.edge1 - line.edge3)
+                    / width
+                ) * 100
+            else:
+                line.deviation2 = 0.0
+
+            # Average of both deviations
+            line.average_percent = (
+                line.deviation1 + line.deviation2
+            ) / 2
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(TileEdgeCurvatureLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+
+
+class TileWarpageLine(models.Model):
+    _name = 'tile.warpage.line'
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    corner1 = fields.Float(
+        string='Corner 1'
+    )
+
+    corner2 = fields.Float(
+        string='Corner 2'
+    )
+
+    corner3 = fields.Float(
+        string='Corner 3'
+    )
+
+    corner4 = fields.Float(
+        string='Corner 4'
+    )
+
+    diagonal = fields.Float(
+        string='Diagonal',
+        compute='_compute_diagonal',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation1 = fields.Float(
+        string='% Deviation 1',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    deviation2 = fields.Float(
+        string='% Deviation 2',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    average_percent = fields.Float(
+        string='Average%',
+        compute='_compute_deviation',
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends(
+        'parent_id.warpage_length',
+        'parent_id.warpage_width'
+    )
+    def _compute_diagonal(self):
+        for line in self:
+            length = line.parent_id.warpage_length or 0.0
+            width = line.parent_id.warpage_width or 0.0
+
+            line.diagonal = math.sqrt(
+                (length ** 2) + (width ** 2)
+            )
+
+    @api.depends(
+        'corner1',
+        'corner2',
+        'corner3',
+        'corner4','parent_id.warpage_length',
+        'parent_id.warpage_width'
+    )
+    def _compute_deviation(self):
+        for line in self:
+
+            length = line.parent_id.warpage_length or 0.0
+            width = line.parent_id.warpage_width or 0.0
+
+            line.diagonal = math.sqrt(
+                (length ** 2) + (width ** 2)
+            )
+
+            # Corner 1 vs Corner 3
+            if line.diagonal:
+                line.deviation1 = (
+                    (line.corner1 - line.corner3)
+                    / line.diagonal
+                ) * 100
+            else:
+                line.deviation1 = 0.0
+
+            # Corner 2 vs Corner 4
+            if line.diagonal:
+                line.deviation2 = (
+                    (line.corner2 - line.corner4)
+                    / line.diagonal
+                ) * 100
+            else:
+                line.deviation2 = 0.0
+
+            # Average of both deviations
+            line.average_percent = (
+                line.deviation1 + line.deviation2
+            ) / 2
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(TileWarpageLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+
+
+
+
+
+
+
+class TileMOHSHardnessLine(models.Model):
+    _name = 'tile.mohs.hardness.line'
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
+
+    mohs_hardness = fields.Float(
+        string='MOHS Hardness'
+    )
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(TileMOHSHardnessLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
 
 
 
