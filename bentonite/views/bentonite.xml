@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_bentonite_view" model="ir.ui.view">
+            <field name="name">mechanical.bentonite.form</field>
+            <field name="model">mechanical.bentonite</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="srf_id" invisible="1"/>
+                            <field name="sample_id" readonly="1"/>
+                            <field name="parameter_id" invisible="1"/>
+                            <field name="eln_state"/>
+                            <field name="eln_ref" readonly="1"/>
+                            <field name="grade" string="Grade"/>
+                            <field name="size_id" readonly="1"/>
+                        </group>
+
+                        <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="sample_parameters" nolabel="1">
+                                <tree class="nowrap_list" style="width: 100%; border-collapse: collapse;">
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <!-- Liquid Limit -->
+                        <group invisible="ll_visible == False" style="white-space: nowrap;">
+                            <h1>
+                                <field name="ll_name" readonly="1" nolabel="1"/>
+                                <field name="ll_visible" invisible="1"/>
+                            </h1>
+                        </group>
+
+                        <div invisible="ll_visible == False">
+                            <field name="ll_child_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
+                                    <field name='sr_no' string="Sr. NO"/>
+                                    <field name='penetration' string="Penetration (mm)" class="blue-input"/>
+                                    <field name='container_no' string="Container No." width="60px"/>
+                                    <field name='wt_container_wet_soil' string="Wt Container + Wet Soil (g)" class="blue-input"/>
+                                    <field name='wt_container_dry_soil' string="Wt Container + Dry Soil (g)" class="blue-input"/>
+                                    <field name='wt_water' string="Wt of Water (g)"/>
+                                    <field name='wt_container' string="Wt Container (g)" class="blue-input"/>
+                                    <field name='wt_dry_soil' string="Wt of Dry Soil (g)"/>
+                                    <field name='moisture_content' string="Moisture Content (%)"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <group invisible="ll_visible == False" style="margin-top: 10px; white-space: nowrap;">
+                            <group>
+                                <field name="liquid_limit_result" string="Liquid Limit (%)" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="ll_conformity" string="Conformity" readonly="1"
+                                       decoration-success="ll_conformity == 'pass'"
+                                       decoration-danger="ll_conformity == 'fail'"/>
+                                <field name="ll_nabl" string="NABL" readonly="1"
+                                       decoration-success="ll_nabl == 'pass'"
+                                       decoration-danger="ll_nabl == 'fail'"/>
+                            </group>
+                        </group>
+
+                        <div invisible="ll_visible == False" style="margin-top: 10px;">
+                            <field name="ll_graph" widget="image" nolabel="1" readonly="1"/>
+                        </div>
+
+                        <!-- Wet Fineness -->
+                        <group invisible="wet_fineness_visible == False" style="margin-top: 15px; white-space: nowrap;">
+                            <h1>
+                                <field name="wet_fineness_name" readonly="1" nolabel="1"/>
+                                <field name="wet_fineness_visible" invisible="1"/>
+                            </h1>
+                        </group>
+
+                        <group invisible="wet_fineness_visible == False">
+                            <field name="wet_fineness_int_wt" string="Initial Weight (g)" class="blue-input"/>
+                        </group>
+
+                        <div invisible="wet_fineness_visible == False">
+                            <field name="wet_fineness_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
+                                    <field name='sr_no' string="Sr. NO"/>
+                                    <field name='sieve_size' string="Sieve Size (mm)" class="blue-input"/>
+                                    <field name='retained_wt' string="Retained Wt. (g)" class="blue-input"/>
+                                    <field name='cum_retained' string="Cum. Wt. Retained (g)"/>
+                                    <field name='pct_retention' string="% of Retention"/>
+                                    <field name='pct_passing' string="% of Passing"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <group invisible="wet_fineness_visible == False" style="margin-top: 10px;">
+                            <field name="wet_fineness_conformity" string="Conformity" readonly="1"
+                                   decoration-success="wet_fineness_conformity == 'pass'"
+                                   decoration-danger="wet_fineness_conformity == 'fail'"/>
+                            <field name="wet_fineness_nabl" string="NABL" readonly="1"
+                                   decoration-success="wet_fineness_nabl == 'pass'"
+                                   decoration-danger="wet_fineness_nabl == 'fail'"/>
+                        </group>
+
+                        <!-- Dry Fineness -->
+                        <group invisible="dry_fineness_visible == False" style="margin-top: 15px; white-space: nowrap;">
+                            <h1>
+                                <field name="dry_fineness_name" readonly="1" nolabel="1"/>
+                                <field name="dry_fineness_visible" invisible="1"/>
+                            </h1>
+                        </group>
+
+                        <group invisible="dry_fineness_visible == False">
+                            <field name="dry_fineness_int_wt" string="Initial Weight (g)" class="blue-input"/>
+                        </group>
+
+                        <div invisible="dry_fineness_visible == False">
+                            <field name="dry_fineness_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
+                                    <field name='sr_no' string="Sr. NO"/>
+                                    <field name='sieve_size' string="Sieve Size (mm)" class="blue-input"/>
+                                    <field name='retained_wt' string="Retained Wt. (g)" class="blue-input"/>
+                                    <field name='cum_retained' string="Cum. Wt. Retained (g)"/>
+                                    <field name='pct_retention' string="% of Retention"/>
+                                    <field name='pct_passing' string="% of Passing"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <group invisible="dry_fineness_visible == False" style="margin-top: 10px;">
+                            <field name="dry_fineness_conformity" string="Conformity" readonly="1"
+                                   decoration-success="dry_fineness_conformity == 'pass'"
+                                   decoration-danger="dry_fineness_conformity == 'fail'"/>
+                            <field name="dry_fineness_nabl" string="NABL" readonly="1"
+                                   decoration-success="dry_fineness_nabl == 'pass'"
+                                   decoration-danger="dry_fineness_nabl == 'fail'"/>
+                        </group>
+
+                        <!-- Moisture Content -->
+                        <group invisible="moisture_visible == False" style="margin-top: 15px; white-space: nowrap;">
+                            <h1>
+                                <field name="moisture_name" readonly="1" nolabel="1"/>
+                                <field name="moisture_visible" invisible="1"/>
+                            </h1>
+                        </group>
+
+                        <group invisible="moisture_visible == False">
+                            <field name="moisture_m1" string="Initial Weight M1 (g)" class="blue-input"/>
+                            <field name="moisture_m2" string="Dry Weight M2 (g)" class="blue-input"/>
+                            <field name="moisture_content_result" string="Moisture Content (%)" readonly="1"/>
+                        </group>
+
+                        <group invisible="moisture_visible == False" style="margin-top: 10px;">
+                            <field name="moisture_conformity" string="Conformity" readonly="1"
+                                   decoration-success="moisture_conformity == 'pass'"
+                                   decoration-danger="moisture_conformity == 'fail'"/>
+                            <field name="moisture_nabl" string="NABL" readonly="1"
+                                   decoration-success="moisture_nabl == 'pass'"
+                                   decoration-danger="moisture_nabl == 'fail'"/>
+                        </group>
+
+                        <!-- Sand Content -->
+                        <group invisible="sand_visible == False" style="margin-top: 15px; white-space: nowrap;">
+                            <h1>
+                                <field name="sand_name" readonly="1" nolabel="1"/>
+                                <field name="sand_visible" invisible="1"/>
+                            </h1>
+                        </group>
+
+                        <group invisible="sand_visible == False">
+                            <field name="sand_initial_wt" string="Initial Weight (g)" class="blue-input"/>
+                            <field name="sand_final_wt" string="Final Weight (g)" class="blue-input"/>
+                            <field name="sand_content_result" string="Sand Content (%)" readonly="1"/>
+                        </group>
+
+                        <group invisible="sand_visible == False" style="margin-top: 10px;">
+                            <field name="sand_conformity" string="Conformity" readonly="1"
+                                   decoration-success="sand_conformity == 'pass'"
+                                   decoration-danger="sand_conformity == 'fail'"/>
+                            <field name="sand_nabl" string="NABL" readonly="1"
+                                   decoration-success="sand_nabl == 'pass'"
+                                   decoration-danger="sand_nabl == 'fail'"/>
+                        </group>
+
+                        <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="notes_id" nolabel="1">
+                                <tree editable="bottom" style="width: 100%; border-collapse: collapse;">
+                                    <field name="sr_no" width="100"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <group style="margin-top: 20px;">
+                            <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

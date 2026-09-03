@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="bentonite_datasheet">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Bentonite
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+                    <div t-foreach="eln" t-as="o">
+                        <table>
+                            <tr cols="12">
+                                <td colspan="6">Job no :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.kes_no"/>
+                                </td>
+                                <td colspan="6">Test Start Date :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="o.start_date"/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6">Material :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="o.material.name"/>
+                                </td>
+                                <td colspan="6">Test End Date :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="o.end_date"/>
+                                </td>
+                            </tr>
+                            <tr style="height:50px" cols="12">
+                                <td colspan="4">Performed By :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="o.technician.name"/>
+                                </td>
+                                <td colspan="4">Witness Name :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.witness_name"/>
+                                </td>
+                                <td colspan="4">Witness Signature :
+                                    <![CDATA[&nbsp;]]>
+                                    <span style='padding:20px'></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Liquid Limit -->
+                    <div t-if="data.ll_visible" style="margin-top:20px;">
+                        <div style="text-align:center;font-size:18px">
+                            <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bentonite-ll-4a1b-4c2d-8e3f-000000000001')]).parameter_name"/>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','bentonite-ll-4a1b-4c2d-8e3f-000000000001')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                        <table style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Sr. No</th>
+                                    <th style="text-align:center;">Penetration (mm)</th>
+                                    <th style="text-align:center;">Container No.</th>
+                                    <th style="text-align:center;">Wt Container + Wet Soil (g)</th>
+                                    <th style="text-align:center;">Wt Container + Dry Soil (g)</th>
+                                    <th style="text-align:center;">Wt of Water (g)</th>
+                                    <th style="text-align:center;">Wt Container (g)</th>
+                                    <th style="text-align:center;">Wt of Dry Soil (g)</th>
+                                    <th style="text-align:center;">Moisture Content (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data.ll_child_lines" t-as="r">
+                                    <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
+                                    <td style="text-align:center;"><span t-field="r.penetration" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="r.container_no"/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_water" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_container" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.wt_dry_soil" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.moisture_content" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="margin-top:5px">
+                            <tr>
+                                <td colspan="12">Liquid Limit (%):</td>
+                                <![CDATA[&nbsp;]]>
+                                <td>
+                                    <span t-field="data.liquid_limit_result" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div t-if="data.ll_graph" style="margin-top:10px;">
+                            <img t-att-src="'data:image/png;base64,%s' % data.ll_graph.decode('utf-8')" style="max-width:500px;"/>
+                        </div>
+                    </div>
+
+                    <!-- Wet Fineness -->
+                    <div t-if="data.wet_fineness_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                            <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bentonite-wf-4a1b-4c2d-8e3f-000000000002')]).parameter_name"/>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','bentonite-wf-4a1b-4c2d-8e3f-000000000002')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                        <table style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Sr. No</th>
+                                    <th style="text-align:center;">Sieve Size (mm)</th>
+                                    <th style="text-align:center;">Retained Wt. (g)</th>
+                                    <th style="text-align:center;">Cum. Wt. Retained (g)</th>
+                                    <th style="text-align:center;">% of Retention</th>
+                                    <th style="text-align:center;">% of Passing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data.wet_fineness_lines" t-as="r">
+                                    <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
+                                    <td style="text-align:center;"><span t-field="r.sieve_size" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.retained_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.cum_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_retention" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_passing" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Dry Fineness -->
+                    <div t-if="data.dry_fineness_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                            <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bentonite-df-4a1b-4c2d-8e3f-000000000003')]).parameter_name"/>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','bentonite-df-4a1b-4c2d-8e3f-000000000003')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                        <table style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Sr. No</th>
+                                    <th style="text-align:center;">Sieve Size (mm)</th>
+                                    <th style="text-align:center;">Retained Wt. (g)</th>
+                                    <th style="text-align:center;">Cum. Wt. Retained (g)</th>
+                                    <th style="text-align:center;">% of Retention</th>
+                                    <th style="text-align:center;">% of Passing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data.dry_fineness_lines" t-as="r">
+                                    <td style="text-align:center;"><span t-esc="r.sr_no"/></td>
+                                    <td style="text-align:center;"><span t-field="r.sieve_size" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.retained_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.cum_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_retention" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-field="r.pct_passing" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Moisture Content -->
+                    <div t-if="data.moisture_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                            <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bentonite-mc-4a1b-4c2d-8e3f-000000000004')]).parameter_name"/>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','bentonite-mc-4a1b-4c2d-8e3f-000000000004')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                        <table style="margin-top:10px">
+                            <tr>
+                                <td colspan="12">Initial Weight M1 (g):</td>
+                                <td><span t-field="data.moisture_m1" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">Dry Weight M2 (g):</td>
+                                <td><span t-field="data.moisture_m2" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">Moisture Content (%):</td>
+                                <td><span t-field="data.moisture_content_result" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Sand Content -->
+                    <div t-if="data.sand_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                            <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bentonite-sc-4a1b-4c2d-8e3f-000000000005')]).parameter_name"/>
+                            <span>
+                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','bentonite-sc-4a1b-4c2d-8e3f-000000000005')]).parameter_table" t-as="parameter">
+                                    <t t-if="parameter.grade.id == eln.grade_id.id">
+                                        <span t-field="parameter.specification"/>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                        <table style="margin-top:10px">
+                            <tr>
+                                <td colspan="12">Initial Weight (g):</td>
+                                <td><span t-field="data.sand_initial_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">Final Weight (g):</td>
+                                <td><span t-field="data.sand_final_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">Sand Content (%):</td>
+                                <td><span t-field="data.sand_content_result" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="authorizeRowDataSheet">
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','bentonite-ll-4a1b-4c2d-8e3f-000000000001')], limit=1).technician"/>
+                        <div>
+                            <div><b>Tested By</b></div>
+                            <div style="height:30px"></div>
+                            <div><b><span t-esc="prepared_by_obj.name or ''"/></b></div>
+                            <div><b>(<span t-esc="prepared_by_obj.job_title or ''"/>)</b></div>
+                        </div>
+                        <div style="margin-left:500px">
+                            <div><b>Checked By</b></div>
+                            <div style="height:30px"></div>
+                            <div><b><span t-esc="eln.sample_id.check_by.name"/></b></div>
+                            <div><b>(<span t-esc="eln.sample_id.check_by.job_title"/>)</b></div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

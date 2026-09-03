@@ -55,7 +55,7 @@
                         </group>
 
                         <group style="width:50%">
-                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'" options="{'no_create': True, 'no_open': True}" />
+                            <field name="name_work" domain="[('id', 'in', name_works)]" options="{'no_create': True, 'no_open': True}" />
                             <field name="client" readonly="state == '2-confirm'"/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]" options="{'no_create': True, 'no_open': True}" />
                             <field name="contractor_ids" invisible='1'/>
