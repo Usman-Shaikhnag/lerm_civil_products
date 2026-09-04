@@ -36,17 +36,18 @@
                             <field name="sample_id" readonly="1"/>
                             <field name="eln_ref" readonly="1"/>
                             <field name="grade" readonly="1"/>
+                            <field name="eln_state" />
                             <field name="parameter_id" invisible="1"/>
                         </group>
 
-                        <group>
+                        <div class="custom_table_borders">
                             <field name="sample_parameters">
                                 <tree>
-                                    <field name="parameter_name"/>
-                                    <field name="test_method"/>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
                                 </tree>
                             </field>
-                        </group>
+                            </div>
                     <!-- Dry Gradation -->
                     <!-- ====================================================== -->
                     <!-- DRY GRADATION -->
@@ -92,10 +93,14 @@
                     <!-- WATER ABSORPTION -->
                     <!-- ============================================================ -->
 
-                    <field name="water_absorbtion_visible" invisible="1"/>
+                   
 
                     <div invisible="not water_absorbtion_visible">
-                        <h1 class="text-center"><span>Water Absorption</span></h1>
+                      
+                        <h1 class="text-center">
+                            <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorbtion_visible" invisible="1"/>
+                        </h1>
                     </div>
 
                     <table class="table table-sm table-bordered custom_table_borders" invisible="not water_absorbtion_visible">
@@ -119,38 +124,44 @@
                         </tbody>
                     </table>
 
-                    <!-- Result -->
-                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not water_absorbtion_visible">
-                        <tbody>
+                    <div class="d-flex gap-2" invisible="not water_absorbtion_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="water_absorbtion_conformity"></label></td>
+                            <td><field name='water_absorbtion_conformity'
+                               decoration-success="water_absorbtion_conformity == 'pass'" 
+                               decoration-danger="water_absorbtion_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="water_absorbtion_nabl"></label></td>
+                            <td><field name='water_absorbtion_nabl'
+                               decoration-success="water_absorbtion_nabl == 'pass'" 
+                               decoration-danger="water_absorbtion_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                            <tr>
-                                <td class="w-50"><span class="fw-bold">Conformity</span></td>
-                                <td class="w-50">
-                                    <field name="water_absorbtion_conformity"
-                                        decoration-success="water_absorbtion_conformity == 'pass'"
-                                        decoration-danger="water_absorbtion_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td><span class="fw-bold">NABL</span></td>
-                                <td><field name="water_absorbtion_nabl"/></td>
-                            </tr>
+                        
+                      </div> 
 
-                        </tbody>
-                    </table>
+                    
 
                                         <!-- specific_gravity_gsb_visible -->
                     <!-- ====================================================== -->
                     <!-- SPECIFIC GRAVITY -->
                     <!-- ====================================================== -->
 
-                    <field name="specific_gravity_gsb_visible" invisible="1"/>
+                  
 
                     <div invisible="not specific_gravity_gsb_visible">
-                        <h1 class="text-center">
-                            <span>Specific Gravity</span>
+                     
+                         <h1 class="text-center">
+                            <field name="specific_gravity_gsb_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_gsb_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -180,26 +191,31 @@
                         </tbody>
                     </table>
 
-                    <!-- Result -->
-                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not specific_gravity_gsb_visible">
-                        <tbody>
-                            <tr>
-                                <td class="w-50"><span class="fw-bold">Conformity</span></td>
+                    <div class="d-flex gap-2" invisible="not specific_gravity_gsb_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="specific_gravity_gsb_conformity"></label></td>
+                            <td><field name='specific_gravity_gsb_conformity'
+                               decoration-success="specific_gravity_gsb_conformity == 'pass'" 
+                               decoration-danger="specific_gravity_gsb_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="specific_gravity_gsb_nabl"></label></td>
+                            <td><field name='specific_gravity_gsb_nabl'
+                               decoration-success="specific_gravity_gsb_nabl == 'pass'" 
+                               decoration-danger="specific_gravity_gsb_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                                <td class="w-50">
-                                    <field name="specific_gravity_gsb_conformity" readonly="1"
-                                            decoration-success="specific_gravity_gsb_conformity == 'pass'"
-                                            decoration-danger="specific_gravity_gsb_conformity == 'fail'"/>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td><span class="fw-bold">NABL</span></td>
-                                <td><field name="specific_gravity_gsb_nabl"/></td>
-                            </tr>
+                        
+                      </div> 
 
-                        </tbody>
-                    </table>
+                   
 
                     <!-- ====================================================== -->
                     <!-- ELONGATION & FLAKINESS INDEX -->
@@ -279,11 +295,20 @@
                             </tr>
 
                             <tr>
-                                <td><span class="fw-bold">Elongation NABL</span></td>
-                                <td><field name="aggregate_elongation_nabl"/></td>
+                            <td><label for="aggregate_elongation_nabl"></label></td>
+                            <td><field name='aggregate_elongation_nabl'
+                               decoration-success="aggregate_elongation_nabl == 'pass'" 
+                               decoration-danger="aggregate_elongation_nabl == 'fail'" 
+                               readonly="1"/></td>
+
+                               <td><label for="aggregate_flakiness_nabl"></label></td>
+                            <td><field name='aggregate_flakiness_nabl'
+                               decoration-success="aggregate_flakiness_nabl == 'pass'" 
+                               decoration-danger="aggregate_flakiness_nabl == 'fail'" 
+                               readonly="1"/></td>
                                 
-                                <td><span class="fw-bold">Flakiness NABL</span></td>
-                                <td><field name="aggregate_flakiness_nabl"/></td>
+                                
+                               
                             </tr>
                         </tbody>
                     </table>
@@ -291,10 +316,12 @@
                     <!-- ====================================================== -->
                     <!-- AGGREGATE IMPACT VALUE -->
                     <!-- ====================================================== -->
-                    <field name="impact_visible" invisible="1"/>
 
                     <div invisible="not impact_visible">
-                        <h1 class="text-center"><span>Aggregate Impact Value</span></h1>
+                        <h1 class="text-center">
+                           <field name="impact_value_name" readonly="1" nolabel="1"/>
+                            <field name="impact_visible" invisible="1"/>
+                        </h1>
                     </div>
 
 
@@ -332,38 +359,44 @@
                     </table>
 
 
-                    <!-- Result -->
+                    <div class="d-flex gap-2" invisible="not impact_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_impact_value_conformity"></label></td>
+                            <td><field name='average_impact_value_conformity'
+                               decoration-success="average_impact_value_conformity == 'pass'" 
+                               decoration-danger="average_impact_value_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_impact_value_nabl"></label></td>
+                            <td><field name='average_impact_value_nabl'
+                               decoration-success="average_impact_value_nabl == 'pass'" 
+                               decoration-danger="average_impact_value_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not impact_visible">
-                        <tbody>
 
-                            <tr>
-                                <td class="w-50"><span class="fw-bold">Conformity</span></td>
-                                <td class="w-50">
-                                    <field name="average_impact_value_conformity"
-                                            readonly="1"
-                                            decoration-success="average_impact_value_conformity == 'pass'"
-                                            decoration-danger="average_impact_value_conformity == 'fail'"/>
-                                </td>
-                            </tr>
+                        
+                      </div> 
 
-                            <tr>
-                                <td><span class="fw-bold">NABL</span></td>
-                                <td><field name="average_impact_value_nabl"/></td>
-                            </tr>
 
-                        </tbody>
-                    </table>
+                    
                                         
 
                     <!-- Abrasion Value  -->
                     <!-- ====================================================== -->
                     
 
-                    <field name="abrasion_visible" invisible="1"/>
 
                     <div invisible="not abrasion_visible">
-                        <h1 class="text-center"><span>Abrasion Value</span></h1>
+                       <h1 class="text-center">
+                           <field name="abrasion_value_name" readonly="1" nolabel="1"/>
+                            <field name="abrasion_visible" invisible="1"/>
+                        </h1>
                     </div>
 
                     <!-- Test Details -->
@@ -393,40 +426,47 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex gap-2" invisible="not abrasion_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="abrasion_value_percentage_conformity"></label></td>
+                            <td><field name='abrasion_value_percentage_conformity'
+                               decoration-success="abrasion_value_percentage_conformity == 'pass'" 
+                               decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="abrasion_value_percentage_nabl"></label></td>
+                            <td><field name='abrasion_value_percentage_nabl'
+                               decoration-success="abrasion_value_percentage_nabl == 'pass'" 
+                               decoration-danger="abrasion_value_percentage_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
 
                     <!-- Result -->
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2"
-                        invisible="not abrasion_visible">
-                        <tbody>
-
-                            <tr>
-                                <td class="w-50"><span class="fw-bold">Conformity</span></td>
-                                <td class="w-50">
-                                    <field name="abrasion_value_percentage_conformity"
-                                        readonly="1"
-                                        decoration-success="abrasion_value_percentage_conformity == 'pass'"
-                                        decoration-danger="abrasion_value_percentage_conformity == 'fail'"/>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="fw-bold">NABL</span></td>
-                                <td><field name="abrasion_value_percentage_nabl"/></td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                    
 
 
                     <!-- Liquid Limit -->
                     <!-- ====================================================== -->
 
-                    <field name="liquid_limit_visible" invisible="1"/>
+                    
                     <field name="are_child_lines_filled" invisible="1"/>
 
                     <div invisible="not liquid_limit_visible">
-                        <h1 class="text-center"><span>Liquid Limit</span></h1>
+                        <h1 class="text-center">
+                           <field name="liquid_limit_name" readonly="1" nolabel="1"/>
+                            <field name="liquid_limit_visible" invisible="1"/>
+                        </h1>
                     </div>
 
 
@@ -479,36 +519,33 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex gap-2" invisible="not liquid_limit_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="liquid_limit_conformity"></label></td>
+                            <td><field name='liquid_limit_conformity'
+                               decoration-success="liquid_limit_conformity == 'pass'" 
+                               decoration-danger="liquid_limit_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="liquid_limit_nabl"></label></td>
+                            <td><field name='liquid_limit_nabl'
+                               decoration-success="liquid_limit_nabl == 'pass'" 
+                               decoration-danger="liquid_limit_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                    <!-- Result -->
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2"
-                        invisible="not liquid_limit_visible">
-                        <tbody>
+                        
+                      </div> 
 
-                            <tr>
-                                <td class="w-50">
-                                    <span class="fw-bold">Conformity</span>
-                                </td>
-                                <td class="w-50">
-                                    <field name="liquid_limit_conformity"
-                                        readonly="1"
-                                        decoration-success="liquid_limit_conformity == 'pass'"
-                                        decoration-danger="liquid_limit_conformity == 'fail'"/>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td>
-                                    <span class="fw-bold">NABL</span>
-                                </td>
-                                <td>
-                                    <field name="liquid_limit_nabl"/>
-                                </td>
-                            </tr>
 
-                        </tbody>
-                    </table>                                    <!-- Plastic Limit -->
+                   
                                     <!-- ====================================================== -->
                     <!-- PLASTIC LIMIT -->
                     <!-- ====================================================== -->
@@ -517,11 +554,11 @@
                     <!-- PLASTIC LIMIT -->
                     <!-- ====================================================== -->
 
-                    <field name="plastic_visible" invisible="1"/>
 
                     <div invisible="not plastic_visible">
                         <h1 class="text-center">
-                            <span>Plastic Limit</span>
+                           <field name="plastic_name" readonly="1" nolabel="1"/>
+                            <field name="plastic_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -575,46 +612,42 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex gap-2" invisible="not plastic_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_plastic_moisture_conformity"></label></td>
+                            <td><field name='average_plastic_moisture_conformity'
+                               decoration-success="average_plastic_moisture_conformity == 'pass'" 
+                               decoration-danger="average_plastic_moisture_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_plastic_moisture_nabl"></label></td>
+                            <td><field name='average_plastic_moisture_nabl'
+                               decoration-success="average_plastic_moisture_nabl == 'pass'" 
+                               decoration-danger="average_plastic_moisture_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                    <!-- Result -->
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2"
-                        invisible="not plastic_visible">
-                        <tbody>
+                        
+                      </div> 
 
-                            <tr>
-                                <td class="w-50">
-                                    <span class="fw-bold">Conformity</span>
-                                </td>
-                                <td class="w-50">
-                                    <field name="average_plastic_moisture_conformity"
-                                        readonly="1"
-                                        decoration-success="average_plastic_moisture_conformity == 'pass'"
-                                        decoration-danger="average_plastic_moisture_conformity == 'fail'"/>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td>
-                                    <span class="fw-bold">NABL</span>
-                                </td>
-                                <td>
-                                    <field name="average_plastic_moisture_nabl"/>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                   
 
                     <!-- ====================================================== -->
                     <!-- PLASTICITY INDEX -->
                     <!-- ====================================================== -->
 
-                    <field name="plasticity_index_visible" invisible="1"/>
 
                     <div invisible="not plasticity_index_visible">
                         <h1 class="text-center">
-                            <span>Plasticity Index</span>
+                           <field name="plasticity_index_name" readonly="1" nolabel="1"/>
+                            <field name="plasticity_index_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -648,46 +681,41 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex gap-2" invisible="not plasticity_index_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="plasticity_index_conformity"></label></td>
+                            <td><field name='plasticity_index_conformity'
+                               decoration-success="plasticity_index_conformity == 'pass'" 
+                               decoration-danger="plasticity_index_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="plasticity_index_nabl"></label></td>
+                            <td><field name='plasticity_index_nabl'
+                               decoration-success="plasticity_index_nabl == 'pass'" 
+                               decoration-danger="plasticity_index_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
 
-                    <!-- Result -->
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2"
-                        invisible="not plasticity_index_visible">
-                        <tbody>
+                        
+                      </div> 
 
-                            <tr>
-                                <td class="w-50">
-                                    <span class="fw-bold">Conformity</span>
-                                </td>
-                                <td class="w-50">
-                                    <field name="plasticity_index_conformity"
-                                        readonly="1"
-                                        decoration-success="plasticity_index_conformity == 'pass'"
-                                        decoration-danger="plasticity_index_conformity == 'fail'"/>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td>
-                                    <span class="fw-bold">NABL</span>
-                                </td>
-                                <td>
-                                    <field name="plasticity_index_nabl"/>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-
+                    
                     <!-- ====================================================== -->
                     <!-- DENSITY RELATION (HEAVY COMPACTION) -->
                     <!-- ====================================================== -->
 
-                    <field name="density_relation_visible" invisible="1"/>
 
                     <div invisible="not density_relation_visible">
                         <h1 class="text-center">
-                            <span>Density Relation (Heavy Compaction)</span>
+                           <field name="density_relation_name" readonly="1" nolabel="1"/>
+                            <field name="density_relation_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -1113,11 +1141,11 @@
                     <!-- FIELD DENSITY BY SAND REPLACEMENT METHOD -->
                     <!-- ====================================================== -->
 
-                    <field name="gsb_field_density_visible" invisible="1"/>
 
                     <div invisible="not gsb_field_density_visible">
                         <h1 class="text-center">
-                            <span>Field Density by Sand Replacement Method</span>
+                            <field name="field_density_name" readonly="1" nolabel="1"/>
+                            <field name="gsb_field_density_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -1198,36 +1226,45 @@
                         </tbody>
                     </table>
 
+                    <div invisible="not gsb_field_density_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="degree_of_compaction_conformity"></label></td>
+                            <td><field name='degree_of_compaction_conformity'
+                               decoration-success="degree_of_compaction_conformity == 'pass'" 
+                               decoration-danger="degree_of_compaction_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="degree_of_compaction_nabl">NABL</label></td>
+                            <td><field name='degree_of_compaction_nabl'
+                               decoration-success="degree_of_compaction_nabl == 'pass'" 
+                               decoration-danger="degree_of_compaction_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
 
-                    <!-- Conformity / NABL -->
+                       <notebook>
 
-                    <table class="table table-sm table-bordered custom_table_borders mt-2"
-                        invisible="not gsb_field_density_visible">
-                        <tbody>
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
 
-                            <tr>
-                                <td class="w-50">
-                                    <span class="fw-bold">Conformity</span>
-                                </td>
-                                <td class="w-50">
-                                    <field name="degree_of_compaction_conformity"
-                                        readonly="1"
-                                        decoration-success="degree_of_compaction_conformity == 'pass'"
-                                        decoration-danger="degree_of_compaction_conformity == 'fail'"/>
-                                </td>
-                            </tr>
+                    </notebook>
 
-                            <tr>
-                                <td>
-                                    <span class="fw-bold">NABL</span>
-                                </td>
-                                <td>
-                                    <field name="degree_of_compaction_nabl"/>
-                                </td>
-                            </tr>
 
-                        </tbody>
-                    </table>                       
+                             
                         <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                     </sheet>
                 </form>
