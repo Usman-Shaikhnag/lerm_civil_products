@@ -506,78 +506,7 @@
 									</span>
 							   	</th> 
 							</tr>
-							<!-- <div t-if="data.dry_gradation_visible" style="margin-top:20px">
-								
-								<tr cols="12">
-									<td colspan="1">
-									</td>
-									<td colspan="2">IS Sieve Size (% Passing through)
-									</td>
-									<td colspan="2">
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','64fecdf5-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td colspan="2">			
-									</td>
-									<td colspan="2">
-									
-									</td>
-
-								</tr>
-								<t t-set="i" t-value="0"/>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="data.dry_gradation_table" t-as="r" t-if="'pan' not in r['sieve_size']">
-									<td colspan="1">
-										<div>
-											<span t-esc="i + 1" t-if="i == 0"/>
-											<t t-set="i" t-value="i+1" t-if="i == 0"/>
-										</div>
-									</td>
-									<td colspan="2" >
-										<t t-set="k" t-value="k+1"/>
-										<span t-esc="r['sieve_size']"/>
-									</td>
-									
-									<td colspan="2" >
-										<span>
-											
-										</span>
-									</td>
-									<td colspan="2" >
-										<span t-esc="r['passing_percent']"/>
-									</td>
-									<td colspan="2" t-if="k == 1">
-										<span>100%</span>
-									</td>
-									<td colspan="2" t-if="k == 2">
-										<span>95% - 100%</span>
-									</td>
-									<td colspan="2" t-if="k == 3">
-										<span>60% - 80%</span>
-									</td>
-									<td colspan="2" t-if="k == 4">
-										<span>40% - 60%</span>
-									</td>
-									<td colspan="2" t-if="k == 5">
-										<span>25% - 40%</span>
-									</td>
-									<td colspan="2" t-if="k == 6">
-										<span>15% - 30%</span>
-									</td>
-									<td colspan="2" t-if="k == 7">
-										<span>8% - 22%</span>
-									</td>
-									<td colspan="2" t-if="k == 8">
-										<span>0% - 5%</span>
-									</td>
-									<td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td>
-								</tr>
-							</div> -->
+							
 							<t t-set="i" t-value="0"/>
 							<tr t-if="data.liquid_limit_visible and (data.liquid_limit_nabl == 'pass' and nabl) or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
 								<td colspan="1" style="text-align: center;">
@@ -627,7 +556,9 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.liquid_limit_conformity"/>
+
+									<span t-attf-style="color: #{'green' if data.liquid_limit_conformity and data.liquid_limit_conformity.lower() == 'pass' else ('red' if data.liquid_limit_conformity and data.liquid_limit_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.liquid_limit_conformity"/>
 								</td>
 							</tr>
 
@@ -680,7 +611,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.liquid_limit_conformity"/>
+									<span t-attf-style="color: #{'green' if data.liquid_limit_conformity and data.liquid_limit_conformity.lower() == 'pass' else ('red' if data.liquid_limit_conformity and data.liquid_limit_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.liquid_limit_conformity"/>
 								</td>
 							</tr>
                            <!-- Plastic Limit -->
@@ -729,7 +661,10 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.average_plastic_moisture_conformity"/>
+									
+
+									<span t-attf-style="color: #{'green' if data.average_plastic_moisture_conformity and data.average_plastic_moisture_conformity.lower() == 'pass' else ('red' if data.average_plastic_moisture_conformity and data.average_plastic_moisture_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.average_plastic_moisture_conformity"/>
 								</td>
 							</tr>
 
@@ -779,7 +714,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.average_plastic_moisture_conformity"/>
+									<span t-attf-style="color: #{'green' if data.average_plastic_moisture_conformity and data.average_plastic_moisture_conformity.lower() == 'pass' else ('red' if data.average_plastic_moisture_conformity and data.average_plastic_moisture_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.average_plastic_moisture_conformity"/>
 								</td>
 							</tr>
                              <!-- Plasticity Index -->
@@ -842,7 +778,10 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.plasticity_index_conformity"/>
+									
+
+									<span t-attf-style="color: #{'green' if data.plasticity_index_conformity and data.plasticity_index_conformity.lower() == 'pass' else ('red' if data.plasticity_index_conformity and data.plasticity_index_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.plasticity_index_conformity"/>
 								</td>
 							</tr>
 
@@ -905,7 +844,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.plasticity_index_conformity"/>
+									<span t-attf-style="color: #{'green' if data.plasticity_index_conformity and data.plasticity_index_conformity.lower() == 'pass' else ('red' if data.plasticity_index_conformity and data.plasticity_index_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.plasticity_index_conformity"/>
 								</td>
 							</tr>
 
@@ -953,7 +893,10 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.water_absorbtion_conformity"/>
+									
+
+									<span t-attf-style="color: #{'green' if data.water_absorbtion_conformity and data.water_absorbtion_conformity.lower() == 'pass' else ('red' if data.water_absorbtion_conformity and data.water_absorbtion_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.water_absorbtion_conformity"/>
 								</td>
 							</tr>
 
@@ -1000,7 +943,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.water_absorbtion_conformity"/>
+									<span t-attf-style="color: #{'green' if data.water_absorbtion_conformity and data.water_absorbtion_conformity.lower() == 'pass' else ('red' if data.water_absorbtion_conformity and data.water_absorbtion_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.water_absorbtion_conformity"/>
 								</td>
 							</tr>
 
@@ -1052,7 +996,10 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.specific_gravity_gsb_conformity"/>
+									
+
+									<span t-attf-style="color: #{'green' if data.specific_gravity_gsb_conformity and data.specific_gravity_gsb_conformity.lower() == 'pass' else ('red' if data.specific_gravity_gsb_conformity and data.specific_gravity_gsb_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.specific_gravity_gsb_conformity"/>
 								</td>
 							</tr>
 
@@ -1099,7 +1046,9 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.specific_gravity_gsb_conformity"/>
+									
+									<span t-attf-style="color: #{'green' if data.specific_gravity_gsb_conformity and data.specific_gravity_gsb_conformity.lower() == 'pass' else ('red' if data.specific_gravity_gsb_conformity and data.specific_gravity_gsb_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.specific_gravity_gsb_conformity"/>
 								</td>
 							</tr>
                            <!-- Absorbtion Value -->
@@ -1146,7 +1095,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.abrasion_value_percentage_conformity"/>
+									<span t-attf-style="color: #{'green' if data.abrasion_value_percentage_conformity and data.abrasion_value_percentage_conformity.lower() == 'pass' else ('red' if data.abrasion_value_percentage_conformity and data.abrasion_value_percentage_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.abrasion_value_percentage_conformity"/>
 								</td>
 							</tr>
 
@@ -1193,7 +1143,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.abrasion_value_percentage_conformity"/>
+									<span t-attf-style="color: #{'green' if data.abrasion_value_percentage_conformity and data.abrasion_value_percentage_conformity.lower() == 'pass' else ('red' if data.abrasion_value_percentage_conformity and data.abrasion_value_percentage_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.abrasion_value_percentage_conformity"/>
 								</td>
 							</tr>
 
@@ -1241,7 +1192,9 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.average_impact_value_conformity"/>
+
+									<span t-attf-style="color: #{'green' if data.average_impact_value_conformity and data.average_impact_value_conformity.lower() == 'pass' else ('red' if data.average_impact_value_conformity and data.average_impact_value_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.average_impact_value_conformity"/>
 								</td>
 							</tr>
 
@@ -1288,7 +1241,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.average_impact_value_conformity"/>
+									<span t-attf-style="color: #{'green' if data.average_impact_value_conformity and data.average_impact_value_conformity.lower() == 'pass' else ('red' if data.average_impact_value_conformity and data.average_impact_value_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.average_impact_value_conformity"/>
 								</td>
 							</tr>
 
@@ -1338,7 +1292,9 @@
 									</td>
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-esc="data.aggregate_flakiness_conformity"/>
+
+											<span t-attf-style="color: #{'green' if data.aggregate_flakiness_conformity and data.aggregate_flakiness_conformity.lower() == 'pass' else ('red' if data.aggregate_flakiness_conformity and data.aggregate_flakiness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.aggregate_flakiness_conformity"/>
 									</td>
 								</tr>
 
@@ -1385,7 +1341,8 @@
 								</td>
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.aggregate_flakiness_conformity"/>
+									<span t-attf-style="color: #{'green' if data.aggregate_flakiness_conformity and data.aggregate_flakiness_conformity.lower() == 'pass' else ('red' if data.aggregate_flakiness_conformity and data.aggregate_flakiness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.aggregate_flakiness_conformity"/>
 								</td>
 							</tr>
                             <!-- Elongation % -->
@@ -1433,7 +1390,8 @@
 									</td>
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-esc="data.aggregate_elongation_conformity"/>
+										<span t-attf-style="color: #{'green' if data.aggregate_elongation_conformity and data.aggregate_elongation_conformity.lower() == 'pass' else ('red' if data.aggregate_elongation_conformity and data.aggregate_elongation_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.aggregate_elongation_conformity"/>
 									</td>
 								</tr>
 								<tr t-if="data.elongation_visible and fromEln">
@@ -1479,7 +1437,8 @@
 									</td>
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-esc="data.aggregate_elongation_conformity"/>
+										<span t-attf-style="color: #{'green' if data.aggregate_elongation_conformity and data.aggregate_elongation_conformity.lower() == 'pass' else ('red' if data.aggregate_elongation_conformity and data.aggregate_elongation_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.aggregate_elongation_conformity"/>
 									</td>
 								</tr>
 							</t>
@@ -1620,226 +1579,7 @@
 					</table>	
 					
 					<div  style="page-break-inside: avoid;margin-top:20px">
-						<!-- <table  t-if="data.cbr_visible and fromEln">
-								<tr>
-									<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
-										<div>
-											LABORATORY DETERMINATION OF CBR : <![CDATA[&nbsp;]]> 
-											<span> 
-											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f1046910-b27e-48c6-81b8-900521446761')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-											</t>
-										</span>
-										</div>
-										<div>
-											CONDITION SOAKED 1 Div. = 6.96kg
-										</div>
-									</div>
-								</tr>
-						</table>
-						<table  t-if="data.cbr_visible and not fromEln">
-								<tr>
-									<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
-										<div>
-											LABORATORY DETERMINATION OF CBR : <![CDATA[&nbsp;]]> 
-											<span> 
-											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f1046910-b27e-48c6-81b8-900521446761')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-											</t>
-										</span>
-										</div>
-										<div>
-											CONDITION SOAKED 1 Div. = 6.96kg
-										</div>
-									</div>
-								</tr>
-						</table>
-
-						<table t-if="data.cbr_visible and data.cbr_table and fromEln" style="margin-top:10px;">
-								<thead>
-									<tr>
-										<th>
-											<span>
-												Sr. No
-											</span>
-										</th>
-										<th>
-											<span>
-												Penetration in mm
-											</span>
-										</th>
-
-										<th>
-											<span>
-												Proving Ring Reading
-											</span>
-										</th>
-
-										<th>
-											<span>
-												Load in Kg
-											</span>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<t t-set="i" t-value="0"/>
-									<tr t-foreach="data.cbr_table" t-as="r">
-										<td>
-											<div>
-												<span t-esc="i + 1" />
-												<t t-set="i" t-value="i+1"/>
-											</div>
-										</td>
-										<td>
-											<span t-esc="r.penetration"/>
-										</td>
-										<td>
-											<span t-esc="r.proving_reading"/>
-										</td>
-										<td>
-											<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
-										</td>
-									</tr>
-								</tbody>
-						</table>
-						<table t-if="data.cbr_visible and data.cbr_table and not fromEln" style="margin-top:10px;">
-								<thead>
-									<tr>
-										<th>
-											<span>
-												Sr. No
-											</span>
-										</th>
-										<th>
-											<span>
-												Penetration in mm
-											</span>
-										</th>
-
-										<th>
-											<span>
-												Proving Ring Reading
-											</span>
-										</th>
-
-										<th>
-											<span>
-												Load in Kg
-											</span>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<t t-set="i" t-value="0"/>
-									<tr t-foreach="data.cbr_table" t-as="r">
-										<td>
-											<div>
-												<span t-esc="i + 1" />
-												<t t-set="i" t-value="i+1"/>
-											</div>
-										</td>
-										<td>
-											<span t-esc="r.penetration"/>
-										</td>
-										<td>
-											<span t-esc="r.proving_reading"/>
-										</td>
-										<td>
-											<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
-										</td>
-									</tr>
-								</tbody>
-						</table>
-					</div>
-
-					<div t-if="graphCbr" style="margin-top: 20px;">
-							<img t-att-src="'data:image/png;base64,'+str(graphCbr)" style="max-width: 100%;"/>
-					</div>
-
-					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 10px;">
-						CBR From Graph 
-					</div>
-
-				
-					
-					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 5px;" class="cbrformula">
-
-						<div>
-							<div>
-								CBR at 2.5mm Penetration = (PT/PS) X 100
-							</div>
-							<div>
-								From Graph PT = <span t-esc="load2"/>
-							</div>
-							<div>
-								PS = 1370
-							</div>
-							<div >
-								CBR = <span t-esc="round(load2 / 1370 * 100 , 2)"/>
-							</div>
-						</div>
-
-						<div>
-							<div>
-								CBR at 5mm Penetration = (PT/PS) X 100
-							</div>
-							<div>
-								From Graph PT = <span t-esc="load5"/>
-							</div>
-							<div>
-								PS = 2055
-							</div>
-							<div>
-								CBR = <span t-esc="round(load5 / 2055 * 100 , 2)"/>
-							</div>
-						</div>
-					</div>
-					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 5px;" class="cbrformula">
-
-						<div>
-							<div>
-								CBR at 2.5mm Penetration = (PT/PS) X 100
-							</div>
-							<div>
-								From Graph PT = <span t-esc="load2"/>
-							</div>
-							<div>
-								PS = 1370
-							</div>
-							<div >
-								CBR = <span t-esc="round(load2 / 1370 * 100 , 2)"/>
-							</div>
-						</div>
-
-						<div>
-							<div>
-								CBR at 5mm Penetration = (PT/PS) X 100
-							</div>
-							<div>
-								From Graph PT = <span t-esc="load5"/>
-							</div>
-							<div>
-								PS = 2055
-							</div>
-							<div>
-								CBR = <span t-esc="round(load5 / 2055 * 100 , 2)"/>
-							</div>
-						</div>
-					</div>
-					
-					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 10px;">
-						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2 / 1370 * 100 , 2)"/></b>
-					</div>
-
-					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 10px;">
-						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2 / 1370 * 100 , 2)"/></b>
-					</div> -->
-
+						
 					<table t-if="data.cbr_visible">
 								<tr>
 									<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
@@ -2090,35 +1830,30 @@
 						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2_infra1 / 1370 * 100 , 2)"/></b>
 					</div>
 
-					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-										<li>
-										# - Information provided by the customer.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
-						</div>
+					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
+									<ul>
+									   
+										<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+				</div>
+
 						
 						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 									<div>
@@ -2192,7 +1927,7 @@
 									...... End Of Report......
 								</p>
 							</div>
-						</div>
+						<!-- </div> -->
 			</t>
 		</t>
 	</template>

@@ -19,176 +19,41 @@ class GsbMechanical(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    # १. आधी ही मेथड वरती लिहा
+    def _default_notes(self):
+        return [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
+
+    # २. नंतर खाली हे फिल्ड वापरा
+    notes_id = fields.One2many(
+        'mechanical.gsb.notes', 
+        'parent_id', 
+        string="Notes", 
+        ondelete='cascade', 
+        default=_default_notes
+    )
+   
     
 
-    def open_eln_page(self):
-        # parameter_based_assignment
-        current_user = self.env.user
-        # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
-            lambda r: r.technician == current_user
-        )
-
-        for result in technician_results:
-
-            # Dry Gradation
-            if result.parameter.internal_id == '214578fgtr-560e-41f9-9f7e-3455c9b2925d':
-                result.calculated = True
-            
-            # Water Absorbtion
-            if result.parameter.internal_id == '216587ghtr-4e73-44ca-93ed-442f74cd1e9b':
-                result.result_char = round(self.water_absorbtion,2)
-                result.calculated = True
-                if self.water_absorbtion_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Elongation and Flakiness Index
-            if result.parameter.internal_id == '32147hgv4-599e-4569-8cd2-48e1dc120714':
-                result.result_char = round(self.aggregate_elongation,2)
-                result.calculated = True
-                if self.aggregate_elongation_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Elongation and Flakiness Index
-            if result.parameter.internal_id == '56482hgt1-70fb-4c47-baec-9880be12d765':
-                result.result_char = round(self.aggregate_flakiness,2)
-                result.calculated = True
-                if self.aggregate_flakiness_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Abrasion Value
-            if result.parameter.internal_id == '2145hgt1-3f1c-4aca-ac94-3c2bb0f034e2':
-                result.result_char = round(self.abrasion_value_percentage,2)
-                result.calculated = True
-                if self.abrasion_value_percentage_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Impact Value
-            if result.parameter.internal_id == '21457gtr4-a55f-47ac-aee6-9f37d733ccca':
-                result.result_char = round(self.average_impact_value,2)
-                result.calculated = True
-                if self.average_impact_value_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Plastic Limit
-            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
-                result.result_char = round(self.average_plastic_moisture,2)
-                result.calculated = True
-                if self.average_plastic_moisture_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Liquid Limit
-            if result.parameter.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
-                result.result_char = round(self.liquid_limit,2)
-                result.calculated = True
-                if self.liquid_limit_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Plasticity Index Visible
-            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
-                result.result_char = round(self.plasticity_index,2)
-                result.calculated = True
-                if self.plasticity_index_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Density Relation Using Heavy Compaction
-            if result.parameter.internal_id == 'm21547tyu-0579-4221-8a82-bbfadcd3131f':
-                result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
-            # CBR
-            if result.parameter.internal_id == 'rt14752hyt-b27e-48c6-81b8-900521446761':
-                # result.result_char = round(self.aggregate_elongation,2)
-                result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
-           
-            if result.parameter.internal_id == '6547ytre-4369-491d-93a6-030514c29663':
-                # result.result_char = round(self.aggregate_elongation,2)
-                result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
-        return {
-                'view_mode': 'form',
-                'res_model': "lerm.eln",
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.eln_ref.id,
-                
-            }
-
-    @api.model
-    def create(self, vals):
-        # import wdb;wdb.set_trace()
-        record = super(GsbMechanical, self).create(vals)
-        # record.get_all_fields()
-        record.eln_ref.write({'model_id':record.id})
-        return record
-
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
-
-    def get_all_fields(self):
-        record = self.env['mechanical.gsb'].browse(self.ids[0])
-        field_values = {}
-        for field_name, field in record._fields.items():
-            field_value = record[field_name]
-            field_values[field_name] = field_value
-
-        return field_values
-
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
-            
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
+    
 
 
     @api.depends('eln_ref','sample_parameters')
@@ -248,6 +113,195 @@ class GsbMechanical(models.Model):
                     record.gsb_infra_visible = True
 
 
+
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+            # Dry Gradation
+            if result.parameter.internal_id == '89e321d5-560e-41f9-9f7e-3455c9b2925d':
+                result.calculated = True
+            
+            # Water Absorbtion
+            if result.parameter.internal_id == 'd9bdbd78-4e73-44ca-93ed-442f74cd1e9b':
+                result.result_char = round(self.water_absorbtion,2)
+                result.calculated = True
+                if self.water_absorbtion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Elongation and Flakiness Index
+            if result.parameter.internal_id == '9588ef56-599e-4569-8cd2-48e1dc120714':
+                result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                if self.aggregate_elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Elongation and Flakiness Index
+            if result.parameter.internal_id == '06308898-70fb-4c47-baec-9880be12d765':
+                result.result_char = round(self.aggregate_flakiness,2)
+                result.calculated = True
+                if self.aggregate_flakiness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Abrasion Value
+            if result.parameter.internal_id == '3c23309f-3f1c-4aca-ac94-3c2bb0f034e2':
+                result.result_char = round(self.abrasion_value_percentage,2)
+                result.calculated = True
+                if self.abrasion_value_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Impact Value
+            if result.parameter.internal_id == 'df2105e2-a55f-47ac-aee6-9f37d733ccca':
+                result.result_char = round(self.average_impact_value,2)
+                result.calculated = True
+                if self.average_impact_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Plastic Limit
+            if result.parameter.internal_id == '6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed':
+                result.result_char = round(self.average_plastic_moisture,2)
+                result.calculated = True
+                if self.average_plastic_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Liquid Limit
+            if result.parameter.internal_id == 'b9d7a9f7-3ed1-4021-90a2-47651f0ed81d':
+                result.result_char = round(self.liquid_limit,2)
+                result.calculated = True
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Plasticity Index Visible
+            if result.parameter.internal_id == 'c6c06cf6-1611-4790-9410-ef5db6233932':
+                result.result_char = round(self.plasticity_index,2)
+                result.calculated = True
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Density Relation Using Heavy Compaction
+            if result.parameter.internal_id == '5cfd20e8-0579-4221-8a82-bbfadcd3131f':
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            # CBR
+            if result.parameter.internal_id == 'f1046910-b27e-48c6-81b8-900521446761':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+           
+            if result.parameter.internal_id == 'p4587910-b27e-48c6-81b8-826521442541':
+                result.result_char = round(self.avg_degree_of_compaction,2)
+                result.calculated = True
+                if self.degree_of_compaction_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'k2543lpu58-b27e-48c6-81b8-826521442541':
+                result.result_char = round(self.specific_gravity_gsb,2)
+                result.calculated = True
+                if self.specific_gravity_gsb_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2145kjytl321-b27e-48c6-81b8-8265214422143':
+                # result.result_char = round(self.specific_gravity_gsb,2)
+                result.calculated = True
+                # if self.specific_gravity_gsb_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
+
+    @api.model
+    def create(self, vals):
+        # import wdb;wdb.set_trace()
+        record = super(GsbMechanical, self).create(vals)
+        # record.get_all_fields()
+        record.eln_ref.write({'model_id':record.id})
+        return record
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+
+    def get_all_fields(self):
+        record = self.env['mechanical.gsb'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+            
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
+
+
       # Specific Gravity  
     specific_gravity_gsb_name = fields.Char(default="Specific Gravity ")
     specific_gravity_gsb_visible = fields.Boolean(compute="_compute_visible")
@@ -271,7 +325,9 @@ class GsbMechanical(models.Model):
 
     specific_gravity_gsb_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_gsb_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_specific_gravity_gsb_conformity", store=True)
 
 
 
@@ -284,6 +340,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','k2543lpu58-b27e-48c6-81b8-826521442541')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_gsb_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -348,7 +410,9 @@ class GsbMechanical(models.Model):
 
     degree_of_compaction_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_degree_of_compaction_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_degree_of_compaction_conformity", store=True)
 
     @api.depends('avg_degree_of_compaction','eln_ref','grade')
     def _compute_degree_of_compaction_conformity(self):
@@ -359,6 +423,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','p4587910-b27e-48c6-81b8-826521442541')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.degree_of_compaction_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -373,7 +443,9 @@ class GsbMechanical(models.Model):
 
     degree_of_compaction_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_degree_of_compaction_nabl", store=True)
+        ('fail', 'Fail'),
+        
+        ], string="NABL", compute="_compute_degree_of_compaction_nabl", store=True)
 
     @api.depends('avg_degree_of_compaction','eln_ref','grade')
     def _compute_degree_of_compaction_nabl(self):
@@ -496,7 +568,9 @@ class GsbMechanical(models.Model):
 
     water_absorbtion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
 
 
 
@@ -509,6 +583,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d9bdbd78-4e73-44ca-93ed-442f74cd1e9b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorbtion_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -603,7 +683,9 @@ class GsbMechanical(models.Model):
 
     aggregate_flakiness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
 
 
 
@@ -616,6 +698,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_flakiness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -657,7 +745,9 @@ class GsbMechanical(models.Model):
 
     aggregate_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
 
 
 
@@ -670,6 +760,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9588ef56-599e-4569-8cd2-48e1dc120714')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_elongation_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -736,7 +832,9 @@ class GsbMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
 
 
 
@@ -749,6 +847,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3c23309f-3f1c-4aca-ac94-3c2bb0f034e2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.abrasion_value_percentage_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -807,7 +911,9 @@ class GsbMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
 
 
@@ -820,6 +926,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df2105e2-a55f-47ac-aee6-9f37d733ccca')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_impact_value_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -869,7 +981,9 @@ class GsbMechanical(models.Model):
     
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
     
 
 
@@ -913,6 +1027,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b9d7a9f7-3ed1-4021-90a2-47651f0ed81d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.liquid_limit_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -975,7 +1095,9 @@ class GsbMechanical(models.Model):
 
     average_plastic_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
 
 
 
@@ -988,6 +1110,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_plastic_moisture_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -1027,6 +1155,7 @@ class GsbMechanical(models.Model):
 
     # Plasticity Index
     plasticity_index_visible = fields.Boolean("Plasticity Index Visible",compute="_compute_visible")
+    plasticity_index_name = fields.Char("Name",default="Plasticity Index")
     plasticity_index = fields.Float("Plasticity Index",compute="_compute_plasticity_limit")
     remarks_plasticity_index = fields.Selection([
         ('plastic', 'Plastic'),
@@ -1039,7 +1168,9 @@ class GsbMechanical(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
 
 
@@ -1052,6 +1183,12 @@ class GsbMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c6c06cf6-1611-4790-9410-ef5db6233932')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.plasticity_index_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -1748,3 +1885,12 @@ class GsbFieldDencityLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.determination_no = index + 1
+
+
+
+class GsbNotes(models.Model):
+    _name = "mechanical.gsb.notes"
+
+    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
