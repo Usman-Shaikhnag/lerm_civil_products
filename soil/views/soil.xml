@@ -680,7 +680,8 @@
 
                 
                     
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                    <div class="d-flex gap-2" invisible = "soil_visible == False">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
                             <tbody>
                                 <tr>
                                 <td><span>2.5 mm Penetration Value Conformity</span></td>
@@ -698,6 +699,28 @@
                                 </tr>
                             </tbody>
                         </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                <td><span>5.0 mm Penetration Value Conformity</span></td>
+                                <td><field name="cbr_5_avg_conformity"
+                                            decoration-success="cbr_5_avg_conformity == 'pass'" 
+                                            decoration-danger="cbr_5_avg_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><span>5.0 mm Penetration Value NABL</span></td>
+                                <td><field name="cbr_5_avg_nabl"
+                                            decoration-success="cbr_5_avg_nabl == 'pass'" 
+                                            decoration-danger="cbr_5_avg_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        </div>
 
 
                     

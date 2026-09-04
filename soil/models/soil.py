@@ -1998,27 +1998,112 @@ class Soil(models.Model):
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
     heavy_table = fields.One2many('mechanical.heavy.compaction.line','parent_id',string="Heavy Compaction")
 
-    max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density", store=True)
+    max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_density_and_omc", store=True)
 
     omc = fields.Float(string="Optimum Moisture Content (OMC)", compute="_compute_max_density_and_omc", store=True)
 
     @api.depends('heavy_table.dry_density', 'heavy_table.water_content')
     def _compute_max_density_and_omc(self):
-        for rec in self:
-            max_density = 0.0
-            omc_value = 0.0
-            for line in rec.heavy_table:
-                if line.dry_density > max_density:
-                    max_density = line.dry_density
-                    omc_value = line.water_content
-            rec.max_dry_density = max_density
-            rec.omc = omc_value
 
-    @api.depends('heavy_table.dry_density')
-    def _compute_max_dry_density(self):
-        for rec in self:
-            densities = rec.heavy_table.mapped('dry_density')
-            rec.max_dry_density = max(densities) if densities else 0.0
+     for rec in self:
+
+        x_value = []
+        y_value = []
+
+        # ==========================
+        # Get test data
+        # ==========================
+        for line in rec.heavy_table:
+
+            if (
+                line.water_content is not None
+                and line.dry_density is not None
+            ):
+                try:
+                    x_value.append(float(line.water_content))
+                    y_value.append(float(line.dry_density))
+
+                except (ValueError, TypeError):
+                    continue
+
+        # ==========================
+        # Not enough data
+        # ==========================
+        if len(x_value) < 3:
+            rec.max_dry_density = 0.0
+            rec.omc = 0.0
+            continue
+
+        # ==========================
+        # Sort data
+        # ==========================
+        data = sorted(
+            zip(x_value, y_value),
+            key=lambda item: item[0]
+        )
+
+        x = np.array(
+            [d[0] for d in data],
+            dtype=float
+        )
+
+        y = np.array(
+            [d[1] for d in data],
+            dtype=float
+        )
+
+        # ==========================
+        # Quadratic fitting
+        # ==========================
+        coeff = np.polyfit(
+            x,
+            y,
+            2
+        )
+
+        a = coeff[0]
+        b = coeff[1]
+
+        # ==========================
+        # OMC = vertex of parabola
+        # ==========================
+        if a == 0:
+            rec.max_dry_density = 0.0
+            rec.omc = 0.0
+            continue
+
+        omc_value = -b / (2 * a)
+
+        # ==========================
+        # MDD = density at OMC
+        # ==========================
+        poly = np.poly1d(coeff)
+
+        mdd_value = poly(omc_value)
+
+        # ==========================
+        # Save values
+        # ==========================
+        rec.omc = omc_value
+        rec.max_dry_density = mdd_value
+
+    # @api.depends('heavy_table.dry_density', 'heavy_table.water_content')
+    # def _compute_max_density_and_omc(self):
+    #     for rec in self:
+    #         max_density = 0.0
+    #         omc_value = 0.0
+    #         for line in rec.heavy_table:
+    #             if line.dry_density > max_density:
+    #                 max_density = line.dry_density
+    #                 omc_value = line.water_content
+    #         rec.max_dry_density = max_density
+    #         rec.omc = omc_value
+
+    # @api.depends('heavy_table.dry_density')
+    # def _compute_max_dry_density(self):
+    #     for rec in self:
+    #         densities = rec.heavy_table.mapped('dry_density')
+    #         rec.max_dry_density = max(densities) if densities else 0.0
  
    
 
@@ -2136,84 +2221,6 @@ class Soil(models.Model):
     show_heavy_graph = fields.Boolean(string="Show Compaction Graph")
 
 
-
-
-
-
-
-
-    # def generate_line_chart_light_omc(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.heavy_table:
-    #         if line.water_content and line.dry_density:
-    #             x_value.append(line.water_content)
-    #             y_value.append(line.dry_density)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     x = np.array(x_value)
-    #     y = np.array(y_value)
-
-    #     # Sort data
-    #     sorted_indices = np.argsort(x)
-    #     x = x[sorted_indices]
-    #     y = y[sorted_indices]
-
-    #     # Gentle smooth curve (quadratic)
-    #     x_smooth = np.linspace(x.min(), x.max(), 200)
-    #     spline = make_interp_spline(x, y, k=2)
-    #     y_smooth = spline(x_smooth)
-
-    #     # Find smooth curve peak (OMC/MDD)
-    #     smooth_max_index = np.argmax(y_smooth)
-    #     smooth_max_x = x_smooth[smooth_max_index]
-    #     smooth_max_y = y_smooth[smooth_max_index]
-
-    #     # Trim curve so it never goes above MDD
-    #     y_smooth = np.minimum(y_smooth, smooth_max_y)
-
-    #     # Figure size
-    #     plt.figure(figsize=(15, 5))
-
-    #     # Plot smooth curve
-    #     plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
-
-    #     # Plot points (smaller, subtle)
-    #     plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
-
-    #     # Labels and title
-    #     plt.xlabel('Water Content (%)', fontsize=12)
-    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
-    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
-
-    #     # Extend y-axis
-    #     plt.xlim(left=0, right=max(x) + 2)
-    #     plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
-
-    #     # Grid
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
-
-    #     # Highlight OMC/MDD (shifted peak)
-    #     plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
-    #     plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
-    #             f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
-    #             color='red', fontsize=10)
-
-    #     plt.tight_layout()
-
-    #     # Save to base64
-    #     buffer = io.BytesIO()
-    #     plt.savefig(buffer, format='png', dpi=150)
-    #     plt.close()
-    #     buffer.seek(0)
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
     def generate_line_chart_light_omc(self):
 
@@ -2379,11 +2386,9 @@ class Soil(models.Model):
      return base64.b64encode(
         buffer.read()
     ).decode('utf-8')
-    
 
 
-    
-
+   
 
 
     @api.depends('heavy_table')
@@ -2402,27 +2407,113 @@ class Soil(models.Model):
     omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
     omc_table = fields.One2many('mechanical.omc.compaction.line','parent_id',string="OMC Compaction")
 
-    max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density1", store=True)
+    max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_density_and_omc1", store=True)
 
     omc1 = fields.Float(string="Optimum Moisture Content (OMC)", compute="_compute_max_density_and_omc1", store=True)
 
+
     @api.depends('omc_table.dry_density1', 'omc_table.water_content1')
     def _compute_max_density_and_omc1(self):
-        for rec in self:
-            max_density1 = 0.0
-            omc_value1 = 0.0
-            for line in rec.omc_table:
-                if line.dry_density1 > max_density1:
-                    max_density1 = line.dry_density1
-                    omc_value1 = line.water_content1
-            rec.max_dry_density1 = max_density1
-            rec.omc1 = omc_value1
 
-    @api.depends('omc_table.dry_density1')
-    def _compute_max_dry_density1(self):
-        for rec in self:
-            densities = rec.omc_table.mapped('dry_density1')
-            rec.max_dry_density1 = max(densities) if densities else 0.0
+     for rec in self:
+
+        x_value = []
+        y_value = []
+
+        # ==========================
+        # Get test data
+        # ==========================
+        for line in rec.omc_table:
+
+            if (
+                line.water_content1 is not None
+                and line.dry_density1 is not None
+            ):
+                try:
+                    x_value.append(float(line.water_content1))
+                    y_value.append(float(line.dry_density1))
+
+                except (ValueError, TypeError):
+                    continue
+
+        # ==========================
+        # Not enough data
+        # ==========================
+        if len(x_value) < 3:
+            rec.max_dry_density1 = 0.0
+            rec.omc1 = 0.0
+            continue
+
+        # ==========================
+        # Sort data
+        # ==========================
+        data = sorted(
+            zip(x_value, y_value),
+            key=lambda item: item[0]
+        )
+
+        x = np.array(
+            [d[0] for d in data],
+            dtype=float
+        )
+
+        y = np.array(
+            [d[1] for d in data],
+            dtype=float
+        )
+
+        # ==========================
+        # Quadratic fitting
+        # ==========================
+        coeff = np.polyfit(
+            x,
+            y,
+            2
+        )
+
+        a = coeff[0]
+        b = coeff[1]
+
+        # ==========================
+        # OMC = vertex of parabola
+        # ==========================
+        if a == 0:
+            rec.max_dry_density1 = 0.0
+            rec.omc1 = 0.0
+            continue
+
+        omc_value = -b / (2 * a)
+
+        # ==========================
+        # MDD = density at OMC
+        # ==========================
+        poly = np.poly1d(coeff)
+
+        mdd_value = poly(omc_value)
+
+        # ==========================
+        # Save values
+        # ==========================
+        rec.omc1 = omc_value
+        rec.max_dry_density1 = mdd_value
+
+    # @api.depends('omc_table.dry_density1', 'omc_table.water_content1')
+    # def _compute_max_density_and_omc1(self):
+    #     for rec in self:
+    #         max_density1 = 0.0
+    #         omc_value1 = 0.0
+    #         for line in rec.omc_table:
+    #             if line.dry_density1 > max_density1:
+    #                 max_density1 = line.dry_density1
+    #                 omc_value1 = line.water_content1
+    #         rec.max_dry_density1 = max_density1
+    #         rec.omc1 = omc_value1
+
+    # @api.depends('omc_table.dry_density1')
+    # def _compute_max_dry_density1(self):
+    #     for rec in self:
+    #         densities = rec.omc_table.mapped('dry_density1')
+    #         rec.max_dry_density1 = max(densities) if densities else 0.0
  
    
 
@@ -2807,7 +2898,7 @@ class Soil(models.Model):
 
     cbr_25_avg = fields.Float("2.5mm", compute="_compute_cbr", store=True)
 
-    # cbr_5_avg = fields.Float("5mm", compute="_compute_cbr", store=True)
+    cbr_5_avg = fields.Float("5mm", compute="_compute_cbr", store=True)
     # cbr_max = fields.Float("CBR Max", compute="_compute_cbr", store=True)
 
 
@@ -2855,7 +2946,7 @@ class Soil(models.Model):
 
         # -------- AVERAGE --------
         rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
-        # rec.cbr_5_avg = (rec.cbr_5_s1 + rec.cbr_5_s2 + rec.cbr_5_s3) / 3
+        rec.cbr_5_avg = (rec.cbr_5_s1 + rec.cbr_5_s2 + rec.cbr_5_s3) / 3
 
         # # -------- MAX --------
         # rec.cbr_max = max(rec.cbr_25_avg, rec.cbr_5_avg)
@@ -2985,6 +3076,64 @@ class Soil(models.Model):
                 break
             else:
                 record.cbr_25_avg_nabl = 'fail'
+
+
+    cbr_5_avg_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cbr_5_avg_conformity", store=True)
+
+    @api.depends('cbr_5_avg','eln_ref','grade')
+    def _compute_cbr_5_avg_conformity(self):
+        
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cbr_5_avg_conformity = 'na'
+                continue
+
+            record.cbr_5_avg_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.cbr_5_avg - record.cbr_5_avg*mu_value
+                    upper = record.cbr_5_avg + record.cbr_5_avg*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.cbr_5_avg_conformity = 'pass'
+                        break
+                    else:
+                        record.cbr_5_avg_conformity = 'fail'
+
+    cbr_5_avg_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_cbr_5_avg_nabl", store=True)
+
+    @api.depends('cbr_5_avg','eln_ref','grade')
+    def _compute_cbr_5_avg_nabl(self):
+        
+        for record in self:
+            record.cbr_5_avg_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.cbr_5_avg - record.cbr_5_avg*mu_value
+            upper = record.cbr_5_avg + record.cbr_5_avg*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.cbr_5_avg_nabl = 'pass'
+                break
+            else:
+                record.cbr_5_avg_nabl = 'fail'
 
 
 
@@ -4121,6 +4270,18 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            # California Bearing Ratio
+            if result.parameter.internal_id == 'fb093c12-d353-47f2-8b24-98c1dda7ff56':
+                result.calculated = True
+                result.result_char = round(self.cbr_5_avg,2)
+                if self.cbr_5_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
 
 
             # Shrinkage limit Visible

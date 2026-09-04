@@ -641,10 +641,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3">Test Report No :</td>
+                                <!-- <td colspan="3">Test Report No :</td>
                                 <td colspan="3" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.sample_id.kes_no" />
+                                </td> -->
+                                <td colspan="3">SRF ID :</td>
+                                <td colspan="3" style="font-weight:bold;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
                                 </td>
                                 <td colspan="3">Sample ID  :-</td>
                                 <td colspan="2">
