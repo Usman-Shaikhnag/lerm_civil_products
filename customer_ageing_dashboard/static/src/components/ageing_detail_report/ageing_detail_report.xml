@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.AgeingDetailReport" owl="1">
+        <div class="customer-ageing-detail">
+            <div class="cad-detail-header">
+                <div class="cad-detail-header-left">
+                    <button class="cad-btn-back" t-on-click="goBack">
+                        <i class="fa fa-arrow-left"/>
+                        Back
+                    </button>
+                    <div class="cad-detail-breadcrumb">
+                        <span class="cad-breadcrumb-item" t-on-click="goBack">Ageing Dashboard</span>
+                        <span class="cad-breadcrumb-sep">/</span>
+                        <span class="cad-breadcrumb-item cad-breadcrumb-current" t-esc="state.partnerName"/>
+                        <span class="cad-breadcrumb-sep" t-if="state.bucketKey">/</span>
+                        <span class="cad-breadcrumb-item cad-breadcrumb-current" t-if="state.bucketKey" t-esc="bucketLabel"/>
+                    </div>
+                </div>
+                <div class="cad-detail-actions">
+                    <button class="cad-action-btn" title="Export to Excel" t-on-click="exportExcel">
+                        <i class="fa fa-file-excel"/>
+                        <span>Excel</span>
+                    </button>
+                    <button class="cad-action-btn" title="Export to PDF" t-on-click="exportPdf">
+                        <i class="fa fa-file-pdf"/>
+                        <span>PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="cad-detail-loading">
+                <i class="fa fa-spinner fa-spin"/>
+                <span>Loading invoices...</span>
+            </div>
+
+            <div t-else="">
+                <div class="cad-detail-layout">
+                    <div class="cad-detail-main">
+                        <div class="cad-kpi-grid">
+                            <div class="cad-kpi-card">
+                                <div class="cad-kpi-card-body">
+                                    <span class="cad-kpi-label">Total Outstanding</span>
+                                    <span class="cad-kpi-value cad-kpi-amount"><t t-esc="formatAmount(displayedTotal)"/></span>
+                                </div>
+                            </div>
+                            <div class="cad-kpi-card">
+                                <div class="cad-kpi-card-body">
+                                    <span class="cad-kpi-label">Total Invoices</span>
+                                    <span class="cad-kpi-value"><t t-esc="displayedCount"/></span>
+                                </div>
+                            </div>
+                            <div class="cad-kpi-card">
+                                <div class="cad-kpi-card-body">
+                                    <span class="cad-kpi-label">Avg Ageing Days</span>
+                                    <span class="cad-kpi-value"><t t-esc="state.avgAgingDays"/> Days</span>
+                                </div>
+                            </div>
+                            <div class="cad-kpi-card">
+                                <div class="cad-kpi-card-body">
+                                    <span class="cad-kpi-label">Highest Bucket</span>
+                                    <span class="cad-kpi-value"><t t-esc="highestBucketLabel"/></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="cad-card cad-card-padded cad-distrib-card">
+                            <div class="cad-section-title">
+                                <i class="fa fa-chart-column"/>
+                                Ageing Distribution
+                            </div>
+                            <div class="cad-distrib">
+                                <div t-foreach="bucketDistribution" t-as="bkt" t-key="bkt.key"
+                                     class="cad-distrib-row"
+                                     t-att-class="state.filterBucket === bkt.key ? 'cad-distrib-row--active' : ''"
+                                     t-att-title="'View invoices in ' + bkt.label"
+                                     t-on-click="() => filterByBucket(bkt.key)">
+                                    <div class="cad-distrib-label">
+                                        <span class="cad-distrib-dot" t-attf-style="background: {{bkt.color}}"/>
+                                        <t t-esc="bkt.label"/>
+                                    </div>
+                                    <div class="cad-distrib-track">
+                                        <div class="cad-distrib-fill" t-attf-style="width: {{bkt.percentage}}%; background: {{bkt.color}}">
+                                            <span t-if="bkt.percentage >= 8" t-esc="formatAmount(bkt.amount)"/>
+                                        </div>
+                                    </div>
+                                    <div class="cad-distrib-pct"><t t-esc="Math.round(bkt.percentage)"/>%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cad-card cad-card-padded">
+                            <div class="cad-detail-table-header">
+                                <div class="cad-section-title mb-0">
+                                    <i class="fa fa-file-invoice"/>
+                                    Invoice Details
+                                </div>
+                                <div t-if="state.filterBucket" class="cad-detail-filter-chip">
+                                    <span>Filtered: <t t-esc="activeFilterLabel"/></span>
+                                    <button class="cad-chip-clear" t-on-click="clearFilter" title="Clear filter">
+                                        <i class="fa fa-times"/>
+                                    </button>
+                                </div>
+                            </div>
+                            <div t-if="displayedInvoices.length === 0" class="cad-empty">
+                                <i class="fa fa-inbox"/>
+                                <p>No invoices found.</p>
+                            </div>
+                            <div t-else="" class="cad-detail-table-wrapper">
+                                <table class="cad-table cad-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice Date</th>
+                                            <th>Due Date</th>
+                                            <th>Invoice Number</th>
+                                            <th>Original Amount</th>
+                                            <th>Outstanding Balance</th>
+                                            <th>Aging Days</th>
+                                            <th>Aging Bucket</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="displayedInvoices" t-as="inv" t-key="inv_index">
+                                            <td><t t-esc="formatDate(inv.invoice_date)"/></td>
+                                            <td><t t-esc="formatDate(inv.due_date)"/></td>
+                                            <td><span class="cad-invoice-link" t-on-click="() => openInvoice(inv.id)" title="Open invoice"><t t-esc="inv.invoice_number"/></span></td>
+                                            <td class="cad-mono"><t t-esc="formatAmount(inv.original_amount)"/></td>
+                                            <td class="cad-mono cad-detail-balance"><t t-esc="formatAmount(inv.outstanding_balance)"/></td>
+                                            <td class="cad-mono"><t t-esc="inv.aging_days"/>d</td>
+                                            <td><span class="cad-detail-bucket-tag" t-esc="inv.aging_bucket"/></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="cad-detail-tfoot">
+                                            <td colspan="4" class="cad-detail-tfoot-label">Total</td>
+                                            <td class="cad-mono cad-detail-tfoot-amount"><t t-esc="formatAmount(displayedTotal)"/></td>
+                                            <td colspan="2"/>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cad-detail-sidebar">
+                        <div class="cad-card cad-card-padded">
+                            <div class="cad-section-title">
+                                <i class="fa fa-user"/>
+                                Customer
+                            </div>
+                            <div class="cad-customer-card">
+                                <div class="cad-customer-name"><t t-esc="state.partnerName || 'All Customers'"/></div>
+                                <div class="cad-customer-meta">
+                                    <div class="cad-customer-meta-item">
+                                        <span class="cad-customer-meta-label">Outstanding Invoices</span>
+                                        <span class="cad-customer-meta-value"><t t-esc="state.invoiceCount"/></span>
+                                    </div>
+                                    <div class="cad-customer-meta-item">
+                                        <span class="cad-customer-meta-label">Total Outstanding</span>
+                                        <span class="cad-customer-meta-value cad-customer-meta-amount"><t t-esc="formatAmount(state.total)"/></span>
+                                    </div>
+                                    <div class="cad-customer-meta-item">
+                                        <span class="cad-customer-meta-label">As of Date</span>
+                                        <span class="cad-customer-meta-value"><t t-esc="state.asOf"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cad-card cad-card-padded">
+                            <div class="cad-section-title">
+                                <i class="fa fa-shield"/>
+                                Risk Insights
+                            </div>
+                            <div class="cad-insights">
+                                <div t-foreach="riskInsights" t-as="insight" t-key="insight_index" class="cad-insight-item">
+                                    <i class="fa" t-attf-class="fa {{insight.icon}}" t-attf-style="color: {{insight.color}}"/>
+                                    <span class="cad-insight-text"><t t-esc="insight.text"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
