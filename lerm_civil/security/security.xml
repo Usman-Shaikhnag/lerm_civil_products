@@ -153,17 +153,17 @@
         </record>
 
       
-        <record id="technician_eln_record" model="ir.rule">
-            <field name="name">Technician can only see their eln</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[('technician.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
+            <!-- <record id="technician_eln_record" model="ir.rule">
+                <field name="name">Technician can only see their eln</field>
+                <field ref="model_lerm_eln" name="model_id"/>
+                <field name="domain_force">[('technician.id','=',user.id)]</field>
+                <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
+                <field name="perm_read" eval="True"/>
+                <field name="perm_write" eval="True"/>
+                <field name="perm_create" eval="False"/>
+                <field name="perm_unlink" eval="False"/>
+                <field name="active" eval="True"/>
+            </record> -->
 
         <record id="admin_discipline_record" model="ir.rule">
             <field name="name">Admin can see all Discipline</field>
@@ -197,13 +197,11 @@
             <field name="category_id" ref="kes_lerm_access_categories"/>
         </record>
 
-        <record id="rule_param_result_technician_read" model="ir.rule">
+        <!-- <record id="rule_param_result_technician_read" model="ir.rule">
             <field name="name">Parameter result: technician sees own rows</field>
-            <field name="model_id" ref="model_eln_parameters_result"/> <!-- adjust model ref -->
-            <!-- allow if technician is the user OR user is in eln header's technician_ids -->
+            <field name="model_id" ref="model_eln_parameters_result"/> 
             <field name="domain_force">['|', ('technician','=',user.id), ('eln_id.technician_ids','in', user.id)]</field>
-            <!-- limit to technician group if desired, else use base.group_user -->
             <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
-        </record>
+        </record> -->
     </data>
 </odoo>
