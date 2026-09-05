@@ -31,6 +31,7 @@ class LermSampleForm(models.Model):
     ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
+    sub_product_id = fields.Many2one('lerm.sub.product.line',string="Sub Product")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
     # qty_id = fields.Many2one('lerm.qty.line',string="Quantity")
     sample_qty = fields.Integer(string="Sample Quantity")
@@ -250,6 +251,7 @@ class LermSampleForm(models.Model):
                 'default_material_id': self.material_id.id,
                 'default_brand': self.brand,
                 'default_size_id': self.size_id.id,
+                'default_sub_product_id': self.sub_product_id.id,
                 'default_grade_id': self.grade_id.id,
                 'default_sample_qty': self.sample_qty,
                 'default_received_by_id': self.received_by_id.id,

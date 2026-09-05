@@ -63,6 +63,7 @@
                                 <field name="discipline_id" readonly="state != '1-allotment_pending'"/>
                                 <field name="group_id" domain="[('id', 'in', group_ids)]" readonly="state != '1-allotment_pending'"/>
                                 <field name="material_id" domain="[('id', 'in', material_ids)]" readonly="state != '1-allotment_pending'"/>
+                                <field name='sub_product_id' readonly="1"/>
                                 <field name="grade_id" domain="[('id', 'in', grade_ids)]" readonly="state != '1-allotment_pending'"/>
                                 <field name="size_id" domain="[('id', 'in', size_ids)]" readonly="state != '1-allotment_pending'"/>
                                 <field name="brand" readonly="state != '1-allotment_pending'"/>
@@ -285,6 +286,7 @@
                       <field name="group_id" optional="show"/>
                       <field name="department_id" optional="show"/>
                       <field name="material_id" optional="show"/>
+                      <field name='sub_product_id' optional="show"/>
                       <field name="alias" optional="show"/>
                       <!-- <field name="customer_id"/> -->
                       <field name="brand" optional="show"/>

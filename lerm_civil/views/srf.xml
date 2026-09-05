@@ -86,6 +86,7 @@
                         <tree>
                             <field name="kes_no" string="Sample No."/>
                             <field name="material_id"/>
+                            <field name="sub_product_id"/>
                             <field name="discipline_id"/>
                             <field name="lab_no_value" invisible='1'/>
                             <field name="group_id"/>
@@ -188,6 +189,7 @@
                             <field name="discipline_id" options="{'no_create': True}"/>
                             <field name="lab_no_value" options="{'no_create': True}" invisible='1'/>
                             <field name="material_id" context="{'lab_name': True}" domain="[('id', 'in', material_ids)]" options="{'no_create': True}"/>
+                            <field name="sub_product_id" options="{'no_create': True}"/>
                             <field name="brand"/>
                             <field name="grade_id" domain="[('id', 'in', grade_ids)]" options="{'no_create': True}"/>
                             <field name="client_sample_id"/>

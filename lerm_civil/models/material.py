@@ -24,6 +24,9 @@ class Material(models.Model):
     qty_table = fields.One2many('lerm.qty.line','product_id',string="Qty")
     grade_table = fields.One2many('lerm.grade.line','product_id',string="Grade")
     alias_table = fields.One2many('lerm.alias.line','product_id',string="Alias")
+
+    sub_product_table = fields.One2many('lerm.sub.product.line','product_id',string="Sub Product")
+
     parameter_master_ids = fields.Many2many('lerm.parameter.master',string="Parameter Master IDS",compute="compute_parameter_master_ids")
     parameter_table1 = fields.Many2many('lerm.parameter.master',string="Parameters",)
     volume = fields.Char("Volume")
@@ -140,7 +143,13 @@ class Material(models.Model):
 
 
     
+class SubProductLine(models.Model):
+    _name = 'lerm.sub.product.line'
+    _rec_name = 'sub_product'
 
+    product_id = fields.Many2one('product.template',string="Parameter Id")
+    sub_product = fields.Char("Sub Product")
+    
 
 
 class ParameterMasterAliasLine(models.Model):

@@ -821,6 +821,7 @@ class SrfForm(models.Model):
             alias = samples[-1].alias
             brand = samples[-1].brand
             size_id = samples[-1].size_id.id
+            sub_product_id = samples[-1].sub_product_id.id
             grade_id = samples[-1].grade_id.id
             sample_received_date = samples[-1].sample_received_date
             location = samples[-1].location
@@ -849,6 +850,7 @@ class SrfForm(models.Model):
                 'default_alias':alias,
                 'default_brand':brand,
                 'default_size_id':size_id,
+                'default_sub_product_id':sub_product_id,
                 'default_grade_id':grade_id,
                 'default_location':location,
                 'default_sample_condition':sample_condition,
@@ -920,6 +922,7 @@ class CreateSampleWizard(models.TransientModel):
             self.material_id = None
             self.grade_id = None
             self.size_id = None
+            self.sub_product_id = None
             self.parameters = None
         
         print("After Edit Mode", edit_mode)
@@ -942,6 +945,7 @@ class CreateSampleWizard(models.TransientModel):
     size_id = fields.Many2one('lerm.size.line',string="Size")
     size_ids = fields.Many2many('lerm.size.line',string="Size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
+    sub_product_id = fields.Many2one('lerm.sub.product.line',string="Sub Product",domain="[('product_id', '=', material_id)]")
     
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades")
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
@@ -1146,6 +1150,8 @@ class CreateSampleWizard(models.TransientModel):
             if record.material_id:
                 record.size_ids = self.env['product.template'].search([('id','=', record.material_id.id)]).size_table
 
+    
+
     @api.onchange('material_id')
     def compute_volume(self):
         for record in self:
@@ -1207,6 +1213,7 @@ class CreateSampleWizard(models.TransientModel):
         # alias = self.alias
         material_id = self.material_id.id
         size_id = self.size_id.id
+        sub_product_id = self.sub_product_id.id
         brand = self.brand
         grade_id = self.grade_id.id
         sample_received_date = self.sample_received_date
@@ -1244,6 +1251,7 @@ class CreateSampleWizard(models.TransientModel):
         eln.sudo().write({
             'grade_id':grade_id,
             'size_id':size_id,
+            'sub_product_id':sub_product_id,
             'casting_date':self.date_casting
         })
 
@@ -1260,6 +1268,7 @@ class CreateSampleWizard(models.TransientModel):
             'parameters':parameters,
             # 'sample_range_id':sample_range.id,
             'size_id':size_id,
+            'sub_product_id':sub_product_id.id,
             'sample_description':sample_description,
             'casting':casting,
             'date_casting':self.date_casting,
@@ -1300,6 +1309,7 @@ class CreateSampleWizard(models.TransientModel):
             parameters = data['parameter']
             sample_description = data['sample_description']
             size_id = data['size_id']
+            sub_product_id = data['sub_product_id']
             casting = data["casting"]
             days_casting = data["days_casting"]
             date_casting = data["date_casting"]
@@ -1317,6 +1327,7 @@ class CreateSampleWizard(models.TransientModel):
                 'sample_qty':1,
                 'parameters':parameters,
                 'size_id':size_id,
+                'sub_product_id':sub_product_id,
                 'sample_description':sample_description,
                 'casting':casting,
                 'date_casting':date_casting,
@@ -1335,6 +1346,7 @@ class CreateSampleWizard(models.TransientModel):
                 'parameters':parameters,
                 'sample_range_id':sample_range.id,
                 'size_id':size_id,
+                'sub_product_id':sub_product_id,
                 'sample_description':sample_description,
                 'casting':casting,
                 'date_casting':date_casting,
@@ -1353,6 +1365,7 @@ class CreateSampleWizard(models.TransientModel):
             # alias = self.alias
             material_id = self.material_id.id
             size_id = self.size_id.id
+            sub_product_id = self.sub_product_id.id
             brand = self.brand
             grade_id = self.grade_id.id
            
@@ -1410,6 +1423,7 @@ class CreateSampleWizard(models.TransientModel):
                     'lab_no_value':lab_no_value,
                     'material_id' : self.material_id.id,
                     'size_id':size_id,
+                    'sub_product_id':sub_product_id,
                     'brand':brand,
                     'grade_id':grade_id,
                     'sample_received_date':sample_received_date,
@@ -1447,6 +1461,7 @@ class CreateSampleWizard(models.TransientModel):
                         'lab_no_value':lab_no_value,
                         'material_id' : self.material_id.id,
                         'size_id':size_id,
+                        'sub_product_id':sub_product_id,
                         'brand':brand,
                         'grade_id':grade_id,
                         'sample_received_date':sample_received_date,
@@ -1787,6 +1802,7 @@ class CreateSampleWizard(models.TransientModel):
                         'conformity': sample.conformity,
                         'has_witness': sample.has_witness,
                         'size_id': sample.size_id.id if sample.size_id else False,
+                        'sub_product_id': sample.sub_product_id.id if sample.sub_product_id else False,
                         'grade_id': sample.grade_id.id if sample.grade_id else False,
                         'department_id': sample.department_id,
                         'casting_date': sample.casting_date,

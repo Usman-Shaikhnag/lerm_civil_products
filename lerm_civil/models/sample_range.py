@@ -32,6 +32,7 @@ class SampleRangeLine(models.Model):
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
+    sub_product_id = fields.Many2one('lerm.sub.product.line',string="Sub Product")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
     received_by_id = fields.Many2one('res.partner',string="Received By")
     sample_received_date = fields.Date(string="Sample Received Date")

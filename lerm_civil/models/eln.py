@@ -62,6 +62,7 @@ class ELN(models.Model):
 
     
     size_id = fields.Many2one('lerm.size.line',string="Size")
+    sub_product_id = fields.Many2one('lerm.sub.product.line',string="Sub Product")
     size_ids = fields.Many2many('lerm.size.line',string="Size", compute="compute_size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades", compute="compute_grade")
@@ -1184,6 +1185,7 @@ class ELNParametersResult(models.Model):
                 'default_inputs_lines': parameters_inputs,
                 'material_id':self.eln_id.material.id,
                 'size_id':self.eln_id.size_id.id,
+                'sub_product_id':self.eln_id.sub_product_id.id,
                 'grade_id':self.eln_id.grade_id.id,
                 'result_id':self.id,
                 'eln_id':self.eln_id.id,
