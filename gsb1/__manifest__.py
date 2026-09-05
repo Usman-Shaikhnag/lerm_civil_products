@@ -18,11 +18,7 @@ This module contains all the common features of GSB.
                  'reports/gsb_report.xml'
     ],
 
-    'assets': {
-    'web.assets_backend': [
-        'gsb/static/src/css/custom_styles.css',
-    ],
-   },
+   
   
     'installable': True,
     'auto_install': False,

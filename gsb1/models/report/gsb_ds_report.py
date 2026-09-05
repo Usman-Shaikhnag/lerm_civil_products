@@ -14,7 +14,7 @@ from scipy.optimize import minimize_scalar
 
 
 class GsbReport1(models.AbstractModel):
-    _name = 'report.gsb.gsb_mec_report'
+    _name = 'report.gsb1.gsb_mec_report'
     _description = 'GSB Report '
     
     @api.model
@@ -321,7 +321,7 @@ class GsbReport1(models.AbstractModel):
   
 
 class GsbDatasheet1(models.AbstractModel):
-    _name = 'report.gsb.gsb_mech_datasheet'
+    _name = 'report.gsb1.gsb_mech_datasheet'
     _description = 'GSB DataSheet '
     
     @api.model

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-class GsbMechanical(models.Model):
-    _name = "mechanical.gsb"
+class GsbMechanical1(models.Model):
+    _name = "mechanical.gsb1"
     _inherit = "lerm.eln"
     _rec_name = "name"
 
@@ -44,7 +44,7 @@ class GsbMechanical(models.Model):
 
     # २. नंतर खाली हे फिल्ड वापरा
     notes_id = fields.One2many(
-        'mechanical.gsb.notes', 
+        'mechanical.gsb1.notes', 
         'parent_id', 
         string="Notes", 
         ondelete='cascade', 
@@ -267,7 +267,7 @@ class GsbMechanical(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(GsbMechanical, self).create(vals)
+        record = super(GsbMechanical1, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -280,7 +280,7 @@ class GsbMechanical(models.Model):
             print("Records",records)
 
     def get_all_fields(self):
-        record = self.env['mechanical.gsb'].browse(self.ids[0])
+        record = self.env['mechanical.gsb1'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -393,7 +393,7 @@ class GsbMechanical(models.Model):
     # start_date_dry_density = fields.Date("Start Date")
     # end_date_dry_density = fields.Date("End Date")
 
-    gsb_field_density_table = fields.One2many('mechanical.gsb.field.dencity.line','parent_id',string="Parameter")
+    gsb_field_density_table = fields.One2many('mechanical.gsb.field.dencity.line1','parent_id',string="Parameter")
     mmd_fielddencity = fields.Float(string="MMD gm/cc", store=True)
     omc_fielddencity = fields.Float(string="OMC %", store=True)
     avg_degree_of_compaction = fields.Float(string="Degree of Compaction in %",compute="_compute_avg_degree_of_compaction")
@@ -473,7 +473,7 @@ class GsbMechanical(models.Model):
     dry_gradation_name = fields.Char(default="Dry Gradation")
     dry_gradation_visible = fields.Boolean(compute="_compute_visible")
 
-    dry_gradation_table = fields.One2many('mech.gsb.dry.gradation.line','parent_id',string="Dry Gradation")
+    dry_gradation_table = fields.One2many('mech.gsb.dry.gradation.line1','parent_id',string="Dry Gradation")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
     
 
@@ -493,7 +493,7 @@ class GsbMechanical(models.Model):
                         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
                         line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
                 else:
-                    previous_line_record = self.env['mech.gsb.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+                    previous_line_record = self.env['mech.gsb.dry.gradation.line1'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': round(previous_line_record + line.percent_retained,2)})
                     line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
                     print("Previous Cumulative",previous_line_record)
@@ -524,7 +524,7 @@ class GsbMechanical(models.Model):
 
     def default_get(self, fields):
         print("From Default Value")
-        res = super(GsbMechanical, self).default_get(fields)
+        res = super(GsbMechanical1, self).default_get(fields)
 
         default_dry_sieve_sizes = []
         default_elongated_sieve_sizes = []
@@ -634,7 +634,7 @@ class GsbMechanical(models.Model):
     flakiness_name = fields.Char(default=" Flakiness Index")
     flakiness_visible = fields.Boolean(compute="_compute_visible")
 
-    elongation_table = fields.One2many('mech.gsb.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index")
+    elongation_table = fields.One2many('mech.gsb.elongation.flakiness.line1','parent_id',string="Elongation Flakiness Index")
 
     total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
     total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
@@ -894,7 +894,7 @@ class GsbMechanical(models.Model):
     impact_value_name = fields.Char("Name",default="Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
 
-    impact_value_child_lines = fields.One2many('mech.gsb.impact.line','parent_id',string="Parameter")
+    impact_value_child_lines = fields.One2many('mech.gsb.impact.line1','parent_id',string="Parameter")
 
     average_impact_value = fields.Float(string="Average Impact Value", compute="_compute_average_impact_value")
 
@@ -973,7 +973,7 @@ class GsbMechanical(models.Model):
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
 
-    liquid_limit_table = fields.One2many('mech.gsb.liquid.limit.line','parent_id',string="Liquid Limit")
+    liquid_limit_table = fields.One2many('mech.gsb.liquid.limit.line1','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float("Liquid Limit",digits=(12,2))
     remarks_liquid_limit = fields.Selection([
         ('plastic', 'Plastic'),
@@ -1075,7 +1075,7 @@ class GsbMechanical(models.Model):
     plastic_name = fields.Char("Name",default="Plastic Limit")
     plastic_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
 
-    plastic_table = fields.One2many('mech.gsb.plastic.limit.line','parent_id',string="Plastic Limit")
+    plastic_table = fields.One2many('mech.gsb.plastic.limit.line1','parent_id',string="Plastic Limit")
     average_plastic_moisture = fields.Float("Average",compute="_compute_plastic_average")
     remarks_plastic = fields.Selection([
         ('plastic', 'Plastic'),
@@ -1230,7 +1230,7 @@ class GsbMechanical(models.Model):
     density_relation_name = fields.Char("Name",default="Density Relation Using Heavy Compaction")
     density_relation_visible = fields.Boolean("Density Relation Visible",compute="_compute_visible")
 
-    density_relation_table = fields.One2many('mech.gsb.density.relation.line','parent_id',string="Density Relation")
+    density_relation_table = fields.One2many('mech.gsb.density.relation.line1','parent_id',string="Density Relation")
     wt_of_modul = fields.Float('Weight of Mould in gm')
     vl_of_modul = fields.Float('Volume of Mould in cc')
     chart_image_density = fields.Binary("Line Chart", compute="_compute_chart_image_density", store=True)
@@ -1298,7 +1298,7 @@ class GsbMechanical(models.Model):
     string="Division Factor",
     digits=(8, 2),)
 
-    cbr_table = fields.One2many('mechanical.gsb.cbr.line','parent_id',string="CBR")
+    cbr_table = fields.One2many('mechanical.gsb.cbr.line1','parent_id',string="CBR")
     chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
@@ -1396,7 +1396,7 @@ class GsbMechanical(models.Model):
     gsb_infra_name = fields.Char("Name",default="California Bearing Ratio")
     gsb_infra_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
     
-    gsb_infra_table = fields.One2many('mechanical.gsb.infra.cbr.line','parent_id',string="CBR")
+    gsb_infra_table = fields.One2many('mechanical.gsb.infra.cbr.line1','parent_id',string="CBR")
     chart_image_cbr_infra = fields.Binary("Line Chart", compute="_compute_chart_image_cbr_infra_gsb", store=True)
 
     gsb_infra_ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm_gsb_infra_ps")
@@ -1490,9 +1490,9 @@ class GsbMechanical(models.Model):
 
 
 
-class GsbInfraCBRLine(models.Model):
-    _name = "mechanical.gsb.infra.cbr.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbInfraCBRLine1(models.Model):
+    _name = "mechanical.gsb.infra.cbr.line1"
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
 
     penetration1 = fields.Float(string="Penetration in mm")
     proving_reading1 = fields.Float(string="Proving Ring Reading 1")
@@ -1526,9 +1526,9 @@ class GsbInfraCBRLine(models.Model):
 
 
 
-class GsbDensityRelationLine(models.Model):
-    _name = "mech.gsb.density.relation.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbDensityRelationLine1(models.Model):
+    _name = "mech.gsb.density.relation.line1"
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
 
     determination_no = fields.Float(string="Determination No")
     wt_of_modul_compact = fields.Integer(string="Weight of Mould + Compacted sample in gm")
@@ -1592,9 +1592,9 @@ class GsbDensityRelationLine(models.Model):
 
 
 
-class GsbCBRLine(models.Model):
-    _name = "mechanical.gsb.cbr.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbCBRLine1(models.Model):
+    _name = "mechanical.gsb.cbr.line1"
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
 
     penetration = fields.Float(string="Penetration in mm")
     proving_reading = fields.Float(string="Proving Ring Reading")
@@ -1616,9 +1616,9 @@ class GsbCBRLine(models.Model):
 
 
 
-class GsbLiquidLimitLine(models.Model):
-    _name = "mech.gsb.liquid.limit.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbLiquidLimitLine1(models.Model):
+    _name = "mech.gsb.liquid.limit.line1"
+    parent_id = fields.Many2one('mechanical.gsb1', string="Parent Id")
     
     container_no = fields.Char("Container No.")
     blows = fields.Integer(string="No of Blows")
@@ -1651,9 +1651,9 @@ class GsbLiquidLimitLine(models.Model):
 
 
 
-class GsbPlasticLimitLine(models.Model):
-    _name = "mech.gsb.plastic.limit.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbPlasticLimitLine1(models.Model):
+    _name = "mech.gsb.plastic.limit.line1"
+    parent_id = fields.Many2one('mechanical.gsb1', string="Parent Id")
     
     container_no = fields.Char("Container No.")
     mass_wet_sample_container = fields.Float(string="Mass of wet sample+container, (M1) in gms")
@@ -1684,9 +1684,9 @@ class GsbPlasticLimitLine(models.Model):
                 record.moisture_percent = 0
 
 
-class GsbDryGradationLine(models.Model):
-    _name = "mech.gsb.dry.gradation.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbDryGradationLine1(models.Model):
+    _name = "mech.gsb.dry.gradation.line1"
+    parent_id = fields.Many2one('mechanical.gsb1', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size" )
@@ -1706,7 +1706,7 @@ class GsbDryGradationLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(GsbDryGradationLine, self).create(vals)
+        return super(GsbDryGradationLine1, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1721,7 +1721,7 @@ class GsbDryGradationLine(models.Model):
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
                     record.percent_retained = round((vals['wt_retained'] / record.parent_id.total * 100),2) if record.parent_id.total else 0
 
-            new_self = super(GsbDryGradationLine, self).write(vals)
+            new_self = super(GsbDryGradationLine1, self).write(vals)
 
             if 'wt_retained' in vals:
                 for record in self:
@@ -1729,13 +1729,13 @@ class GsbDryGradationLine(models.Model):
 
             return new_self
 
-        return super(GsbDryGradationLine, self).write(vals)
+        return super(GsbDryGradationLine1, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
 
-        res = super(GsbDryGradationLine, self).unlink()
+        res = super(GsbDryGradationLine1, self).unlink()
 
         # if parent_id:
         #     parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
@@ -1752,9 +1752,9 @@ class GsbDryGradationLine(models.Model):
                 record.percent_retained = 0
 
 
-class GsbElongationLine(models.Model):
-    _name = "mech.gsb.elongation.flakiness.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbElongationLine1(models.Model):
+    _name = "mech.gsb.elongation.flakiness.line1"
+    parent_id = fields.Many2one('mechanical.gsb1', string="Parent Id")
 
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Wt. Retained in gms")
@@ -1772,9 +1772,9 @@ class GsbElongationLine(models.Model):
 #     flakiness_retained = fields.Float(string="Flakiness Retained in gms")
 
 
-class GsbImpactValueLine(models.Model):
-    _name = "mech.gsb.impact.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbImpactValueLine1(models.Model):
+    _name = "mech.gsb.impact.line1"
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     wt_of_cylinder = fields.Integer(string="Weight of cylindrical measure in gms")
@@ -1807,9 +1807,9 @@ class GsbImpactValueLine(models.Model):
 
 
 #added
-class GsbFieldDencityLine(models.Model):
-    _name = "mechanical.gsb.field.dencity.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbFieldDencityLine1(models.Model):
+    _name = "mechanical.gsb.field.dencity.line1"
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
    
     determination_no = fields.Integer(string="Determination No",readonly=True, copy=False, default=1)
     wt_of_sample = fields.Integer(string="Weight of sample gm")
@@ -1878,7 +1878,7 @@ class GsbFieldDencityLine(models.Model):
                 max_serial_no = max(existing_records.mapped('determination_no'))
                 vals['determination_no'] = max_serial_no + 1
 
-        return super(GsbFieldDencityLine, self).create(vals)
+        return super(GsbFieldDencityLine1, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1889,8 +1889,8 @@ class GsbFieldDencityLine(models.Model):
 
 
 class GsbNotes(models.Model):
-    _name = "mechanical.gsb.notes"
+    _name = "mechanical.gsb1.notes"
 
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.gsb1',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
