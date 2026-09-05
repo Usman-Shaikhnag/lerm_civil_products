@@ -1,0 +1,1275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_gsb1_form" model="ir.ui.view">
+            <field name="name">mechanical.gsb1.form</field>
+            <field name="model">mechanical.gsb1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <style>
+                            .blue-input input {
+                                background-color: #d8ecff !important;   /* हलका Blue background */
+                                border-color: #3b82f6 !important;        /* Blue border */ 
+                            }
+
+                            .o_list_view .o_data_cell.blue-input {
+                                background-color: #d8ecff !important;
+                                border-color: #3b82f6 !important;
+                                }
+
+                            /* Input when the cell goes into edit mode */
+                            .o_list_view .o_data_cell.blue-input input {
+                                background-color: #d8ecff !important;
+                                border-color: #3b82f6 !important;
+                                }
+                        </style>
+                        <group>
+                            <h1>
+                                <field name="name" readonly="1" nolabel="1"/>
+                            </h1>
+                        </group>
+
+                        <group>
+                            <field name="srf_id" invisible="1"/>
+                            <field name="sample_id" readonly="1"/>
+                            <field name="eln_ref" readonly="1"/>
+                            <field name="grade" readonly="1"/>
+                            <field name="eln_state" />
+                            <field name="parameter_id" invisible="1"/>
+                        </group>
+
+                        <div class="custom_table_borders">
+                            <field name="sample_parameters">
+                                <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                                </tree>
+                            </field>
+                            </div>
+                    <!-- Dry Gradation -->
+                    <!-- ====================================================== -->
+                    <!-- DRY GRADATION -->
+                    <!-- ====================================================== -->
+
+                    <div invisible="not dry_gradation_visible">
+                        <h1>
+                            <field name="dry_gradation_name" readonly="1" nolabel="1"/>
+                            <field name="dry_gradation_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not dry_gradation_visible">
+                        <field name="dry_gradation_table" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                            <field name="sieve_size"  />
+                            <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
+                            <field name="percent_retained"/>
+                            <field name="cumulative_retained" readonly="1"/>
+                            <field name="passing_percent" readonly="1"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible="not dry_gradation_visible">
+                        <button type="object" name="calculate_sieve" class="btn btn-primary mb-2">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+
+                    <div invisible="not dry_gradation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_sieve_analysis">Total</label></td>
+                                    <td><field name="total_sieve_analysis" class="oe_center" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ============================================================ -->
+                    <!-- WATER ABSORPTION -->
+                    <!-- ============================================================ -->
+
+                   
+
+                    <div invisible="not water_absorbtion_visible">
+                      
+                        <h1 class="text-center">
+                            <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorbtion_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not water_absorbtion_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50"><label for="wt_ssd_sample" string="Weight of SSD Sample"/></td>
+                                <td class="w-50"><field name="wt_ssd_sample" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="oven_dried_wt" string="Oven Dried Weight"/></td>
+                                <td><field name="oven_dried_wt" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="water_absorbtion" string="Water Absorption"/></td>
+                                <td><field name="water_absorbtion"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not water_absorbtion_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="water_absorbtion_conformity"></label></td>
+                            <td><field name='water_absorbtion_conformity'
+                               decoration-success="water_absorbtion_conformity == 'pass'" 
+                               decoration-danger="water_absorbtion_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="water_absorbtion_nabl"></label></td>
+                            <td><field name='water_absorbtion_nabl'
+                               decoration-success="water_absorbtion_nabl == 'pass'" 
+                               decoration-danger="water_absorbtion_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+                    
+
+                                        <!-- specific_gravity_gsb_visible -->
+                    <!-- ====================================================== -->
+                    <!-- SPECIFIC GRAVITY -->
+                    <!-- ====================================================== -->
+
+                  
+
+                    <div invisible="not specific_gravity_gsb_visible">
+                     
+                         <h1 class="text-center">
+                            <field name="specific_gravity_gsb_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_gsb_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Test Details -->
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_gsb_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-50"><label for="wt_ssd_gsb" string="Weight of SSD Sample"/></td>
+                                <td class="w-50"><field name="wt_ssd_gsb" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="wt_saturated_gsb" string="Weight of Saturated Sample"/></td>
+                                <td><field name="wt_saturated_gsb" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="oven_dried_gsb" string="Oven Dried Weight"/></td>
+                                <td><field name="oven_dried_gsb" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="specific_gravity_gsb" string="Specific Gravity"/></td>
+                                <td><field name="specific_gravity_gsb"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not specific_gravity_gsb_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="specific_gravity_gsb_conformity"></label></td>
+                            <td><field name='specific_gravity_gsb_conformity'
+                               decoration-success="specific_gravity_gsb_conformity == 'pass'" 
+                               decoration-danger="specific_gravity_gsb_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="specific_gravity_gsb_nabl"></label></td>
+                            <td><field name='specific_gravity_gsb_nabl'
+                               decoration-success="specific_gravity_gsb_nabl == 'pass'" 
+                               decoration-danger="specific_gravity_gsb_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+                   
+
+                    <!-- ====================================================== -->
+                    <!-- ELONGATION & FLAKINESS INDEX -->
+                    <!-- ====================================================== -->
+
+                    <field name="elongation_visible" invisible="1"/>
+                    <field name="flakiness_visible" invisible="1"/>
+
+                    <div invisible="not elongation_visible or not flakiness_visible">
+                        <h1 class="text-center">
+                            <span>Elongation &amp; Flakiness Index</span>
+                        </h1>
+                    </div>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not elongation_visible or not flakiness_visible" class="custom_table_borders">
+
+                        <field name="elongation_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sieve_size"/>
+                                <field name="wt_retained" class="blue-input"/>
+                                <field name="elongated_retained" class="blue-input"/>
+                                <field name="flakiness_retained" class="blue-input"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Calculation Summary -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not elongation_visible or not flakiness_visible">
+                        <tbody>
+
+                            <tr>
+                                <td><label for="total_wt_retained_fl_el" string="Total"/></td>
+                                <td><field name="total_wt_retained_fl_el"/></td>
+
+                                <td><label for="aggregate_elongation" string="Aggregate Elongation Value in %"/></td>
+                                <td><field name="aggregate_elongation"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="total_elongated_retained" string="Total Elongated"/></td>
+                                <td><field name="total_elongated_retained"/></td>
+                                
+                                <td><label for="aggregate_flakiness" string="Aggregate Flakiness Value in %"/></td>
+                                <td><field name="aggregate_flakiness"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="total_flakiness_retained" string="Total Flakiness"/></td>
+                                <td><field name="total_flakiness_retained"/></td>
+                                
+                                <td><label for="aggregate_combine" string="Aggregate Elongation &amp; Flakiness Value in %"/></td>
+                                <td><field name="aggregate_combine"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><span class="fw-bold">Flakiness Conformity</span></td>
+                                <td>
+                                    <field name="aggregate_flakiness_conformity"
+                                            readonly="1"
+                                            decoration-success="aggregate_flakiness_conformity == 'pass'"
+                                            decoration-danger="aggregate_flakiness_conformity == 'fail'"/>
+                                </td>
+
+                                <td><span class="fw-bold">Elongation Conformity</span></td>
+                                <td>
+                                    <field name="aggregate_elongation_conformity"
+                                            readonly="1"
+                                            decoration-success="aggregate_elongation_conformity == 'pass'"
+                                            decoration-danger="aggregate_elongation_conformity == 'fail'"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                            <td><label for="aggregate_elongation_nabl"></label></td>
+                            <td><field name='aggregate_elongation_nabl'
+                               decoration-success="aggregate_elongation_nabl == 'pass'" 
+                               decoration-danger="aggregate_elongation_nabl == 'fail'" 
+                               readonly="1"/></td>
+
+                               <td><label for="aggregate_flakiness_nabl"></label></td>
+                            <td><field name='aggregate_flakiness_nabl'
+                               decoration-success="aggregate_flakiness_nabl == 'pass'" 
+                               decoration-danger="aggregate_flakiness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                                
+                                
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- ====================================================== -->
+                    <!-- AGGREGATE IMPACT VALUE -->
+                    <!-- ====================================================== -->
+
+                    <div invisible="not impact_visible">
+                        <h1 class="text-center">
+                           <field name="impact_value_name" readonly="1" nolabel="1"/>
+                            <field name="impact_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not impact_visible"
+                        class="custom_table_borders">
+
+                        <field name="impact_value_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sample_no"/>
+                                <field name="wt_of_cylinder" class="blue-input"/>
+                                <field name="total_wt_of_dried" class="blue-input"/>
+                                <field name="total_wt_aggregate" class="blue-input"/>
+                                <field name="wt_of_aggregate_passing"/>
+                                <field name="wt_of_aggregate_retained"/>
+                                <field name="impact_value"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Summary -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not impact_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50"><label for="average_impact_value" string="Average Impact Value"/></td>
+                                <td class="w-50"><field name="average_impact_value"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <div class="d-flex gap-2" invisible="not impact_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_impact_value_conformity"></label></td>
+                            <td><field name='average_impact_value_conformity'
+                               decoration-success="average_impact_value_conformity == 'pass'" 
+                               decoration-danger="average_impact_value_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_impact_value_nabl"></label></td>
+                            <td><field name='average_impact_value_nabl'
+                               decoration-success="average_impact_value_nabl == 'pass'" 
+                               decoration-danger="average_impact_value_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+
+                    
+                                        
+
+                    <!-- Abrasion Value  -->
+                    <!-- ====================================================== -->
+                    
+
+
+                    <div invisible="not abrasion_visible">
+                       <h1 class="text-center">
+                           <field name="abrasion_value_name" readonly="1" nolabel="1"/>
+                            <field name="abrasion_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Test Details -->
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not abrasion_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50"><label for="total_weight_sample_abrasion" string="Total Weight of Sample"/></td>
+                                <td class="w-50"><field name="total_weight_sample_abrasion" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="weight_passing_sample_abrasion" string="Weight of Passing Sample"/></td>
+                                <td><field name="weight_passing_sample_abrasion" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="weight_retain_sample_abrasion" string="Weight of Retained Sample"/></td>
+                                <td><field name="weight_retain_sample_abrasion" class="blue-input"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="abrasion_value_percentage" string="Abrasion Value in %"/></td>
+                                <td><field name="abrasion_value_percentage"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not abrasion_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="abrasion_value_percentage_conformity"></label></td>
+                            <td><field name='abrasion_value_percentage_conformity'
+                               decoration-success="abrasion_value_percentage_conformity == 'pass'" 
+                               decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="abrasion_value_percentage_nabl"></label></td>
+                            <td><field name='abrasion_value_percentage_nabl'
+                               decoration-success="abrasion_value_percentage_nabl == 'pass'" 
+                               decoration-danger="abrasion_value_percentage_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+
+                    <!-- Result -->
+
+                    
+
+
+                    <!-- Liquid Limit -->
+                    <!-- ====================================================== -->
+
+                    
+                    <field name="are_child_lines_filled" invisible="1"/>
+
+                    <div invisible="not liquid_limit_visible">
+                        <h1 class="text-center">
+                           <field name="liquid_limit_name" readonly="1" nolabel="1"/>
+                            <field name="liquid_limit_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not liquid_limit_visible" class="custom_table_borders">
+
+                        <field name="liquid_limit_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="container_no"/>
+                                <field name="blows"/>
+                                <field name="mass_wet_sample_container" class="blue-input"/>
+                                <field name="mass_dry_sample_container" class="blue-input"/>
+                                <field name="mass_container" class="blue-input"/>
+                                <field name="mass_moisture"/>
+                                <field name="mass_dry_sample"/>
+                                <field name="moisture_percent"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Action -->
+
+                    <div invisible="not liquid_limit_visible" class="mt-2">
+
+                        <button string="Calculate Liquid Limit"
+                                name="liquid_calculation"
+                                type="object"
+                                class="oe_highlight"
+                                invisible="not are_child_lines_filled"/>
+
+                    </div>
+
+
+                    <!-- Summary -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2" invisible="not liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-50"><label for="liquid_limit" string="Liquid Limit"/></td>
+                                <td class="w-50"><field name="liquid_limit"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="remarks_liquid_limit" string="Remarks"/></td>
+                                <td><field name="remarks_liquid_limit"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not liquid_limit_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="liquid_limit_conformity"></label></td>
+                            <td><field name='liquid_limit_conformity'
+                               decoration-success="liquid_limit_conformity == 'pass'" 
+                               decoration-danger="liquid_limit_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="liquid_limit_nabl"></label></td>
+                            <td><field name='liquid_limit_nabl'
+                               decoration-success="liquid_limit_nabl == 'pass'" 
+                               decoration-danger="liquid_limit_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+
+
+                   
+                                    <!-- ====================================================== -->
+                    <!-- PLASTIC LIMIT -->
+                    <!-- ====================================================== -->
+
+                   <!-- ====================================================== -->
+                    <!-- PLASTIC LIMIT -->
+                    <!-- ====================================================== -->
+
+
+                    <div invisible="not plastic_visible">
+                        <h1 class="text-center">
+                           <field name="plastic_name" readonly="1" nolabel="1"/>
+                            <field name="plastic_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not plastic_visible"
+                        class="custom_table_borders">
+
+                        <field name="plastic_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="container_no"/>
+                                <field name="mass_wet_sample_container" class="blue-input"/>
+                                <field name="mass_dry_sample_container" class="blue-input"/>
+                                <field name="mass_container" class="blue-input"/>
+                                <field name="mass_moisture"/>
+                                <field name="mass_dry_sample"/>
+                                <field name="moisture_percent"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Summary -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not plastic_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="average_plastic_moisture"
+                                        string="Average Plastic Moisture"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="average_plastic_moisture"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="remarks_plastic"
+                                        string="Remarks"/>
+                                </td>
+                                <td>
+                                    <field name="remarks_plastic"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not plastic_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_plastic_moisture_conformity"></label></td>
+                            <td><field name='average_plastic_moisture_conformity'
+                               decoration-success="average_plastic_moisture_conformity == 'pass'" 
+                               decoration-danger="average_plastic_moisture_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_plastic_moisture_nabl"></label></td>
+                            <td><field name='average_plastic_moisture_nabl'
+                               decoration-success="average_plastic_moisture_nabl == 'pass'" 
+                               decoration-danger="average_plastic_moisture_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+
+                   
+
+                    <!-- ====================================================== -->
+                    <!-- PLASTICITY INDEX -->
+                    <!-- ====================================================== -->
+
+
+                    <div invisible="not plasticity_index_visible">
+                        <h1 class="text-center">
+                           <field name="plasticity_index_name" readonly="1" nolabel="1"/>
+                            <field name="plasticity_index_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Test Details -->
+
+                    <table class="table table-sm table-bordered custom_table_borders"
+                        invisible="not plasticity_index_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="plasticity_index"
+                                        string="Plasticity Index"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="plasticity_index"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="remarks_plasticity_index"
+                                        string="Remarks"/>
+                                </td>
+                                <td>
+                                    <field name="remarks_plasticity_index"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not plasticity_index_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="plasticity_index_conformity"></label></td>
+                            <td><field name='plasticity_index_conformity'
+                               decoration-success="plasticity_index_conformity == 'pass'" 
+                               decoration-danger="plasticity_index_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="plasticity_index_nabl"></label></td>
+                            <td><field name='plasticity_index_nabl'
+                               decoration-success="plasticity_index_nabl == 'pass'" 
+                               decoration-danger="plasticity_index_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                        
+                      </div> 
+
+
+                    
+                    <!-- ====================================================== -->
+                    <!-- DENSITY RELATION (HEAVY COMPACTION) -->
+                    <!-- ====================================================== -->
+
+
+                    <div invisible="not density_relation_visible">
+                        <h1 class="text-center">
+                           <field name="density_relation_name" readonly="1" nolabel="1"/>
+                            <field name="density_relation_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Test Details -->
+
+                    <table class="table table-sm table-bordered custom_table_borders"
+                        invisible="not density_relation_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="wt_of_modul"
+                                        string="Weight of Mould"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="wt_of_modul" class="blue-input"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="vl_of_modul"
+                                        string="Volume of Mould"/>
+                                </td>
+                                <td>
+                                    <field name="vl_of_modul" class="blue-input"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not density_relation_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="density_relation_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="determination_no"/>
+                                <field name="wt_of_modul_compact" class="blue-input"/>
+                                <field name="wt_of_compact" class="blue-input"/>
+                                <field name="bulk_density"/>
+                                <field name="container_no"/>
+                                <field name="wt_of_container" class="blue-input"/>
+                                <field name="wt_of_container_wet" class="blue-input"/>
+                                <field name="wt_of_container_dry" class="blue-input"/>
+                                <field name="wt_of_dry_sample"/>
+                                <field name="wt_of_moisture"/>
+                                <field name="moisture"/>
+                                <field name="dry_density"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Density Curve -->
+
+                    <div invisible="not density_relation_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="chart_image_density"
+                            widget="image"
+                            readonly="1"
+                            nolabel="1"/>
+
+                    </div>
+
+
+                    <!-- Result -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not density_relation_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="mmd"
+                                        string="Maximum Dry Density (MDD)"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="mmd"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="omc" string="Optimum Moisture Content (OMC)"/></td>
+                                <td><field name="omc"/></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <field name="cbr_visible" invisible="1"/>
+
+                    <div invisible="not cbr_visible">
+                        <h1 class="text-center">
+                            <span>California Bearing Ratio (CBR)</span>
+                        </h1>
+                    </div>
+                    
+                    <!-- Test Details -->
+
+                    <table class="table table-sm table-bordered custom_table_borders"
+                        invisible="not cbr_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="division_factor"
+                                        string="Division Factor"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="division_factor"
+                                        class="blue-input"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not cbr_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="cbr_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="penetration"/>
+                                <field name="proving_reading"/>
+                                <field name="load"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Load Penetration Curve -->
+
+                    <div invisible="not cbr_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="chart_image_cbr"
+                            widget="image"
+                            readonly="1"
+                            nolabel="1"/>
+
+                    </div>
+
+
+                    <!-- CBR Calculation -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not cbr_visible">
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="text-center fw-bold">
+                                    2.5 mm Penetration
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="ps_2mm"
+                                        string="Proving Stress at 2.5 mm"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="ps_2mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="pt_2mm"
+                                        string="Standard Stress at 2.5 mm"/>
+                                </td>
+                                <td>
+                                    <field name="pt_2mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="cbr_2mm"
+                                        string="CBR at 2.5 mm"/>
+                                </td>
+                                <td>
+                                    <field name="cbr_2mm"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not cbr_visible">
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="text-center fw-bold">
+                                    5.0 mm Penetration
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="ps_5mm"
+                                        string="Proving Stress at 5.0 mm"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="ps_5mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="pt_5mm"
+                                        string="Standard Stress at 5.0 mm"/>
+                                </td>
+                                <td>
+                                    <field name="pt_5mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="cbr_5mm"
+                                        string="CBR at 5.0 mm"/>
+                                </td>
+                                <td>
+                                    <field name="cbr_5mm"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- Final Result -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not cbr_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="cbr_result"
+                                        string="CBR Result"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="cbr_result"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <!-- CBR Infra -->
+                    <field name="gsb_infra_visible" invisible="1"/>
+
+                    <div invisible="not gsb_infra_visible">
+                        <h1 class="text-center">
+                            <span>GSB Infra CBR</span>
+                        </h1>
+                    </div>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not gsb_infra_visible"
+                        class="custom_table_borders">
+
+                        <field name="gsb_infra_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="penetration1"/>
+                                <field name="proving_reading1"/>
+                                <field name="proving_reading2"/>
+                                <field name="proving_reading3"/>
+                                <field name="proving_reading_avg"/>
+                                <field name="load1"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Load Penetration Curve -->
+
+                    <div invisible="not gsb_infra_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="chart_image_cbr_infra"
+                            widget="image"
+                            readonly="1"
+                            nolabel="1"/>
+
+                    </div>
+
+
+                    <!-- 2.5 mm Penetration -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not gsb_infra_visible">
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="text-center fw-bold">
+                                    2.5 mm Penetration
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="gsb_infra_ps_2mm"
+                                        string="Proving Stress at 2.5 mm"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="gsb_infra_ps_2mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="gsb_infra_pt_2mm"
+                                        string="Standard Stress at 2.5 mm"/>
+                                </td>
+                                <td>
+                                    <field name="gsb_infra_pt_2mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="gsb_infra_cbr_2mm"
+                                        string="CBR at 2.5 mm"/>
+                                </td>
+                                <td>
+                                    <field name="gsb_infra_cbr_2mm"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- 5.0 mm Penetration -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not gsb_infra_visible">
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="text-center fw-bold">
+                                    5.0 mm Penetration
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="gsb_infra_ps_5mm"
+                                        string="Proving Stress at 5.0 mm"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="gsb_infra_ps_5mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="gsb_infra_pt_5mm"
+                                        string="Standard Stress at 5.0 mm"/>
+                                </td>
+                                <td>
+                                    <field name="gsb_infra_pt_5mm"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="gsb_infra_cbr_5mm"
+                                        string="CBR at 5.0 mm"/>
+                                </td>
+                                <td>
+                                    <field name="gsb_infra_cbr_5mm"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- Final Result -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not gsb_infra_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="gsb_infra_cbr_result"
+                                        string="CBR Result"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="gsb_infra_cbr_result"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                                                        <!-- added -->
+                                                            <!-- Field Density by Sand Replacement method -->
+                                                            <!-- ====================================================== -->
+                                        <!-- FIELD DENSITY BY SAND REPLACEMENT METHOD -->
+                                        <!-- ====================================================== -->
+                    <!-- ====================================================== -->
+                    <!-- FIELD DENSITY BY SAND REPLACEMENT METHOD -->
+                    <!-- ====================================================== -->
+
+
+                    <div invisible="not gsb_field_density_visible">
+                        <h1 class="text-center">
+                            <field name="field_density_name" readonly="1" nolabel="1"/>
+                            <field name="gsb_field_density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Test Details -->
+
+                    <table class="table table-sm table-bordered custom_table_borders"
+                        invisible="not gsb_field_density_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="mmd_fielddencity"
+                                        string="Maximum Dry Density (MDD)"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="mmd_fielddencity"
+                                        class="blue-input"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="omc_fielddencity"
+                                        string="Optimum Moisture Content (OMC)"/>
+                                </td>
+                                <td>
+                                    <field name="omc_fielddencity"
+                                        class="blue-input"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- Observation Table -->
+
+                    <div invisible="not gsb_field_density_visible"
+                        class="custom_table_borders mt-2">
+
+                        <field name="gsb_field_density_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="determination_no"/>
+                                <field name="wt_of_sample"/>
+                                <field name="water_of_sample"/>
+                                <field name="wt_of_before_cylinder"/>
+                                <field name="wt_of_after_cylinder"/>
+                                <field name="wt_of_sand_cone"/>
+                                <field name="wt_of_sand_hole"/>
+                                <field name="density_of_sand"/>
+                                <field name="volume_of_hole"/>
+                                <field name="bulk_density_of_sample"/>
+                                <field name="dry_density_of_sample"/>
+                                <field name="degree_of_compaction"/>
+                            </tree>
+                        </field>
+
+                    </div>
+
+
+                    <!-- Result -->
+
+                    <table class="table table-sm table-bordered custom_table_borders mt-2"
+                        invisible="not gsb_field_density_visible">
+                        <tbody>
+
+                            <tr>
+                                <td class="w-50">
+                                    <label for="avg_degree_of_compaction"
+                                        string="Average Degree of Compaction"/>
+                                </td>
+                                <td class="w-50">
+                                    <field name="avg_degree_of_compaction"/>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div invisible="not gsb_field_density_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="degree_of_compaction_conformity"></label></td>
+                            <td><field name='degree_of_compaction_conformity'
+                               decoration-success="degree_of_compaction_conformity == 'pass'" 
+                               decoration-danger="degree_of_compaction_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="degree_of_compaction_nabl">NABL</label></td>
+                            <td><field name='degree_of_compaction_nabl'
+                               decoration-success="degree_of_compaction_nabl == 'pass'" 
+                               decoration-danger="degree_of_compaction_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+                       <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+                             
+                        <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
