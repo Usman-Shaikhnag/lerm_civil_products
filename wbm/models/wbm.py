@@ -905,6 +905,62 @@ class WbmMechanical(models.Model):
             else:
                 record.average_plastic_moisture = 0.0
 
+    average_plastic_moisture_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+
+
+
+    @api.depends('average_plastic_moisture','eln_ref','grade')
+    def _compute_average_plastic_moisture_conformity(self):
+        
+        for record in self:
+            record.average_plastic_moisture_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578fgh-d228-42f5-9927-69ca7dadbcee')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578fgh-d228-42f5-9927-69ca7dadbcee')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_plastic_moisture_conformity = '--'
+                        break
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_plastic_moisture - record.average_plastic_moisture*mu_value
+                    upper = record.average_plastic_moisture + record.average_plastic_moisture*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_plastic_moisture_conformity = 'pass'
+                        break
+                    else:
+                        record.average_plastic_moisture_conformity = 'fail'
+
+    average_plastic_moisture_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_plastic_moisture_nabl", store=True)
+
+    @api.depends('average_plastic_moisture','eln_ref','grade')
+    def _compute_average_plastic_moisture_nabl(self):
+        
+        for record in self:
+            record.average_plastic_moisture_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578fgh-d228-42f5-9927-69ca7dadbcee')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578fgh-d228-42f5-9927-69ca7dadbcee')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_plastic_moisture - record.average_plastic_moisture*mu_value
+            upper = record.average_plastic_moisture + record.average_plastic_moisture*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_plastic_moisture_nabl = 'pass'
+                break
+            else:
+                record.average_plastic_moisture_nabl = 'fail'
+
     # Plasticity Index
     plasticity_index_visible = fields.Boolean("Plasticity Index Visible",compute="_compute_visible")
     plasticity_index = fields.Float("Plasticity Index",compute="_compute_plasticity_limit")
