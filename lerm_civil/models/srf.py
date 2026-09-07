@@ -1512,6 +1512,8 @@ class CreateSampleWizard(models.TransientModel):
             else:
                 raise UserError("Sample Quantity Must be Greater Than Zero")
 
+    
+
     def close_sample_wizard(self):
         return {'type': 'ir.actions.act_window_close'}
 
