@@ -1993,7 +1993,7 @@ class Soil(models.Model):
 
    
 
-      # Havy Compaction-MDD
+      # Heavy Compaction-MDD
     heavy_name = fields.Char("Name",default="DETERMINATION OF MDD & OMC BY PROCTOR TEST ")
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
     heavy_table = fields.One2many('mechanical.heavy.compaction.line','parent_id',string="Heavy Compaction")

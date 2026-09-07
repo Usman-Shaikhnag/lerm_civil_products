@@ -794,16 +794,34 @@ class MechanicalConcreteCubeLine(models.Model):
             rec.area = rec.length * rec.breadth
 
     
-    volume = fields.Float(string="Volume (m³)")
-    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16,3))
+   
             
-    @api.depends('wt_sample','volume')
+    volume = fields.Float(string="Volume (m³)",compute="_compute_density",store=True,digits=(16, 6),)
+
+    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16, 3),)
+
+    @api.depends('wt_sample', 'length', 'breadth', 'height')
     def _compute_density(self):
-        for rec in self:
-            if rec.wt_sample and rec.volume:
-                rec.density = round((rec.wt_sample) / rec.volume,3)
+     for rec in self:
+        if rec.length and rec.breadth and rec.height:
+
+            rec.volume = (
+                rec.length *
+                rec.breadth *
+                rec.height
+            ) / 1000000000.0
+
+            if rec.wt_sample:
+                rec.density = round(
+                    rec.wt_sample / rec.volume,
+                    3
+                )
             else:
                 rec.density = 0.0
+
+        else:
+            rec.volume = 0.0
+            rec.density = 0.0  
 
     # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
     # def _compute_avg_strength(self):

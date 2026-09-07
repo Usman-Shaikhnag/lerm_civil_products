@@ -10,6 +10,23 @@ import numpy as np
 import math
 from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
+from datetime import timedelta
+import math
+import matplotlib.pyplot as plt
+import io
+import base64
+import matplotlib.ticker as ticker
+import numpy as np
+import math
+from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
+from scipy.optimize import minimize_scalar
+from io import BytesIO
+from scipy.interpolate import make_interp_spline
+from matplotlib.ticker import LogLocator, MultipleLocator
+import re
+from matplotlib.ticker import AutoMinorLocator
+
+from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
 
 
@@ -64,221 +81,30 @@ class GsbReport1(models.AbstractModel):
             general_data = self.env['lerm.eln'].sudo().browse(docids)
 
 
-        plt.figure(figsize=(12, 6))
-        x_values = []
-        y_values = []
-        # import wdb;wdb.set_trace()
-        for line in general_data.density_relation_table:
-            x_values.append(line.moisture)
-            y_values.append(line.dry_density)
+        graph_heavy = False
+        heavy_omc = 0
+        heavy_mdd = 0
+
+        if getattr(general_data, 'show_heavy_graph', False):
+            result = self.generate_line_chart_light_omc(general_data)
+            if result:
+              graph_heavy, heavy_omc, heavy_mdd = result
+
+        graph_light = False
+        light_omc = 0
+        light_mdd = 0
+
+        if getattr(general_data, 'show_light_graph', False):
+            result = self.generate_line_chart_light_omc1(general_data)
+            if result:
+              graph_light, light_omc, light_mdd = result
+
+        graph_cbr = False
+        if getattr(general_data, 'show_cbr', False):
+            graph_cbr = self.generate_cbr_chart(general_data)
 
 
-        if general_data.density_relation_table:
-            try:
-                max_y = max(y_values)
-            except:
-                max_y = 100
-            try:
-                min_y = round(min(y_values),2)
-            except:
-                min_y = 0
-            try:
-                # max_x = round(max(x_values),2)
-                max_x = x_values[y_values.index(max_y)]
-            except:
-                max_x = 100
-            try:
-                min_x = round(min(x_values),2)
-            except:
-                min_x = 0 
-            
-            
-
-
-            # Format max_y and max_x to display 2 digits after the decimal point
-            max_y = round(max_y , 2)
-            max_x = round(max_x, 2)
-
-    
-
-            # Perform cubic spline interpolation
-
-            # import wdb; wdb.set_trace()
-            x_smooth = np.linspace(min(x_values), max(x_values), 100)
-            # cs = CubicSpline(x_values, y_values,1)
-            # cs = interp1d(x_values, y_values,kind='cubic')
-            class ConstantInterpolator:
-              def __init__(self, value):
-               self.value = value
-              def __call__(self, x):
-                 # Return a list or array of the same length as x filled with the constant value
-                    import numpy as np
-                    if hasattr(x, "__len__"):
-                      return np.full_like(x, self.value, dtype=float)
-                    else:
-                     return self.value
-
-
-            if len(x_values) == 1:
-                 cs = ConstantInterpolator(y_values[0])
-            elif len(x_values) >= 2:
-                cs = Akima1DInterpolator(x_values, y_values)
-            else:
-             cs = None 
-
-            # cs = Akima1DInterpolator(x_values, y_values)
-            # cs = Akima1DInterpolator(x_values, y_values) if len(x_values) >= 2 and len(y_values) >= 2 else None
-
-
-            # Create the line chart with a connected smooth line and markers
-
-
-            if cs is not None:
-             plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
-            else:
-         # handle case with no data - maybe skip plot or plot raw points only
-              pass
-
-
-            
-
-            # plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
-            # if cs:
-            #   plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
-            # else:
-            #    _logger.warning("Skipping smooth curve plot: interpolator (cs) is None.")
-
-            plt.scatter(x_values, y_values, marker='o', color='blue', s=30, label='Data Points')
-
-            
-            # Add a horizontal line with a label(, linestyle='--', label=f'Max Y = {max_y}', linestyle='--', label=f'Max X = {max_x}')
-            plt.axhline(y=max_y, color='green',linestyle='--')
-
-            # Add a vertical line with a label
-            plt.axvline(x=max_x, color='orange',linestyle='--')
-
-            
-            # Set the grid
-            ax = plt.gca()
-            ax.grid(which='both', linestyle='--', linewidth=0.5)
-
-            # Set the x-axis major and minor tick marks
-            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
-            ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
-
-            # Set the y-axis tick marks
-            # plt.yticks([1.60, 1.62, 1.64, 1.66, 1.68, 1.70, 1.72, 1.74, 1.76, 1.78, 1.80])
-
-            # edit range here
-
-            if max_y == min_y:
-              plt.yticks([min_y])  # Just one tick since range is zero
-            else:
-             step = (max_y - min_y) / 5
-             plt.yticks(np.arange(min_y, round(max_y, 2) + 0.2, step))
-            # plt.yticks(np.arange(min_y , round(max_y,2) + 0.2 , (max_y - min_y) / 5))
-
-
-            if max_x != min_x:
-                plt.xticks(np.arange(min_x, round(max(x_values),2) + 1.0, (max_x - min_x) / 5))
-            
-            plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
-            plt.xlabel('% Moisture')
-            plt.ylabel('Dry density in gm/cc')
-            plt.title('% Moisture vs Dry density in gm/cc')
-            plt.legend()
-
-            # Save the Matplotlib plot to a BytesIO object
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            graph_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-            # Close the Matplotlib plot to free up resources
-            plt.close()
-        else:
-            graph_image = None
-            max_y = 0
-            max_x = 0
-
-        plt.figure(figsize=(12, 6))
-        cbrx_values = []
-        cbry_values = []
-
-        # Check if cbr_table exists and populate cbrx_values and cbry_values
-        if general_data.cbr_table:
-            for line in general_data.cbr_table:
-                cbrx_values.append(line.penetration)
-                cbry_values.append(line.load)
-
-            try:
-                max_y = max(cbry_values)
-            except ValueError:
-                max_y = 100  # Default value if cbry_values is empty
-            try:
-                min_y = round(min(cbry_values), 2)
-            except ValueError:
-                min_y = 0
-            try:
-                max_x = cbrx_values[cbry_values.index(max_y)]
-            except ValueError:
-                max_x = 100
-            try:
-                min_x = round(min(cbrx_values), 2)
-            except ValueError:
-                min_x = 0
-
-            # Format max_y and max_x to display 2 digits after the decimal point
-            max_y = round(max_y, 2)
-            max_x = round(max_x, 2)
-
-            # Perform cubic spline interpolation if there are enough data points
-            if len(cbrx_values) > 1 and len(cbry_values) > 1:
-                cbrx_smooth = np.linspace(min(cbrx_values), max(cbrx_values), 100)
-                cbrcs = CubicSpline(cbrx_values, cbry_values)
-
-                # Create the line chart with a connected smooth line and markers
-                plt.plot(cbrx_smooth, cbrcs(cbrx_smooth), color='red', label='Smooth Curve')
-                plt.scatter(cbrx_values, cbry_values, marker='o', color='blue', s=30, label='Data Points')
-
-                # Add horizontal lines with labels
-                if len(cbry_values) > 8:  # Ensure indices 5 and 8 exist
-                    plt.axhline(y=cbry_values[5], color='green', linestyle='--', label=f'Load at 2.5 mm = {cbry_values[5]}')
-                    plt.axhline(y=cbry_values[8], color='green', linestyle='--', label=f'Load at 5 mm = {cbry_values[8]}')
-
-                # Add vertical lines at specific penetration values
-                plt.axvline(x=2.5, color='orange', linestyle='--')
-                plt.axvline(x=5.0, color='orange', linestyle='--')
-
-                # Set the grid
-                ax = plt.gca()
-                ax.grid(which='both', linestyle='--', linewidth=0.5)
-
-                # Set the x-axis major and minor tick marks
-                ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
-                ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
-
-                # Set the y-axis tick marks
-                plt.yticks(np.arange(min_y, max_y + 0.2, (max_y - min_y) / 5))
-
-                # Set the x-axis tick marks
-                if max_x != min_x:
-                    plt.xticks(np.arange(min_x, max_x + 1.0, (max_x - min_x) / 5))
-
-                # Set labels and title
-                plt.xlabel('Penetration in mm')
-                plt.ylabel('Load')
-                plt.title('Penetration in mm vs Load')
-                plt.legend()
-
-            # Save the Matplotlib plot to a BytesIO object
-            buffer2 = BytesIO()
-            plt.savefig(buffer2, format='png')
-            cbr_graph_image = base64.b64encode(buffer2.getvalue()).decode('utf-8')
-            plt.close()
-        else:
-            cbr_graph_image = None
-            cbry_values = []  # Reset to empty list
-            cbrx_values = []
+        
         
         return {
             'eln': eln,
@@ -287,18 +113,391 @@ class GsbReport1(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
-            'graphHeavy' : graph_image,
-            # 'mdd' : max_y,
-            # 'omc' : max_x,
-            # 'graphCbr' : cbr_graph_image,
-            # 'load2' : cbry_values[5] if cbry_values else 0,
-            # 'load5' : cbry_values[8] if cbry_values else 0,
-            'mdd': max_y if cbry_values else 0,
-            'omc': max_x if cbrx_values else 0,
-            'graphCbr': cbr_graph_image,
-            'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
-            'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
+            'graphHeavy' : graph_heavy,
+            'heavyomc' : heavy_omc,
+            'heavymdd' : heavy_mdd,
+            'graphlight' : graph_light,
+            'lightomc' : light_omc,
+            'lightmdd' : light_mdd,
+            'graphcbr' : graph_cbr,
         }
+
+
+
+    def generate_cbr_chart(self, data):
+
+      lines = self.env['mechanical.gsb.cbr.line'].search(
+        [('parent_id', '=', data.id)],
+        order='penetration asc'
+    )
+
+      import io
+      import base64
+      import matplotlib.pyplot as plt
+      from matplotlib.ticker import AutoMinorLocator
+
+    #   lines = data.mechanical_cbr_line_ids.sorted(
+    #     key=lambda r: r.penetration or 0
+    # )
+
+      penetration = [l.penetration for l in lines]
+
+      s1 = [l.sample1_load for l in lines]
+      s2 = [l.sample2_load for l in lines]
+      s3 = [l.sample3_load for l in lines]
+
+      if not penetration:
+        return False
+
+      fig, ax = plt.subplots(figsize=(12, 5))
+
+      ax.plot(
+        penetration,
+        s1,
+        marker='o',
+        label='Sample-1'
+    )
+
+      ax.plot(
+        penetration,
+        s2,
+        marker='o',
+        label='Sample-2'
+    )
+
+      ax.plot(
+        penetration,
+        s3,
+        marker='o',
+        label='Sample-3'
+    )
+
+      ax.set_xlabel('Penetration (mm)')
+      ax.set_ylabel('Load (Kg/cm²)')
+      ax.set_title('CBR Test Graph')
+
+      ax.grid(
+        which='major',
+        linestyle='-',
+        linewidth=0.8
+    )
+
+      ax.xaxis.set_minor_locator(
+        AutoMinorLocator(5)
+    )
+
+      ax.yaxis.set_minor_locator(
+        AutoMinorLocator(5)
+    )
+
+      ax.grid(
+        which='minor',
+        linestyle=':',
+        linewidth=0.5
+    )
+
+      ax.legend()
+
+      plt.tight_layout()
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=150,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+
+      buffer.seek(0)
+
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+    
+
+    def generate_line_chart_light_omc(self, data):
+
+      x_value = []
+      y_value = []
+
+      for line in data.heavy_table:
+        if line.water_content and line.dry_density:
+            x_value.append(float(line.water_content))
+            y_value.append(float(line.dry_density))
+
+      if len(x_value) < 3:
+          return False
+
+      data_points = sorted(zip(x_value, y_value))
+
+      x = np.array([d[0] for d in data_points])
+      y = np.array([d[1] for d in data_points])
+
+      coeff = np.polyfit(x, y, 2)
+      poly = np.poly1d(coeff)
+
+      x_smooth = np.linspace(x.min(), x.max(), 500)
+      y_smooth = poly(x_smooth)
+
+      omc = -coeff[1] / (2 * coeff[0])
+      mdd = poly(omc)
+
+      fig, ax = plt.subplots(figsize=(15, 5))
+
+      ax.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5
+    )
+
+      y_curve_points = poly(x)
+
+      ax.scatter(
+        x,
+        y_curve_points,
+        color='red',
+        s=40,
+        zorder=5
+    )
+
+      ax.scatter(
+        omc,
+        mdd,
+        color='red',
+        s=120,
+        zorder=10
+    )
+
+      ax.axhline(
+        y=mdd,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+      ax.axvline(
+        x=omc,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+      ax.text(
+        omc + 0.2,
+        mdd + 0.002,
+        f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
+        color='red',
+        fontsize=11,
+        fontweight='bold'
+    )
+
+      ax.set_xlabel('Water Content (%)')
+      ax.set_ylabel('Dry Density (g/cc)')
+      ax.set_title('DETERMINATION OF COMPACTION OMC / MDD')
+
+      ax.set_xlim(
+        left=0,
+        right=max(x) + 2
+    )
+
+      ax.set_ylim(
+        bottom=min(y) - 0.03,
+        top=max(y_smooth) + 0.03
+    )
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+
+      ax.grid(
+        which='major',
+        color='green',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.55
+    )
+
+      ax.grid(
+        which='minor',
+        color='green',
+        linestyle=':',
+        linewidth=0.3,
+        alpha=0.45
+    )
+
+      plt.tight_layout()
+ 
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=150,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+
+      buffer.seek(0)
+
+      image_data = base64.b64encode(
+    buffer.read()
+).decode('utf-8')
+
+      return (
+    image_data,
+    round(float(omc), 2),
+    round(float(mdd), 3)
+)
+    
+
+
+    def generate_line_chart_light_omc1(self, data):
+  
+      x_value = []
+      y_value = []
+  
+      for line in data.omc_table:
+        if line.water_content1 and line.dry_density1:
+            x_value.append(float(line.water_content1))
+            y_value.append(float(line.dry_density1))
+
+      if len(x_value) < 3:
+        return False
+
+      data_points = sorted(zip(x_value, y_value))
+
+      x = np.array([d[0] for d in data_points])
+      y = np.array([d[1] for d in data_points])
+
+      coeff = np.polyfit(x, y, 2)
+      poly = np.poly1d(coeff)
+
+      x_smooth = np.linspace(x.min(), x.max(), 500)
+      y_smooth = poly(x_smooth)
+
+      omc = -coeff[1] / (2 * coeff[0])
+      mdd = poly(omc)
+
+      fig, ax = plt.subplots(figsize=(15, 5))
+
+      ax.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5
+    )
+
+      y_curve_points = poly(x)
+
+      ax.scatter(
+        x,
+        y_curve_points,
+        color='red',
+        s=40,
+        zorder=5
+    )
+
+      ax.scatter(
+        omc,
+        mdd,
+        color='red',
+        s=120,
+        zorder=10
+    )
+
+      ax.axhline(
+        y=mdd,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+      ax.axvline(
+        x=omc,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+      ax.text(
+        omc + 0.2,
+        mdd + 0.002,
+        f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
+        color='red',
+        fontsize=11,
+        fontweight='bold'
+    )
+
+      ax.set_xlabel('Water Content (%)')
+      ax.set_ylabel('Dry Density (g/cc)')
+      ax.set_title('DETERMINATION OF COMPACTION OMC / MDD')
+
+      ax.set_xlim(
+        left=0,
+        right=max(x) + 2
+    )
+
+      ax.set_ylim(
+        bottom=min(y) - 0.03,
+        top=max(y_smooth) + 0.03
+    )
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+
+      ax.grid(
+        which='major',
+        color='green',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.55
+    )
+
+      ax.grid(
+        which='minor',
+        color='green',
+        linestyle=':',
+        linewidth=0.3,
+        alpha=0.45
+    )
+
+      plt.tight_layout()
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=150,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+
+      buffer.seek(0)
+
+      image_data = base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+
+      return (
+        image_data,
+        round(float(omc), 2),
+        round(float(mdd), 3)
+    )
+
+
+
         
       
   
