@@ -59,6 +59,12 @@
 									<span t-field="data.total_sieve_analysis"/>
 								</td>
 							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Fineness Modulus :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.fineness_modulus"/>
+								</td>
+							</tr>
 						</table>
 
 						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')], limit=1).technician"/>
@@ -351,6 +357,120 @@
 						</div>
 					</div>
 					</div>
+
+					<!-- Moisture Content-->
+                    
+                    <div t-if="data.moisture_content_visible" style="margin-top:20px; ">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','336c56df-ace4-4bb9-8bc6-dc5d12143094')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','336c56df-ace4-4bb9-8bc6-dc5d12143094')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Wet Sand Sample, (W1)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Dry Sand Sample, (W2)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Diff. Between Wet and Dry Sand:- (W1-W2)</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.moisture_content_child_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['wt_sand']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['wt_dry']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['diff_wet_sand']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>  
+
+								
+							<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Moisture Content (%) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_moisture"/>
+								</td>
+							</tr>
+						</table>
+
+                       
+                          
+                       
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','336c56df-ace4-4bb9-8bc6-dc5d12143094')], limit=1).technician"/>
+						<div class="signatureContainer noPageBreak girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+										<div t-if="prepared_by_obj.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="prepared_by_obj.name or ''"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="prepared_by_obj.job_title or ''"/>)
+									</b>
+								</div>
+                        	</div>
+                        
+							<div style="margin-left:600px">   
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checked_by_signature_datasheet">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+                     </div>
 
 					<!-- Crushing Value -->
 

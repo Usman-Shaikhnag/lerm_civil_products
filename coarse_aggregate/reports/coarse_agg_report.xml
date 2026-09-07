@@ -281,6 +281,7 @@
 							<tbody>
 
                             <!-- Sieve Analysis -->
+							<t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
                             <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
 
 								 <t t-set="rowspan_count" t-value="2 + len(valid_sieve_lines) "/>
@@ -378,6 +379,54 @@
 									</td> -->
 									
 								</tr>
+								</t>
+
+
+								<!--  Fineness Modulus -->
+							<tr t-if="data.sieve_visible and (data.fineness_modulus_nabl == 'pass' and nabl or (data.fineness_modulus_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="fineness_mod" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','a4d4afac-fa8d-4346-b300-fddeebfab619')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="fineness_mod.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.fineness_modulus" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="fineness_mod.unit.name"/>
+										</span>
+									</td>								
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="fineness_mod.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="fineness_mod.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
 
 
 
@@ -478,6 +527,51 @@
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="rodded_bulk_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!--  Moisture Content -->
+							<tr t-if="data.moisture_content_visible and (data.avg_moisture_nabl == 'pass' and nabl or (data.avg_moisture_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="moisture" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','336c56df-ace4-4bb9-8bc6-dc5d12143094')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="moisture.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="moisture.unit.name"/>
+										</span>
+									</td>								
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>

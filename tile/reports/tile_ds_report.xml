@@ -41,11 +41,16 @@
                                     <span t-field="o.srf_id.customer.state_id"/>,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
-                                <td colspan="1">Test Report No :</td>
+                                <td colspan="1">SRF ID :</td>
+                                <td colspan="1" style="font-weight:bold;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
+                                </td>
+                                <!-- <td colspan="1">Test Report No :</td>
                                 <td colspan="1" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.sample_id.kes_no"/>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr>
                                 <td colspan="1">Location of Performance :-</td>
@@ -115,23 +120,31 @@
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                <td colspan="1">Test Method Followed :-</td>
+
+                                <td colspan="1">Reference No. :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.srf_id.client_refrence">
+                                        <span t-field="o.srf_id.client_refrence"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                <!-- <td colspan="1">Test Method Followed :-</td>
                                 <td colspan="1">
                                     <t t-if="o.material.test_method_adopted">
                                         <span t-field="o.material.test_method_adopted"/>
                                     </t>
                                     <t t-else="">-</t>
-                                </td>
+                                </td> -->
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td colspan="1">Temperature :-</td>
                                 <td colspan="1">
                                 </td>
                                 <td colspan="1">Humidity :-</td>
                                 <td colspan="1">
                                 </td>
-                            </tr>
-                            <tr>
+                            </tr> -->
+                            <!-- <tr>
                                 <td colspan="1">Reference No. :-</td>
                                 <td colspan="3">
                                     <t t-if="o.srf_id.client_refrence">
@@ -139,7 +152,7 @@
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                            </tr>
+                            </tr> -->
 
                         </table>
                     </div>
@@ -169,6 +182,10 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Deviation (Width) (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -190,6 +207,17 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['average']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="deviation.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -234,6 +262,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average of Each Tile mm</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Deviation inpercentage of each Tile</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -252,6 +283,16 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['deviation']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="thickness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -292,7 +333,10 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="2">Sr No.</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Deviation in percentage of each Tile (L)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Deviation in percentage of each Tile (W)</th>
-                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
+                                    <th width="15%" style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="20%">
+                                      Test Method
+                                    </th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
@@ -313,8 +357,18 @@
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['deviation_width']" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
-                                    <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
+                                    <td style="text-align: center;border: 1px solid black; padding: 6px;" width="15%" colspan="3">
                                         <span t-esc="r['average']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="20%" >
+                                        <span>
+											<t t-foreach="rectangularity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -357,6 +411,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Error Length %</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -379,6 +436,16 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['average']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="straightness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -422,6 +489,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Percentage deviation</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -444,6 +514,16 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['average_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="center_curvature.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -485,6 +565,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Percentage deviation</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -506,6 +589,16 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['average_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="edge_curvature.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -548,6 +641,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Percentage deviation</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">Average (%)</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -569,6 +665,17 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['average_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="warpage.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
@@ -608,6 +715,9 @@
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="2">Sr No.</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" colspan="3">MOHS Hardness</th>
                                     <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
+                                      Test Method
+                                    </th>
+                                    <th style="text-align: center;border: 1px solid black; padding: 8px;" width="25%">
                                     <!-- Requirements as per IS 15622:2017 Group B1а E≤0.08 (N &gt; 20cm) -->
                                      Requirements as per <span t-esc="eln.material.method_reference"/>  <span t-esc="eln.material.specifications"/>
                                     </th>
@@ -623,6 +733,17 @@
                                     </td>
                                     <td style="text-align: center;border: 1px solid black; padding: 6px;" colspan="3">
                                         <span t-esc="r['mohs_hardness']" />
+                                    </td>
+
+                                    <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >
+                                        <span>
+											<t t-foreach="mohs.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+
                                     </td>
 
                                     <td t-if="r_index == 0" t-att-rowspan="rowspan_count" style="text-align: center;border: 1px solid black; padding: 6px;" width="25%" >

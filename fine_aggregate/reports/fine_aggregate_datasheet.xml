@@ -1800,6 +1800,134 @@
 					</div>
 
 
+					<!-- Silt Conten -->
+                    
+                    <div t-if="data.silt_content_visible" style="margin-top:20px; ">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                    	</div>
+						<table style="margin-top:20px">
+							<thead >
+								<tr style="background-color: #f0f0f0; text-align: center;" cols="12">
+									<td >Sr no 
+									</td>
+
+									<td  style="text-align:center;">Height of Sand in Cylinder:- (A)
+									</td>
+
+									<td  style="text-align:center;">Height of Settled Sand:- (B)
+
+									</td>
+								
+									<td  style="text-align:center;">Loss of Height of Sand:- (A-B)
+									</td>
+
+								
+								</tr>
+								
+							</thead>
+							<tbody>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.silt_content_child_lines" t-as="r">
+								<td >
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<td >
+									<span t-esc="r['height_of_sand']" />
+								</td>
+								<td >
+									<span t-esc="r['height_of_settled']" />
+								</td>
+								<td >
+									<span t-esc="r['loss_off_height']" t-options='{"widget": "float", "precision": 2}' />
+								</td>
+							
+
+								
+							</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top:5px">
+								<tr cols="12">
+									<td colspan="6"><b>Average Silt Content (%):</b></td>
+									<td colspan="6" style="text-align: center;">
+										<span t-field="data.avg_silt_content" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							
+						</table>
+
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')], limit=1).technician"/>
+						<div class="signatureContainer noPageBreak girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+										<div t-if="prepared_by_obj.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="prepared_by_obj.name or ''"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="prepared_by_obj.job_title or ''"/>)
+									</b>
+								</div>
+                        	</div>
+                        
+							<div style="margin-left:600px">   
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checked_by_signature_datasheet">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
 				</div>
 
             </t>

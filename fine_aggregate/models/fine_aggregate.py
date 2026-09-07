@@ -93,6 +93,27 @@ class FineAggregate(models.Model):
     required=False  
 )
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
 
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
@@ -120,6 +141,58 @@ class FineAggregate(models.Model):
             lines = record.sieve_analysis_child_lines[:-1]  # all except last
             fineness_modulus = sum(line.cumulative_retained for line in lines) / 100
             record.fineness_modulus = fineness_modulus
+
+
+    fineness_modulus_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_fineness_modulus_confirmity")
+    
+    @api.depends('fineness_modulus','eln_ref','grade')
+    def _compute_fineness_modulus_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fineness_modulus_confirmity = 'na'
+                continue
+            record.fineness_modulus_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.fineness_modulus - record.fineness_modulus*mu_value
+                    upper = record.fineness_modulus + record.fineness_modulus*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.fineness_modulus_confirmity = 'pass'
+                        break
+                    else:
+                        record.fineness_modulus_confirmity = 'fail'
+
+    fineness_modulus_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_fineness_modulus_nabl",store=True)
+
+    @api.depends('fineness_modulus','eln_ref','grade')
+    def _compute_fineness_modulus_nabl(self):
+        
+        for record in self:
+            record.fineness_modulus_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.fineness_modulus - record.fineness_modulus*mu_value
+                    upper = record.fineness_modulus + record.fineness_modulus*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.fineness_modulus_nabl = 'pass'
+                        break
+                    else:
+                        record.fineness_modulus_nabl = 'fail'
 
 
 
@@ -1668,31 +1741,118 @@ class FineAggregate(models.Model):
                     else:
                         record.avg_bulking_of_sand_nabl = 'fail'
 
+
+
+    #  Silt Content
+
+    silt_content_name = fields.Char("Name",default="Silt Content")
+    silt_content_visible = fields.Boolean("Silt Content",compute="_compute_visible")
+
+    silt_content_child_lines = fields.One2many('fine.silt.content.line','parent_id',string="Parameter")
+
+    silt_avg_height_sand_a = fields.Float(string="Height of Sand in Cylinder:- (A)", compute="_compute_avg_silt_content_lines")
+    silt_avg_height_sattled_b = fields.Float(string="Height of Settled Sand:- (B)", compute="_compute_avg_silt_content_lines")
+    silt_avg_loss_c = fields.Float(string="Loss of Height of Sand:- (A-B)", compute="_compute_avg_silt_content_lines")
+
+   
+
+    @api.depends('silt_content_child_lines')
+    def _compute_avg_silt_content_lines(self):
+        for rec in self:
+            lines = rec.silt_content_child_lines
+            all_count = len(lines)
+            selected_lines = lines[:2]  # Only first two lines (0 and 1)
+            selected_count = len(selected_lines)
+
+            # Compute avg from 1st two lines
+            if selected_count:
+                rec.silt_avg_height_sand_a = sum(line.height_of_sand for line in selected_lines) / selected_count
+                rec.silt_avg_height_sattled_b = sum(line.height_of_settled for line in selected_lines) / selected_count
+            else:
+                rec.silt_avg_height_sand_a = 0.0
+                rec.silt_avg_height_sattled_b = 0.0
+
+            # Compute avg of loss_c from all lines
+            if all_count:
+                rec.silt_avg_loss_c = sum(line.loss_off_height for line in lines) / all_count
+            else:
+                rec.silt_avg_loss_c = 0.0
+
+
+  
+                
+
+    avg_silt_content = fields.Float(
+        string="Average Silt Content (%)",
+        compute="_compute_avg_silt_content",
+        store=True )
+    
+    @api.depends('silt_avg_loss_c', 'silt_avg_height_sattled_b')
+    def _compute_avg_silt_content(self):
+        for rec in self:
+            if rec.silt_avg_height_sattled_b:
+                rec.avg_silt_content = (rec.silt_avg_loss_c / rec.silt_avg_height_sattled_b) * 100
+            else:
+                rec.avg_silt_content = 0.0
+
+   
+
+
+    avg_silt_content_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_silt_content_conformity", store=True)
+
+    @api.depends('avg_silt_content','eln_ref','grade')
+    def _compute_avg_silt_content_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_silt_content_conformity = 'na'
+                continue
+            record.avg_silt_content_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_silt_content - record.avg_silt_content*mu_value
+                    upper = record.avg_silt_content + record.avg_silt_content*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_silt_content_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_silt_content_conformity = 'fail'
+
+    avg_silt_content_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_silt_content_nabl", store=True)
+
+    @api.depends('avg_silt_content','eln_ref','grade')
+    def _compute_avg_silt_content_nabl(self):
+        
+        for record in self:
+            record.avg_silt_content_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','eceb69a1-71ed-4232-8bd2-62db2b2e9a83')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_silt_content - record.avg_silt_content*mu_value
+                    upper = record.avg_silt_content + record.avg_silt_content*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_silt_content_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_silt_content_nabl = 'fail'
+
      
-
-
-
-            
-
-
-      
-
-
-    
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
 
 
 
@@ -1719,6 +1879,7 @@ class FineAggregate(models.Model):
             record.deleterious_soft_par_visible = False
             record.organic_impurities_visible  = False
             record.bulking_sand_visible = False
+            record.silt_content_visible = False
             record.deleterious_coal_lignite_visible = False
 
 
@@ -1739,7 +1900,7 @@ class FineAggregate(models.Model):
                 if sample.internal_id == "4dbde30b-0cdc-4641-abdd-68a574fd7e1f":
                     record.water_absorption_visible = True
 
-                if sample.internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
+                if sample.internal_id == "8a944a9b-4d7d-44a3-a82c-6d8bacc07846":
                     record.loose_density_visible = True
                     
                 
@@ -1779,6 +1940,12 @@ class FineAggregate(models.Model):
 
                 if sample.internal_id == "45789bhgt25-3fa3-4b83-ae31-9d28176718457":
                     record.bulking_sand_visible = True
+
+                if sample.internal_id == "eceb69a1-71ed-4232-8bd2-62db2b2e9a83":
+                    record.silt_content_visible = True
+
+
+                
 
                
                 
@@ -1831,7 +1998,7 @@ class FineAggregate(models.Model):
 
 
             # Loose density
-            if internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
+            if internal_id == "8a944a9b-4d7d-44a3-a82c-6d8bacc07846":
                 result.result_char = round(self.loose_density, 2)
                 result.calculated = True
                 if self.loose_density_nabl == 'pass':
@@ -1953,6 +2120,28 @@ class FineAggregate(models.Model):
                 result.calculated = True
                 result.result_char = round(self.avg_bulking_of_sand,2)
                 if self.avg_bulking_of_sand_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Silt Content
+            if result.parameter.internal_id == 'eceb69a1-71ed-4232-8bd2-62db2b2e9a83':
+                result.calculated = True
+                result.result_char = round(self.avg_silt_content,2)
+                if self.avg_silt_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Fineness Modulus
+            if result.parameter.internal_id == '4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a':
+                result.calculated = True
+                result.result_char = round(self.fineness_modulus,2)
+                if self.fineness_modulus_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2637,26 +2826,27 @@ class BulkingSandLine(models.Model):
             record.serial_no = index + 1
 
 
-class SiltContentLine(models.Model):
+class FineSiltContentLine(models.Model):
     _name = "fine.silt.content.line"
-    parent_id = fields.Many2one('mechanical.fine.aggregatel',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    heigh_sand_silt = fields.Float(string="Height of Sand + Silt in the glass Cylinder:- (A)")
-    height_of_sand = fields.Float(string="Height of Sand:- (B)")
-    height_silt = fields.Float(string="Height of Silt:- (A-B)",compute="_compute_bulking_values1")
-    # bulking_of_sand1 = fields.Float(string="Bulking of Sand % = ((A-B)/B) x 100",compute="_compute_bulking_values1")
 
-    @api.depends('heigh_sand_silt', 'height_of_sand')
-    def _compute_bulking_values1(self):
+
+    height_of_sand = fields.Float(string="Height of Sand in Cylinder:- (A)")
+    height_of_settled = fields.Float(string="Height of Settled Sand:- (B)")
+    loss_off_height = fields.Float(string="Loss of Height of Sand:- (A-B)",compute="_compute_bulking_values")
+
+    @api.depends('height_of_sand', 'height_of_settled')
+    def _compute_bulking_values(self):
         for rec in self:
-            A = rec.heigh_sand_silt
-            B = rec.height_of_sand
+            A = rec.height_of_sand
+            B = rec.height_of_settled
 
             if A and B:
-                rec.height_silt = A - B
+                rec.loss_off_height = A - B
             else:
-                rec.height_silt = 0.0
+                rec.loss_off_height = 0.0
 
     
 
@@ -2669,7 +2859,7 @@ class SiltContentLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(SiltContentLine, self).create(vals)
+        return super(FineSiltContentLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
