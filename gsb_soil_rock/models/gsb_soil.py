@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-class GsbMechanical(models.Model):
-    _name = "mechanical.gsb"
+class GsbMechanicalSoilRock(models.Model):
+    _name = "mechanical.gsb.soil.rock"
     _inherit = "lerm.eln"
     _rec_name = "name"
 
 
-    name = fields.Char("Name",default="GSB")
+    name = fields.Char("Name",default="GSB (Soil & Rock)")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -44,7 +44,7 @@ class GsbMechanical(models.Model):
 
     # २. नंतर खाली हे फिल्ड वापरा
     notes_id = fields.One2many(
-        'mechanical.gsb.notes', 
+        'mechanical.gsb.soil.rock.notes', 
         'parent_id', 
         string="Notes", 
         ondelete='cascade', 
@@ -77,39 +77,39 @@ class GsbMechanical(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '89e321d5-560e-41f9-9f7e-3455c9b2925d':
+                if sample.internal_id == '205120933658629695120333601990331918967':
                     record.dry_gradation_visible = True
-                if sample.internal_id == 'd9bdbd78-4e73-44ca-93ed-442f74cd1e9b':
+                if sample.internal_id == '182600147507449510096003034801913471065':
                     record.water_absorbtion_visible  = True  
-                if sample.internal_id == '9588ef56-599e-4569-8cd2-48e1dc120714':
+                if sample.internal_id == '325650329760617805381535972447545630452':
                     record.elongation_visible = True
                     record.flakiness_visible = True
-                if sample.internal_id == '06308898-70fb-4c47-baec-9880be12d765':
+                if sample.internal_id == '182045959218120332746443843540221422758':
                     record.flakiness_visible = True
                     record.elongation_visible = True
-                if sample.internal_id == '3c23309f-3f1c-4aca-ac94-3c2bb0f034e2':
+                if sample.internal_id == '259745811330579932739263352019385990228':
                     record.abrasion_visible = True
-                if sample.internal_id == 'df2105e2-a55f-47ac-aee6-9f37d733ccca':
+                if sample.internal_id == '284598595626381016107501501374601268380':
                     record.impact_visible = True
-                if sample.internal_id == '6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed':
+                if sample.internal_id == '69011483375907551656090371999540749308':
                     record.plastic_visible  = True  
-                if sample.internal_id == 'b9d7a9f7-3ed1-4021-90a2-47651f0ed81d':
+                if sample.internal_id == '335588115367591260813063489046518201633':
                     record.liquid_limit_visible = True
-                if sample.internal_id == 'c6c06cf6-1611-4790-9410-ef5db6233932':
+                if sample.internal_id == '235232945280599673430820618978534001325':
                     record.liquid_limit_visible = True
                     record.plasticity_index_visible = True
-                if sample.internal_id == '5cfd20e8-0579-4221-8a82-bbfadcd3131f':
+                if sample.internal_id == '140259324320997242075141052128776518542':
                     record.density_relation_visible = True
-                if sample.internal_id == 'f1046910-b27e-48c6-81b8-900521446761':
+                if sample.internal_id == '267238599186993434899474576344258947841':
                     record.cbr_visible = True
 
-                if sample.internal_id == 'p4587910-b27e-48c6-81b8-826521442541':
+                if sample.internal_id == '332975206013505726769677159284164476651':
                     record.gsb_field_density_visible = True
 
-                if sample.internal_id == 'k2543lpu58-b27e-48c6-81b8-826521442541':
+                if sample.internal_id == '135673342900904680310943115248275012088':
                     record.specific_gravity_gsb_visible = True
 
-                if sample.internal_id == '2145kjytl321-b27e-48c6-81b8-8265214422143':
+                if sample.internal_id == '214225974489523430357015957823830429376':
                     record.gsb_infra_visible = True
 
 
@@ -125,11 +125,11 @@ class GsbMechanical(models.Model):
         for result in technician_results:
 
             # Dry Gradation
-            if result.parameter.internal_id == '89e321d5-560e-41f9-9f7e-3455c9b2925d':
+            if result.parameter.internal_id == '205120933658629695120333601990331918967':
                 result.calculated = True
             
             # Water Absorbtion
-            if result.parameter.internal_id == 'd9bdbd78-4e73-44ca-93ed-442f74cd1e9b':
+            if result.parameter.internal_id == '182600147507449510096003034801913471065':
                 result.result_char = round(self.water_absorbtion,2)
                 result.calculated = True
                 if self.water_absorbtion_nabl == 'pass':
@@ -139,7 +139,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Elongation and Flakiness Index
-            if result.parameter.internal_id == '9588ef56-599e-4569-8cd2-48e1dc120714':
+            if result.parameter.internal_id == '325650329760617805381535972447545630452':
                 result.result_char = round(self.aggregate_elongation,2)
                 result.calculated = True
                 if self.aggregate_elongation_nabl == 'pass':
@@ -149,7 +149,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Elongation and Flakiness Index
-            if result.parameter.internal_id == '06308898-70fb-4c47-baec-9880be12d765':
+            if result.parameter.internal_id == '182045959218120332746443843540221422758':
                 result.result_char = round(self.aggregate_flakiness,2)
                 result.calculated = True
                 if self.aggregate_flakiness_nabl == 'pass':
@@ -159,7 +159,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Abrasion Value
-            if result.parameter.internal_id == '3c23309f-3f1c-4aca-ac94-3c2bb0f034e2':
+            if result.parameter.internal_id == '259745811330579932739263352019385990228':
                 result.result_char = round(self.abrasion_value_percentage,2)
                 result.calculated = True
                 if self.abrasion_value_percentage_nabl == 'pass':
@@ -169,7 +169,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Impact Value
-            if result.parameter.internal_id == 'df2105e2-a55f-47ac-aee6-9f37d733ccca':
+            if result.parameter.internal_id == '284598595626381016107501501374601268380':
                 result.result_char = round(self.average_impact_value,2)
                 result.calculated = True
                 if self.average_impact_value_nabl == 'pass':
@@ -179,7 +179,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Plastic Limit
-            if result.parameter.internal_id == '6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed':
+            if result.parameter.internal_id == '69011483375907551656090371999540749308':
                 result.result_char = round(self.average_plastic_moisture,2)
                 result.calculated = True
                 if self.average_plastic_moisture_nabl == 'pass':
@@ -189,7 +189,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Liquid Limit
-            if result.parameter.internal_id == 'b9d7a9f7-3ed1-4021-90a2-47651f0ed81d':
+            if result.parameter.internal_id == '335588115367591260813063489046518201633':
                 result.result_char = round(self.liquid_limit,2)
                 result.calculated = True
                 if self.liquid_limit_nabl == 'pass':
@@ -199,7 +199,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Plasticity Index Visible
-            if result.parameter.internal_id == 'c6c06cf6-1611-4790-9410-ef5db6233932':
+            if result.parameter.internal_id == '235232945280599673430820618978534001325':
                 result.result_char = round(self.plasticity_index,2)
                 result.calculated = True
                 if self.plasticity_index_nabl == 'pass':
@@ -209,7 +209,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # Density Relation Using Heavy Compaction
-            if result.parameter.internal_id == '5cfd20e8-0579-4221-8a82-bbfadcd3131f':
+            if result.parameter.internal_id == '140259324320997242075141052128776518542':
                 result.calculated = True
                 # if self.aggregate_combine_conformity == 'pass':
                 #     result.nabl_status = 'nabl'
@@ -218,7 +218,7 @@ class GsbMechanical(models.Model):
                 continue
 
             # CBR
-            if result.parameter.internal_id == 'f1046910-b27e-48c6-81b8-900521446761':
+            if result.parameter.internal_id == '267238599186993434899474576344258947841':
                 # result.result_char = round(self.aggregate_elongation,2)
                 result.calculated = True
                 # if self.aggregate_combine_conformity == 'pass':
@@ -228,7 +228,7 @@ class GsbMechanical(models.Model):
                 continue
 
            
-            if result.parameter.internal_id == 'p4587910-b27e-48c6-81b8-826521442541':
+            if result.parameter.internal_id == '332975206013505726769677159284164476651':
                 result.result_char = round(self.avg_degree_of_compaction,2)
                 result.calculated = True
                 if self.degree_of_compaction_nabl == 'pass':
@@ -237,7 +237,7 @@ class GsbMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == 'k2543lpu58-b27e-48c6-81b8-826521442541':
+            if result.parameter.internal_id == '135673342900904680310943115248275012088':
                 result.result_char = round(self.specific_gravity_gsb,2)
                 result.calculated = True
                 if self.specific_gravity_gsb_nabl == 'pass':
@@ -246,7 +246,7 @@ class GsbMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '2145kjytl321-b27e-48c6-81b8-8265214422143':
+            if result.parameter.internal_id == '214225974489523430357015957823830429376':
                 # result.result_char = round(self.specific_gravity_gsb,2)
                 result.calculated = True
                 # if self.specific_gravity_gsb_nabl == 'pass':
@@ -267,7 +267,7 @@ class GsbMechanical(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(GsbMechanical, self).create(vals)
+        record = super(GsbMechanicalSoilRock, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -280,7 +280,7 @@ class GsbMechanical(models.Model):
             print("Records",records)
 
     def get_all_fields(self):
-        record = self.env['mechanical.gsb'].browse(self.ids[0])
+        record = self.env['mechanical.gsb.soil.rock'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -336,8 +336,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.specific_gravity_gsb_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','k2543lpu58-b27e-48c6-81b8-826521442541')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','k2543lpu58-b27e-48c6-81b8-826521442541')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','135673342900904680310943115248275012088')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','135673342900904680310943115248275012088')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -367,8 +367,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.specific_gravity_gsb_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','k2543lpu58-b27e-48c6-81b8-826521442541')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','k2543lpu58-b27e-48c6-81b8-826521442541')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','135673342900904680310943115248275012088')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','135673342900904680310943115248275012088')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -393,7 +393,7 @@ class GsbMechanical(models.Model):
     # start_date_dry_density = fields.Date("Start Date")
     # end_date_dry_density = fields.Date("End Date")
 
-    gsb_field_density_table = fields.One2many('mechanical.gsb.field.dencity.line','parent_id',string="Parameter")
+    gsb_field_density_table = fields.One2many('mechanical.gsb.soil.rock.field.dencity.line','parent_id',string="Parameter")
     mmd_fielddencity = fields.Float(string="MMD gm/cc", store=True)
     omc_fielddencity = fields.Float(string="OMC %", store=True)
     avg_degree_of_compaction = fields.Float(string="Degree of Compaction in %",compute="_compute_avg_degree_of_compaction")
@@ -419,8 +419,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.degree_of_compaction_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','p4587910-b27e-48c6-81b8-826521442541')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','p4587910-b27e-48c6-81b8-826521442541')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','332975206013505726769677159284164476651')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','332975206013505726769677159284164476651')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -452,8 +452,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.degree_of_compaction_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','p4587910-b27e-48c6-81b8-826521442541')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','p4587910-b27e-48c6-81b8-826521442541')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','332975206013505726769677159284164476651')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','332975206013505726769677159284164476651')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -473,7 +473,7 @@ class GsbMechanical(models.Model):
     dry_gradation_name = fields.Char(default="Dry Gradation")
     dry_gradation_visible = fields.Boolean(compute="_compute_visible")
 
-    dry_gradation_table = fields.One2many('mech.gsb.dry.gradation.line','parent_id',string="Dry Gradation")
+    dry_gradation_table = fields.One2many('mechanical.gsb.soil.rock.dry.gradation.line','parent_id',string="Dry Gradation")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
     
 
@@ -493,7 +493,7 @@ class GsbMechanical(models.Model):
                         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
                         line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
                 else:
-                    previous_line_record = self.env['mech.gsb.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+                    previous_line_record = self.env['mechanical.gsb.soil.rock.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': round(previous_line_record + line.percent_retained,2)})
                     line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
                     print("Previous Cumulative",previous_line_record)
@@ -524,7 +524,7 @@ class GsbMechanical(models.Model):
 
     def default_get(self, fields):
         print("From Default Value")
-        res = super(GsbMechanical, self).default_get(fields)
+        res = super(GsbMechanicalSoilRock, self).default_get(fields)
 
         default_dry_sieve_sizes = []
         default_elongated_sieve_sizes = []
@@ -579,8 +579,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.water_absorbtion_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d9bdbd78-4e73-44ca-93ed-442f74cd1e9b')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d9bdbd78-4e73-44ca-93ed-442f74cd1e9b')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182600147507449510096003034801913471065')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182600147507449510096003034801913471065')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -610,8 +610,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.water_absorbtion_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d9bdbd78-4e73-44ca-93ed-442f74cd1e9b')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d9bdbd78-4e73-44ca-93ed-442f74cd1e9b')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182600147507449510096003034801913471065')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182600147507449510096003034801913471065')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -634,7 +634,7 @@ class GsbMechanical(models.Model):
     flakiness_name = fields.Char(default=" Flakiness Index")
     flakiness_visible = fields.Boolean(compute="_compute_visible")
 
-    elongation_table = fields.One2many('mech.gsb.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index")
+    elongation_table = fields.One2many('mechanical.gsb.soil.rock.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index")
 
     total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
     total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
@@ -694,8 +694,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.aggregate_flakiness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182045959218120332746443843540221422758')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182045959218120332746443843540221422758')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -725,8 +725,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.aggregate_flakiness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182045959218120332746443843540221422758')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','182045959218120332746443843540221422758')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -756,8 +756,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.aggregate_elongation_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9588ef56-599e-4569-8cd2-48e1dc120714')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9588ef56-599e-4569-8cd2-48e1dc120714')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','325650329760617805381535972447545630452')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','325650329760617805381535972447545630452')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -787,8 +787,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.aggregate_elongation_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9588ef56-599e-4569-8cd2-48e1dc120714')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9588ef56-599e-4569-8cd2-48e1dc120714')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','325650329760617805381535972447545630452')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','325650329760617805381535972447545630452')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -843,8 +843,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.abrasion_value_percentage_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3c23309f-3f1c-4aca-ac94-3c2bb0f034e2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3c23309f-3f1c-4aca-ac94-3c2bb0f034e2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','259745811330579932739263352019385990228')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','259745811330579932739263352019385990228')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -874,8 +874,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.abrasion_value_percentage_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3c23309f-3f1c-4aca-ac94-3c2bb0f034e2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3c23309f-3f1c-4aca-ac94-3c2bb0f034e2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','259745811330579932739263352019385990228')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','259745811330579932739263352019385990228')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -894,7 +894,7 @@ class GsbMechanical(models.Model):
     impact_value_name = fields.Char("Name",default="Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
 
-    impact_value_child_lines = fields.One2many('mech.gsb.impact.line','parent_id',string="Parameter")
+    impact_value_child_lines = fields.One2many('mechanical.gsb.soil.rock.impact.line','parent_id',string="Parameter")
 
     average_impact_value = fields.Float(string="Average Impact Value", compute="_compute_average_impact_value")
 
@@ -922,8 +922,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.average_impact_value_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df2105e2-a55f-47ac-aee6-9f37d733ccca')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df2105e2-a55f-47ac-aee6-9f37d733ccca')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','284598595626381016107501501374601268380')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','284598595626381016107501501374601268380')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -953,8 +953,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.average_impact_value_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df2105e2-a55f-47ac-aee6-9f37d733ccca')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df2105e2-a55f-47ac-aee6-9f37d733ccca')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','284598595626381016107501501374601268380')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','284598595626381016107501501374601268380')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -973,7 +973,7 @@ class GsbMechanical(models.Model):
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
 
-    liquid_limit_table = fields.One2many('mech.gsb.liquid.limit.line','parent_id',string="Liquid Limit")
+    liquid_limit_table = fields.One2many('mechanical.gsb.soil.rock.liquid.limit.line','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float("Liquid Limit",digits=(12,2))
     remarks_liquid_limit = fields.Selection([
         ('plastic', 'Plastic'),
@@ -1023,8 +1023,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.liquid_limit_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b9d7a9f7-3ed1-4021-90a2-47651f0ed81d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b9d7a9f7-3ed1-4021-90a2-47651f0ed81d')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','335588115367591260813063489046518201633')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','335588115367591260813063489046518201633')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -1054,8 +1054,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.liquid_limit_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b9d7a9f7-3ed1-4021-90a2-47651f0ed81d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b9d7a9f7-3ed1-4021-90a2-47651f0ed81d')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','335588115367591260813063489046518201633')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','335588115367591260813063489046518201633')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1075,7 +1075,7 @@ class GsbMechanical(models.Model):
     plastic_name = fields.Char("Name",default="Plastic Limit")
     plastic_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
 
-    plastic_table = fields.One2many('mech.gsb.plastic.limit.line','parent_id',string="Plastic Limit")
+    plastic_table = fields.One2many('mechanical.gsb.soil.rock.plastic.limit.line','parent_id',string="Plastic Limit")
     average_plastic_moisture = fields.Float("Average",compute="_compute_plastic_average")
     remarks_plastic = fields.Selection([
         ('plastic', 'Plastic'),
@@ -1106,8 +1106,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.average_plastic_moisture_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','69011483375907551656090371999540749308')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','69011483375907551656090371999540749308')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -1137,8 +1137,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.average_plastic_moisture_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6da5a1a2-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','69011483375907551656090371999540749308')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','69011483375907551656090371999540749308')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1179,8 +1179,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.plasticity_index_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c6c06cf6-1611-4790-9410-ef5db6233932')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c6c06cf6-1611-4790-9410-ef5db6233932')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','235232945280599673430820618978534001325')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','235232945280599673430820618978534001325')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
 
@@ -1210,8 +1210,8 @@ class GsbMechanical(models.Model):
         
         for record in self:
             record.plasticity_index_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c6c06cf6-1611-4790-9410-ef5db6233932')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c6c06cf6-1611-4790-9410-ef5db6233932')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','235232945280599673430820618978534001325')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','235232945280599673430820618978534001325')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1230,7 +1230,7 @@ class GsbMechanical(models.Model):
     density_relation_name = fields.Char("Name",default="Density Relation Using Heavy Compaction")
     density_relation_visible = fields.Boolean("Density Relation Visible",compute="_compute_visible")
 
-    density_relation_table = fields.One2many('mech.gsb.density.relation.line','parent_id',string="Density Relation")
+    density_relation_table = fields.One2many('mechanical.gsb.soil.rock.density.relation.line','parent_id',string="Density Relation")
     wt_of_modul = fields.Float('Weight of Mould in gm')
     vl_of_modul = fields.Float('Volume of Mould in cc')
     chart_image_density = fields.Binary("Line Chart", compute="_compute_chart_image_density", store=True)
@@ -1298,7 +1298,7 @@ class GsbMechanical(models.Model):
     string="Division Factor",
     digits=(8, 2),)
 
-    cbr_table = fields.One2many('mechanical.gsb.cbr.line','parent_id',string="CBR")
+    cbr_table = fields.One2many('mechanical.gsb.soil.rock.cbr.line','parent_id',string="CBR")
     chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
@@ -1396,7 +1396,7 @@ class GsbMechanical(models.Model):
     gsb_infra_name = fields.Char("Name",default="California Bearing Ratio")
     gsb_infra_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
     
-    gsb_infra_table = fields.One2many('mechanical.gsb.infra.cbr.line','parent_id',string="CBR")
+    gsb_infra_table = fields.One2many('mechanical.gsb.soil.rock.infra.cbr.line','parent_id',string="CBR")
     chart_image_cbr_infra = fields.Binary("Line Chart", compute="_compute_chart_image_cbr_infra_gsb", store=True)
 
     gsb_infra_ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm_gsb_infra_ps")
@@ -1490,9 +1490,9 @@ class GsbMechanical(models.Model):
 
 
 
-class GsbInfraCBRLine(models.Model):
-    _name = "mechanical.gsb.infra.cbr.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbInfraCBRLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.infra.cbr.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
 
     penetration1 = fields.Float(string="Penetration in mm")
     proving_reading1 = fields.Float(string="Proving Ring Reading 1")
@@ -1526,9 +1526,9 @@ class GsbInfraCBRLine(models.Model):
 
 
 
-class GsbDensityRelationLine(models.Model):
-    _name = "mech.gsb.density.relation.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbDensityRelationLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.density.relation.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
 
     determination_no = fields.Float(string="Determination No")
     wt_of_modul_compact = fields.Integer(string="Weight of Mould + Compacted sample in gm")
@@ -1592,9 +1592,9 @@ class GsbDensityRelationLine(models.Model):
 
 
 
-class GsbCBRLine(models.Model):
-    _name = "mechanical.gsb.cbr.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbCBRLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.cbr.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
 
     penetration = fields.Float(string="Penetration in mm")
     proving_reading = fields.Float(string="Proving Ring Reading")
@@ -1616,9 +1616,9 @@ class GsbCBRLine(models.Model):
 
 
 
-class GsbLiquidLimitLine(models.Model):
-    _name = "mech.gsb.liquid.limit.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbLiquidLimitLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.liquid.limit.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock', string="Parent Id")
     
     container_no = fields.Char("Container No.")
     blows = fields.Integer(string="No of Blows")
@@ -1651,9 +1651,9 @@ class GsbLiquidLimitLine(models.Model):
 
 
 
-class GsbPlasticLimitLine(models.Model):
-    _name = "mech.gsb.plastic.limit.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbPlasticLimitLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.plastic.limit.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock', string="Parent Id")
     
     container_no = fields.Char("Container No.")
     mass_wet_sample_container = fields.Float(string="Mass of wet sample+container, (M1) in gms")
@@ -1684,9 +1684,9 @@ class GsbPlasticLimitLine(models.Model):
                 record.moisture_percent = 0
 
 
-class GsbDryGradationLine(models.Model):
-    _name = "mech.gsb.dry.gradation.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbDryGradationLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.dry.gradation.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size" )
@@ -1706,7 +1706,7 @@ class GsbDryGradationLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(GsbDryGradationLine, self).create(vals)
+        return super(GsbDryGradationLineSoil, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1729,13 +1729,13 @@ class GsbDryGradationLine(models.Model):
 
             return new_self
 
-        return super(GsbDryGradationLine, self).write(vals)
+        return super(GsbDryGradationLineSoil, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
 
-        res = super(GsbDryGradationLine, self).unlink()
+        res = super(GsbDryGradationLineSoil, self).unlink()
 
         # if parent_id:
         #     parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
@@ -1752,9 +1752,9 @@ class GsbDryGradationLine(models.Model):
                 record.percent_retained = 0
 
 
-class GsbElongationLine(models.Model):
-    _name = "mech.gsb.elongation.flakiness.line"
-    parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+class GsbElongationLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.elongation.flakiness.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock', string="Parent Id")
 
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Wt. Retained in gms")
@@ -1772,9 +1772,9 @@ class GsbElongationLine(models.Model):
 #     flakiness_retained = fields.Float(string="Flakiness Retained in gms")
 
 
-class GsbImpactValueLine(models.Model):
-    _name = "mech.gsb.impact.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbImpactValueLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.impact.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     wt_of_cylinder = fields.Integer(string="Weight of cylindrical measure in gms")
@@ -1807,9 +1807,9 @@ class GsbImpactValueLine(models.Model):
 
 
 #added
-class GsbFieldDencityLine(models.Model):
-    _name = "mechanical.gsb.field.dencity.line"
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+class GsbFieldDencityLineSoil(models.Model):
+    _name = "mechanical.gsb.soil.rock.field.dencity.line"
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
    
     determination_no = fields.Integer(string="Determination No",readonly=True, copy=False, default=1)
     wt_of_sample = fields.Integer(string="Weight of sample gm")
@@ -1878,7 +1878,7 @@ class GsbFieldDencityLine(models.Model):
                 max_serial_no = max(existing_records.mapped('determination_no'))
                 vals['determination_no'] = max_serial_no + 1
 
-        return super(GsbFieldDencityLine, self).create(vals)
+        return super(GsbFieldDencityLineSoil, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1888,9 +1888,9 @@ class GsbFieldDencityLine(models.Model):
 
 
 
-class GsbNotes(models.Model):
-    _name = "mechanical.gsb.notes"
+class GsbSoilRockNotes(models.Model):
+    _name = "mechanical.gsb.soil.rock.notes"
 
-    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.gsb.soil.rock',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")

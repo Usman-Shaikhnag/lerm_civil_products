@@ -13,9 +13,9 @@ This module contains all the common features of GSB.
     'depends': ['base','lerm_civil'],
     'data': [
                  'security/ir.model.access.csv',
-                 'views/gsb.xml',
-                 'reports/gsb_datasheet.xml',
-                 'reports/gsb_report.xml'
+                 'views/gsb_soil.xml',
+                 'reports/gsb_datasheet_soil.xml',
+                 'reports/gsb_report_soil.xml'
     ],
 
     'assets': {
