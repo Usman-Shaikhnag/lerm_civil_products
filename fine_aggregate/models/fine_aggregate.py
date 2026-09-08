@@ -77,6 +77,7 @@ class FineAggregate(models.Model):
     # Sieve Analysis 
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    
 
     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
@@ -115,6 +116,7 @@ class FineAggregate(models.Model):
         rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
 
 
+    fineness_modulus_visible = fields.Boolean("Fineness Modulus Visible",compute="_compute_visible")
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
 
@@ -1865,6 +1867,7 @@ class FineAggregate(models.Model):
         for record in self:
       
             record.sieve_visible = False
+            record.fineness_modulus_visible = False           
             record.specific_gravity_visible = False
             record.water_absorption_visible = False
             record.loose_density_visible = False
@@ -1893,6 +1896,9 @@ class FineAggregate(models.Model):
                
                 if sample.internal_id == "318d72a1-7188-4086-b132-62b50e63f5d1":
                     record.sieve_visible = True
+
+                if sample.internal_id == "4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a":
+                    record.fineness_modulus_visible = True
 
                 if sample.internal_id == "45875ght-7188-4086-b132-62b50e63f1245gt":
                     record.specific_gravity_visible = True

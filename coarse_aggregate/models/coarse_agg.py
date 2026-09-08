@@ -161,6 +161,7 @@ class CoarseAggregateMechanical(models.Model):
      for rec in self:
         rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
 
+    fineness_modulus_visible = fields.Boolean("Fineness Modulus Visible",compute="_compute_visible")
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
 
     @api.depends('sieve_analysis_child_lines.cumulative_retained')
@@ -1974,6 +1975,7 @@ class CoarseAggregateMechanical(models.Model):
     def _compute_visible(self):
         for record in self:
             record.sieve_visible = False
+            record.fineness_modulus_visible = False
             record.loose_bulk_density_visible = False
             record.rodded_bulk_density_visible = False
             record.crushing_visible = False
@@ -2002,6 +2004,9 @@ class CoarseAggregateMechanical(models.Model):
 
                 if sample.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
                     record.sieve_visible = True
+
+                if sample.internal_id == "a4d4afac-fa8d-4346-b300-fddeebfab619":
+                    record.fineness_modulus_visible = True
 
                 if sample.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                     record.loose_bulk_density_visible = True

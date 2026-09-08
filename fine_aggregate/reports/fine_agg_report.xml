@@ -291,7 +291,7 @@
 								</t>
 
 							<!--  Fineness Modulus -->
-							<tr t-if="data.sieve_visible and (data.fineness_modulus_nabl == 'pass' and nabl or (data.fineness_modulus_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.fineness_modulus_visible and (data.fineness_modulus_nabl == 'pass' and nabl or (data.fineness_modulus_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="fineness_mod" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4c2069ec-cc69-46e8-9e4e-50a7fc7e1a0a')])"/>
 									
 									<td style="text-align: center;">

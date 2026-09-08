@@ -206,7 +206,11 @@
 									<span t-esc="eln.material.unit"/>
 									<!-- Unit -->
 									</td>
-									<!-- <td style="text-align: center;" rowspan="1"><span t-field="eln.material.specifications"></span></td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;" rowspan="1"><span t-field="eln.material.specifications"></span></td>
+									</t>
+									
 									<td style="text-align: center;" rowspan="1" >
 									<span t-esc="eln.material.method_reference"/>
 									<!-- Test Method -->
@@ -269,6 +273,12 @@
 										</span>
 									</td> -->
 
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.sieve_specification"/>
+									 </td>
+									</t>
+
 									<t t-if="r_index == 0">
 
 									<td t-att-rowspan="rowspan_counts1" style="text-align: center;vertical-align:middle;">
@@ -315,6 +325,12 @@
 											</t>
 										</span>
 									</td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.sieve_specification"/>
+									 </td>
+									</t>
 									
 								</tr>
 								<tr t-if="data.sieve_visible" >
@@ -346,6 +362,12 @@
 											</t>
 										</span>
 									</td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.sieve_specification"/>
+									 </td>
+									</t>
 									
 								</tr>
 								<tr t-if="data.sieve_visible" >
@@ -376,6 +398,12 @@
 											</t>
 										</span>
 									</td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.sieve_specification"/>
+									 </td>
+									</t>
 									
 								</tr>
 
@@ -439,6 +467,12 @@
 										</span>
 									</td> -->
 
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.liquid_limit_specification"/>
+									 </td>
+									</t>
+
 									<td  style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="liquid_limit.parameter_table" t-as="parameter">
@@ -486,6 +520,12 @@
 											</t>
 										</span>
 									</td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.plastic_limit_specification"/>
+									 </td>
+									</t>
 									<td  style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="plastic_limit.parameter_table" t-as="parameter">
@@ -534,6 +574,12 @@
 											</t>
 										</span>
 									</td> -->
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.plasticity_index_specification"/>
+									 </td>
+									</t>
 									<td  style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="plasticity_limit.parameter_table" t-as="parameter">
@@ -571,6 +617,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.shrinkage_limit_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table" t-as="parameter">
@@ -616,6 +668,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).unit.name"/>
 										</span>
 									</td >
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.heavy_mdd_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table" t-as="parameter">
@@ -662,6 +720,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.heavy_omc_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).parameter_table" t-as="parameter">
@@ -709,6 +773,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.light_mdd_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')]).parameter_table" t-as="parameter">
@@ -755,6 +825,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.light_omc_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table" t-as="parameter">
@@ -805,6 +881,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.specific_gravity_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table" t-as="parameter">
@@ -850,6 +932,11 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).unit.name"/>
 										</span>
 									</td>
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.direct_cohesion_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
@@ -897,6 +984,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.direct_angle_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table" t-as="parameter">
@@ -921,7 +1014,7 @@
 								</tr>
 
 
-							<tr t-if="data.moisture_content_visible and (data.avg_moisture_content_nabl == 'pass' and nabl or (data.avg_moisture_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<!-- <tr t-if="data.moisture_content_visible and (data.avg_moisture_content_nabl == 'pass' and nabl or (data.avg_moisture_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -930,7 +1023,6 @@
 									</td>
 									<td>
 										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_name"/>
 										</span>
 									</td>
 									<td style="text-align: center;">
@@ -942,7 +1034,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).unit.name"/>
 										</span>
 									</td>
-										<!-- <td style="text-align: center;">
+										<td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -950,7 +1042,7 @@
 												</t>
 											</t>
 										</span>
-									</td> -->
+									</td>
 									<td  style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
@@ -964,7 +1056,7 @@
 								
 								
 									
-								</tr>
+								</tr> -->
 
 
 								<tr t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
@@ -988,6 +1080,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.cbr_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
@@ -1034,6 +1132,12 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')]).unit.name"/>
 										</span>
 									</td>
+
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.cbr_specification"/>
+									 </td>
+									</t>
 										<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fb093c12-d353-47f2-8b24-98c1dda7ff56')]).parameter_table" t-as="parameter">

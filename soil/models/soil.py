@@ -57,6 +57,10 @@ class Soil(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
+    show_specification = fields.Boolean(
+    string='Show Specification')
+     
+    
     
 
     # Grain Sieve Analysis
@@ -64,6 +68,8 @@ class Soil(models.Model):
     sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
+
+    sieve_specification = fields.Char(string='Grain Sieve Analysis Specification')
 
     show_d10_cc_cu = fields.Boolean(
     string='Show D10 / D30 / D60 / Cc / Cu')
@@ -767,6 +773,8 @@ class Soil(models.Model):
                # Liquid Limit
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
+
+    liquid_limit_specification = fields.Char(string='Liquid Limit Specification')
 
     child_liness = fields.One2many('mechanical.liquid.limits.line','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
@@ -1769,6 +1777,10 @@ class Soil(models.Model):
       # Plastic Limit
     plastic_limit_name = fields.Char("Name",default="Plastic Limit")
     plastic_limit_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
+
+    plastic_limit_specification = fields.Char(string='Plastic Limit Specification')
+
+    plasticity_index_specification = fields.Char(string='Plasticity Index Specification')
    
     plastic_limit_table = fields.One2many('mechanical.plasticl.limit.line','parent_id',string="Parameter")
 
@@ -1915,6 +1927,8 @@ class Soil(models.Model):
     shrinkage_limit_name = fields.Char("Name",default="Shrinkage limit")
     shrinkage_limit_visible = fields.Boolean("Shrinkage limit Visible",compute="_compute_visible")
 
+    shrinkage_limit_specification = fields.Char(string='Shrinkage limit Specification')
+
     shrinkage_limit_table = fields.One2many('mechanical.shrinkage.limit.line','parent_id',string="Parameter")
 
     shrinkage_limit1 = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit1")
@@ -1996,6 +2010,11 @@ class Soil(models.Model):
       # Heavy Compaction-MDD
     heavy_name = fields.Char("Name",default="DETERMINATION OF MDD & OMC BY PROCTOR TEST ")
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
+
+    heavy_mdd_specification = fields.Char(string='Heavy Compaction-MDD Specification')
+
+    heavy_omc_specification = fields.Char(string='Heavy Compaction-OMC Specification')
+
     heavy_table = fields.One2many('mechanical.heavy.compaction.line','parent_id',string="Heavy Compaction")
 
     max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_density_and_omc", store=True)
@@ -2405,6 +2424,12 @@ class Soil(models.Model):
     # Light Compaction-MDD
     omc_name = fields.Char("Name",default="DETERMINATION  OMC AND MDD BY PROCTOR TEST ")
     omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
+
+    light_mdd_specification = fields.Char(string='Light Compaction-MDD Specification')
+
+    light_omc_specification = fields.Char(string='Light Compaction-OMC Specification')
+
+
     omc_table = fields.One2many('mechanical.omc.compaction.line','parent_id',string="OMC Compaction")
 
     max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_density_and_omc1", store=True)
@@ -2874,6 +2899,8 @@ class Soil(models.Model):
 
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
+
+    cbr_specification = fields.Char(string='California Bearing Ratio Specification')
    
     soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR",default=lambda self: self._default_soil_table())
 
@@ -3263,6 +3290,8 @@ class Soil(models.Model):
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
     fsi_visible = fields.Boolean("Free Swell Index Visible",compute="_compute_visible")
+
+    fsi_specification = fields.Char(string='Free Swell Index Specification')
   
     wt_sample = fields.Float(string="Weight of the soil sample")
     valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
@@ -3335,6 +3364,8 @@ class Soil(models.Model):
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    specific_gravity_specification = fields.Char(string='Specific Gravity Specification')
 
     m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
     m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
@@ -3418,6 +3449,10 @@ class Soil(models.Model):
      # Direct Shear Test
     direct_shear_name = fields.Char("Name",default="Direct Shear Test")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+
+    direct_cohesion_specification = fields.Char(string='Direct Shear (Cohesion) Specification')
+
+    direct_angle_specification = fields.Char(string='Direct Shear (Angle Of Friction) Specification')
 
     # proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
 
@@ -3559,7 +3594,7 @@ class Soil(models.Model):
     store=True)
 
     phi = fields.Float(
-    string='ccc',
+    string='Angle Of Friction',
     compute='_compute_c_phi',
     store=True)
 

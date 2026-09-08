@@ -57,6 +57,19 @@
                             }
                     </style>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="show_specification"/></td>
+                                <td  class="w-25">
+                                    <field name="show_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+
                     
 
                      <!-- Sieve Analysis -->
@@ -66,6 +79,18 @@
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="sieve_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="sieve_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
                         <tbody>
@@ -208,6 +233,18 @@
                             <field name="liquid_limit_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="liquid_limit_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="liquid_limit_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     
                  
                     <div invisible = "liquid_limit_visible == False" >
@@ -273,6 +310,31 @@
                             <field name="plastic_limit_name" readonly="1" nolabel="1"/>
                             <field name="plastic_limit_visible" invisible="1"/>
                         </h1>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="plastic_limit_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="plastic_limit_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="plasticity_index_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="plasticity_index_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
                     
 
@@ -351,6 +413,18 @@
                             <field name="shrinkage_limit_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="shrinkage_limit_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="shrinkage_limit_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     
 
                     <div invisible = "shrinkage_limit_visible == False">
@@ -403,6 +477,31 @@
                             <field name="heavy_name" readonly="1" nolabel="1"/>
                             <field name="heavy_visible" invisible="1"/>
                         </h1>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="heavy_mdd_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="heavy_mdd_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="heavy_omc_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="heavy_omc_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
                     
                    
@@ -500,6 +599,31 @@
                             <field name="omc_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="light_mdd_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="light_mdd_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="light_omc_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="light_omc_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
                     
                    
                  
@@ -595,6 +719,18 @@
                             <field name="soil_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="cbr_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="cbr_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
                             <tbody>
@@ -732,6 +868,18 @@
                             <field name="fsi_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="fsi_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="fsi_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
@@ -833,6 +981,18 @@
                         </h1>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="specific_gravity_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="specific_gravity_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
@@ -888,6 +1048,32 @@
                             <field name="direct_shear_name" readonly="1" nolabel="1"/>
                             <field name="direct_shear_visible" invisible="1"/>
                         </h1>
+                    </div>
+
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="direct_cohesion_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="direct_cohesion_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="direct_angle_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="direct_angle_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
 
 

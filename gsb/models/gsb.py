@@ -130,6 +130,9 @@ class GsbMechanical(models.Model):
 
             record.soudness_magnesium_visible = False
             record.soudness_visible = False
+            record.heavy_visible = False
+            record.omc_visible = False
+            record.soil_visible = False
 
 
             for sample in record.sample_parameters:
