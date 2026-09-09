@@ -14,6 +14,7 @@ class CoarseAggregateMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
     @api.depends("eln_ref")
@@ -41,6 +42,35 @@ class CoarseAggregateMechanical(models.Model):
         return field_values
 
 
+    def _default_notes(self):
+        return [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
+
+    notes_id = fields.One2many(
+        'mechanical.coarse.aggregate.notes', 
+        'parent_id', 
+        string="Notes", 
+        ondelete='cascade', 
+        default=_default_notes
+    )
+
+
 
     # Crushing Value
     crushing_value_name = fields.Char("Name",default="Crushing Value")
@@ -53,7 +83,8 @@ class CoarseAggregateMechanical(models.Model):
     average_crushing_value_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
+            ('--', '--'),
+            ], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
 
     @api.depends('average_crushing_value','eln_ref','grade')
     def _compute_average_crushing_value_conformity(self):
@@ -64,10 +95,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.average_crushing_value_conformity = '--'
                         break
 
@@ -137,7 +167,8 @@ class CoarseAggregateMechanical(models.Model):
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
 
     @api.depends('abrasion_value_percentage','eln_ref','grade')
     def _compute_abrasion_value_percentager_conformity(self):
@@ -148,10 +179,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.abrasion_value_percentage_conformity = '--'
                         break
 
@@ -223,10 +253,70 @@ class CoarseAggregateMechanical(models.Model):
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
 
+    water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Water absorption Conformity", compute="_compute_water_absorption_conformity", store=True)
+
+    @api.depends('water_absorption','eln_ref','grade')
+    def _compute_water_absorption_conformity(self):
+        
+        for record in self:
+            record.water_absorption_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorption_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.water_absorption_conformity = 'pass'
+                        break
+                    else:
+                        record.water_absorption_conformity = 'fail'
+
+    water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Water absorption NABL", compute="_compute_water_absorption_nabl", store=True)
+
+    @api.depends('water_absorption','eln_ref','grade')
+    def _compute_water_absorption_nabl(self):
+        
+        for record in self:
+            record.water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.water_absorption_nabl = 'fail'
+
+
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
     @api.depends('specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
@@ -237,13 +327,12 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.specific_gravity_conformity = '--'
                         break
-                    
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -314,7 +403,8 @@ class CoarseAggregateMechanical(models.Model):
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
     @api.depends('average_impact_value','eln_ref','grade')
     def _compute_average_impact_value_conformity(self):
@@ -325,13 +415,12 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
-                        record.impact_value_conformity = '--'
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_impact_value_conformity = '--'
                         break
-                        
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -416,7 +505,8 @@ class CoarseAggregateMechanical(models.Model):
     load_10percent_fine_values_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_load_10percent_fine_values_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_load_10percent_fine_values_conformity", store=True)
 
 
 
@@ -429,12 +519,12 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.load_10percent_fine_values_conformity = '--'
                         break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -544,7 +634,8 @@ class CoarseAggregateMechanical(models.Model):
     soundness_na2so4_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
 
     @api.depends('soundness_na2so4','eln_ref','grade')
     def _compute_soundness_na2so4_conformity(self):
@@ -555,10 +646,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.soundness_na2so4_conformity = '--'
                         break
 
@@ -678,7 +768,8 @@ class CoarseAggregateMechanical(models.Model):
     soundness_mgso4_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
 
 
     @api.depends('soundness_mgso4','eln_ref','grade')
@@ -690,10 +781,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.soundness_mgso4_conformity = '--'
                         break
 
@@ -875,7 +965,8 @@ class CoarseAggregateMechanical(models.Model):
     aggregate_combine_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
 
     @api.depends('aggregate_combine','eln_ref','grade')
     def _compute_aggregate_combine_conformity(self):
@@ -886,10 +977,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.aggregate_combine_conformity = '--'
                         break
 
@@ -1007,7 +1097,8 @@ class CoarseAggregateMechanical(models.Model):
     material_finer75_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
 
     @api.depends('material_finer75','eln_ref','grade')
     def _compute_material_finer75_conformity(self):
@@ -1018,10 +1109,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.material_finer75_conformity = '--'
                         break
 
@@ -1081,7 +1171,8 @@ class CoarseAggregateMechanical(models.Model):
     clay_lumps_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
 
     @api.depends('clay_lumps_percent','eln_ref','grade')
     def _compute_clay_lumps_percent_conformity(self):
@@ -1092,10 +1183,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.clay_lumps_percent_conformity = '--'
                         break
 
@@ -1157,6 +1247,7 @@ class CoarseAggregateMechanical(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
 
+
     @api.depends('light_weight_percent','eln_ref','grade')
     def _compute_light_weight_percent_conformity(self):
         
@@ -1166,10 +1257,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e7cc6b68-2550-4e1e-a28e-8526295e733f')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.light_weight_percent_conformity = '--'
                         break
 
@@ -1252,7 +1342,8 @@ class CoarseAggregateMechanical(models.Model):
     loose_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
 
     @api.depends('loose_bulk_density','eln_ref','grade')
     def _compute_loose_bulk_density_conformity(self):
@@ -1263,10 +1354,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.loose_bulk_density_conformity = '--'
                         break
 
@@ -1321,7 +1411,8 @@ class CoarseAggregateMechanical(models.Model):
     rodded_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_rodded_bulk_density_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_rodded_bulk_density_conformity", store=True)
 
     @api.depends('rodded_bulk_density','eln_ref','grade')
     def _compute_rodded_bulk_density_conformity(self):
@@ -1332,10 +1423,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.rodded_bulk_density_conformity = '--'
                         break
 
@@ -1550,7 +1640,8 @@ class CoarseAggregateMechanical(models.Model):
     angularity_number_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_angularity_number_conformity", store=True)
+            ('--', '--')
+            ], string="Conformity", compute="_compute_angularity_number_conformity", store=True)
 
     @api.depends('angularity_number','eln_ref','grade')
     def _compute_angularity_number_conformity(self):
@@ -1561,11 +1652,9 @@ class CoarseAggregateMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5c163fc2-c88c-4233-921e-1eae56c3ba23')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (
-                        material.permissable_limit == '--'
-                        or not material.permissable_limit
-                    ):
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
                         record.angularity_number_conformity = '--'
                         break
 
@@ -1646,10 +1735,7 @@ class CoarseAggregateMechanical(models.Model):
                     record.soundness_na2so4_visible = True
                 if sample.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
                     record.soundness_mgso4_visible = True
-                # if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
-                #     record.elongation_visible = True
-                # if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
-                #     record.flakiness_visible = True
+                
 
                 if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     record.elongation_visible = True
@@ -1676,11 +1762,18 @@ class CoarseAggregateMechanical(models.Model):
                     record.angularity_visible = True
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+         # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
             # crushing 
             if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
                 result.result_char = round(self.average_crushing_value,2)
+                result.calculated = True
                 if self.average_crushing_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1689,6 +1782,7 @@ class CoarseAggregateMechanical(models.Model):
             # abrasion 
             if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
                 result.result_char = round(self.abrasion_value_percentage,2)
+                result.calculated = True
                 if self.abrasion_value_percentage_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1697,18 +1791,17 @@ class CoarseAggregateMechanical(models.Model):
             # specific gravity 
             if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
                 result.result_char = round(self.specific_gravity,2)
+                result.calculated = True
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            # water absorbtion
-            if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
-                result.result_char = round(self.water_absorption,2)
-                continue 
+          
             # impact value 
             if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
                 result.result_char = round(self.average_impact_value,2)
+                result.calculated = True
                 if self.impact_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1717,6 +1810,7 @@ class CoarseAggregateMechanical(models.Model):
             # fine 10
             if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
                 result.result_char = round(self.load_10percent_fine_values,2)
+                result.calculated = True
                 if self.load_10percent_fine_values_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1725,6 +1819,7 @@ class CoarseAggregateMechanical(models.Model):
             # soundness na2so4
             if result.parameter.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
                 result.result_char = round(self.soundness_na2so4,2)
+                result.calculated = True
                 if self.soundness_na2so4_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1733,7 +1828,107 @@ class CoarseAggregateMechanical(models.Model):
             # soundness mgso4
             if result.parameter.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
                 result.result_char = round(self.soundness_mgso4,2)
+                result.calculated = True
                 if self.soundness_mgso4_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
+                result.result_char = round(self.aggregate_combine,2)
+                result.calculated = True
+                if self.aggregate_combine_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
+                # result.result_char = round(self.aggregate_combine,2)
+                result.calculated = True
+                # if self.aggregate_combine_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
+                result.result_char = round(self.material_finer75,2)
+                result.calculated = True
+                if self.material_finer75_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
+                result.result_char = round(self.clay_lumps_percent,2)
+                result.calculated = True
+                if self.clay_lumps_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
+                result.result_char = round(self.light_weight_percent,2)
+                result.calculated = True
+                if self.light_weight_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
+                result.result_char = round(self.loose_bulk_density,2)
+                result.calculated = True
+                if self.loose_bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
+                result.result_char = round(self.rodded_bulk_density,2)
+                result.calculated = True
+                if self.rodded_bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
+                # result.result_char = round(self.rodded_bulk_density,2)
+                result.calculated = True
+                # if self.rodded_bulk_density_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6976f6b5-5756-4ef7-a680-50b0c0dbccc8':
+                # result.result_char = round(self.rodded_bulk_density,2)
+                result.calculated = True
+                # if self.rodded_bulk_density_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5c163fc2-c88c-4233-921e-1eae56c3ba23':
+                result.result_char = round(self.angularity_number,2)
+                result.calculated = True
+                if self.angularity_number_conformity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
+                result.result_char = round(self.water_absorption,2)
+                result.calculated = True
+                if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2269,6 +2464,7 @@ class CrushingValueLine(models.Model):
     wt_of_aggregate_passing = fields.Float(string="Weight of aggregate fines passing 2.36 mm sieve after  the application of Load gms")
     wt_of_aggregate_retained = fields.Float(string="Weight of aggregate retained on 2.36 mm sieve after the test in gms", compute="_compute_wt_of_aggregate_retained")
     crushing_value = fields.Float(string="Aggregate Crushing value", compute="_compute_crushing_value")
+    
 
 
     @api.depends('total_wt_of_dried', 'wt_of_cylinder')
@@ -2310,100 +2506,12 @@ class CrushingValueLine(models.Model):
             record.sample_no = index + 1
 
 
+class CoarseAggregateNotes(models.Model):
+    _name = "mechanical.coarse.aggregate.notes"
 
-# class SpecificGravityAndWaterAbsorptionLine(models.Model):
-#     _name = "mechanical.specific.gravity.and.water.absorption.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-#     wt_surface_dry = fields.Integer(string="Weight of saturated surface dry (SSD) sample in air in gms")
-#     wt_sample_inwater = fields.Integer(string="Weight of saturated sample in water in gms")
-#     oven_dried_wt = fields.Integer(string="Oven dried weight of sample in gms")
-#     specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
-#     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
-#     @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt')
-#     def _compute_specific_gravity(self):
-#         for line in self:
-#             if line.wt_surface_dry - line.wt_sample_inwater != 0:
-#                 line.specific_gravity = line.oven_dried_wt / (line.wt_surface_dry - line.wt_sample_inwater)
-#             else:
-#                 line.specific_gravity = 0.0
-
-
-
-#     @api.depends('wt_surface_dry', 'oven_dried_wt')
-#     def _compute_water_absorption(self):
-#         for line in self:
-#             if line.oven_dried_wt != 0:
-#                 line.water_absorption = ((line.wt_surface_dry - line.oven_dried_wt) / line.oven_dried_wt) * 100
-#             else:
-#                 line.water_absorption = 0.0
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(SpecificGravityAndWaterAbsorptionLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
-
-
-
-
-
-# class AbrasionValueCoarseAggregateLine(models.Model):
-#     _name = "mechanical.abrasion.value.coarse.aggregate.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-#     total_weight_sample = fields.Integer(string="Total weight of Sample in gms")
-#     weight_passing_sample = fields.Integer(string="Weight of Passing sample in 1.70 mm IS sieve in gms")
-#     weight_retain_sample = fields.Integer(string="Weight of Retain sample in 1.70 mm IS sieve in gms",compute="_compute_weight_retain_sample")
-#     abrasion_value_percentage = fields.Float(string="Abrasion Value (in %)",compute="_compute_sample_weight")
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_weight_retain_sample(self):
-#         for line in self:
-#             line.weight_retain_sample = line.total_weight_sample - line.weight_passing_sample
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_sample_weight(self):
-#         for line in self:
-#             if line.total_weight_sample != 0:
-#                 line.abrasion_value_percentage = (line.weight_passing_sample / line.total_weight_sample) * 100
-#             else:
-#                 line.abrasion_value_percentage = 0.0
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(AbrasionValueCoarseAggregateLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
 

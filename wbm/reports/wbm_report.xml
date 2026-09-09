@@ -1346,7 +1346,7 @@
 										</span>
 									</div>
 									<div>
-											CONDITION SOAKED 1 Div. = 6.96kg
+											CONDITION SOAKED 1 Div. = <span t-esc="data.division_factor"/>
 									</div>
 								</div>
 							</tr>
@@ -1433,7 +1433,7 @@
 								CBR at 5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load5"/>
+								From Graph PT = <span t-esc="round(load5, 2)"/>
 							</div>
 							<div>
 								PS = 2055
