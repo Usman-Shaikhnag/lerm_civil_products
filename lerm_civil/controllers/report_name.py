@@ -798,7 +798,7 @@ class ReportDownloadControllerCoarse(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'coarse_aggregate.lerm_coarse_aggregate_mech_report'
+            report_name = 'coarse_aggregate1.lerm_coarse_aggregate_mech_report1'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': True}
             )
@@ -824,7 +824,7 @@ class ReportDownloadControllerCoarse(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'coarse_aggregate.lerm_coarse_aggregate_mech_report'
+            report_name = 'coarse_aggregate1.lerm_coarse_aggregate_mech_report1'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': False}
             )

@@ -6,8 +6,8 @@ from io import BytesIO
 from lxml import etree
 
 
-class CoarseAggregateReport(models.AbstractModel):
-    _name = 'report.coarse_aggregate.lerm_coarse_aggregate_mech_report'
+class CoarseAggregateReport1(models.AbstractModel):
+    _name = 'report.coarse_aggregate1.lerm_coarse_aggregate_mech_report1'
     _description = 'Coarse Aggregate Report'
     
     @api.model
@@ -91,8 +91,8 @@ class CoarseAggregateReport(models.AbstractModel):
         }
 
 
-class CoarseAggregateDataSheet(models.AbstractModel):
-    _name = 'report.coarse_aggregate.coarse_aggregate_datasheet'
+class CoarseAggregateDataSheet1(models.AbstractModel):
+    _name = 'report.coarse_aggregate1.coarse_aggregate_datasheet1'
     _description = 'Coarse Aggregate DataSheet'
     
     @api.model
