@@ -58,12 +58,11 @@
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
 									</td>
-                                    <td colspan="1" >Test Report No :</td>
-								  <td colspan="1" style="font-weight:bold;">
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.kes_no"/>
-
-									</td>
+                                    <td colspan="1">SRF ID :</td>
+                                    <td colspan="1" style="font-weight:bold;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
+                                </td>
 							</tr>
 
                             <tr>
@@ -110,10 +109,10 @@
 							<tr>
 								<td colspan="1">#Source of Sample	 :-</td>
 								<td colspan="1">
-								<t t-if="o.material.source_sample">
-											<span t-field="o.material.source_sample"/>
-										</t>
-									<t t-else="">-</t>
+								<t t-if="o.sample_id.source_of_sample">
+                                        <span t-field="o.sample_id.source_of_sample"/>
+                                    </t>
+                                    <t t-else="">-</t>
 								</td>
 
 								<td colspan="1">Date of Performance of Test :-</td>
@@ -128,10 +127,7 @@
 							<tr>
 								<td colspan="1">Condition of Sample  :-</td>
 								<td colspan="1">
-									<!-- <t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">-</t> -->
+									<span t-field="o.sample_id.sample_condition"/>
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>
@@ -153,37 +149,28 @@
 									<t t-else="">-</t>
 								</td>
 
-									<td colspan="1">Test Method Followed :-</td>
+									<!-- <td colspan="1">Test Method Followed :-</td>
 										<td colspan="1" >
 											<t t-if="o.material.test_method_adopted">
 											<span t-field="o.material.test_method_adopted"/>
 										</t>
 									    <t t-else="">-</t>
-										</td>
+										</td> -->
+
+								<td colspan="1">Reference No. :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.srf_id.client_refrence">
+                                        <span t-field="o.srf_id.client_refrence"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
 								
 							</tr>
 
-                            <tr>
-									<td colspan="1">Temperature :-</td>
-										<td colspan="1" >
-											<!-- <t t-if="brick.brick_temperature is not None">
-											<span t-field="brick.brick_temperature"/>   °C
-										</t>
-									<t t-else="">-</t> -->
-										</td>
-
-									<td colspan="1">Humidity :-</td>
-										<td colspan="1" >
-											<!-- <t t-if="brick.brick_humidity is not None">
-											<span t-field="brick.brick_humidity"/>   °C
-										</t>
-									<t t-else="">-</t> -->
-										</td>
-								
-							</tr>
+                            
 							
 
-                            <tr>
+                            <!-- <tr>
 								<td colspan="1">Reference No.  :-</td>
 								<td colspan="3">
 									<t t-if="o.srf_id.client_refrence">
@@ -192,7 +179,7 @@
 									<t t-else="">-</t>
 								</td>
 								
-							</tr>
+							</tr> -->
 
 							</table>
 					</div>
@@ -867,7 +854,35 @@
 
 
 							<!--  -->
-							<tr t-if="data.plastic_visible and  fromEln">
+							<!-- <tr t-if="data.plastic_visible and  fromEln"> -->
+							<tr t-if="
+    data.plastic_visible
+    and (
+        (
+            data.remarks_plastic == 'non-plastic'
+            and nabl
+        )
+        or
+        (
+            data.remarks_plastic != 'non-plastic'
+            and (
+                (
+                    data.average_plastic_moisture_nabl == 'pass'
+                    and nabl
+                )
+                or
+                (
+                    (
+                        data.average_plastic_moisture_nabl == 'fail'
+                        or eln.sample_id.scope != 'nabl'
+                    )
+                    and not nabl
+                    and not fromEln
+                )
+            )
+        )
+    )
+">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />

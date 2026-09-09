@@ -62,12 +62,17 @@
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
 									</td>
-                                    <td colspan="1" >Test Report No :</td>
+                                    <!-- <td colspan="1" >Test Report No :</td>
 								  <td colspan="1" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.kes_no"/>
+									<span t-field="o.sample_id.kes_no"/> 
+									</td>-->
 
-									</td>
+									<td colspan="1">SRF ID :</td>
+                                    <td colspan="1" style="font-weight:bold;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
+                                </td>
 							</tr>
 
                             <tr>
@@ -202,7 +207,7 @@
 									<span t-esc="eln.material.result_remark"/>
 									<!-- Test Result -->
 									</td>
-									<td style="text-align: center;" rowspan="1" >
+									<td style="text-align: center;" rowspan="1" width="20%">
 									<span t-esc="eln.material.unit"/>
 									<!-- Unit -->
 									</td>
@@ -378,7 +383,7 @@
 
 									<td style="text-align: center;">
 									 <span>
-											<span t-field="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.silt" t-options='{"widget": "float", "precision": 2}'/>
 										</span>	
 								   </td>
 

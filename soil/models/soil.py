@@ -779,136 +779,234 @@ class Soil(models.Model):
     child_liness = fields.One2many('mechanical.liquid.limits.line','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
-   
-  
 
-    # @api.depends('child_liness.penetration', 'child_liness.moisture_content')
-    # def _compute_liquid_limit(self):
-    #  for record in self:
-
-    #     lines = record.child_liness.filtered(
-    #         lambda l: l.penetration and l.moisture_content
-    #     )
-
-    #     if len(lines) < 2:
-    #         record.liquid_limit = 0.0
-    #         continue
-
-    #     # X = Penetration
-    #     x = [float(l.penetration) for l in lines]
-
-    #     # Y = Moisture Content
-    #     y = [float(l.moisture_content) for l in lines]
-
-    #     n = len(x)
-
-    #     sum_x = sum(x)
-    #     sum_y = sum(y)
-
-    #     sum_xy = sum(
-    #         xi * yi for xi, yi in zip(x, y)
-    #     )
-
-    #     sum_x2 = sum(
-    #         xi * xi for xi in x
-    #     )
-
-    #     denominator = (
-    #         n * sum_x2
-    #         - (sum_x ** 2)
-    #     )
-
-    #     if denominator == 0:
-    #         record.liquid_limit = 0.0
-    #         continue
-
-    #     # Linear regression:
-    #     # Y = aX + b
-
-    #     a = (
-    #         n * sum_xy
-    #         - sum_x * sum_y
-    #     ) / denominator
-
-    #     b = (
-    #         sum_y - a * sum_x
-    #     ) / n
-
-    #     # Liquid Limit = Moisture Content
-    #     # at 20 mm penetration
-
-    #     ll = a * 20.0 + b
-
-    #     # record.liquid_limit = round(ll, 2)
-    #     record.liquid_limit = int(ll + 0.5)
+    liquid_limit_method = fields.Selection([
+    ('casagrande', 'Casagrande'),
+    ('cone', 'Cone Penetrometer'),], string='Liquid Limit Method')
 
 
     @api.depends(
+    'liquid_limit_method',
     'child_liness.penetration',
-    'child_liness.moisture_content'
+    'child_liness.moisture_content',
 )
     def _compute_liquid_limit(self):
 
      for record in self:
 
-        lines = record.child_liness.filtered(
-            lambda l: l.penetration
-            and l.moisture_content is not None
-        )
+        lines = record.child_liness.filtered(lambda l: l.penetration is not None and l.moisture_content is not None and float(l.penetration) > 0)
 
         if len(lines) < 2:
-            record.liquid_limit = 0
+            record.liquid_limit = 0.0
             continue
 
-        x = [
-            float(line.penetration)
-            for line in lines
-        ]
 
-        y = [
-            float(line.moisture_content)
-            for line in lines
-        ]
+        if record.liquid_limit_method == 'casagrande':
 
-        n = len(x)
+            x = [math.log10(float(l.penetration)) for l in lines]
+            y = [float(l.moisture_content) for l in lines]
 
-        sum_x = sum(x)
-        sum_y = sum(y)
+            n = len(lines)
 
-        sum_xy = sum(
-            xi * yi
-            for xi, yi in zip(x, y)
-        )
+            sum_x = sum(x)
+            sum_y = sum(y)
+            sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+            sum_x2 = sum(xi ** 2 for xi in x)
 
-        sum_x2 = sum(
-            xi * xi
-            for xi in x
-        )
+            denominator = n * sum_x2 - sum_x ** 2
 
-        denominator = (
-            n * sum_x2
-            - sum_x ** 2
-        )
+            if abs(denominator) < 1e-12:
+              record.liquid_limit = 0.0
+              continue
 
-        if denominator == 0:
+            slope = (n * sum_xy - sum_x * sum_y) / denominator
+
+            intercept = (sum_y - slope * sum_x ) / n
+
+            # Water content at 25 blows
+            liquid_limit = (slope * math.log10(25.0)) + intercept
+
+            record.liquid_limit = round(liquid_limit, 2)
+
+        # lines = record.child_liness.filtered(
+        #     lambda l: l.moisture_content is not None
+        # )
+
+        # if len(lines) < 2:
+        #     record.liquid_limit = 0
+        #     continue
+
+        # # ---------------------------------
+        # # CASAGRANDE METHOD
+        # # LL = water content at 25 blows
+        # # ---------------------------------
+        # if record.liquid_limit_method == 'casagrande':
+
+        #     lines = record.child_liness.filtered(
+        #     lambda l: l.penetration and l.moisture_content
+        # )
+
+        #     if len(lines) < 2:
+        #         record.liquid_limit = 0.0
+        #         continue
+
+        #     x = [math.log10(float(l.penetration)) for l in lines]
+        #     y = [float(l.moisture_content) for l in lines]
+
+        #     n = len(x)
+
+        #     sum_x = sum(x)
+        #     sum_y = sum(y)
+        #     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+        #     sum_x2 = sum(xi * xi for xi in x)
+
+        #     denominator = n * sum_x2 - (sum_x ** 2)
+
+        #     if denominator == 0:
+        #         record.liquid_limit = 0.0
+        #         continue
+
+        #     a = (n * sum_xy - sum_x * sum_y) / denominator
+        #     b = (sum_y - a * sum_x) / n
+
+        #     ll = a * math.log10(25.0) + b
+
+        #     record.liquid_limit = round(ll, 2)
+
+        # ---------------------------------
+        # CONE PENETROMETER METHOD
+        # LL = water content at 20 mm
+        # ---------------------------------
+        elif record.liquid_limit_method == 'cone':
+
+            lines = lines.filtered(
+                lambda l: l.penetration
+            )
+
+            if len(lines) < 2:
+                record.liquid_limit = 0
+                continue
+
+            x = [
+                float(line.penetration)
+                for line in lines
+            ]
+
+            y = [
+                float(line.moisture_content)
+                for line in lines
+            ]
+
+            n = len(x)
+
+            sum_x = sum(x)
+            sum_y = sum(y)
+
+            sum_xy = sum(
+                xi * yi
+                for xi, yi in zip(x, y)
+            )
+
+            sum_x2 = sum(
+                xi * xi
+                for xi in x
+            )
+
+            denominator = (
+                n * sum_x2
+                - sum_x ** 2
+            )
+
+            if denominator == 0:
+                record.liquid_limit = 0
+                continue
+
+            a = (
+                n * sum_xy
+                - sum_x * sum_y
+            ) / denominator
+
+            b = (
+                sum_y - a * sum_x
+            ) / n
+
+            # Liquid Limit at 20 mm penetration
+            ll = a * 20.0 + b
+
+            record.liquid_limit = round(ll, 2)
+
+        else:
             record.liquid_limit = 0
-            continue
 
-        a = (
-            n * sum_xy
-            - sum_x * sum_y
-        ) / denominator
+   
 
-        b = (
-            sum_y
-            - a * sum_x
-        ) / n
 
-        # Liquid Limit at 20 mm
-        ll = a * 20.0 + b
+#     @api.depends(
+#     'child_liness.penetration',
+#     'child_liness.moisture_content'
+# )
+#     def _compute_liquid_limit(self):
 
-        # Whole number
-        record.liquid_limit = round(ll,2)
+#      for record in self:
+
+#         lines = record.child_liness.filtered(
+#             lambda l: l.penetration
+#             and l.moisture_content is not None
+#         )
+
+#         if len(lines) < 2:
+#             record.liquid_limit = 0
+#             continue
+
+#         x = [
+#             float(line.penetration)
+#             for line in lines
+#         ]
+
+#         y = [
+#             float(line.moisture_content)
+#             for line in lines
+#         ]
+
+#         n = len(x)
+
+#         sum_x = sum(x)
+#         sum_y = sum(y)
+
+#         sum_xy = sum(
+#             xi * yi
+#             for xi, yi in zip(x, y)
+#         )
+
+#         sum_x2 = sum(
+#             xi * xi
+#             for xi in x
+#         )
+
+#         denominator = (
+#             n * sum_x2
+#             - sum_x ** 2
+#         )
+
+#         if denominator == 0:
+#             record.liquid_limit = 0
+#             continue
+
+#         a = (
+#             n * sum_xy
+#             - sum_x * sum_y
+#         ) / denominator
+
+#         b = (
+#             sum_y
+#             - a * sum_x
+#         ) / n
+
+#         # Liquid Limit at 20 mm
+#         ll = a * 20.0 + b
+
+#         # Whole number
+#         record.liquid_limit = round(ll,2)
 
     
 
@@ -972,455 +1070,442 @@ class Soil(models.Model):
     show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
 
 
-
     def generate_line_chart_liquid(self):
-
-   
 
       self.ensure_one()
 
-    # =========================================================
-    # GET DYNAMIC DATA FROM CHILD LINES
-    # =========================================================
       x_value = []
       y_value = []
 
+    # =========================================================
+    # GET METHOD
+    # =========================================================
+      method = self.liquid_limit_method
+ 
+    # =========================================================
+    # GET DATA
+    # =========================================================
       for line in self.child_liness:
 
-        if (
-            line.penetration is not None
-            and line.moisture_content is not None
-        ):
-            try:
-                x = float(line.penetration)
-                y = float(line.moisture_content)
+          try:
 
-                x_value.append(x)
-                y_value.append(y)
+              if line.moisture_content is None:
+                  continue
 
-            except (ValueError, TypeError):
-                continue
+              moisture = float(line.moisture_content)
+
+            # -------------------------------------------------
+            # CASAGRANDE
+            # X = Number of blows
+            # -------------------------------------------------
+              if method == 'casagrande':
+
+                  if line.penetration is None:
+                      continue
+
+                  x = float(line.penetration)
+
+                # log10() cannot accept 0 or negative values
+                  if x <= 0:
+                      continue
+
+            # -------------------------------------------------
+            # CONE
+            # X = Penetration (mm)
+            # -------------------------------------------------
+              else:
+
+                  if line.penetration is None:
+                    continue
+
+                  x = float(line.penetration)
+
+                  if x <= 0:
+                    continue
+
+              x_value.append(x)
+              y_value.append(moisture)
+
+          except (ValueError, TypeError):
+              continue
 
     # =========================================================
-    # MINIMUM 2 POINTS REQUIRED
+    # MINIMUM 2 POINTS
     # =========================================================
       if len(x_value) < 2:
-        return False
+          return False
 
     # =========================================================
-    # SORT DATA BY PENETRATION
+    # SORT DATA
     # =========================================================
       data = sorted(
         zip(x_value, y_value),
-        key=lambda item: item[0]
+        key=lambda x: x[0]
     )
 
-      x_value = [item[0] for item in data]
-      y_value = [item[1] for item in data]
+      x_value = [d[0] for d in data]
+      y_value = [d[1] for d in data]
 
     # =========================================================
-    # LINEAR REGRESSION
-    #
-    # y = a*x + b
+    # REGRESSION
     # =========================================================
+
       n = len(x_value)
 
-      sum_x = sum(x_value)
-      sum_y = sum(y_value)
+      if method == 'casagrande':
 
-      sum_xy = sum(
-        x * y
-        for x, y in zip(x_value, y_value)
-    )
+        # =====================================================
+        # CASAGRANDE
+        # w = a * log10(N) + b
+        # =====================================================
 
-      sum_x2 = sum(
-        x * x
-        for x in x_value
-    )
+          x_log = [
+            math.log10(x)
+            for x in x_value
+        ]
 
-      denominator = (
-        n * sum_x2
-        - (sum_x ** 2)
-    )
+          sum_x = sum(x_log)
+          sum_y = sum(y_value)
 
-      if denominator == 0:
-          return False
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_log, y_value)
+        )
 
-    # Slope
-      a = (
-        n * sum_xy
-        - sum_x * sum_y
-    ) / denominator
+          sum_x2 = sum(
+            x * x
+            for x in x_log
+        )
 
-    # Intercept
-      b = (
-        sum_y
-        - a * sum_x
-    ) / n
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 25 blows
+          ll_x = 25.0
+
+          ll_value = (
+            a * math.log10(ll_x)
+            + b
+        )
+
+        # Smooth logarithmic regression curve
+          x_fit = np.logspace(
+            math.log10(min(x_value)),
+            math.log10(max(x_value)),
+            500
+        )
+
+          y_fit = [
+            a * math.log10(x) + b
+            for x in x_fit
+        ]
+
+          x_label = 'Number of Blows (Log Scale)'
+          graph_title = 'LIQUID LIMIT - CASAGRANDE METHOD'
+
+      else:
+
+        # =====================================================
+        # CONE METHOD
+        # w = a * penetration + b
+        # =====================================================
+
+          sum_x = sum(x_value)
+          sum_y = sum(y_value)
+
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_value, y_value)
+        )
+
+          sum_x2 = sum(
+            x * x
+            for x in x_value
+        )
+
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 20 mm penetration
+          ll_x = 20.0
+
+          ll_value = (
+            a * ll_x
+            + b
+        )
+
+        # Smooth linear regression curve
+          x_fit = np.linspace(
+            min(x_value),
+            max(x_value),
+            500
+        )
+
+          y_fit = (
+            a * x_fit
+            + b
+        )
+
+          x_label = 'Penetration (mm)'
+          graph_title = 'LIQUID LIMIT - CONE METHOD'
 
     # =========================================================
-    # LIQUID LIMIT AT 20 mm
-    #
-    # NO ROUNDING
+    # CREATE GRAPH
     # =========================================================
-      ll_penetration = 20.0
-
-      ll_value = (
-        a * ll_penetration + b
-    )
-
-    # =========================================================
-    # REGRESSION LINE
-    #
-    # TRUE REGRESSION LINE
-    #
-    # DO NOT modify/round ll_value.
-    # =========================================================
-      x_fit = np.linspace(
-        min(x_value),
-        max(x_value),
-        500
-    )
-
-      y_fit = (
-        a * x_fit + b
-    )
-
-    # =========================================================
-    # DYNAMIC AXIS RANGE
-    #
-    # Include:
-    #   - all X data
-    #   - 20 mm
-    #
-    # Include:
-    #   - all Y data
-    #   - exact LL value
-    # =========================================================
-
-      all_x_for_axis = (
-        x_value + [ll_penetration]
-    )
  
-      all_y_for_axis = (
-        y_value + [ll_value]
-    )
-
-      data_x_min = min(
-        all_x_for_axis
-    )
-
-      data_x_max = max(
-        all_x_for_axis
-    )
-
-      data_y_min = min(
-        all_y_for_axis
-    )
-
-      data_y_max = max(
-        all_y_for_axis
-    )
-
-    # =========================================================
-    # X AXIS PADDING
-    # =========================================================
-      x_range = (
-        data_x_max - data_x_min
-    )
-
-      if x_range == 0:
-        x_range = 2.0
-
-      x_padding = x_range * 0.12
-
-      x_min = (
-        data_x_min - x_padding
-    )
-
-      x_max = (
-        data_x_max + x_padding
-    )
-
-    # =========================================================
-    # Y AXIS PADDING
-    # =========================================================
-      y_range = (
-        data_y_max - data_y_min
-    )
-
-      if y_range == 0:
-        y_range = 2.0
-
-      y_padding = y_range * 0.12
-
-      y_min = (
-        data_y_min - y_padding
-    )
-
-      y_max = (
-        data_y_max + y_padding
-    )
-
-    # =========================================================
-    # CREATE FIGURE
-    # =========================================================
       fig, ax = plt.subplots(
-        figsize=(10, 5)
-    )
-
-    # =========================================================
-    # LINEAR X AXIS
-    # =========================================================
-      ax.set_xscale(
-        'linear'
-    )
-
-    # =========================================================
-    # RED TRUE REGRESSION LINE
-    # =========================================================
-      ax.plot(
-        x_fit,
-        y_fit,
-        color='#c64b47',
-        linewidth=2.5,
-        zorder=2
-    )
-
-    # =========================================================
-    # RED TEST POINTS
-    # =========================================================
-      ax.scatter(
-        x_value,
-        y_value,
-        color='#c64b47',
-        edgecolors='#c64b47',
-        marker='s',
-        s=70,
-        zorder=5
-    )
-
-    # =========================================================
-    # BLACK VERTICAL LINE AT 20 mm
-    #
-    # IMPORTANT:
-    #
-    # The TOP of this line is the EXACT regression value:
-    #
-    # ll_value = a * 20 + b
-    #
-    # Therefore it intersects the red line exactly.
-    # =========================================================
-      ax.plot(
-        [
-            ll_penetration,
-            ll_penetration
-        ],
-        [
-            y_min,
-            ll_value
-        ],
-        color='black',
-        linewidth=2,
-        zorder=3
-    )
-
-    # =========================================================
-    # DOWN ARROW AT 20 mm
-    # =========================================================
-      arrow_height = (
-        y_range * 0.15
-    )
-
-      arrow_top = min(
-        ll_value + arrow_height,
-        y_max
-    )
-
-      ax.annotate(
-        '',
-        xy=(
-            ll_penetration,
-            y_min
-        ),
-        xytext=(
-            ll_penetration,
-            arrow_top
-        ),
-        arrowprops=dict(
-            arrowstyle='->',
-            color='black',
-            linewidth=2
-        ),
-        zorder=4
-    )
-
-    # =========================================================
-    # BLACK HORIZONTAL LINE AT EXACT LIQUID LIMIT
-    #
-    # NO ROUNDING
-    # =========================================================
-      horizontal_start = x_min
-
-      horizontal_end = max(
-        x_value
-    )
-
-      ax.plot(
-        [
-            horizontal_start,
-            horizontal_end
-        ],
-        [
-            ll_value,
-            ll_value
-        ],
-        color='black',
-        linewidth=2,
-        zorder=3
-    )
-
-    # =========================================================
-    # LEFT ARROW ON LIQUID LIMIT LINE
-    # =========================================================
-      arrow_width = (
-        horizontal_end - horizontal_start
-    ) * 0.08
-
-      ax.annotate(
-        '',
-        xy=(
-            horizontal_start,
-            ll_value
-        ),
-        xytext=(
-            horizontal_start + arrow_width,
-            ll_value
-        ),
-        arrowprops=dict(
-            arrowstyle='->',
-            color='black',
-            linewidth=2
-        ),
-        zorder=4
+        figsize=(10, 4)
     )
 
     # =========================================================
     # X AXIS
     # =========================================================
-      ax.set_xlim(
-        x_min,
-        x_max
+
+      if method == 'casagrande':
+        ax.set_xscale('log')
+      else:
+        ax.set_xscale('linear')
+
+    # =========================================================
+    # REGRESSION / FLOW CURVE
+    # =========================================================
+
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='blue',
+        linewidth=2,
+        label='Flow Curve'
     )
 
     # =========================================================
-    # X MAJOR GRID / TICKS
-    #
-    # Tick spacing is 2 mm.
-    # This does NOT modify your actual values.
+    # ACTUAL TEST POINTS
     # =========================================================
-      ax.xaxis.set_major_locator(
-        MultipleLocator(2)
+
+      ax.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=80,
+        zorder=5,
+        label='Test Points'
     )
 
     # =========================================================
-    # X MINOR GRID / TICKS
-    #
-    # 0.5 mm
+    # LIQUID LIMIT VERTICAL LINE
     # =========================================================
-      ax.xaxis.set_minor_locator(
-        MultipleLocator(0.5)
+
+      ax.axvline(
+        x=ll_x,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
     )
 
     # =========================================================
-    # Y AXIS
+    # LIQUID LIMIT HORIZONTAL LINE
     # =========================================================
+
+      ax.axhline(
+        y=ll_value,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+    # =========================================================
+    # LL POINT
+    # =========================================================
+
+      ax.scatter(
+        [ll_x],
+        [ll_value],
+        color='green',
+        s=120,
+        zorder=10
+    )
+
+    # =========================================================
+    # LL LABEL
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(25 blows)',
+            xy=(ll_x, ll_value),
+            xytext=(26, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+      else:
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(20 mm)',
+            xy=(ll_x, ll_value),
+            xytext=(ll_x + 1, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+    # =========================================================
+    # TITLE
+    # =========================================================
+
+      ax.set_title(
+        graph_title,
+        fontsize=18,
+        fontweight='bold'
+    )
+
+    # =========================================================
+    # LABELS
+    # =========================================================
+
+      ax.set_xlabel(
+        x_label,
+        fontsize=12
+    )
+
+      ax.set_ylabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+    # =========================================================
+    # X LIMITS
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+      else:
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+    # =========================================================
+    # Y LIMITS
+    # =========================================================
+
+      y_min = min(
+        min(y_value),
+        ll_value
+    )
+
+      y_max = max(
+        max(y_value),
+        ll_value
+    )
+
+      y_range = y_max - y_min
+
+      if y_range == 0:
+        y_range = 10
+
       ax.set_ylim(
-        y_min,
-        y_max
+        max(0, y_min - y_range * 0.10),
+        y_max + y_range * 0.15
     )
 
     # =========================================================
-    # Y MAJOR TICKS
-    #
-    # Every 1%
+    # GRID
     # =========================================================
-      ax.yaxis.set_major_locator(
+
+      if method == 'casagrande':
+
+        # Major logarithmic grid
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10)
+        )
+
+        # Minor logarithmic grid
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1
+            )
+        )
+
+      else:
+
+        # Linear cone axis
+        ax.xaxis.set_major_locator(
+            MultipleLocator(2)
+        )
+
+        ax.xaxis.set_minor_locator(
+            MultipleLocator(0.5)
+        )
+
+    # Y axis
+      ax.yaxis.set_minor_locator(
         MultipleLocator(1)
     )
 
-    # =========================================================
-    # Y MINOR TICKS
-    #
-    # Every 0.5%
-    # =========================================================
-      ax.yaxis.set_minor_locator(
-        MultipleLocator(0.5)
-    )
-
-    # =========================================================
-    # X LABEL
-    # =========================================================
-      ax.set_xlabel(
-        'penetration(mm)',
-        fontsize=12,
-        fontweight='bold'
-    )
-
-    # =========================================================
-    # Y LABEL
-    # =========================================================
-      ax.set_ylabel(
-        'Moisture Content (%)',
-        fontsize=12,
-        fontweight='bold'
-    )
-
-    
-    # MAJOR GRID
-    
       ax.grid(
         which='major',
-        color='black',
         linestyle='-',
         linewidth=0.5,
         alpha=0.7
     )
 
-    
-    # MINOR GRID
-   
       ax.grid(
         which='minor',
-        color='#d0d7df',
-        linestyle='-',
-        linewidth=0.4,
-        alpha=0.7
+        linestyle='--',
+        linewidth=0.3,
+        alpha=0.5
     )
 
-    # =========================================================
-    # TICK LABEL SIZE
-    # =========================================================
-      ax.tick_params(
-        axis='both',
-        which='major',
-        labelsize=10
-    )
+    
+    # LEGEND
+      ax.legend()
 
-    # =========================================================
-    # REMOVE LEGEND
-    # =========================================================
-      if ax.legend_:
-        ax.legend_.remove()
-
-    # =========================================================
-    # TIGHT LAYOUT
-    # =========================================================
+   
+    # LAYOUT
       plt.tight_layout()
 
-    # =========================================================
-    # CONVERT GRAPH TO PNG
-    # =========================================================
+    # SAVE PNG
       buffer = io.BytesIO()
 
       plt.savefig(
@@ -1431,51 +1516,63 @@ class Soil(models.Model):
     )
 
       plt.close(fig)
-
+ 
       buffer.seek(0)
-
-    # =========================================================
+      
     # RETURN BASE64
-    # =========================================================
       return base64.b64encode(
         buffer.read()
     ).decode('utf-8')
 
 
-    
 
     # def generate_line_chart_liquid(self):
+    #   self.ensure_one()
 
+    # # =========================================================
+    # # GET DYNAMIC DATA FROM CHILD LINES
+    # # =========================================================
     #   x_value = []
     #   y_value = []
 
-    # # ----------------------------------
-    # # Get child data
-    # # ----------------------------------
     #   for line in self.child_liness:
-    #     if line.penetration and line.moisture_content is not None:
-    #         x_value.append(float(line.penetration))
-    #         y_value.append(float(line.moisture_content))
 
+    #     if (
+    #         line.penetration is not None
+    #         and line.moisture_content is not None
+    #     ):
+    #         try:
+    #             x = float(line.penetration)
+    #             y = float(line.moisture_content)
+
+    #             x_value.append(x)
+    #             y_value.append(y)
+
+    #         except (ValueError, TypeError):
+    #             continue
+
+    # # =========================================================
+    # # MINIMUM 2 POINTS REQUIRED
+    # # =========================================================
     #   if len(x_value) < 2:
     #     return False
 
-    # # ----------------------------------
-    # # Sort data by penetration
-    # # ----------------------------------
+    # # =========================================================
+    # # SORT DATA BY PENETRATION
+    # # =========================================================
     #   data = sorted(
     #     zip(x_value, y_value),
-    #     key=lambda x: x[0]
+    #     key=lambda item: item[0]
     # )
 
-    #   x_value = [d[0] for d in data]
-    #   y_value = [d[1] for d in data]
+    #   x_value = [item[0] for item in data]
+    #   y_value = [item[1] for item in data]
 
-    # # ----------------------------------
-    # # Linear Regression
+    # # =========================================================
+    # # LINEAR REGRESSION
     # #
     # # y = a*x + b
-    # # ----------------------------------
+    # # =========================================================
     #   n = len(x_value)
 
     #   sum_x = sum(x_value)
@@ -1497,63 +1594,141 @@ class Soil(models.Model):
     # )
 
     #   if denominator == 0:
-    #     return False
+    #       return False
 
+    # # Slope
     #   a = (
     #     n * sum_xy
     #     - sum_x * sum_y
     # ) / denominator
 
+    # # Intercept
     #   b = (
     #     sum_y
     #     - a * sum_x
     # ) / n
 
-    # # ----------------------------------
-    # # Liquid Limit at 20 mm
-    # # ----------------------------------
+    # # =========================================================
+    # # LIQUID LIMIT AT 20 mm
+    # #
+    # # NO ROUNDING
+    # # =========================================================
     #   ll_penetration = 20.0
 
     #   ll_value = (
     #     a * ll_penetration + b
     # )
 
-    # # ----------------------------------
-    # # Regression line
+    # # =========================================================
+    # # REGRESSION LINE
     # #
-    # # IMPORTANT:
-    # # Draw ONLY from minimum data point
-    # # to maximum data point.
+    # # TRUE REGRESSION LINE
     # #
-    # # This prevents the red line from
-    # # touching/crossing the Y-axis.
-    # # ----------------------------------
+    # # DO NOT modify/round ll_value.
+    # # =========================================================
     #   x_fit = np.linspace(
     #     min(x_value),
     #     max(x_value),
     #     500
     # )
 
-    #   y_fit = [
-    #     a * x + b
-    #     for x in x_fit
-    # ]
+    #   y_fit = (
+    #     a * x_fit + b
+    # )
 
-    # # ----------------------------------
-    # # Create figure
-    # # ----------------------------------
+    # # =========================================================
+    # # DYNAMIC AXIS RANGE
+    # #
+    # # Include:
+    # #   - all X data
+    # #   - 20 mm
+    # #
+    # # Include:
+    # #   - all Y data
+    # #   - exact LL value
+    # # =========================================================
+
+    #   all_x_for_axis = (
+    #     x_value + [ll_penetration]
+    # )
+ 
+    #   all_y_for_axis = (
+    #     y_value + [ll_value]
+    # )
+
+    #   data_x_min = min(
+    #     all_x_for_axis
+    # )
+
+    #   data_x_max = max(
+    #     all_x_for_axis
+    # )
+
+    #   data_y_min = min(
+    #     all_y_for_axis
+    # )
+
+    #   data_y_max = max(
+    #     all_y_for_axis
+    # )
+
+    # # =========================================================
+    # # X AXIS PADDING
+    # # =========================================================
+    #   x_range = (
+    #     data_x_max - data_x_min
+    # )
+
+    #   if x_range == 0:
+    #     x_range = 2.0
+
+    #   x_padding = x_range * 0.12
+
+    #   x_min = (
+    #     data_x_min - x_padding
+    # )
+
+    #   x_max = (
+    #     data_x_max + x_padding
+    # )
+
+    # # =========================================================
+    # # Y AXIS PADDING
+    # # =========================================================
+    #   y_range = (
+    #     data_y_max - data_y_min
+    # )
+
+    #   if y_range == 0:
+    #     y_range = 2.0
+
+    #   y_padding = y_range * 0.12
+
+    #   y_min = (
+    #     data_y_min - y_padding
+    # )
+
+    #   y_max = (
+    #     data_y_max + y_padding
+    # )
+
+    # # =========================================================
+    # # CREATE FIGURE
+    # # =========================================================
     #   fig, ax = plt.subplots(
     #     figsize=(10, 5)
     # )
 
-    # # ----------------------------------
-    # # NORMAL LINEAR X AXIS
-    # # ----------------------------------
-    #   ax.set_xscale('linear')
+    # # =========================================================
+    # # LINEAR X AXIS
+    # # =========================================================
+    #   ax.set_xscale(
+    #     'linear'
+    # )
 
-    # # ----------------------------------
-    # # RED REGRESSION LINE
-    # # ----------------------------------
+    # # =========================================================
+    # # RED TRUE REGRESSION LINE
+    # # =========================================================
     #   ax.plot(
     #     x_fit,
     #     y_fit,
@@ -1562,9 +1737,9 @@ class Soil(models.Model):
     #     zorder=2
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # RED TEST POINTS
-    # # ----------------------------------
+    # # =========================================================
     #   ax.scatter(
     #     x_value,
     #     y_value,
@@ -1575,127 +1750,185 @@ class Soil(models.Model):
     #     zorder=5
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # BLACK VERTICAL LINE AT 20 mm
-    # # ----------------------------------
+    # #
+    # # IMPORTANT:
+    # #
+    # # The TOP of this line is the EXACT regression value:
+    # #
+    # # ll_value = a * 20 + b
+    # #
+    # # Therefore it intersects the red line exactly.
+    # # =========================================================
     #   ax.plot(
-    #     [ll_penetration, ll_penetration],
-    #     [40, ll_value + 1.3],
+    #     [
+    #         ll_penetration,
+    #         ll_penetration
+    #     ],
+    #     [
+    #         y_min,
+    #         ll_value
+    #     ],
     #     color='black',
     #     linewidth=2,
     #     zorder=3
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # DOWN ARROW AT 20 mm
-    # # ----------------------------------
+    # # =========================================================
+    #   arrow_height = (
+    #     y_range * 0.15
+    # )
+
+    #   arrow_top = min(
+    #     ll_value + arrow_height,
+    #     y_max
+    # )
+
     #   ax.annotate(
     #     '',
-    #     xy=(ll_penetration, 40),
-    #     xytext=(ll_penetration, 41.0),
+    #     xy=(
+    #         ll_penetration,
+    #         y_min
+    #     ),
+    #     xytext=(
+    #         ll_penetration,
+    #         arrow_top
+    #     ),
     #     arrowprops=dict(
     #         arrowstyle='->',
     #         color='black',
     #         linewidth=2
-    #     )
+    #     ),
+    #     zorder=4
     # )
 
-    # # ----------------------------------
-    # # BLACK HORIZONTAL LINE AT LL
-    # # ----------------------------------
+    # # =========================================================
+    # # BLACK HORIZONTAL LINE AT EXACT LIQUID LIMIT
+    # #
+    # # NO ROUNDING
+    # # =========================================================
+    #   horizontal_start = x_min
+
+    #   horizontal_end = max(
+    #     x_value
+    # )
+
     #   ax.plot(
-    #     [14, 22.8],
-    #     [ll_value, ll_value],
+    #     [
+    #         horizontal_start,
+    #         horizontal_end
+    #     ],
+    #     [
+    #         ll_value,
+    #         ll_value
+    #     ],
     #     color='black',
     #     linewidth=2,
     #     zorder=3
     # )
 
-    # # ----------------------------------
-    # # LEFT ARROW AT 45%
-    # # ----------------------------------
+    # # =========================================================
+    # # LEFT ARROW ON LIQUID LIMIT LINE
+    # # =========================================================
+    #   arrow_width = (
+    #     horizontal_end - horizontal_start
+    # ) * 0.08
+
     #   ax.annotate(
     #     '',
-    #     xy=(14, ll_value),
-    #     xytext=(15.0, ll_value),
+    #     xy=(
+    #         horizontal_start,
+    #         ll_value
+    #     ),
+    #     xytext=(
+    #         horizontal_start + arrow_width,
+    #         ll_value
+    #     ),
     #     arrowprops=dict(
     #         arrowstyle='->',
     #         color='black',
     #         linewidth=2
-    #     )
+    #     ),
+    #     zorder=4
     # )
 
-    # # ----------------------------------
-    # # X AXIS LIMIT
-    # # ----------------------------------
+    # # =========================================================
+    # # X AXIS
+    # # =========================================================
     #   ax.set_xlim(
-    #     14,
-    #     26
+    #     x_min,
+    #     x_max
     # )
 
-    # # ----------------------------------
-    # # X MAJOR TICKS
-    # # 14, 16, 18, 20, 22, 24, 26
-    # # ----------------------------------
-    #   ax.set_xticks(
-    #     np.arange(14, 27, 2)
+    # # =========================================================
+    # # X MAJOR GRID / TICKS
+    # #
+    # # Tick spacing is 2 mm.
+    # # This does NOT modify your actual values.
+    # # =========================================================
+    #   ax.xaxis.set_major_locator(
+    #     MultipleLocator(2)
     # )
 
-    # # ----------------------------------
-    # # X MINOR TICKS
-    # # Every 0.5
-    # # ----------------------------------
-    #   ax.set_xticks(
-    #     np.arange(14, 26.5, 0.5),
-    #     minor=True
+    # # =========================================================
+    # # X MINOR GRID / TICKS
+    # #
+    # # 0.5 mm
+    # # =========================================================
+    #   ax.xaxis.set_minor_locator(
+    #     MultipleLocator(0.5)
     # )
 
-    # # ----------------------------------
-    # # Y AXIS LIMIT
-    # # ----------------------------------
+    # # =========================================================
+    # # Y AXIS
+    # # =========================================================
     #   ax.set_ylim(
-    #     40,
-    #     48
+    #     y_min,
+    #     y_max
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # Y MAJOR TICKS
-    # # 40, 41, 42 ... 48
-    # # ----------------------------------
-    #   ax.set_yticks(
-    #     np.arange(40, 49, 1)
+    # #
+    # # Every 1%
+    # # =========================================================
+    #   ax.yaxis.set_major_locator(
+    #     MultipleLocator(1)
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # Y MINOR TICKS
-    # # Every 0.5
-    # # ----------------------------------
-    #   ax.set_yticks(
-    #     np.arange(40, 48.5, 0.5),
-    #     minor=True
+    # #
+    # # Every 0.5%
+    # # =========================================================
+    #   ax.yaxis.set_minor_locator(
+    #     MultipleLocator(0.5)
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # X LABEL
-    # # ----------------------------------
+    # # =========================================================
     #   ax.set_xlabel(
     #     'penetration(mm)',
     #     fontsize=12,
     #     fontweight='bold'
     # )
 
-    # # ----------------------------------
+    # # =========================================================
     # # Y LABEL
-    # # ----------------------------------
+    # # =========================================================
     #   ax.set_ylabel(
     #     'Moisture Content (%)',
     #     fontsize=12,
     #     fontweight='bold'
     # )
 
-    # # ----------------------------------
+    
     # # MAJOR GRID
-    # # ----------------------------------
+    
     #   ax.grid(
     #     which='major',
     #     color='black',
@@ -1704,9 +1937,9 @@ class Soil(models.Model):
     #     alpha=0.7
     # )
 
-    # # ----------------------------------
+    
     # # MINOR GRID
-    # # ----------------------------------
+   
     #   ax.grid(
     #     which='minor',
     #     color='#d0d7df',
@@ -1715,29 +1948,29 @@ class Soil(models.Model):
     #     alpha=0.7
     # )
 
-    # # ----------------------------------
-    # # Tick labels
-    # # ----------------------------------
+    # # =========================================================
+    # # TICK LABEL SIZE
+    # # =========================================================
     #   ax.tick_params(
     #     axis='both',
     #     which='major',
     #     labelsize=10
     # )
 
-    # # ----------------------------------
-    # # Remove legend
-    # # ----------------------------------
+    # # =========================================================
+    # # REMOVE LEGEND
+    # # =========================================================
     #   if ax.legend_:
     #     ax.legend_.remove()
 
-    # # ----------------------------------
-    # # Tight layout
-    # # ----------------------------------
+    # # =========================================================
+    # # TIGHT LAYOUT
+    # # =========================================================
     #   plt.tight_layout()
 
-    # # ----------------------------------
-    # # Convert chart to PNG
-    # # ----------------------------------
+    # # =========================================================
+    # # CONVERT GRAPH TO PNG
+    # # =========================================================
     #   buffer = io.BytesIO()
 
     #   plt.savefig(
@@ -1747,21 +1980,19 @@ class Soil(models.Model):
     #     bbox_inches='tight'
     # )
 
-    #   plt.close()
+    #   plt.close(fig)
 
     #   buffer.seek(0)
 
-    # # ----------------------------------
-    # # Return Base64
-    # # ----------------------------------
+    # # =========================================================
+    # # RETURN BASE64
+    # # =========================================================
     #   return base64.b64encode(
     #     buffer.read()
     # ).decode('utf-8')
 
 
-
-        
-       
+ 
     
 
     @api.depends('child_liness')
@@ -1775,10 +2006,10 @@ class Soil(models.Model):
 
 
       # Plastic Limit
-    plastic_limit_name = fields.Char("Name",default="Plastic Limit")
+    plastic_limit_name = fields.Char("Name", default="Plastic Limit")
     plastic_limit_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
 
-    plastic_limit_specification = fields.Char(string='Plastic Limit Specification')
+    plastic_limit_specification = fields.Char(string ='Plastic Limit Specification')
 
     plasticity_index_specification = fields.Char(string='Plasticity Index Specification')
    
@@ -4714,7 +4945,7 @@ class LIQUIDLIMITLINE(models.Model):
 
 
     # container_no1 = fields.Char(string="Container No.")
-    # blwo_no1 = fields.Float(string="No. of Blows")
+    # penetration = fields.Float(string="No. of Blows")
     # wt_of_con_wet = fields.Float(string="Wt. of Container + Wet Soil")
     # wt_of_con_dry = fields.Float(string="Wt. of Container + dry Soil")   
     # loss_of_moisture = fields.Float(string="Loss of Moisture (gm)",compute="_compute_loss_of_moisture")

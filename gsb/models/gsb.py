@@ -1951,6 +1951,7 @@ class GsbMechanical(models.Model):
 
     plastic_table = fields.One2many('mech.gsb.plastic.limit.line','parent_id',string="Plastic Limit")
     average_plastic_moisture = fields.Float("Average",compute="_compute_plastic_average")
+    
     remarks_plastic = fields.Selection([
         ('plastic', 'Plastic'),
         ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
