@@ -1518,7 +1518,7 @@ class Soil(models.Model):
       plt.close(fig)
  
       buffer.seek(0)
-      
+
     # RETURN BASE64
       return base64.b64encode(
         buffer.read()
@@ -2014,6 +2014,11 @@ class Soil(models.Model):
     plasticity_index_specification = fields.Char(string='Plasticity Index Specification')
    
     plastic_limit_table = fields.One2many('mechanical.plasticl.limit.line','parent_id',string="Parameter")
+
+    plastic_limit_type = fields.Selection([
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+    ], string='Plastic Limit Type')
 
     plastic_limit = fields.Float(string="Average ",compute="_compute_plastic_limit")
    

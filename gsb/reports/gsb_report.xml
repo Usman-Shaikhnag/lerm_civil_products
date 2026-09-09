@@ -935,7 +935,36 @@
 								</td>
 							</tr>
                              <!-- Plasticity Index -->
-							<tr t-if="data.plasticity_index_visible and (data.plasticity_index_nabl == 'pass' and nabl) or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
+							<!-- <tr t-if="data.plasticity_index_visible and (data.plasticity_index_nabl == 'pass' and nabl) or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln"> -->
+
+						<tr	t-if="
+    data.plasticity_index_visible
+    and (
+        (
+            data.remarks_plasticity_index == 'non-plastic'
+            and nabl
+        )
+        or
+        (
+            data.remarks_plasticity_index != 'non-plastic'
+            and (
+                (
+                    data.average_plastic_moisture_nabl == 'pass'
+                    and nabl
+                )
+                or
+                (
+                    (
+                        data.average_plastic_moisture_nabl == 'fail'
+                        or eln.sample_id.scope != 'nabl'
+                    )
+                    and not nabl
+                    and not fromEln
+                )
+            )
+        )
+    )
+">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -949,7 +978,8 @@
                                 </td>
 								
 								<td colspan="2" style="text-align: center;">
-									<div>
+								
+									<!-- <div>
 										<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
 										<t t-if="plasticity_index_float != 0.0">
 											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 0.0 else plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
@@ -957,7 +987,14 @@
 										<t t-else="">
 											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 0.0 else plasticity_index_float" />
 										</t>
-									</div>
+									</div> -->
+									<span t-if="data.remarks_plasticity_index == 'non-plastic'">
+        non-plastic
+    </span>
+    <span t-else="">
+        <span t-field="data.plasticity_index"
+              t-options='{"widget": "float", "precision": 2}'/>
+    </span>
 								</td>
 
 								<td colspan="2" style="text-align: center; vertical-align: middle;">

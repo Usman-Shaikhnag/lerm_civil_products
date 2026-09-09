@@ -491,6 +491,8 @@
 								</tr>
 
 								<!-- Plastic Limit -->
+
+								
 								
 								<tr t-if="data.plastic_limit_visible and show_plastic_limit ">
 									<t t-set="plastic_limit" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')])"/>
@@ -501,9 +503,15 @@
 									</td>
 
 									<td style="text-align: center;">
-										<span>
+										<!-- <span>
 											<span t-field="data.plastic_limit" t-options='{"widget": "float", "precision": 2}'/>
-										</span>									
+										</span>									 -->
+										<span t-if="data.plastic_limit_type == 'non_plastic'">
+										    Non-Plastic
+										</span>
+										<span t-else="">
+										     <span t-field="data.plastic_limit" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
 									</td>
 
 									<td style="text-align: center;">
