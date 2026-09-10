@@ -456,16 +456,22 @@
                         <field name="shrinkage_limit_table">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='container_no'  width="100px" class="blue-input" decoration-info="container_no != 0"/>
-                                <field name='shrinkage_mass' class="blue-input" decoration-info="shrinkage_mass != 0"/>
-                                <field name='shrinkage_wet' class="blue-input" decoration-info="shrinkage_wet != 0"/>
-                                <field name='wt_dry' class="blue-input" decoration-info="wt_dry != 0"/>
-                                <field name='mass_dry'/>
-                                <field name='mass_water'/>
-                                <field name='moisture_content_shri'/>
-                                <field name='volume_wet_shri'/>
-                                <field name='volume_dry_shir'/>
-                                <field name='shrinkage_limit'/>
+                                <field name='wt_shr_dish'  width="100px" class="blue-input" decoration-info="wt_shr_dish != 0"/>
+                                <field name='shr_dish_wet' class="blue-input" decoration-info="shr_dish_wet != 0"/>
+                                <field name='shr_dish_dry' class="blue-input" decoration-info="shr_dish_dry != 0"/>
+                                <field name='wt_oven_dry'/>
+                                <field name='wt_water'/>
+                                <field name='moisture_cont_soil'/>
+                                <field name='mass_evp_dish_soil_hg' class="blue-input" decoration-info="mass_evp_dish_soil_hg != 0"/>
+                                <field name='wt_evp_dish' class="blue-input" decoration-info="wt_evp_dish != 0"/>
+                                <field name='wt_hg_filling_shr_dish' class="blue-input" decoration-info="wt_hg_filling_shr_dish != 0"/>
+                                <field name='density_hg' class="blue-input" decoration-info="density_hg != 0"/>
+                                <field name='vol_wet_soil_pat'/>
+                                <field name='wt_hg_displaced' class="blue-input" decoration-info="wt_hg_displaced != 0"/>
+                                <field name='wt_hg_displaced_dry_soil'/>
+                                <field name='vol_dry_soil_pat'/>
+                                 <field name='shrinkage_percent'/>
+                                  <field name='ws'/>
                             </tree>
                         </field>
                     </div>
@@ -1292,6 +1298,119 @@
 
                     <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_shear" widget="image" readonly="1"/>
+                    </div>
+
+
+
+                       <!-- UCS -->
+                          <div invisible = "ucs_visible == False">
+                        <h1 class="text-center">
+                            <field name="ucs_name" readonly="1" nolabel="1"/>
+                            <field name="ucs_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td ><label for="ucs_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="ucs_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <div class= "d-flex gap-2">
+                       <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="initial_diameter">Initial Diameter (mm)</label></td>
+                                <td><field name="initial_diameter" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="initial_length">Initial Length (mm)</label></td> 
+                                <td><field name="initial_length" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="initial_area">Initial Area A0 (cm²)</label></td>
+                                <td><field name="initial_area" class="blue-input"/></td>
+                            </tr>
+                         </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="initial_volume">Initial Volume</label></td>
+                                <td><field name="initial_volume" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="proving_ring_constant">Proving Ring Constant </label></td>
+                                <td><field name="proving_ring_constant" class="blue-input"/></td>
+                            </tr>
+                         </tbody>
+                        </table>
+                      </div>
+
+                     <div invisible = "ucs_visible == False">
+                        <field name="ucs_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <!-- <field name='serial_no'/> -->
+                                <field name='deformation_dial_reading'  class="blue-input" decoration-info="deformation_dial_reading != 0"/>
+                                <field name='axial_deformation' />
+                                <field name='axial_strain' />
+                                <field name='corrected_area' />
+
+                                <field name='proving_ring_dial_reading' class="blue-input" decoration-info="proving_ring_dial_reading != 0"/>
+                                <field name='axial_force'/>
+                                <field name='compressive_stress'/>
+
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="ucs_compressive">Compressive Stress kpa (qu) </label></td>
+                                <td><field name="ucs_compressive"/></td>
+                            </tr>
+                                <tr>
+                                <td><label for="ucs_compressive_conformity"></label></td>
+                                <td><field name="ucs_compressive_conformity"
+                                            decoration-success="ucs_compressive_conformity == 'pass'" 
+                                            decoration-danger="ucs_compressive_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="ucs_compressive_nabl"></label></td>
+                                <td><field name="ucs_compressive_nabl"
+                                            decoration-success="ucs_compressive_nabl == 'pass'" 
+                                            decoration-danger="ucs_compressive_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    <button invisible="not ucs_visible" name="action_generate_ucs_graph"
+                    string="Generate Graph" 
+                    type="object"
+                    class="oe_highlight"
+                    icon="fa-bar-chart"/>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not ucs_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_ucs_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_ucs_graph" class="blue-input" decoration-info="show_ucs_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
+                    <div invisible = "ucs_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_ucs" widget="image" readonly="1"/>
                     </div>
 
 

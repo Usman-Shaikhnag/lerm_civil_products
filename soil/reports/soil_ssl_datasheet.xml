@@ -52,7 +52,7 @@
 
 						
 						<div style="text-align:center;margin-top: 20px;" t-if="data.soil_visible">
-								<p style="font-size:15px"><b><span t-field="data.soil_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.soil_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -250,7 +250,7 @@
 					<div t-if="data.fsi_visible" >
 					     <div style="margin-top:20px" t-if="data.fsi_visible">
 							<div style="text-align:center;">
-								<p style="font-size:15px"><b><span t-field="data.fsi_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.fsi_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -357,7 +357,7 @@
 					<div t-if="data.sieve_visible" style="page-break-before: always;">
 						 <div style="margin-top:20px" t-if="data.sieve_visible">
 							<div style="text-align:center;">
-								<p style="font-size:15px"><b><span t-field="data.sieve_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.sieve_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -533,7 +533,7 @@
 				<!-- Heavy -->
 				<div t-if="data.heavy_visible" style="page-break-before: always;margin-top:5px;padding-top:50px;page-break-before: always;">
 							<div style="text-align:center;">
-								<p style="font-size:15px"><b><span t-field="data.heavy_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.heavy_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -762,7 +762,7 @@
 
 						<div  t-if="data.omc_table" style="page-break-before: always;margin-top:5px;padding-top:50px;">
 							<div style="text-align:center;">
-								<p style="font-size:15px"><b><span t-field="data.omc_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.omc_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -992,7 +992,7 @@
 					<div t-if="data.liquid_limit_visible" style="page-break-before: always;">
 						
 							<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.liquid_limit_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.liquid_limit_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1178,7 +1178,7 @@
 					<div t-if="data.plastic_limit_visible" style="page-break-before: always;">
 						
 							<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.plastic_limit_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.plastic_limit_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1366,7 +1366,7 @@
 					<div t-if="data.shrinkage_limit_visible" style="page-break-before: always;">
 						
 							<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.shrinkage_limit_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.shrinkage_limit_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1386,52 +1386,82 @@
 									</th>
 									<th>
 										<span>
-											Container No
+											wt.of shr.dish(g)
 										</span>
 									</th>
 									<th>
 										<span>
-											Mass of container (m1) 
+											sh.dish+wet soil pat (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Wt. of Container + Wet Soil(m2)
+										sh.dish+ dry soil pat (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Wt. of Container + dry Soil (m3)
+										wt.of oven dry pat (W0)
 										</span>
 									</th>
 									<th>
 										<span>
-											mass of dry soil (Ms=m3-m1)
+											wt.of water (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										mass of water (Mw=m2-m3)
+										moist. cont of soil pat(w)
 										</span>
 									</th>
 									<th>
 										<span>
-										Moisture Content %(Mw/Ms*100)
+										Mass of Evp. Dish + Shr. Dish + Hg
 										</span>
 									</th>
 									<th>
 										<span>
-										Volume of wet soil (V1)
+										Wt. of Evp. Dish
 										</span>
 									</th>
 									<th>
 										<span>
-										Volume of dry Soil pat (V2)
+										Wt. of Hg Filling Shr. Dish
 										</span>
 									</th>
 									<th>
 										<span>
-										Shrinkage limit (%)
+										Density of Hg
+										</span>
+									</th>
+									<th>
+										<span>
+										Vol. of Wet Soil Pat (V)
+										</span>
+									</th>
+									<th>
+										<span>
+										wt.of Hg displaced by dry soil pat+wt.of evp.dish
+										</span>
+									</th>
+									<th>
+										<span>
+										Wt. of Hg Displaced by Dry Soil
+										</span>
+									</th>
+									<th>
+										<span>
+										Vol. of Dry Soil Pat (V0)
+										</span>
+									</th>
+									<th>
+										<span>
+										(V - V0 / W0) × 100
+										</span>
+									</th>
+									<th>
+										<span>
+										Ws
 										</span>
 									</th>
 								</tr>
@@ -1446,34 +1476,52 @@
 										</div>
 									</td>
 									<td>
-										<span t-esc="r.container_no"/>
+										<span t-esc="r.wt_shr_dish"/>
 									</td>
 									<td>
-										<span t-esc="r.shrinkage_mass" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.shr_dish_wet" />
 									</td>
 									<td>
-										<span t-esc="r.shrinkage_wet" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.shr_dish_dry" />
 									</td>
 									<td>
-										<span t-esc="r.wt_dry" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.wt_oven_dry" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td>
-										<span t-esc="r.mass_dry"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.wt_water" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td>
-										<span t-esc="r.mass_water"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.moisture_cont_soil" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td>
-										<span t-esc="r.moisture_content_shri"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.mass_evp_dish_soil_hg"  />
 									</td>
 									<td>
-										<span t-esc="r.volume_wet_shri"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.wt_evp_dish"/>
 									</td>
 									<td>
-										<span t-esc="r.volume_dry_shir"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.wt_hg_filling_shr_dish"/>
 									</td>
 									<td>
-										<span t-esc="r.shrinkage_limit"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.density_hg"/>
+									</td>
+									<td>
+										<span t-esc="r.vol_wet_soil_pat"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_hg_displaced"  />
+									</td>
+									<td>
+										<span t-esc="r.wt_hg_displaced_dry_soil"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.vol_dry_soil_pat"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.shrinkage_percent"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.ws"  t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 								</tr>
 							</tbody>
@@ -1556,7 +1604,7 @@
 					   <!--  -->
 					   <div t-if="data.specific_gravity_visible" style="page-break-before: always;">
 				           	<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.specific_gravity_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.specific_gravity_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1678,7 +1726,7 @@
 						 <!--  -->
 						 <div t-if="data.direct_shear_visible" style="page-break-before: always;">
 				           	<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.direct_shear_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.direct_shear_name"/></b></p>
 								
 							</div>
 
@@ -2011,10 +2059,210 @@
 						
 					</div>
 
+
+
+					<!--  -->
+						 <div t-if="data.ucs_visible" style="page-break-before: always;">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:20px"><b><span t-field="data.ucs_name"/></b></p>
+								
+							</div>
+
+							<div style="margin-top:20px" t-if="data.ucs_visible">
+							<table>
+								
+								<tr cols="12">
+									<td colspan="6">Initial Diameter (mm) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.initial_diameter"/>
+									</td>
+									<td colspan="6">Initial Length (mm) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.initial_length"/>
+									</td>
+									<td colspan="6">Initial Area A0 (cm²) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.initial_area"/>
+									</td>
+								</tr>
+								<tr cols="12">
+									
+									<td colspan="6">Initial Volume :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.initial_volume" />
+									</td>
+									<td colspan="6">Proving Ring Constant :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.proving_ring_constant"/>
+									</td>
+								</tr>
+
+								
+								
+								
+							</table>
+						</div>
+						
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th >
+										<span>
+											Deformation Dial Reading
+										</span>
+									</th>
+									<th >
+										<span>
+										Axial Deformation (mm)
+										</span>
+									</th>
+									<th >
+										<span>
+									Axial Strain (e)
+										</span>
+									</th>
+									<th >
+										<span>
+									Corrected Area (cm²)
+										</span>
+									</th>
+									<th >
+										<span>
+									Proving Ring Dial Reading
+										</span>
+									</th>
+									<th >
+										<span>
+									Axial Force (kgf)
+										</span>
+									</th>
+									<th >
+										<span>
+									Compressive Stress (kgf/cm²)
+										</span>
+									</th>
+
+									</tr>
+
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.ucs_ids" t-as="r">
+									<!-- <td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td> -->
+									<td>
+										<span t-esc="r.deformation_dial_reading"/>
+									</td>
+									<td>
+										<span t-esc="r.axial_deformation" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.axial_strain" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.corrected_area" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.proving_ring_dial_reading" />
+									</td>
+									<td>
+										<span t-esc="r.axial_force" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.compressive_stress" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="margin-top:20px" t-if="data.ucs_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Compressive Stress kpa (qu) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.ucs_compressive"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div t-if="data.graph_image_ucs" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_ucs.decode('utf-8')" style="max-width: 100%;"/>
+						</div>
+
+
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')], limit=1).technician"/>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="prepared_by_obj.name or ''"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+						
+					</div>
+
 					 <!--  -->
 						 <div t-if="data.moisture_content_visible" style="page-break-before: always;">
 				           	<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.moisture_content_name"/></b></p>
+								<p style="font-size:20px"><b><span t-field="data.moisture_content_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
 										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">

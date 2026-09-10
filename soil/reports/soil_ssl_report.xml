@@ -1027,6 +1027,58 @@
 								</tr>
 
 
+								<tr t-if="data.ucs_visible and (data.ucs_compressive_nabl == 'pass' and nabl or (data.ucs_compressive_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td style="text-align: center;" colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_name"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span t-field="data.ucs_compressive" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).unit.name"/>
+										</span>
+									</td>
+									<t t-if="data.show_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.ucs_specification"/>
+									 </td>
+									</t>
+										<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									<td  style="text-align: center;">
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									
+
+								</tr>
+
+
 							<!-- <tr t-if="data.moisture_content_visible and (data.avg_moisture_content_nabl == 'pass' and nabl or (data.avg_moisture_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
@@ -1255,6 +1307,13 @@
                        <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
+
+				<t t-if="graph_ucs">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.ucs_visible and data.ucs_compressive_nabl == 'pass' and nabl or (data.ucs_compressive_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl">
+                       <img t-att-src="'data:image/png;base64,%s' % graph_ucs" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
 
 				<t t-if="graph_shear">
                    <div style="text-align:center; margin-top:20px;" t-if="(data.direct_shear_visible and (data.cohesion_nabl == 'pass' and nabl or (data.cohesion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.direct_shear_visible and (data.phi_nabl == 'pass' and nabl or (data.phi_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
