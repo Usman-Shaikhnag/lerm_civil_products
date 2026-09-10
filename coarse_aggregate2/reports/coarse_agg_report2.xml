@@ -107,7 +107,7 @@
 					<div t-if="data.sieve_visible" style="margin-top:20px">
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
-							<span style="font-weight: bold;" t-field="eln.material.method_reference"/>:   	
+							<span  t-field="eln.material.method_reference"/>:   	
 						
 						
 							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_table" t-as="parameter">
@@ -171,7 +171,7 @@
 					<div t-if="data.aggregate_grading_visible" style="margin-top:10px">
 						<div style="text-align:center;font-size:18px">
 							<span>All in Aggregate Grading </span>
-							<span style="font-weight: bold;" t-field="eln.material.method_reference"/>:   	
+							<span  t-field="eln.material.method_reference"/>:   	
 						
 						
 							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6976f6b5-5756-4ef7-a680-50b0c0dbccc8')]).parameter_table" t-as="parameter">
@@ -201,7 +201,7 @@
 								</td>
 							</tr>
 							<t t-set="k" t-value="0"/>
-							<tr t-foreach="data.aggregate_grading_child_lines" >
+							<tr t-foreach="data.aggregate_grading_child_lines"  t-as="r">
 								
 								<td >
 									<t t-set="k" t-value="k+1"/>
@@ -213,38 +213,38 @@
 								<td colspan="1" t-if="k == 1">
 									<span>100</span>
 								</td>
-								<td colspan="2" t-if="k == 2">
+								<td colspan="1" t-if="k == 2">
 									<span>95 to 100</span>
 								</td>
-								<td colspan="2" t-if="k == 3">
+								<td colspan="1" t-if="k == 3">
 									<span>45 to 75</span>
 								</td>
-								<td colspan="2" t-if="k == 4">
+								<td colspan="1" t-if="k == 4">
 									<span>25 to 45</span>
 								</td>
-								<td colspan="2" t-if="k == 5">
+								<td colspan="1" t-if="k == 5">
 									<span>8 to 30</span>
 								</td>
-								<td colspan="2" t-if="k == 6">
+								<td colspan="1" t-if="k == 6">
 									<span>0 to 6</span>
 								</td>
 
 								<td colspan="1" t-if="k == 1">
 									<span>--</span>
 								</td>
-								<td colspan="2" t-if="k == 2">
+								<td colspan="1" t-if="k == 2">
 									<span>100</span>
 								</td>
-								<td colspan="2" t-if="k == 3">
+								<td colspan="1" t-if="k == 3">
 									<span>95 to 100</span>
 								</td>
-								<td colspan="2" t-if="k == 4">
+								<td colspan="1" t-if="k == 4">
 									<span>30 to 50</span>
 								</td>
-								<td colspan="2" t-if="k == 5">
+								<td colspan="1" t-if="k == 5">
 									<span>10 to 35</span>
 								</td>
-								<td colspan="2" t-if="k == 6">
+								<td colspan="1" t-if="k == 6">
 									<span>0 to 6</span>
 								</td>
 							</tr>

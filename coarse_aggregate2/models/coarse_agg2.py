@@ -1572,23 +1572,24 @@ class CoarseAggregateMechanical2(models.Model):
     aggregate_grading_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
     aggregate_grading_child_lines = fields.One2many(
-        'mechanical.aggregate.grading.line2',
-        'parent_id',
-        string="Parameter",
-        default=lambda self: [
-            (0, 0, {'sieve_size': '80 mm'}),
-            (0, 0, {'sieve_size': '40 mm'}),
-            (0, 0, {'sieve_size': '20 mm'}),
-            (0, 0, {'sieve_size': '4.75 mm'}),
-            (0, 0, {'sieve_size': '600 micron'}),
-            (0, 0, {'sieve_size': '150 micron'}),
-        ],
-    )
+    'mechanical.aggregate.grading.line2',
+    'parent_id',
+    string="Parameter",
+    default=lambda self: [
+        ({'sieve_size': '80 mm'}),
+        ({'sieve_size': '40 mm'}),
+        ({'sieve_size': '20 mm'}),
+        ({'sieve_size': '4.75 mm'}),
+        ({'sieve_size': '600 micron'}),
+        ({'sieve_size': '150 micron'}),
+    ],
+)  
 
-    # aggregate_grading_child_lines = fields.One2many('mechanical.aggregate.grading.line2','parent_id',string="Parameter")
+   
+
+    # aggregate_grading_child_lines = fields.One2many('mechanical.aggregate.grading.line','parent_id',string="Parameter")
     total_aggregate_grading = fields.Integer(string="Total",compute="_compute_total_aggregate_grading")
     # cumulative_aggregate_grading = fields.Float(string="Cumulative",compute="_compute_cumulative_aggregate_grading")
-
 
     def calculate_aggregate(self): 
         for record in self:
@@ -1598,20 +1599,20 @@ class CoarseAggregateMechanical2(models.Model):
                 if previous_line == 0:
                     if line.percent_retained == 0:
                         # print("Percent retained 0",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
+                        line.write({'cumulative_retained': line.percent_retained})
                         line.write({'passing_percent': 100 })
                     else:
                         # print("Percent retained else",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
-                        line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
+                        line.write({'cumulative_retained': line.percent_retained})
+                        line.write({'passing_percent': 100 -line.percent_retained})
                 else:
                     previous_line_record = self.env['mechanical.aggregate.grading.line2'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained})
-                    line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
+                    line.write({'passing_percent': 100-(previous_line_record + line.percent_retained)})
                     print("Previous Cumulative",previous_line_record)
 
 
-    
+   
 
     # @api.depends('aggregate_grading_child_lines.wt_retained')
     # def _compute_cumulative_aggregate_grading(self):
@@ -1992,6 +1993,7 @@ class CoarseAggregateMechanical2(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
+
 class AggregateGradingLine(models.Model):
     _name = "mechanical.aggregate.grading.line2"
     parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
@@ -1999,7 +2001,7 @@ class AggregateGradingLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Wt. Retained in gms")
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
+    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained1")
     cumulative_retained = fields.Float(string="Cum. Retained %", store=True)
     passing_percent = fields.Float(string="Passing %")
 
@@ -2052,10 +2054,10 @@ class AggregateGradingLine(models.Model):
 
 
     @api.depends('wt_retained', 'parent_id.total_aggregate_grading')
-    def _compute_percent_retained(self):
+    def _compute_percent_retained1(self):
         for record in self:
             try:
-                record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
+                record.percent_retained = record.wt_retained / self.parent_id.total_aggregate_grading * 100
             except ZeroDivisionError:
                 record.percent_retained = 0
 
@@ -2072,8 +2074,6 @@ class AggregateGradingLine(models.Model):
             sorted_lines = sorted(record.parent_id.aggregate_grading_child_lines, key=lambda r: r.id)
             # index = sorted_lines.index(record)
             # print("Working")
-
-    
 
 
 
