@@ -104,6 +104,11 @@ class GsbReport1(models.AbstractModel):
             graph_cbr = self.generate_cbr_chart(general_data)
 
 
+        graph_liquid = False
+        if getattr(general_data, 'show_liquid_graph', False):
+            graph_liquid = self.generate_line_chart_liquid(general_data)
+
+
         
         
         return {
@@ -120,7 +125,466 @@ class GsbReport1(models.AbstractModel):
             'lightomc' : light_omc,
             'lightmdd' : light_mdd,
             'graphcbr' : graph_cbr,
+            'graphliquid': graph_liquid,
         }
+
+
+
+    def generate_line_chart_liquid(self, data):
+
+      data.ensure_one()
+
+      x_value = []
+      y_value = []
+
+    # =========================================================
+    # GET METHOD
+    # =========================================================
+      method = data.liquid_limit_method
+ 
+    # =========================================================
+    # GET DATA
+    # =========================================================
+      for line in data.child_liness:
+
+          try:
+
+              if line.moisture_content is None:
+                  continue
+
+              moisture = float(line.moisture_content)
+
+            # -------------------------------------------------
+            # CASAGRANDE
+            # X = Number of blows
+            # -------------------------------------------------
+              if method == 'casagrande':
+
+                  if line.penetration is None:
+                      continue
+
+                  x = float(line.penetration)
+
+                # log10() cannot accept 0 or negative values
+                  if x <= 0:
+                      continue
+
+            # -------------------------------------------------
+            # CONE
+            # X = Penetration (mm)
+            # -------------------------------------------------
+              else:
+
+                  if line.penetration is None:
+                    continue
+
+                  x = float(line.penetration)
+
+                  if x <= 0:
+                    continue
+
+              x_value.append(x)
+              y_value.append(moisture)
+
+          except (ValueError, TypeError):
+              continue
+
+    # =========================================================
+    # MINIMUM 2 POINTS
+    # =========================================================
+      if len(x_value) < 2:
+          return False
+
+    # =========================================================
+    # SORT DATA
+    # =========================================================
+      data = sorted(
+        zip(x_value, y_value),
+        key=lambda x: x[0]
+    )
+
+      x_value = [d[0] for d in data]
+      y_value = [d[1] for d in data]
+
+    # =========================================================
+    # REGRESSION
+    # =========================================================
+
+      n = len(x_value)
+
+      if method == 'casagrande':
+
+        # =====================================================
+        # CASAGRANDE
+        # w = a * log10(N) + b
+        # =====================================================
+
+          x_log = [
+            math.log10(x)
+            for x in x_value
+        ]
+
+          sum_x = sum(x_log)
+          sum_y = sum(y_value)
+
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_log, y_value)
+        )
+
+          sum_x2 = sum(
+            x * x
+            for x in x_log
+        )
+
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 25 blows
+          ll_x = 25.0
+
+          ll_value = (
+            a * math.log10(ll_x)
+            + b
+        )
+
+        # Smooth logarithmic regression curve
+          x_fit = np.logspace(
+            math.log10(min(x_value)),
+            math.log10(max(x_value)),
+            500
+        )
+
+          y_fit = [
+            a * math.log10(x) + b
+            for x in x_fit
+        ]
+
+          x_label = 'Number of Blows (Log Scale)'
+          graph_title = 'LIQUID LIMIT - CASAGRANDE METHOD'
+
+      else:
+
+        # =====================================================
+        # CONE METHOD
+        # w = a * penetration + b
+        # =====================================================
+
+          sum_x = sum(x_value)
+          sum_y = sum(y_value)
+
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_value, y_value)
+        )
+
+          sum_x2 = sum(
+            x * x
+            for x in x_value
+        )
+
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 20 mm penetration
+          ll_x = 20.0
+
+          ll_value = (
+            a * ll_x
+            + b
+        )
+
+        # Smooth linear regression curve
+          x_fit = np.linspace(
+            min(x_value),
+            max(x_value),
+            500
+        )
+
+          y_fit = (
+            a * x_fit
+            + b
+        )
+
+          x_label = 'Penetration (mm)'
+          graph_title = 'LIQUID LIMIT - CONE METHOD'
+
+    # =========================================================
+    # CREATE GRAPH
+    # =========================================================
+ 
+      fig, ax = plt.subplots(
+        figsize=(10, 4)
+    )
+
+    # =========================================================
+    # X AXIS
+    # =========================================================
+
+      if method == 'casagrande':
+        ax.set_xscale('log')
+      else:
+        ax.set_xscale('linear')
+
+    # =========================================================
+    # REGRESSION / FLOW CURVE
+    # =========================================================
+
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='blue',
+        linewidth=2,
+        label='Flow Curve'
+    )
+
+    # =========================================================
+    # ACTUAL TEST POINTS
+    # =========================================================
+
+      ax.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=80,
+        zorder=5,
+        label='Test Points'
+    )
+
+    # =========================================================
+    # LIQUID LIMIT VERTICAL LINE
+    # =========================================================
+
+      ax.axvline(
+        x=ll_x,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+    # =========================================================
+    # LIQUID LIMIT HORIZONTAL LINE
+    # =========================================================
+
+      ax.axhline(
+        y=ll_value,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+    # =========================================================
+    # LL POINT
+    # =========================================================
+
+      ax.scatter(
+        [ll_x],
+        [ll_value],
+        color='green',
+        s=120,
+        zorder=10
+    )
+
+    # =========================================================
+    # LL LABEL
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(25 blows)',
+            xy=(ll_x, ll_value),
+            xytext=(26, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+      else:
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(20 mm)',
+            xy=(ll_x, ll_value),
+            xytext=(ll_x + 1, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+    # =========================================================
+    # TITLE
+    # =========================================================
+
+      ax.set_title(
+        graph_title,
+        fontsize=18,
+        fontweight='bold'
+    )
+
+    # =========================================================
+    # LABELS
+    # =========================================================
+
+      ax.set_xlabel(
+        x_label,
+        fontsize=12
+    )
+
+      ax.set_ylabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+    # =========================================================
+    # X LIMITS
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+      else:
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+    # =========================================================
+    # Y LIMITS
+    # =========================================================
+
+      y_min = min(
+        min(y_value),
+        ll_value
+    )
+
+      y_max = max(
+        max(y_value),
+        ll_value
+    )
+
+      y_range = y_max - y_min
+
+      if y_range == 0:
+        y_range = 10
+
+      ax.set_ylim(
+        max(0, y_min - y_range * 0.10),
+        y_max + y_range * 0.15
+    )
+
+    # =========================================================
+    # GRID
+    # =========================================================
+
+      if method == 'casagrande':
+
+        # Major logarithmic grid
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10)
+        )
+
+        # Minor logarithmic grid
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1
+            )
+        )
+
+      else:
+
+        # Linear cone axis
+        ax.xaxis.set_major_locator(
+            MultipleLocator(2)
+        )
+
+        ax.xaxis.set_minor_locator(
+            MultipleLocator(0.5)
+        )
+
+    # Y axis
+      ax.yaxis.set_minor_locator(
+        MultipleLocator(1)
+    )
+
+      ax.grid(
+        which='major',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.7
+    )
+
+      ax.grid(
+        which='minor',
+        linestyle='--',
+        linewidth=0.3,
+        alpha=0.5
+    )
+
+    
+    # LEGEND
+      ax.legend()
+
+   
+    # LAYOUT
+      plt.tight_layout()
+
+    # SAVE PNG
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=100,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+ 
+      buffer.seek(0)
+
+    # RETURN BASE64
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+
+
 
 
 

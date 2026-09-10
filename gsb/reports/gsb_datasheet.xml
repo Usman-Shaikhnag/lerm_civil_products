@@ -723,345 +723,129 @@
 					</div>
 
 
-
-                <!-- Liquid Limit -->
-				<div t-if="data.liquid_limit_visible" style="margin-top:20px;page-break-before: always;">
-					<div style="text-align:center;font-size:18px">
-						Liquid Limit 
-						<!-- added -->
-						<span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-						</span>
-					</div>
-					
-
-					<table style="margin-top:20px">
-						<tr cols="12">
-							<td colspan="1">Container No.
-							</td>
-							<td colspan="1">No of Blows
-							</td>
-							<td colspan="1">Mass of wet sample+container, (M1) in gms
-							</td>
-                            <td colspan="1">Mass of dry sample+container, (M2) in gms
-							</td>
-							<td colspan="2">Mass of container, (M3) in gms
-							</td>
-							<td colspan="2">Mass of Moisture, (M1-M2) in gms
-							</td>
-                            <td colspan="2">Mass of dry sample, (M2-M3) in gms
-							</td>
-                            <td colspan="2">% Moisture
-							</td>
-
-							
-							
-						</tr>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.liquid_limit_table" t-as="r">
-							<td colspan="1">
-								<span t-esc="r['container_no']"/>
-							</td>
-                            <td colspan="1">
-								<span t-esc="r['blows']"/>
-							</td>
-							<td colspan="1">
-								<span t-esc="r['mass_wet_sample_container']"/>
-							</td>
-							<td colspan="1">
-								<span t-esc="r['mass_dry_sample_container']"/>
-							</td>
-                            <td colspan="2">
-								<span t-esc="r['mass_container']"/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['mass_moisture']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['mass_dry_sample']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['moisture_percent']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							
-						</tr>
-					</table>
-					<table style="margin-top:20px">
-						<tr cols="12">
-							<td colspan="6">Liquid Limit :
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.liquid_limit" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							
-						</tr>
-                        <tr cols="12">
-							<td colspan="6">Remarks :
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.remarks_liquid_limit"/>
-							</td>
-							
-						</tr>
+				<!--  -->
+					<div t-if="data.liquid_limit_visible" style="page-break-before: always;">
 						
-					</table>
-
-					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')], limit=1).technician"/>
-					<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-							<div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-
-								<div t-if="prepared_by_obj.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<!-- <div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div> -->
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-
-				</div>
-
-                <!-- Plastic Limit  -->
-
-                <div t-if="data.plastic_visible" style="margin-top:20px">
-					<div style="text-align:center;font-size:18px">
-						Plastic Limit 
-						<!-- added -->
-						<span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
+							<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:20px"><b><span t-field="data.liquid_limit_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
 									</t>
-								</t>
-						</span>
-					</div>
+								</span>
+							</div>
+							
 					
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+										Penetration (mm)
+										</span>
+									</th>
+										<th>
+										<span>
+										Container No.
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Container + Wet Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of Container + Dry Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Water (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Container (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Dry Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+											Moisture Content (%)
+										</span>
+									</th>
 
-					<table style="margin-top:20px">
-						<tr cols="12">
-							<td colspan="1">Container No.
-							</td>
-							<td colspan="1">Mass of wet sample+container, (M1) in gms
-							</td>
-                            <td colspan="2">Mass of dry sample+container, (M2) in gms
-							</td>
-							<td colspan="2">Mass of container, (M3) in gms
-							</td>
-							<td colspan="2">Mass of Moisture, (M1-M2) in gms
-							</td>
-                            <td colspan="2">Mass of dry sample, (M2-M3) in gms
-							</td>
-                            <td colspan="2">% Moisture
-							</td>
+								
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="m" t-value="0"/>
+								<tr t-foreach="data.child_liness" t-as="r">
+									<td>
+										<div>
+											<span t-esc="m + 1" />
+											<t t-set="m" t-value="m+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.penetration"/>
+									</td>
+									<td>
+										<span t-esc="r.container_no"/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_water" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_dry_soil"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}' />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.liquid_limit_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Liquid Limit :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.liquid_limit"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
 
-							
-							
-						</tr>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.plastic_table" t-as="r">
-							<td colspan="1">
-								<span t-esc="r['container_no']"/>
-							</td>
-							<td colspan="1">
-								<span t-esc="r['mass_wet_sample_container']"/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['mass_dry_sample_container']"/>
-							</td>
-                            <td colspan="2">
-								<span t-esc="r['mass_container']"/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['mass_moisture']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['mass_dry_sample']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							<td colspan="2">
-								<span t-esc="r['moisture_percent']"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							
-						</tr>
-					</table>
-					<table style="margin-top:20px">
-						<tr cols="12">
-							<td colspan="6">Plastic limit :
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.average_plastic_moisture"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							
-						</tr>
-                        <tr cols="12">
-							<td colspan="6">Remarks :
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.remarks_plastic"/>
-							</td>
-							
-						</tr>
 						
-					</table>
-
-					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')], limit=1).technician"/>
-					<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-							<div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-
-								<div t-if="prepared_by_obj.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<!-- <div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div> -->
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-
-				</div>
-
-                <!-- Plasticity Index  -->
-
-                <div t-if="data.plasticity_index_visible" style="margin-top:20px">
-					<div style="text-align:center;font-size:18px">
-						Plasticity Index
-						<!-- added -->
-						<span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-						</span>
-					</div>
 					
 
-					<table style="margin-top:20px">
-						<tr cols="12">
-							<td colspan="6">Plasticity Index = Liquid limit - Plastic limit
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.plasticity_index"/>
-							</td>
-							
-						</tr>
-						<tr cols="12">
-							<td colspan="6">Remarks :
-								<![CDATA[&nbsp;]]>
-							</td>
-							<td colspan="6">
-								<span t-field="data.remarks_plastic"/>
-							</td>
-							
-						</tr>
-                        
-					</table>
-
-					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')], limit=1).technician"/>
-					<div class="signatureContainer girdgird">
+						<div t-if="data.graph_image_liquid" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_liquid.decode('utf-8')" style="max-width: 100%;"/>
+						</div>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')], limit=1).technician"/>
+						<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -1096,14 +880,14 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -1120,9 +904,202 @@
 						</div>
 					</div>
 
-				</div>
+						</div>
 
-               
+
+						<!--  -->
+ 
+
+					<div t-if="data.plastic_limit_visible" style="page-break-before: always;">
+						
+							<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:20px"><b><span t-field="data.plastic_limit_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<!-- <th>
+										<span>
+										Penetration (mm)
+										</span>
+									</th> -->
+										<th>
+										<span>
+										Container No.
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Container + Wet Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of Container + Dry Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Water (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Container (g)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Dry Soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+											Moisture Content (%)
+										</span>
+									</th>
+
+								
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.plastic_limit_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="m + 1" />
+											<t t-set="m" t-value="m+1"/>
+										</div>
+									</td>
+									<!-- <td>
+										<span t-esc="r.penetration"/>
+									</td> -->
+									<td>
+										<span t-esc="r.container_no"/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_water" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_container"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.weight_dry_soil"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}' />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.plastic_limit_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Plastic Limit :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.plastic_limit"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div style="margin-top:20px" t-if="data.plastic_limit_visible">
+						
+							<table>
+								<tr cols="12">
+									<td colspan="6">Plasticity index=Liquid limit-Plastic limit :
+										<span t-field="data.plasticity_index" t-options='{"widget": "float", "precision": 2}' />
+									</td>
+								</tr>
+							</table>
+						
+						</div>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')], limit=1).technician"/>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="prepared_by_obj.name or ''"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+
+					
+
+
+
+
+                
 
 				<!--Loose density  -->
 					<div t-if="data.loose_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;page-break-before: always;">

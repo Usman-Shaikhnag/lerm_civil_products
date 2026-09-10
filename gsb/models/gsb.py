@@ -114,9 +114,8 @@ class GsbMechanical(models.Model):
             record.flakiness_visible = False
             record.abrasion_visible = False
             record.impact_visible = False
-            record.plastic_visible = False
+            record.plastic_limit_visible = False
             record.liquid_limit_visible = False
-            record.plasticity_index_visible = False
             
             record.loose_density_visible = False
 
@@ -153,14 +152,13 @@ class GsbMechanical(models.Model):
                     record.abrasion_visible = True
                 if sample.internal_id == '21457gtr4-a55f-47ac-aee6-9f37d733ccca':
                     record.impact_visible = True
+
                 if sample.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
-                    record.plastic_visible  = True  
+                    record.plastic_limit_visible  = True  
+
                 if sample.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
                     record.liquid_limit_visible = True
 
-                if sample.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
-                    record.liquid_limit_visible = True
-                    record.plasticity_index_visible = True
                 
 
                 if sample.internal_id == '657hgt1f-d557-438e-8fd1-2c619a334d02':
@@ -290,35 +288,40 @@ class GsbMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Plastic Limit
-            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
-                result.result_char = round(self.average_plastic_moisture,2)
-                result.calculated = True
-                if self.average_plastic_moisture_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
 
             # Liquid Limit
             if result.parameter.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
-                result.result_char = round(self.liquid_limit,2)
                 result.calculated = True
+                result.result_char = round(self.liquid_limit,2)
                 if self.liquid_limit_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Plasticity Index Visible
-            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
-                result.result_char = round(self.plasticity_index,2)
+
+            # Plastic Limit
+            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
                 result.calculated = True
+                result.result_char = round(self.plastic_limit,2)
+                if self.plastic_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Plasticity Index
+            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
+                result.calculated = True
+                result.result_char = round(self.plasticity_index,2)
                 if self.plasticity_index_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+        
             if result.parameter.internal_id == '657hgt1f-d557-438e-8fd1-2c619a334d02':
                 result.result_char = round(self.loose_density,2)
                 result.calculated = True
@@ -1817,83 +1820,182 @@ class GsbMechanical(models.Model):
                     else:
                         record.average_impact_value_nabl = 'fail'
 
-    # Liquid Limit
+
+                # Liquid Limit
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
 
-    liquid_limit_table = fields.One2many('mech.gsb.liquid.limit.line','parent_id',string="Liquid Limit")
-    liquid_limit = fields.Float("Liquid Limit",digits=(12,2))
-    remarks_liquid_limit = fields.Selection([
-        ('plastic', 'Plastic'),
-        ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
+    liquid_limit_specification = fields.Char(string='Liquid Limit Specification')
+
+    child_liness = fields.One2many('mech.gsb.liquid.limit.line','parent_id',string="Liquid Limit")
+    liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
+
+
+    liquid_limit_method = fields.Selection([
+    ('casagrande', 'Casagrande'),
+    ('cone', 'Cone Penetrometer'),], string='Liquid Limit Method')
+
+
+    @api.depends(
+    'liquid_limit_method',
+    'child_liness.penetration',
+    'child_liness.moisture_content',
+)
+    def _compute_liquid_limit(self):
+
+     for record in self:
+
+        lines = record.child_liness.filtered(lambda l: l.penetration is not None and l.moisture_content is not None and float(l.penetration) > 0)
+
+        if len(lines) < 2:
+            record.liquid_limit = 0.0
+            continue
+
+
+        if record.liquid_limit_method == 'casagrande':
+
+            x = [math.log10(float(l.penetration)) for l in lines]
+            y = [float(l.moisture_content) for l in lines]
+
+            n = len(lines)
+
+            sum_x = sum(x)
+            sum_y = sum(y)
+            sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+            sum_x2 = sum(xi ** 2 for xi in x)
+
+            denominator = n * sum_x2 - sum_x ** 2
+
+            if abs(denominator) < 1e-12:
+              record.liquid_limit = 0.0
+              continue
+
+            slope = (n * sum_xy - sum_x * sum_y) / denominator
+
+            intercept = (sum_y - slope * sum_x ) / n
+
+            # Water content at 25 blows
+            liquid_limit = (slope * math.log10(25.0)) + intercept
+
+            record.liquid_limit = round(liquid_limit, 2)
+
+        # lines = record.child_liness.filtered(
+        #     lambda l: l.moisture_content is not None
+        # )
+
+        # if len(lines) < 2:
+        #     record.liquid_limit = 0
+        #     continue
+
+        # # ---------------------------------
+        # # CASAGRANDE METHOD
+        # # LL = water content at 25 blows
+        # # ---------------------------------
+        # if record.liquid_limit_method == 'casagrande':
+
+        #     lines = record.child_liness.filtered(
+        #     lambda l: l.penetration and l.moisture_content
+        # )
+
+        #     if len(lines) < 2:
+        #         record.liquid_limit = 0.0
+        #         continue
+
+        #     x = [math.log10(float(l.penetration)) for l in lines]
+        #     y = [float(l.moisture_content) for l in lines]
+
+        #     n = len(x)
+
+        #     sum_x = sum(x)
+        #     sum_y = sum(y)
+        #     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+        #     sum_x2 = sum(xi * xi for xi in x)
+
+        #     denominator = n * sum_x2 - (sum_x ** 2)
+
+        #     if denominator == 0:
+        #         record.liquid_limit = 0.0
+        #         continue
+
+        #     a = (n * sum_xy - sum_x * sum_y) / denominator
+        #     b = (sum_y - a * sum_x) / n
+
+        #     ll = a * math.log10(25.0) + b
+
+        #     record.liquid_limit = round(ll, 2)
+
+        # ---------------------------------
+        # CONE PENETROMETER METHOD
+        # LL = water content at 20 mm
+        # ---------------------------------
+        elif record.liquid_limit_method == 'cone':
+
+            lines = lines.filtered(
+                lambda l: l.penetration
+            )
+
+            if len(lines) < 2:
+                record.liquid_limit = 0
+                continue
+
+            x = [
+                float(line.penetration)
+                for line in lines
+            ]
+
+            y = [
+                float(line.moisture_content)
+                for line in lines
+            ]
+
+            n = len(x)
+
+            sum_x = sum(x)
+            sum_y = sum(y)
+
+            sum_xy = sum(
+                xi * yi
+                for xi, yi in zip(x, y)
+            )
+
+            sum_x2 = sum(
+                xi * xi
+                for xi in x
+            )
+
+            denominator = (
+                n * sum_x2
+                - sum_x ** 2
+            )
+
+            if denominator == 0:
+                record.liquid_limit = 0
+                continue
+
+            a = (
+                n * sum_xy
+                - sum_x * sum_y
+            ) / denominator
+
+            b = (
+                sum_y - a * sum_x
+            ) / n
+
+            # Liquid Limit at 20 mm penetration
+            ll = a * 20.0 + b
+
+            record.liquid_limit = round(ll, 2)
+
+        else:
+            record.liquid_limit = 0
+
+   
+
+
     
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
-    
-
-
-      # def calculate_result(self):
-    are_child_lines_filled = fields.Boolean(compute='_compute_are_child_lines_filled',string='child lines',store=False)
-
-    @api.depends('liquid_limit_table.moisture_percent', 'liquid_limit_table.mass_dry_sample')  # Replace with actual field names
-    def _compute_are_child_lines_filled(self):
-        for record in self:
-            all_lines_filled = all(line.moisture_percent and line.mass_dry_sample for line in record.liquid_limit_table)
-            record.are_child_lines_filled = all_lines_filled
-
-    
-
-    def liquid_calculation(self):
-        print('<<<<<<<<<<<<')
-        for record in self:
-            # import wdb;wdb.set_trace()
-            data = self.liquid_limit_table
-            
-            result = 0  # Initialize result before the loop
-            container=[]
-            blows = []
-            for i in data:
-                container.append(i.moisture_percent)
-                blows.append(i.blows)
-
-                # print(container)
-                # results=(container[1]*100-((container[2]-container[3])*100*(25-blows[1]))/(blows[2]-blows[1]))/100
-                # print (results,'final result')
-                print('Moisture:', container)
-                print('Blows:', blows)
-
-            if len(container) == 1:
-              # Only one point, no interpolation possible
-              result = container[0]
-              print('Only one data point, result:', result)
-            elif len(container) >= 3 and len(blows) >= 3:
-              # Use your interpolation formula (adjust indexes as needed)
-              result = (container[1]*100 - ((container[1] - container[2]) * 100 * (25 - blows[1])) / (blows[2] - blows[1])) / 100
-              print('Interpolated result:', result)
-            else:
-              print('Not enough data points to calculate result')
-              result = 0  # or handle differently
-
-        record.write({'liquid_limit': result})
-                
-                
-
-            # print(data, 'data')
-
-            # container2Moisture = data[1].moisture_percent
-            # container1Moisture = data[0].moisture_percent
-            # container3Moisture = data[2].moisture_percent
-            # cont2blow = data[1].blows
-            # cont3blow = data[2].blows
-            # result = (container2Moisture * 100 - ((container2Moisture - container3Moisture) * 100 * (25 - cont2blow)) / (cont3blow - cont2blow)) / 100
-            # print(result, 'final result')
-        # self.write({'liquid_limit': results})
-
-
-
-
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
     @api.depends('liquid_limit','eln_ref','grade')
     def _compute_liquid_limit_conformity(self):
@@ -1920,69 +2022,1018 @@ class GsbMechanical(models.Model):
                         record.liquid_limit_conformity = 'fail'
 
     liquid_limit_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_liquid_limit_value_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
 
     @api.depends('liquid_limit','eln_ref','grade')
-    def _compute_liquid_limit_value_nabl(self):
+    def _compute_liquid_limit_nabl(self):
         
         for record in self:
             record.liquid_limit_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.liquid_limit - record.liquid_limit*mu_value
-                    upper = record.liquid_limit + record.liquid_limit*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.liquid_limit_nabl = 'pass'
-                        break
-                    else:
-                        record.liquid_limit_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.liquid_limit - record.liquid_limit*mu_value
+            upper = record.liquid_limit + record.liquid_limit*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.liquid_limit_nabl = 'pass'
+                break
+            else:
+                record.liquid_limit_nabl = 'fail'
 
 
-    # Plastic Limit
-    plastic_name = fields.Char("Name",default="Plastic Limit")
-    plastic_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
+    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
-    plastic_table = fields.One2many('mech.gsb.plastic.limit.line','parent_id',string="Plastic Limit")
-    average_plastic_moisture = fields.Float("Average",compute="_compute_plastic_average")
+    show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
+
+
+    def generate_line_chart_liquid(self):
+
+      self.ensure_one()
+
+      x_value = []
+      y_value = []
+
+    # =========================================================
+    # GET METHOD
+    # =========================================================
+      method = self.liquid_limit_method
+ 
+    # =========================================================
+    # GET DATA
+    # =========================================================
+      for line in self.child_liness:
+
+          try:
+
+              if line.moisture_content is None:
+                  continue
+
+              moisture = float(line.moisture_content)
+
+            # -------------------------------------------------
+            # CASAGRANDE
+            # X = Number of blows
+            # -------------------------------------------------
+              if method == 'casagrande':
+
+                  if line.penetration is None:
+                      continue
+
+                  x = float(line.penetration)
+
+                # log10() cannot accept 0 or negative values
+                  if x <= 0:
+                      continue
+
+            # -------------------------------------------------
+            # CONE
+            # X = Penetration (mm)
+            # -------------------------------------------------
+              else:
+
+                  if line.penetration is None:
+                    continue
+
+                  x = float(line.penetration)
+
+                  if x <= 0:
+                    continue
+
+              x_value.append(x)
+              y_value.append(moisture)
+
+          except (ValueError, TypeError):
+              continue
+
+    # =========================================================
+    # MINIMUM 2 POINTS
+    # =========================================================
+      if len(x_value) < 2:
+          return False
+
+    # =========================================================
+    # SORT DATA
+    # =========================================================
+      data = sorted(
+        zip(x_value, y_value),
+        key=lambda x: x[0]
+    )
+
+      x_value = [d[0] for d in data]
+      y_value = [d[1] for d in data]
+
+    # =========================================================
+    # REGRESSION
+    # =========================================================
+
+      n = len(x_value)
+
+      if method == 'casagrande':
+
+        # =====================================================
+        # CASAGRANDE
+        # w = a * log10(N) + b
+        # =====================================================
+
+          x_log = [
+            math.log10(x)
+            for x in x_value
+        ]
+
+          sum_x = sum(x_log)
+          sum_y = sum(y_value)
+
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_log, y_value)
+        )
+
+          sum_x2 = sum(
+            x * x
+            for x in x_log
+        )
+
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 25 blows
+          ll_x = 25.0
+
+          ll_value = (
+            a * math.log10(ll_x)
+            + b
+        )
+
+        # Smooth logarithmic regression curve
+          x_fit = np.logspace(
+            math.log10(min(x_value)),
+            math.log10(max(x_value)),
+            500
+        )
+
+          y_fit = [
+            a * math.log10(x) + b
+            for x in x_fit
+        ]
+
+          x_label = 'Number of Blows (Log Scale)'
+          graph_title = 'LIQUID LIMIT - CASAGRANDE METHOD'
+
+      else:
+
+        # =====================================================
+        # CONE METHOD
+        # w = a * penetration + b
+        # =====================================================
+
+          sum_x = sum(x_value)
+          sum_y = sum(y_value)
+
+          sum_xy = sum(
+            x * y
+            for x, y in zip(x_value, y_value)
+        )
+
+          sum_x2 = sum(
+            x * x
+            for x in x_value
+        )
+
+          denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+          if abs(denominator) < 1e-12:
+            return False
+
+          a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+          b = (
+            sum_y
+            - a * sum_x
+        ) / n
+
+        # LL at 20 mm penetration
+          ll_x = 20.0
+
+          ll_value = (
+            a * ll_x
+            + b
+        )
+
+        # Smooth linear regression curve
+          x_fit = np.linspace(
+            min(x_value),
+            max(x_value),
+            500
+        )
+
+          y_fit = (
+            a * x_fit
+            + b
+        )
+
+          x_label = 'Penetration (mm)'
+          graph_title = 'LIQUID LIMIT - CONE METHOD'
+
+    # =========================================================
+    # CREATE GRAPH
+    # =========================================================
+ 
+      fig, ax = plt.subplots(
+        figsize=(10, 4)
+    )
+
+    # =========================================================
+    # X AXIS
+    # =========================================================
+
+      if method == 'casagrande':
+        ax.set_xscale('log')
+      else:
+        ax.set_xscale('linear')
+
+    # =========================================================
+    # REGRESSION / FLOW CURVE
+    # =========================================================
+
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='blue',
+        linewidth=2,
+        label='Flow Curve'
+    )
+
+    # =========================================================
+    # ACTUAL TEST POINTS
+    # =========================================================
+
+      ax.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=80,
+        zorder=5,
+        label='Test Points'
+    )
+
+    # =========================================================
+    # LIQUID LIMIT VERTICAL LINE
+    # =========================================================
+
+      ax.axvline(
+        x=ll_x,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+    # =========================================================
+    # LIQUID LIMIT HORIZONTAL LINE
+    # =========================================================
+
+      ax.axhline(
+        y=ll_value,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+    # =========================================================
+    # LL POINT
+    # =========================================================
+
+      ax.scatter(
+        [ll_x],
+        [ll_value],
+        color='green',
+        s=120,
+        zorder=10
+    )
+
+    # =========================================================
+    # LL LABEL
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(25 blows)',
+            xy=(ll_x, ll_value),
+            xytext=(26, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+      else:
+
+        ax.annotate(
+            f'LL = {ll_value:.2f}%\n(20 mm)',
+            xy=(ll_x, ll_value),
+            xytext=(ll_x + 1, ll_value + 2),
+            color='green',
+            fontsize=12,
+            fontweight='bold'
+        )
+
+    # =========================================================
+    # TITLE
+    # =========================================================
+
+      ax.set_title(
+        graph_title,
+        fontsize=18,
+        fontweight='bold'
+    )
+
+    # =========================================================
+    # LABELS
+    # =========================================================
+
+      ax.set_xlabel(
+        x_label,
+        fontsize=12
+    )
+
+      ax.set_ylabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+    # =========================================================
+    # X LIMITS
+    # =========================================================
+
+      if method == 'casagrande':
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+      else:
+
+        ax.set_xlim(
+            min(x_value) * 0.8,
+            max(x_value) * 1.2
+        )
+
+    # =========================================================
+    # Y LIMITS
+    # =========================================================
+
+      y_min = min(
+        min(y_value),
+        ll_value
+    )
+
+      y_max = max(
+        max(y_value),
+        ll_value
+    )
+
+      y_range = y_max - y_min
+
+      if y_range == 0:
+        y_range = 10
+
+      ax.set_ylim(
+        max(0, y_min - y_range * 0.10),
+        y_max + y_range * 0.15
+    )
+
+    # =========================================================
+    # GRID
+    # =========================================================
+
+      if method == 'casagrande':
+
+        # Major logarithmic grid
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10)
+        )
+
+        # Minor logarithmic grid
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1
+            )
+        )
+
+      else:
+
+        # Linear cone axis
+        ax.xaxis.set_major_locator(
+            MultipleLocator(2)
+        )
+
+        ax.xaxis.set_minor_locator(
+            MultipleLocator(0.5)
+        )
+
+    # Y axis
+      ax.yaxis.set_minor_locator(
+        MultipleLocator(1)
+    )
+
+      ax.grid(
+        which='major',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.7
+    )
+
+      ax.grid(
+        which='minor',
+        linestyle='--',
+        linewidth=0.3,
+        alpha=0.5
+    )
+
     
-    remarks_plastic = fields.Selection([
-        ('plastic', 'Plastic'),
-        ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
+    # LEGEND
+      ax.legend()
 
    
+    # LAYOUT
+      plt.tight_layout()
+
+    # SAVE PNG
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=100,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+ 
+      buffer.seek(0)
+
+    # RETURN BASE64
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+
+
+
+    # def generate_line_chart_liquid(self):
+    #   self.ensure_one()
+
+    # # =========================================================
+    # # GET DYNAMIC DATA FROM CHILD LINES
+    # # =========================================================
+    #   x_value = []
+    #   y_value = []
+
+    #   for line in self.child_liness:
+
+    #     if (
+    #         line.penetration is not None
+    #         and line.moisture_content is not None
+    #     ):
+    #         try:
+    #             x = float(line.penetration)
+    #             y = float(line.moisture_content)
+
+    #             x_value.append(x)
+    #             y_value.append(y)
+
+    #         except (ValueError, TypeError):
+    #             continue
+
+    # # =========================================================
+    # # MINIMUM 2 POINTS REQUIRED
+    # # =========================================================
+    #   if len(x_value) < 2:
+    #     return False
+
+    # # =========================================================
+    # # SORT DATA BY PENETRATION
+    # # =========================================================
+    #   data = sorted(
+    #     zip(x_value, y_value),
+    #     key=lambda item: item[0]
+    # )
+
+    #   x_value = [item[0] for item in data]
+    #   y_value = [item[1] for item in data]
+
+    # # =========================================================
+    # # LINEAR REGRESSION
+    # #
+    # # y = a*x + b
+    # # =========================================================
+    #   n = len(x_value)
+
+    #   sum_x = sum(x_value)
+    #   sum_y = sum(y_value)
+
+    #   sum_xy = sum(
+    #     x * y
+    #     for x, y in zip(x_value, y_value)
+    # )
+
+    #   sum_x2 = sum(
+    #     x * x
+    #     for x in x_value
+    # )
+
+    #   denominator = (
+    #     n * sum_x2
+    #     - (sum_x ** 2)
+    # )
+
+    #   if denominator == 0:
+    #       return False
+
+    # # Slope
+    #   a = (
+    #     n * sum_xy
+    #     - sum_x * sum_y
+    # ) / denominator
+
+    # # Intercept
+    #   b = (
+    #     sum_y
+    #     - a * sum_x
+    # ) / n
+
+    # # =========================================================
+    # # LIQUID LIMIT AT 20 mm
+    # #
+    # # NO ROUNDING
+    # # =========================================================
+    #   ll_penetration = 20.0
+
+    #   ll_value = (
+    #     a * ll_penetration + b
+    # )
+
+    # # =========================================================
+    # # REGRESSION LINE
+    # #
+    # # TRUE REGRESSION LINE
+    # #
+    # # DO NOT modify/round ll_value.
+    # # =========================================================
+    #   x_fit = np.linspace(
+    #     min(x_value),
+    #     max(x_value),
+    #     500
+    # )
+
+    #   y_fit = (
+    #     a * x_fit + b
+    # )
+
+    # # =========================================================
+    # # DYNAMIC AXIS RANGE
+    # #
+    # # Include:
+    # #   - all X data
+    # #   - 20 mm
+    # #
+    # # Include:
+    # #   - all Y data
+    # #   - exact LL value
+    # # =========================================================
+
+    #   all_x_for_axis = (
+    #     x_value + [ll_penetration]
+    # )
+ 
+    #   all_y_for_axis = (
+    #     y_value + [ll_value]
+    # )
+
+    #   data_x_min = min(
+    #     all_x_for_axis
+    # )
+
+    #   data_x_max = max(
+    #     all_x_for_axis
+    # )
+
+    #   data_y_min = min(
+    #     all_y_for_axis
+    # )
+
+    #   data_y_max = max(
+    #     all_y_for_axis
+    # )
+
+    # # =========================================================
+    # # X AXIS PADDING
+    # # =========================================================
+    #   x_range = (
+    #     data_x_max - data_x_min
+    # )
+
+    #   if x_range == 0:
+    #     x_range = 2.0
+
+    #   x_padding = x_range * 0.12
+
+    #   x_min = (
+    #     data_x_min - x_padding
+    # )
+
+    #   x_max = (
+    #     data_x_max + x_padding
+    # )
+
+    # # =========================================================
+    # # Y AXIS PADDING
+    # # =========================================================
+    #   y_range = (
+    #     data_y_max - data_y_min
+    # )
+
+    #   if y_range == 0:
+    #     y_range = 2.0
+
+    #   y_padding = y_range * 0.12
+
+    #   y_min = (
+    #     data_y_min - y_padding
+    # )
+
+    #   y_max = (
+    #     data_y_max + y_padding
+    # )
+
+    # # =========================================================
+    # # CREATE FIGURE
+    # # =========================================================
+    #   fig, ax = plt.subplots(
+    #     figsize=(10, 5)
+    # )
+
+    # # =========================================================
+    # # LINEAR X AXIS
+    # # =========================================================
+    #   ax.set_xscale(
+    #     'linear'
+    # )
+
+    # # =========================================================
+    # # RED TRUE REGRESSION LINE
+    # # =========================================================
+    #   ax.plot(
+    #     x_fit,
+    #     y_fit,
+    #     color='#c64b47',
+    #     linewidth=2.5,
+    #     zorder=2
+    # )
+
+    # # =========================================================
+    # # RED TEST POINTS
+    # # =========================================================
+    #   ax.scatter(
+    #     x_value,
+    #     y_value,
+    #     color='#c64b47',
+    #     edgecolors='#c64b47',
+    #     marker='s',
+    #     s=70,
+    #     zorder=5
+    # )
+
+    # # =========================================================
+    # # BLACK VERTICAL LINE AT 20 mm
+    # #
+    # # IMPORTANT:
+    # #
+    # # The TOP of this line is the EXACT regression value:
+    # #
+    # # ll_value = a * 20 + b
+    # #
+    # # Therefore it intersects the red line exactly.
+    # # =========================================================
+    #   ax.plot(
+    #     [
+    #         ll_penetration,
+    #         ll_penetration
+    #     ],
+    #     [
+    #         y_min,
+    #         ll_value
+    #     ],
+    #     color='black',
+    #     linewidth=2,
+    #     zorder=3
+    # )
+
+    # # =========================================================
+    # # DOWN ARROW AT 20 mm
+    # # =========================================================
+    #   arrow_height = (
+    #     y_range * 0.15
+    # )
+
+    #   arrow_top = min(
+    #     ll_value + arrow_height,
+    #     y_max
+    # )
+
+    #   ax.annotate(
+    #     '',
+    #     xy=(
+    #         ll_penetration,
+    #         y_min
+    #     ),
+    #     xytext=(
+    #         ll_penetration,
+    #         arrow_top
+    #     ),
+    #     arrowprops=dict(
+    #         arrowstyle='->',
+    #         color='black',
+    #         linewidth=2
+    #     ),
+    #     zorder=4
+    # )
+
+    # # =========================================================
+    # # BLACK HORIZONTAL LINE AT EXACT LIQUID LIMIT
+    # #
+    # # NO ROUNDING
+    # # =========================================================
+    #   horizontal_start = x_min
+
+    #   horizontal_end = max(
+    #     x_value
+    # )
+
+    #   ax.plot(
+    #     [
+    #         horizontal_start,
+    #         horizontal_end
+    #     ],
+    #     [
+    #         ll_value,
+    #         ll_value
+    #     ],
+    #     color='black',
+    #     linewidth=2,
+    #     zorder=3
+    # )
+
+    # # =========================================================
+    # # LEFT ARROW ON LIQUID LIMIT LINE
+    # # =========================================================
+    #   arrow_width = (
+    #     horizontal_end - horizontal_start
+    # ) * 0.08
+
+    #   ax.annotate(
+    #     '',
+    #     xy=(
+    #         horizontal_start,
+    #         ll_value
+    #     ),
+    #     xytext=(
+    #         horizontal_start + arrow_width,
+    #         ll_value
+    #     ),
+    #     arrowprops=dict(
+    #         arrowstyle='->',
+    #         color='black',
+    #         linewidth=2
+    #     ),
+    #     zorder=4
+    # )
+
+    # # =========================================================
+    # # X AXIS
+    # # =========================================================
+    #   ax.set_xlim(
+    #     x_min,
+    #     x_max
+    # )
+
+    # # =========================================================
+    # # X MAJOR GRID / TICKS
+    # #
+    # # Tick spacing is 2 mm.
+    # # This does NOT modify your actual values.
+    # # =========================================================
+    #   ax.xaxis.set_major_locator(
+    #     MultipleLocator(2)
+    # )
+
+    # # =========================================================
+    # # X MINOR GRID / TICKS
+    # #
+    # # 0.5 mm
+    # # =========================================================
+    #   ax.xaxis.set_minor_locator(
+    #     MultipleLocator(0.5)
+    # )
+
+    # # =========================================================
+    # # Y AXIS
+    # # =========================================================
+    #   ax.set_ylim(
+    #     y_min,
+    #     y_max
+    # )
+
+    # # =========================================================
+    # # Y MAJOR TICKS
+    # #
+    # # Every 1%
+    # # =========================================================
+    #   ax.yaxis.set_major_locator(
+    #     MultipleLocator(1)
+    # )
+
+    # # =========================================================
+    # # Y MINOR TICKS
+    # #
+    # # Every 0.5%
+    # # =========================================================
+    #   ax.yaxis.set_minor_locator(
+    #     MultipleLocator(0.5)
+    # )
+
+    # # =========================================================
+    # # X LABEL
+    # # =========================================================
+    #   ax.set_xlabel(
+    #     'penetration(mm)',
+    #     fontsize=12,
+    #     fontweight='bold'
+    # )
+
+    # # =========================================================
+    # # Y LABEL
+    # # =========================================================
+    #   ax.set_ylabel(
+    #     'Moisture Content (%)',
+    #     fontsize=12,
+    #     fontweight='bold'
+    # )
 
     
-    @api.depends('plastic_table.moisture_percent')
-    def _compute_plastic_average(self):
-        for record in self:
-            if record.plastic_table:
-                sum_moisture_percent = sum(record.plastic_table.mapped('moisture_percent'))
-                record.average_plastic_moisture = round((sum_moisture_percent / len(record.plastic_table)),2)
-            else:
-                record.average_plastic_moisture = 0.0
+    # # MAJOR GRID
+    
+    #   ax.grid(
+    #     which='major',
+    #     color='black',
+    #     linestyle='-',
+    #     linewidth=0.5,
+    #     alpha=0.7
+    # )
 
-    average_plastic_moisture_conformity = fields.Selection([
+    
+    # # MINOR GRID
+   
+    #   ax.grid(
+    #     which='minor',
+    #     color='#d0d7df',
+    #     linestyle='-',
+    #     linewidth=0.4,
+    #     alpha=0.7
+    # )
+
+    # # =========================================================
+    # # TICK LABEL SIZE
+    # # =========================================================
+    #   ax.tick_params(
+    #     axis='both',
+    #     which='major',
+    #     labelsize=10
+    # )
+
+    # # =========================================================
+    # # REMOVE LEGEND
+    # # =========================================================
+    #   if ax.legend_:
+    #     ax.legend_.remove()
+
+    # # =========================================================
+    # # TIGHT LAYOUT
+    # # =========================================================
+    #   plt.tight_layout()
+
+    # # =========================================================
+    # # CONVERT GRAPH TO PNG
+    # # =========================================================
+    #   buffer = io.BytesIO()
+
+    #   plt.savefig(
+    #     buffer,
+    #     format='png',
+    #     dpi=100,
+    #     bbox_inches='tight'
+    # )
+
+    #   plt.close(fig)
+
+    #   buffer.seek(0)
+
+    # # =========================================================
+    # # RETURN BASE64
+    # # =========================================================
+    #   return base64.b64encode(
+    #     buffer.read()
+    # ).decode('utf-8')
+
+
+ 
+    
+
+    @api.depends('child_liness')
+    def _compute_graph_image_liquid(self):
+        try:
+            for record in self:
+                chart_image_liquid = record.generate_line_chart_liquid()
+                record.graph_image_liquid = chart_image_liquid
+        except:
+            pass 
+
+
+      # Plastic Limit
+    plastic_limit_name = fields.Char("Name", default="Plastic Limit")
+    plastic_limit_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
+
+    plastic_limit_specification = fields.Char(string ='Plastic Limit Specification')
+
+    plasticity_index_specification = fields.Char(string='Plasticity Index Specification')
+   
+    plastic_limit_table = fields.One2many('mech.gsb.plastic.limit.line','parent_id',string="Parameter")
+
+    plastic_limit_type = fields.Selection([
+        ('plastic', 'Plastic'),
+        ('non_plastic', 'Non-Plastic'),
+    ], string='Plastic Limit Type')
+
+    plastic_limit = fields.Float(string="Average ",compute="_compute_plastic_limit")
+   
+    @api.depends('plastic_limit_table.moisture_content')
+    def _compute_plastic_limit(self):
+
+     for record in self:
+
+        total_water_content_pastic = sum(
+            record.plastic_limit_table.mapped('moisture_content')
+        )
+
+        average = (
+            total_water_content_pastic / len(record.plastic_limit_table)
+            if record.plastic_limit_table
+            else 0.0
+        )
+
+        record.plastic_limit = round(average)
+   
+
+    plastic_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
 
-
-
-    @api.depends('average_plastic_moisture','eln_ref','grade')
-    def _compute_average_plastic_moisture_conformity(self):
+    @api.depends('plastic_limit','eln_ref','grade')
+    def _compute_plastic_limit_conformity(self):
         
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.average_plastic_moisture_conformity = 'na'
+                record.plastic_limit_conformity = 'na'
                 continue
-            record.average_plastic_moisture_conformity = 'fail'
+            record.plastic_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
             for material in materials:
@@ -1991,57 +3042,59 @@ class GsbMechanical(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.average_plastic_moisture - record.average_plastic_moisture*mu_value
-                    upper = record.average_plastic_moisture + record.average_plastic_moisture*mu_value
+                    lower = record.plastic_limit - record.plastic_limit*mu_value
+                    upper = record.plastic_limit + record.plastic_limit*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.average_plastic_moisture_conformity = 'pass'
+                        record.plastic_limit_conformity = 'pass'
                         break
                     else:
-                        record.average_plastic_moisture_conformity = 'fail'
+                        record.plastic_limit_conformity = 'fail'
 
-    average_plastic_moisture_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_plastic_moisture_nabl", store=True)
+    plastic_limit_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Plastic Limit NABL", compute="_compute_plasticity_limi_nabl", store=True)
 
-    @api.depends('average_plastic_moisture','eln_ref','grade')
-    def _compute_average_plastic_moisture_nabl(self):
+    @api.depends('plastic_limit','eln_ref','grade')
+    def _compute_plasticity_limi_nabl(self):
         
         for record in self:
-            record.average_plastic_moisture_nabl = 'fail'
+            record.plastic_limit_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_plastic_moisture - record.average_plastic_moisture*mu_value
-                    upper = record.average_plastic_moisture + record.average_plastic_moisture*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_plastic_moisture_nabl = 'pass'
-                        break
-                    else:
-                        record.average_plastic_moisture_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.plastic_limit - record.plastic_limit*mu_value
+            upper = record.plastic_limit + record.plastic_limit*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.plastic_limit_nabl = 'pass'
+                break
+            else:
+                record.plastic_limit_nabl = 'fail'
 
-    # Plasticity Index
-    plasticity_index_visible = fields.Boolean("Plasticity Index Visible",compute="_compute_visible")
-    plasticity_index = fields.Float("Plasticity Index",compute="_compute_plasticity_limit")
-    remarks_plasticity_index = fields.Selection([
+    plasticity_index = fields.Float(string="Plasticity Index", compute="_compute_plasticity_index")
+
+    plasticity_limit_type = fields.Selection([
         ('plastic', 'Plastic'),
-        ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
+        ('non_plastic', 'Non-Plastic'),
+    ], string='Plastic Limit Type')
 
-    @api.depends('average_plastic_moisture','liquid_limit')
-    def _compute_plasticity_limit(self):
+    @api.depends('plastic_limit', 'liquid_limit')
+    def _compute_plasticity_index(self):
         for record in self:
-            record.plasticity_index = record.liquid_limit - record.average_plastic_moisture
+            if record.liquid_limit is not None and record.plastic_limit is not None:
+                record.plasticity_index = record.liquid_limit - record.plastic_limit
+            else:
+                record.plasticity_index = 0.0
+
+
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
-
-
+            ('fail', 'Fail'),('na', 'NA'),], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
     def _compute_plasticity_index_conformity(self):
@@ -2068,8 +3121,8 @@ class GsbMechanical(models.Model):
                         record.plasticity_index_conformity = 'fail'
 
     plasticity_index_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_plasticity_index_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Plasticity Index NABL", compute="_compute_plasticity_index_nabl", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
     def _compute_plasticity_index_nabl(self):
@@ -2078,19 +3131,21 @@ class GsbMechanical(models.Model):
             record.plasticity_index_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.plasticity_index - record.plasticity_index*mu_value
-                    upper = record.plasticity_index + record.plasticity_index*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.plasticity_index_nabl = 'pass'
-                        break
-                    else:
-                        record.plasticity_index_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.plasticity_index - record.plasticity_index*mu_value
+            upper = record.plasticity_index + record.plasticity_index*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.plasticity_index_nabl = 'pass'
+                break
+            else:
+                record.plasticity_index_nabl = 'fail'
+
+
 
       # Heavy Compaction-MDD
     heavy_name = fields.Char("Name",default="DETERMINATION OF MDD & OMC BY PROCTOR TEST ")
@@ -3489,69 +4544,175 @@ class GSBLIGHTCOMPACTIONLINE(models.Model):
 class GsbLiquidLimitLine(models.Model):
     _name = "mech.gsb.liquid.limit.line"
     parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
     
-    container_no = fields.Char("Container No.")
-    blows = fields.Integer(string="No of Blows")
-    mass_wet_sample_container = fields.Float(string="Mass of wet sample+container, (M1) in gms")
-    mass_dry_sample_container = fields.Float(string="Mass of dry sample+container, (M2) in gms")
-    mass_container = fields.Float(string="Mass of container, (M3) in gms")
-    mass_moisture = fields.Float(string="Mass of Moisture, (M1-M2) in gms",compute="_compute_mass_moisture")
-    mass_dry_sample = fields.Float(string="Mass of dry sample, (M2-M3) in gms",compute="_compute_mass_dry_sample")
-    moisture_percent = fields.Float(string="% Moisture",compute="_compute_moisture_percent")
+    penetration = fields.Float(string='Penetration (mm)')
+    container_no = fields.Integer(string='Container No.')
 
+    weight_container_wet_soil = fields.Float(
+        string='Weight of Container + Wet Soil (g)'
+    )
 
-    @api.depends('mass_dry_sample_container','mass_wet_sample_container')
-    def _compute_mass_moisture(self):
-        for record in self:
-            record.mass_moisture = record.mass_wet_sample_container - record.mass_dry_sample_container
+    weight_container_dry_soil = fields.Float(
+        string='Weight of Container + Dry Soil (g)'
+    )
 
+    weight_water = fields.Float(
+        string='Weight of Water (g)',
+        compute='_compute_values',
+        store=True
+    )
 
-    @api.depends('mass_dry_sample_container','mass_container')
-    def _compute_mass_dry_sample(self):
-        for record in self:
-            record.mass_dry_sample = record.mass_dry_sample_container - record.mass_container
+    weight_container = fields.Float(
+        string='Weight of Container (g)'
+    )
 
-    @api.depends('mass_moisture','mass_dry_sample')
-    def _compute_moisture_percent(self):
-        for record in self:
-            if record.mass_dry_sample != 0:
-                record.moisture_percent = round((record.mass_moisture /record.mass_dry_sample) *100,2)
+    weight_dry_soil = fields.Float(
+        string='Weight of Dry Soil (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        string='Moisture Content (%)',
+        compute='_compute_values',
+        store=True
+    )
+
+    @api.depends(
+        'weight_container_wet_soil',
+        'weight_container_dry_soil',
+        'weight_container'
+    )
+    def _compute_values(self):
+        for line in self:
+
+            # Weight of Water
+            line.weight_water = (
+                line.weight_container_wet_soil
+                - line.weight_container_dry_soil
+            )
+
+            # Weight of Dry Soil
+            line.weight_dry_soil = (
+                line.weight_container_dry_soil
+                - line.weight_container
+            )
+
+            # Moisture Content
+            if line.weight_dry_soil:
+                line.moisture_content = (
+                    line.weight_water
+                    / line.weight_dry_soil
+                ) * 100
             else:
-                record.moisture_percent = 0
+                line.moisture_content = 0.0
 
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(GsbLiquidLimitLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class GsbPlasticLimitLine(models.Model):
     _name = "mech.gsb.plastic.limit.line"
     parent_id = fields.Many2one('mechanical.gsb', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
     
-    container_no = fields.Char("Container No.")
-    mass_wet_sample_container = fields.Float(string="Mass of wet sample+container, (M1) in gms")
-    mass_dry_sample_container = fields.Float(string="Mass of dry sample+container, (M2) in gms")
-    mass_container = fields.Float(string="Mass of container, (M3) in gms")
-    mass_moisture = fields.Float(string="Mass of Moisture, (M1-M2) in gms",compute="_compute_mass_moisture")
-    mass_dry_sample = fields.Float(string="Mass of dry sample, (M2-M3) in gms",compute="_compute_mass_dry_sample")
-    moisture_percent = fields.Float(string="% Moisture",compute="_compute_moisture_percent")
+    penetration = fields.Float(string='Penetration (mm)')
+    container_no = fields.Integer(string='Container No.')
 
+    weight_container_wet_soil = fields.Float(
+        string='Weight of Container + Wet Soil (g)'
+    )
 
-    @api.depends('mass_dry_sample_container','mass_wet_sample_container')
-    def _compute_mass_moisture(self):
-        for record in self:
-            record.mass_moisture = record.mass_wet_sample_container - record.mass_dry_sample_container
+    weight_container_dry_soil = fields.Float(
+        string='Weight of Container + Dry Soil (g)'
+    )
 
+    weight_water = fields.Float(
+        string='Weight of Water (g)',
+        compute='_compute_values',
+        store=True
+    )
 
-    @api.depends('mass_dry_sample_container','mass_container')
-    def _compute_mass_dry_sample(self):
-        for record in self:
-            record.mass_dry_sample = record.mass_dry_sample_container - record.mass_container
+    weight_container = fields.Float(
+        string='Weight of Container (g)'
+    )
 
-    @api.depends('mass_moisture','mass_dry_sample')
-    def _compute_moisture_percent(self):
-        for record in self:
-            if record.mass_dry_sample != 0:
-                record.moisture_percent = round((record.mass_moisture /record.mass_dry_sample) *100,2)
+    weight_dry_soil = fields.Float(
+        string='Weight of Dry Soil (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        string='Moisture Content (%)',
+        compute='_compute_values',
+        store=True
+    )
+
+    @api.depends(
+        'weight_container_wet_soil',
+        'weight_container_dry_soil',
+        'weight_container'
+    )
+    def _compute_values(self):
+        for line in self:
+
+            # Weight of Water
+            line.weight_water = (
+                line.weight_container_wet_soil
+                - line.weight_container_dry_soil
+            )
+
+            # Weight of Dry Soil
+            line.weight_dry_soil = (
+                line.weight_container_dry_soil
+                - line.weight_container
+            )
+
+            # Moisture Content
+            if line.weight_dry_soil:
+                line.moisture_content = (
+                    line.weight_water
+                    / line.weight_dry_soil
+                ) * 100
             else:
-                record.moisture_percent = 0
+                line.moisture_content = 0.0
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(GsbPlasticLimitLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class GsbDryGradationLine(models.Model):

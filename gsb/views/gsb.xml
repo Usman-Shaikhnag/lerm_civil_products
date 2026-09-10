@@ -363,212 +363,186 @@
                       </div>
                       <group/>
 
-                <!-- Liquid Limit -->
-                <div invisible="not liquid_limit_visible">
-                        <h1>
+                   <!-- Liquid Limit-->
+                    <div invisible = "liquid_limit_visible == False">
+                        <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
-
                         </h1>
-                </div>
-                <group/>
+                    </div>
 
-                <div class="custom_table_borders" invisible="not liquid_limit_visible">
-                    <field name="liquid_limit_table" nolabel="1" colspan="2">
-                            <tree editable="bottom">
+                    
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="liquid_limit_method"/></td>
+                                <td  class="w-50">
+                                    <field name="liquid_limit_method" class="blue-input" decoration-info="liquid_limit_method != 0"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                 
+                    <div invisible = "liquid_limit_visible == False" >
+                        <field name="child_liness">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+
+                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
                                 <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
-                                <field name='blows' class="blue-input" decoration-info="blows != 0"/>
-                                <field name='mass_wet_sample_container' class="blue-input" decoration-info="mass_wet_sample_container != 0"/>
-                                <field name='mass_dry_sample_container' class="blue-input" decoration-info="mass_dry_sample_container != 0"/>
-                                <field name='mass_container' class="blue-input" decoration-info="mass_container != 0"/>
-                                <field name='mass_moisture'/>
-                                <field name='mass_dry_sample'/>
-                                <field name='moisture_percent'/>
+                                <field name="weight_container_wet_soil" class="blue-input" decoration-info="weight_container_wet_soil != 0"/>
+                                <field name='weight_container_dry_soil' class="blue-input" decoration-info="weight_container_dry_soil != 0"/>
+                                <field name='weight_water' />
+                                <field name='weight_container' class="blue-input" decoration-info="weight_container != 0"/>
+
+                                <field name='weight_dry_soil' />
+
+                                <field name='moisture_content' />
                             </tree>
-                    </field> 
-                </div>
-                <group/>
+                        </field>
+                    </div>
 
-
-                <group invisible="not liquid_limit_visible" style="width:50%;white-space:nowrap;">
-                        <field name="are_child_lines_filled" invisible="1"/>
-
-                        <button string="Calculate Liquid Limit" type="object" name="liquid_calculation" class="btn btn-primary mb-2" modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'>
-                        <i class="fa fa-calculator mr-1"/>Calculate Liquid Limit
-                       </button>
-                        
-                        <!-- <button string="Calculate Liquid Limit" name="liquid_calculation" type="object" class="oe_highlight" 
-                                modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'/> -->
-                </group>
-
-                <div style="display:flex;">
-                <div style="width:50%;">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
                         <tbody>
-                           <tr>
-                           <td><span>Liquid Limit</span></td>
-                            <td><field name="liquid_limit" class="blue-input"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                </div>
+                            <tr>
+                                <td><label for="liquid_limit">Liquid Limit</label></td>
+                                <td><field name="liquid_limit"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="liquid_limit_conformity"></label></td>
+                                <td><field  name="liquid_limit_conformity"
+                                            decoration-success="liquid_limit_conformity == 'pass'" 
+                                            decoration-danger="liquid_limit_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="liquid_limit_nabl"></label></td>
+                                <td><field name="liquid_limit_nabl"
+                                            decoration-success="liquid_limit_nabl == 'pass'" 
+                                            decoration-danger="liquid_limit_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <div style="width:50%;">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
                         <tbody>
-                           <tr>
-                           <td><span>Remarks</span></td>
-                            <td><field name="remarks_liquid_limit" class="blue-input"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                </div>
-                </div>
-                <group/>
+                            <tr>
+                                <td style="width:10%;"><label for="show_liquid_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_liquid_graph" class="blue-input" decoration-info="show_liquid_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   
+
+                    <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_liquid" widget="image" readonly="1"/>
+                    </div>
 
 
-                <div>
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                        <tbody>
-                           <tr>
-                             <td><span>Conformity</span></td>
-                              <td><field  name="liquid_limit_conformity"
-                                        decoration-success="liquid_limit_conformity == 'pass'" 
-                                        decoration-danger="liquid_limit_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field  name="liquid_limit_nabl" /></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
-                      <group/>
-
-
-
-                <!-- Plastic Limit -->
-                <div invisible="not plastic_visible">
-                        <h1>
-                            <field name="plastic_name" readonly="1" nolabel="1"/>
-                            <field name="plastic_visible" invisible="1"/>
-
+                    <!-- Plastic Limit -->
+                    <div invisible = "plastic_limit_visible == False">
+                        <h1 class="text-center">
+                            <field name="plastic_limit_name" readonly="1" nolabel="1"/>
+                            <field name="plastic_limit_visible" invisible="1"/>
                         </h1>
-                </div>
-                <group/>
+                    </div>
 
-                <div class="custom_table_borders" invisible="not plastic_visible">
-                    <field name="plastic_table" nolabel="1" colspan="2">
-                            <tree editable="bottom">
+                   
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not plastic_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td ><label for="plastic_limit_type"/></td>
+                                <td  class="w-50">
+                                    <field name="plastic_limit_type" class="blue-input" decoration-info="plastic_limit_type != 0"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not plastic_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td ><label for="plasticity_limit_type"/></td>
+                                <td  class="w-50">
+                                    <field name="plasticity_limit_type" class="blue-input" decoration-info="plasticity_limit_type != 0"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    
+
+                    <div invisible = "plastic_limit_visible == False">
+                        <field name="plastic_limit_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+                                <!-- <field name='penetration' class="blue-input" decoration-info="penetration != 0"/> -->
                                 <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
-                                <field name='mass_wet_sample_container' class="blue-input" decoration-info="mass_wet_sample_container != 0"/>
-                                <field name='mass_dry_sample_container' class="blue-input" decoration-info="mass_dry_sample_container != 0"/>
-                                <field name='mass_container' class="blue-input" decoration-info="mass_container != 0"/>
-                                <field name='mass_moisture'/>
-                                <field name='mass_dry_sample'/>
-                                <field name='moisture_percent'/>
+                                <field name="weight_container_wet_soil" class="blue-input" decoration-info="weight_container_wet_soil != 0"/>
+                                <field name='weight_container_dry_soil' class="blue-input" decoration-info="weight_container_dry_soil != 0"/>
+                                <field name='weight_water' />
+                                <field name='weight_container' class="blue-input" decoration-info="weight_container != 0"/>
+
+                                <field name='weight_dry_soil' />
+
+                                <field name='moisture_content' />
                             </tree>
-                    </field> 
-                </div>
-                <group/>
+                        </field>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not plastic_limit_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="plastic_limit">Average Plastic Limit</label></td>
+                                    <td><field name="plastic_limit"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plastic_limit_conformity"></label></td>
+                                    <td><field  name="plastic_limit_conformity"
+                                                decoration-success="plastic_limit_conformity == 'pass'" 
+                                                decoration-danger="plastic_limit_conformity == 'fail'" 
+                                                readonly="1" /></td>
 
-                <div style="display:flex;">
-                <div style="width: 50%;">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
-                        <tbody>
-                           <tr>
-                             <td><span>Average</span></td>
-                              <td><field name="average_plastic_moisture"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>Remarks</span></td>
-                            <td><field name="remarks_plastic" class="blue-input"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
+                                </tr>
+                                <tr>
+                                    <td><label for="plastic_limit_nabl"></label></td>
+                                    <td><field name="plastic_limit_nabl"
+                                                decoration-success="plastic_limit_nabl == 'pass'" 
+                                                decoration-danger="plastic_limit_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                      <div style="width: 50%;">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                           <tr>
-                             <td><span>Conformity</span></td>
-                              <td><field  name="average_plastic_moisture_conformity"
-                                        decoration-success="average_plastic_moisture_conformity == 'pass'" 
-                                        decoration-danger="average_plastic_moisture_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field  name="average_plastic_moisture_nabl" /></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
-                      </div>
-                      <group/>
-
-                      
-
-
-                    <!-- <group invisible="not plastic_visible">
-                        <field name="average_plastic_moisture"  style="width:50%"/>
-                        <field name="remarks_plastic"  style="width:50%"/>
-                    </group> -->
-                 <!-- <group invisible="not plastic_visible">
-                       
-                        <field  name="average_plastic_moisture_conformity"
-                                        decoration-success="average_plastic_moisture_conformity == 'pass'" 
-                                        decoration-danger="average_plastic_moisture_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="average_plastic_moisture_nabl" />
-                         
-                    </group> -->
-
-                <!-- Plasticity index  -->
-
-                <div style="display:flex;">
-                <div style="width:50%;">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                        <tbody>
-                           <tr>
-                             <td><span>Plasticity Index</span></td>
-                              <td><field name="plasticity_index" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>Remarks</span></td>
-                            <td><field name="remarks_plasticity_index" class="blue-input"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
-
-                      <div style="width:50%;">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                           <tr>
-                             <td><span>Conformity</span></td>
-                              <td><field  name="plasticity_index_conformity"
-                                        decoration-success="plasticity_index_conformity == 'pass'" 
-                                        decoration-danger="plasticity_index_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field  name="plasticity_index_nabl" /></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div>
-                      </div>
-                      <group/>
-
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not plastic_limit_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="plasticity_index">Plasticity Index</label></td>
+                                    <td><field name="plasticity_index"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plasticity_index_conformity"></label></td>
+                                    <td><field  name="plasticity_index_conformity"
+                                                decoration-success="plasticity_index_conformity == 'pass'" 
+                                                decoration-danger="plasticity_index_conformity == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plasticity_index_nabl"></label></td>
+                                    <td><field name="plasticity_index_nabl"
+                                                decoration-success="plasticity_index_nabl == 'pass'" 
+                                                decoration-danger="plasticity_index_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
 
                     <!-- Heavy Compaction MDD -->

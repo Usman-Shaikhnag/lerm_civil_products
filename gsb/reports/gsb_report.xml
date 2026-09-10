@@ -380,7 +380,7 @@
 					<table style="margin-top:15px">
 					<t t-set="i" t-value="0"/>
 
-							<tr cols="12" t-if="data.water_absorbtion_visible or data.elongation_visible or data.flakiness_visible or data.abrasion_visible or data.impact_visible or data.plastic_visible or data.liquid_limit_visible or data.plasticity_index_visible" >
+							<tr cols="12" t-if="data.water_absorbtion_visible or data.elongation_visible or data.flakiness_visible or data.abrasion_visible or data.impact_visible or data.plastic_limit_visible or data.liquid_limit_visible" >
 							    <th colspan="1" style="text-align: center;">
 										<span>
 											Sr. No
@@ -697,7 +697,7 @@
 
 
 							
-							<tr t-if="data.liquid_limit_visible and (data.liquid_limit_nabl == 'pass' and nabl) or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
+							<tr t-if="data.liquid_limit_visible and (data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -712,7 +712,8 @@
 
 								<td colspan="2" style="text-align: center;">
 									<div>
-										<span t-esc="data.remarks_liquid_limit if data.liquid_limit == 0.00 else data.liquid_limit" />
+									<span t-field="data.liquid_limit" t-options='{"widget": "float", "precision": 2}'/>
+										<!-- <span t-esc="data.remarks_liquid_limit if data.liquid_limit == 0.00 else data.liquid_limit" /> -->
 									</div>
 								</td>
 
@@ -749,57 +750,9 @@
 							</tr>
 
 
-							<tr t-if="data.liquid_limit_visible and  fromEln">
-								<td colspan="1" style="text-align: center;">
-									<div>
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1" />
-									</div>
-								</td>
-								
-								
-								<td colspan="2" >
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_name"/>
-                                </td>
-								
-
-								<td colspan="2" style="text-align: center;">
-									<div>
-										<span t-esc="data.remarks_liquid_limit if data.liquid_limit == 0.00 else data.liquid_limit" />
-									</div>
-								</td>
-								<td colspan="2" style="text-align: center; vertical-align: middle;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).unit.name"/>
-									</span>
-								</td>
-
-								<td colspan="2" style="text-align: center;">
-									<div>
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                            </t>
-                                        </t>
-									</span>
-									</div>
-								</td>
-								
-								<td colspan="2" style="text-align: center;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</td>
-								
-								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.liquid_limit_conformity"/>
-								</td>
-							</tr>
+							
                            <!-- Plastic Limit -->
-							<tr t-if="data.plastic_visible and (data.average_plastic_moisture_nabl == 'pass' and nabl) or (data.average_plastic_moisture_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
+							<tr t-if="data.plastic_limit_visible and (data.plastic_limit_nabl == 'pass' and nabl or (data.plastic_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -814,9 +767,12 @@
 								
 								<td colspan="2" style="text-align: center;">
 								
-									<div>
-										<span t-esc="data.remarks_plastic if data.average_plastic_moisture == 0.00 else data.average_plastic_moisture" />
-									</div>
+									<span t-if="data.plastic_limit_type == 'non_plastic'">
+										    Non-Plastic
+										</span>
+										<span t-else="">
+										     <span t-field="data.plastic_limit" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
 									
 								</td>
 
@@ -854,8 +810,68 @@
 
 
 							<!--  -->
-							<!-- <tr t-if="data.plastic_visible and  fromEln"> -->
-							<tr t-if="
+							<tr t-if="data.plastic_limit_visible and  (data.plasticity_index_nabl == 'pass' and nabl or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td colspan="1" style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1" />
+									</div>
+								</td>
+								
+								
+								<td colspan="2">
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_name"/>
+                                </td>
+								
+								<td colspan="2" style="text-align: center;">
+									<span t-if="data.plasticity_limit_type == 'non_plastic'">
+										    Non-Plastic
+										</span>
+										<span t-else="">
+										     <span t-field="data.plastic_limit" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+										
+										
+										<!-- <span t-field="data.plasticity_index" t-options='{"widget": "float", "precision": 2}'/> -->
+								</td>
+
+								<td colspan="2" style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).unit.name"/>
+									</span>
+								</td>
+
+
+								<td colspan="2" style="text-align: center;">
+									<div>
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                            </t>
+                                        </t>
+									</span>
+									</div>
+								</td>
+								
+								<td colspan="2" style="text-align: center;" >
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</td>
+								
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="data.plasticity_index_conformity"/>
+								</td>
+							</tr>
+
+
+
+
+							
+							<!-- <tr t-if="
     data.plastic_visible
     and (
         (
@@ -933,9 +949,12 @@
 								<td t-if="eln.conformity" style="text-align: center;">
 									<span t-esc="data.average_plastic_moisture_conformity"/>
 								</td>
-							</tr>
-                             <!-- Plasticity Index -->
-							<!-- <tr t-if="data.plasticity_index_visible and (data.plasticity_index_nabl == 'pass' and nabl) or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln"> -->
+							</tr> -->
+
+
+
+                             <!-- Plasticity Index
+
 
 						<tr	t-if="
     data.plasticity_index_visible
@@ -978,16 +997,6 @@
                                 </td>
 								
 								<td colspan="2" style="text-align: center;">
-								
-									<!-- <div>
-										<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
-										<t t-if="plasticity_index_float != 0.0">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 0.0 else plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
-										</t>
-										<t t-else="">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 0.0 else plasticity_index_float" />
-										</t>
-									</div> -->
 									<span t-if="data.remarks_plasticity_index == 'non-plastic'">
         non-plastic
     </span>
@@ -1027,67 +1036,9 @@
 								<td t-if="eln.conformity" style="text-align: center;">
 									<span t-esc="data.plasticity_index_conformity"/>
 								</td>
-							</tr>
+							</tr> -->
 
-							<!--  -->
-							<tr t-if="data.plasticity_index_visible and  fromEln">
-								<td colspan="1" style="text-align: center;">
-									<div>
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1" />
-									</div>
-								</td>
-								
-								
-								<td colspan="2">
-                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_name"/>
-                                </td>
-								
-								<td colspan="2" style="text-align: center;">
-									<div>
-										<t t-set="plasticity_index_float" t-value="0.0 if data.plasticity_index == 'non-plastic' else float(data.plasticity_index)" />
-										<t t-if="plasticity_index_float != 46.14">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 46.14 else plasticity_index_float" t-options='{"widget": "float", "precision": 2}' />
-										</t>
-										<t t-else="">
-											<span t-esc="data.remarks_plasticity_index if plasticity_index_float == 46.14 else plasticity_index_float" />
-										</t>
-									</div>
-								</td>
-
-								<td colspan="2" style="text-align: center; vertical-align: middle;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).unit.name"/>
-									</span>
-								</td>
-
-
-								<td colspan="2" style="text-align: center;">
-									<div>
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table" t-as="parameter">
-                                            <t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                            </t>
-                                        </t>
-									</span>
-									</div>
-								</td>
-								
-								<td colspan="2" style="text-align: center;" >
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</td>
-								
-								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-esc="data.plasticity_index_conformity"/>
-								</td>
-							</tr>
-
-
+							
 							<tr t-if="data.water_absorbtion_visible and (data.water_absorbtion_nabl == 'pass' and nabl) or (data.water_absorbtion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
 								<td colspan="1" style="text-align: center;">
 									<div>
@@ -2027,6 +1978,12 @@
 							</t>
 
 					</table>
+
+					<t t-if="graphliquid">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.liquid_limit_visible and data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl">
+                       <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
 					
 					
 
