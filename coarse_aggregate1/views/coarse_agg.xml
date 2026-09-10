@@ -2,9 +2,9 @@
 <odoo>
     <data>
 
-    <record id="mechanical_coarse_aggregate_form" model="ir.ui.view">
-        <field name="name">mechanical.coarse.aggregate.form</field>
-        <field name="model">mechanical.coarse.aggregate</field>
+    <record id="mechanical_coarse_aggregate1_form" model="ir.ui.view">
+        <field name="name">mechanical.coarse.aggregate1.form</field>
+        <field name="model">mechanical.coarse.aggregate1</field>
         <field name="arch" type="xml">
             <form create="false"> 
                 <sheet>
@@ -1159,13 +1159,11 @@
                     </h1>
                 </div>
 
-                <div invisible="not aggregate_grading_visible" class="mb-2">
-                    <button string="Calculate" type="object" name="calculate_aggregate" class="oe_highlight"/>
-                </div>
+              
 
                 <field name="aggregate_grading_child_lines" nolabel="1" invisible="not aggregate_grading_visible">
                     <tree editable="bottom" class="custom_table_borders">
-                        <field name="serial_no" string="Sr.No"/>
+                        <!-- <field name="serial_no" string="Sr.No"/> -->
                         <field name="sieve_size" string="IS Sieve Size"/>
                         <field name="wt_retained" string="Wt. Retained in gms" class="blue-input"/>
                         <field name="percent_retained" string="% Retained"/>
@@ -1182,6 +1180,12 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <div invisible="aggregate_grading_visible == False">
+                        <button type="object" name="calculate_aggregate" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
 
 
                 <notebook>
