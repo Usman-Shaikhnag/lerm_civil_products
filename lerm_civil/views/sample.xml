@@ -64,22 +64,23 @@
                                 <field name="discipline_id" readonly="state != '1-allotment_pending'"/>
                                 <field name="group_id" domain="[('id', 'in', group_ids)]" readonly="state != '1-allotment_pending'"/>
                                 <field name="material_id" domain="[('id', 'in', material_ids)]" readonly="state != '1-allotment_pending'"/>
-                                <field name="grade_id" domain="[('id', 'in', grade_ids)]" readonly="state != '1-allotment_pending'"/>
-                                <field name="size_id" domain="[('id', 'in', size_ids)]" readonly="state != '1-allotment_pending'"/>
-                                <field name="brand" readonly="state != '1-allotment_pending'"/>
-                                <field name="client_sample_id" readonly="state != '1-allotment_pending'"/>
-                                <field name="source_sample" readonly="state != '1-allotment_pending'"/>
-                                <field name="sample_condition" readonly="state != '1-allotment_pending'"/>
-                                <field name='conformity' readonly="1"/>
-                                <field name="has_witness" readonly="1"/>
-                                <field name="witness" invisible="has_witness != True"/>
-                                <field name="casting" readonly="state != '1-allotment_pending'"/>
-                                <field name="sample_reject_reason" required="sample_condition == 'non_satisfactory'" readonly="state != '1-allotment_pending'"/>
-                                <field name="scope" />
-                                <field name="sample_description" readonly="state != '1-allotment_pending'"/>
-                                <field name="filled_by" readonly="1"/>
-                                <field name="check_by" readonly="1"/>
-                                <field name="approved_by" readonly="1"/>
+
+                                <field name="grade_id" domain="[('id', 'in', grade_ids)]" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="size_id" domain="[('id', 'in', size_ids)]" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="brand" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="client_sample_id" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="source_sample" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="sample_condition" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name='conformity' readonly="1" invisible="1"/>
+                                <field name="has_witness" readonly="1" />
+                                <field name="witness" invisible="has_witness != True" />
+                                <field name="casting" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="sample_reject_reason" required="sample_condition == 'non_satisfactory'" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="scope" invisible="1"/>
+                                <field name="sample_description" readonly="state != '1-allotment_pending'" invisible="1"/>
+                                <field name="filled_by" readonly="1" invisible="1"/>
+                                <field name="check_by" readonly="1" invisible="1"/>
+                                <field name="approved_by" readonly="1" invisible="1"/>
                                 
                             </group>
                             <group>
@@ -88,6 +89,9 @@
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="report_due_date" readonly="casting"/>
                                 <field name="location" readonly="1" string="Location Code"/>
+                                
+                            </group>
+                            <group invisible="1">
                                 <field name="lab_location" string="Lab Name"/>
                                 <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
                                 <field name="invoice_number" readonly="1"/>
@@ -116,6 +120,9 @@
                                 <field name="received_by_id" readonly="state != '1-allotment_pending'"/>
                                 <field name="page_break" />
                                 <field name="display_report_portal"/>
+
+
+                                
                                 <!-- <div class="o_row">
                                     <span>Tested By:</span>
                                     <field name="filled_by" readonly="1" class="oe_inline"/>

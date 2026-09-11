@@ -1483,19 +1483,22 @@
 							<tr>
 							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
 							<td colspan="3" style="padding-left: 10px;width:25%;">
-										<span t-field="o.srf_id.customer.name"/>
+
+							        <span t-field="o.srf_id.report_issued.name"/><br/>
+										<span t-field="o.srf_id.report_issued.street"/>
+										<span t-field="o.srf_id.report_issued.street2"/>
+										<span t-field="o.srf_id.report_issued.city"/>
+										<span t-if="o.srf_id.report_issued.zip"> - <span t-field="o.srf_id.report_issued.zip"/></span>,
+										<span t-field="o.srf_id.report_issued.state_id"/> ,
+										<span t-field="o.srf_id.report_issued.country_id"/>
+										<!-- <span t-field="o.srf_id.customer.name"/>
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
 										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
 										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
+										<span t-field="o.srf_id.customer.country_id"/> -->
 								</td>
-								<!-- <td><strong>Date Sample Received</strong>: </td> -->
-								<!-- <td >
-								<span t-field="o.sample_id.sample_received_date"/>
-								</td > -->
-								
 
 								<td colspan="3"><strong>Date Sample Received</strong>:</td>
 								<td colspan="3">
@@ -1507,11 +1510,12 @@
 								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
 
-								<td colspan="3"><strong>Date of Report</strong>: </td>
-									
+								<td colspan="3"><strong>Starting Date</strong>: </td>
 								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
 								</td>
+
+								
 							
 							</tr>
 
@@ -1527,9 +1531,10 @@
 								
 								
 
-								<td colspan="3"><strong>Starting Date</strong>: </td>
+								
+								<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
-							        <span t-field="o.start_date" style="margin-right:10px;"/>
+								<span t-field="o.end_date" />
 								</td>
 							
 							</tr>
@@ -1539,9 +1544,12 @@
 								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
 								<td colspan="3"><span t-field="o.material.name"/></td>
 
-							<td colspan="3"><strong>Completion Date</strong>: </td>
+							
+
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
 								<td colspan="3">
-								<span t-field="o.end_date" />
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
 								</td>
 						</tr>
 
@@ -1624,11 +1632,11 @@
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
 								
-                                <td rowspan="2" style="text-align: center;" width="200"><b>Location</b></td>
+                                <td rowspan="2" style="text-align: center;" width="200"><b>Location #</b></td>
 								
                                 
-                                <td rowspan="2" style="text-align: center;" width="200" ><b>Depth</b></td>
-                                <td rowspan="2" style="text-align: center;" width="200"><b>Piece No</b></td>
+                                <td rowspan="2" style="text-align: center;" width="200" ><b>Depth #</b></td>
+                                <td rowspan="2" style="text-align: center;" width="200"><b>Piece No. #</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Lithological Description of rock</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Room temperature</b></td>
 								 <td rowspan="2" style="text-align: center;"><b>Relative Humidity</b></td>
@@ -1655,42 +1663,42 @@
 								</td>
 								</t>
 								<t t-if="data.bulk_density_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_name"/>
 								</span>
 								</td>
 								</t>
 								<t t-if="data.sat_density_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_name"/>
 								</span>
 								</td>
 								</t>
 								<t t-if="data.dry_density_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).parameter_name"/>
 								</span>
 								</td>
 								</t>
 								<t t-if="data.water_absorption_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).parameter_name"/>
 								</span>
 								</td>
 								</t>
 								<t t-if="data.porosity_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).parameter_name"/>
 								</span>
 								</td>
 								</t>
 								<t t-if="data.moisture_content_visible">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).parameter_name"/>
 								</span>
@@ -1700,7 +1708,7 @@
 							   <!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
 								<!-- <td t-if="show_compress"  colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td> -->
 								<t t-if="data.compressive_strength_visible">
-								<td   rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
 								</span>
@@ -1711,7 +1719,7 @@
 							<!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
 								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"><b>Compressive Strength </b></td> -->
 								<t t-if="data.compressive_strength_visible1">
-								<td rowspan="2" style="text-align: center;">
+								<td style="text-align: center;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
 								</span>
@@ -1848,9 +1856,41 @@
                             </tr>
 							<tr style="background-color:#f9f9f9;">
 
+							<t t-if="data.bulk_density_visible">
+							  <th style="text-align:center;vertial-align:middle;">ρ</th>
+							</t>
+
+							<t t-if="data.sat_density_visible">
+							   <th style="text-align:center;vertial-align:middle;">ρsat</th>
+							</t>
+
+							<t t-if="data.dry_density_visible">
+							  <th style="text-align:center;vertial-align:middle;">ρd</th>
+							</t>
+
+							<t t-if="data.water_absorption_visible">
+							   <th style="text-align:center;vertial-align:middle;">ⱳ</th>
+							</t>
+
+							<t t-if="data.porosity_visible">
+							  <th style="text-align:center;vertial-align:middle;">ƞ</th>
+							</t>
+
+							<t t-if="data.moisture_content_visible">
+							   <th style="text-align:center;vertial-align:middle;">ⱳ</th>
+							</t>
+
+							<t t-if="data.compressive_strength_visible">
+							  <th style="text-align:center;vertial-align:middle;">qc</th>
+							</t>
+
+							<t t-if="data.compressive_strength_visible1">
+							   <th style="text-align:center;vertial-align:middle;">qc at H/D=2</th>
+							</t>
+
 							<t t-if="data.elasticity_visible">
 							  <th style="text-align:center;vertial-align:middle;">E</th>
-							   <th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
+							   <th style="text-align:center;vertial-align:middle;">μ</th>
 							</t>
 
                             <t t-if="data.triaxial_visible">
@@ -1879,9 +1919,9 @@
 							<td colspan="1" style="text-align: center;"><b>m</b></td>
 							<td colspan="1" style="text-align: center;"><b>-</b></td>
 							<td colspan="1" style="text-align: center;"><b>-</b></td>
-							<td colspan="1" style="text-align: center;"><b>°deg</b></td>
+							<td colspan="1" style="text-align: center;"><b>°C</b></td>
 							<td colspan="1" style="text-align: center;"><b>%</b></td>
-							<td colspan="1" style="text-align: center;"><b>°deg</b></td>
+							<td colspan="1" style="text-align: center;"><b>°C</b></td>
 							<t t-if="data.avg_dia_visible">
 							<td colspan="1" style="text-align: center;">
 							<span>
@@ -2811,25 +2851,73 @@
 								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
 									<b>Remarks:</b><br/><br/>
 									    
-									   1. Refer to Annexure- I to know environmental and test conditions<br/>
-										2.  *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
+									   1. + Refer to Annexure, Annexure- I to know environmental and test conditions<br/>
+										2.   Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
 										3.  Mode of failure for UCS test: A] Axial B] Shear C] Multiple Fracturing D] Along foliation  E] Y shaped <br/>
 										4.  Orientation of sample for Point load strength index test:  A1] Axial B1] Diametric<br/>
-										5. Abbreviation-D - Average Diameter / Distance between Platens,W - Average Width,H - Average height,Is/Il (50) - Point load strength index,E - Modulus of Elasticity,µ - Poissions Ratio,Ø - Angle of internal friction,c - Cohesion,CL - Classification
+										5. Abbreviation-D - Average Diameter / Distance between Platens,W - Average Width,H -  Average height,Is/Il (50) -  Point load strength index,E - Modulus of Elasticity,µ - Poissions Ratio,Ø - Angle of internal friction,c - Cohesion,CL - Classification,Id-Slake Durability Index,CAI - Cercher Abrasivity Index <br/><br/>
 
 
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a.	The information marked with an #  received from customer<br/>
-										b.	The results listed refer only to tested parameters and sample as received from customer<br/>
-										c.	The balance samples if any will be discarded  after 15 days from the date of issue of test certificate unless otherwise specified.<br/>
-										d.	This document shall not be reproduced in part or full without the approval of Genstru.<br/>
-										e.	^ represents unsoaked test<br/>
-										f.	$ represents crumbled in water<br/> -->
-											<t t-if="data.notes_id">
+									<b>Notes:-</b><br/>
+								    	
+											<!-- <t t-if="data.notes_id">
 										<t t-foreach="data.notes_id" t-as="n">
 											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
 										</t>
-									</t>
+									</t> -->
+
+
+									<t t-if="data.notes_id">
+
+    <!-- Calculate middle point -->
+    <t t-set="total_notes" t-value="len(data.notes_id)"/>
+    <t t-set="middle" t-value="(total_notes + 1) // 2"/>
+
+    <div style="width:100%; display:flex;">
+
+        <!-- LEFT COLUMN -->
+        <div style="width:50%; padding:5px 10px; border-right:1px solid #000;">
+
+            <t t-foreach="data.notes_id" t-as="n">
+                <t t-if="n_index &lt; middle">
+
+                    <div style="margin-bottom:8px;">
+                        <span>
+                            <t t-esc="n.sr_no"/>.
+                            <t t-esc="n.notes"/>
+                        </span>
+                    </div>
+
+                </t>
+            </t>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN -->
+        <div style="width:50%; padding:5px 10px;">
+
+            <t t-foreach="data.notes_id" t-as="n">
+                <t t-if="n_index &gt;= middle">
+
+                    <div style="margin-bottom:8px;">
+                        <span>
+                            <t t-esc="n.sr_no"/>.
+                            <t t-esc="n.notes"/>
+                        </span>
+                    </div>
+
+                </t>
+            </t>
+
+        </div>
+
+    </div>
+
+</t>
+
+
+									
 
 								</td>
 							</tr>
@@ -3101,15 +3189,20 @@
 							<tr>
 								<td colspan="6" style="border:1px solid black; padding:4px;">
 									<b>Name &amp; Address of Customer :</b>
-									<!-- <t t-esc="data.customer_name"/> -->
-									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
-										<span t-field="o.srf_id.customer.name"/>
+									    <span t-field="o.srf_id.report_issued.name"/><br/>
+										<span t-field="o.srf_id.report_issued.street"/>
+										<span t-field="o.srf_id.report_issued.street2"/>
+										<span t-field="o.srf_id.report_issued.city"/>
+										<span t-if="o.srf_id.report_issued.zip"> - <span t-field="o.srf_id.report_issued.zip"/></span>,
+										<span t-field="o.srf_id.report_issued.state_id"/> ,
+										<span t-field="o.srf_id.report_issued.country_id"/>
+										<!-- <span t-field="o.srf_id.customer.name"/>
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
 										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
 										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
+										<span t-field="o.srf_id.customer.country_id"/> -->
 								<!-- </td> -->
 								</td>
 							</tr>

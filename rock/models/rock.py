@@ -89,8 +89,16 @@ class MechanicalRock(models.Model):
                 'notes': '^ represents unsoaked test',
             }),
               (0, 0, {
-                'sr_no': 'd',
+                'sr_no': 'f',
                 'notes': '$ represents crumbled in water',
+            }),
+            (0, 0, {
+                'sr_no': 'g',
+                'notes': 'If slake durability index represents *, it is first cycle Slake durability Index, else it is second cycle slake durability index. The slaking fluid is tap water unless otherwise specified',
+            }),
+            (0, 0, {
+                'sr_no': 'h',
+                'notes': ' Brazilian tensile strength is reported unless otherwise specified and the average value is reported',
             }),
         ]
 

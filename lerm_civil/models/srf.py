@@ -2321,7 +2321,7 @@ class CreateSampleWizard(models.TransientModel):
         )
 
         # used in Sample mode (single tech)
-        technicians = fields.Many2one("res.users", string="Technician")
+        technicians = fields.Many2one("res.users", string="Testing Authority")
 
         def action_allot_technician(self):
             active_ids = self.env.context.get('active_ids')
@@ -2333,7 +2333,7 @@ class CreateSampleWizard(models.TransientModel):
             return {'type': 'ir.actions.act_window_close'}
 
         # used in Parameter mode (final technician set to be stored in ELN)
-        technician_ids = fields.Many2many('res.users',string='Technicians',store=True,)
+        technician_ids = fields.Many2many('res.users',string='Testing Authority',store=True,)
         
         allowed_technician_domain_ids = fields.Many2many(
             'res.users',
@@ -2815,12 +2815,12 @@ class SampleAllotLine(models.TransientModel):
     wizard_id = fields.Many2one('sample.allotment.wizard', ondelete='cascade')
     sample_id = fields.Many2one('lerm.srf.sample', string='Sample')
     parameter_id = fields.Many2one('lerm.parameter.master', string='Parameter', required=True)
-    technician = fields.Many2one('res.users', string='Technician')
+    technician = fields.Many2one('res.users', string='Testing Authority')
 
     # 🔑 helper field
     allowed_technician_ids = fields.Many2many(
         'res.users',
-        compute='_compute_allowed_technicians',
+        compute='_compute_allowed_technicians',string='Allowed Testing Authority',
         store=False
     )
     is_locked = fields.Boolean(string="Locked", default=False)

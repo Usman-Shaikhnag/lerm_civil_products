@@ -27,8 +27,8 @@ class ELN(models.Model):
    
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
-    technician = fields.Many2one('res.users',string="Technicians",tracking=5)
-    technician_ids = fields.Many2many('res.users',string='Technicians',compute='_compute_technicians_from_results',store=True,tracking=5)
+    technician = fields.Many2one('res.users',string="Testing Authority",tracking=5)
+    technician_ids = fields.Many2many('res.users',string='Testing Authority',compute='_compute_technicians_from_results',store=True,tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)
@@ -962,7 +962,7 @@ class ELNParametersResult(models.Model):
     test_method = fields.Many2one('lerm_civil.test_method',string="Specification")
     specification_permissible_limit = fields.Text(string="Specification",compute='_compute_specification')
     specification = fields.Text(string="Test Method", compute='_compute_specification')
-    technician = fields.Many2one('res.users', string='Technician', index=True, ondelete='set null')
+    technician = fields.Many2one('res.users', string='Testing Authority', index=True, ondelete='set null')
 
     nabl_status = fields.Selection([
         ('nabl', 'NABL'),

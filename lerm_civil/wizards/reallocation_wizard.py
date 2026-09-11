@@ -117,8 +117,8 @@ class ReallocationWizard(models.TransientModel):
         required=True,
     )
 
-    technicians = fields.Many2one("res.users", string="Technician")
-    technician_ids = fields.Many2many('res.users', string='Technicians')
+    technicians = fields.Many2one("res.users", string="Testing Authority")
+    technician_ids = fields.Many2many('res.users', string='Testing Authority')
     line_ids = fields.One2many(
         'sample.reallocation.line',
         'wizard_id',

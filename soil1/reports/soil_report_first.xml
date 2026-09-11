@@ -17,11 +17,19 @@
                     <tr>
                         <td style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
                         <td style="width:30%; padding-left: 10px;">
-                            <span t-field="o.srf_id.customer.name"/><br/>
+
+                            <span t-field="o.srf_id.report_issued.name"/><br/>
+										<span t-field="o.srf_id.report_issued.street"/>
+										<span t-field="o.srf_id.report_issued.street2"/>
+										<span t-field="o.srf_id.report_issued.city"/>
+										<span t-if="o.srf_id.report_issued.zip"> - <span t-field="o.srf_id.report_issued.zip"/></span>,
+										<span t-field="o.srf_id.report_issued.state_id"/> ,
+										<span t-field="o.srf_id.report_issued.country_id"/>
+                            <!-- <span t-field="o.srf_id.customer.name"/><br/>
                             <span t-field="o.srf_id.customer.street"/>
                             <span t-field="o.srf_id.customer.street2"/>
                             <span t-field="o.srf_id.customer.city"/>
-                            <span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>
+                            <span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span> -->
                         </td>
                         <td style="width:20%;"><strong>Starting Date</strong>: </td>
                         <td style="width:30%; padding-left: 10px;"><span t-field="o.start_date"/></td>
@@ -1291,24 +1299,62 @@
             <div style="margin-top:0px;padding:0px" class="noteContainer">
                 <table>
                     <tr> 
-                        <td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+                        <td style="padding: 5px; font-style: italic; font-size: 16px; line-height: 19px;">
                             <b>Remarks:</b><br/><br/>
-                                1. + Refer to Annexure-I for environmental and test conditions<br/>
+                                1. + Refer to Annexure, Annexure-I for environmental and test conditions<br/>
                                 2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
-                                G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/>	
-                                UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content, k = coefficient of permeability	<br/><br/>	
+                                Abbreviations : GSA- Grain Size Analysis, G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit,UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/>	
+                                UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content<br/><br/>	
 
                             <b>Notes:-</b><br/><br/>
-                                <!-- a. The information marked with an # received from customer<br/><br/>
-                                b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-                                c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-                                d. This document shall not be reproduced in part or full without the approval of Genstru. -->
 
-                                <t t-if="data.notes_id">
+                                <!-- <t t-if="data.notes_id">
                                 <t t-foreach="data.notes_id" t-as="n">
                                     <span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
                                 </t>
-                            </t>
+                            </t> -->
+
+
+                        <t t-if="data.notes_id">
+                        <t t-set="total_notes" t-value="len(data.notes_id)"/>
+                        <t t-set="middle" t-value="(total_notes + 1) // 2"/>
+                            
+                        <table style="width:100%;border-collapse:collapse;border:none;font-size:16px;line-height:1.3;">
+
+                            <t t-foreach="data.notes_id[:middle]" t-as="left_note">
+
+                            <tr style="border:none;">
+
+                               <!-- LEFT -->
+                            <td style="width:50%;vertical-align:top;padding:5px 10px;border:none;border-right:1px solid #000;font-size:16px;line-height:1.3;">
+
+                            <span>
+                             <t t-esc="left_note.sr_no"/>.
+                             <t t-esc="left_note.notes"/>
+                           </span>
+
+                          </td>
+
+                             <!-- RIGHT -->
+                          <td style="width:50%;vertical-align:top;padding:5px 10px;border:none;font-size:16px;line-height:1.3;">
+
+                             <t t-if="left_note_index + middle &lt; total_notes">
+
+                                <t t-set="right_note" t-value="data.notes_id[left_note_index + middle]"/>
+
+                                  <span>
+                                     <t t-esc="right_note.sr_no"/>.
+                                     <t t-esc="right_note.notes"/>
+                                     </span>
+
+                             </t>
+                          </td>
+                          </tr>
+                      </t>
+                      </table>
+                      </t>
+
+                           
                         </td>
                     </tr>
                 </table>

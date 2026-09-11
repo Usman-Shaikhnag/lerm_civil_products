@@ -48,7 +48,7 @@ class LermSampleForm(models.Model):
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
     report_due_date = fields.Date(string="Report Due Date")
-    technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
+    technicians = fields.Many2one("res.users",string="Testing Authority",tracking=5)
     location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
@@ -1270,7 +1270,7 @@ class SampleRequestReviewLine(models.Model):
     split_done = fields.Boolean(string="Lab Generated", default=False)
 
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
-    technicians = fields.Many2many('res.users',string="Technicians")
+    technicians = fields.Many2many('res.users',string="Testing Authority")
     task_id = fields.Many2one('project.task', string="To-Do Task")
 
     @api.model_create_multi
