@@ -28,7 +28,7 @@ class SampleRangeLine(models.Model):
     group_id = fields.Many2one('lerm_civil.group',string="Group")
     # department_id = fields.Many2one('hr.department', string='Department')
     department_id = fields.Char(string='Department')
-    material_id = fields.Many2one('product.template',string="Material")
+    material_id = fields.Many2one('product.template',string="Sub Group")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")

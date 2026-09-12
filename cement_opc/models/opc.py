@@ -294,31 +294,56 @@ class CementNormalConsistency(models.Model):
     fineness_blaine_name = fields.Char("Name",default="Fineness by Blaine's Air Permeability")
     fineness_blaine_visible = fields.Boolean("Fineness by Blaine's Air Permeability Visible",compute="_compute_visible")
 
+    temp_finess = fields.Float("Temperature (°C)",digits=(12,2))
+  
+    density_murcury_finess = fields.Float("Mass Density of Mercury (g/cm³)",digits=(12,2))
+    
+    viscosity_finess = fields.Float("Viscosity of Air, η (Pa·s)",digits=(12,8))
+
+    n_finess = fields.Float("√(0.1η)",digits=(12,6))
+
     fineness_blaine_lines = fields.One2many('fineness.blaine.line','parent_id',string="Fineness blaine")
 
-    avg_fineness_blaine = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_fineness_blaine")
+    avg_fineness_blaine = fields.Float(string="Avg V",digits=(12,3),compute="_compute_avg_fineness_blaine")
 
-    avg_fineness_blaine_conformity = fields.Selection([
+
+    apparatus_counstant_lines = fields.One2many('apparatus.constant.line','parent_id',string="Fineness blaine")
+
+    density_standard_finess = fields.Float("Density of Standard",digits=(12,3))
+
+    mean_time = fields.Float(string="Mean of three measured times, t0 (sec)",digits=(12,2))
+
+    apparatus_constant = fields.Float(string="Apparatus Constant",digits=(12,3))
+
+
+    detarmination_finess_lines = fields.One2many('determination.finess.line','parent_id',string="Fineness blaine")
+
+    specific_area = fields.Float(string="Specific surface area",digits=(12,3))
+
+    fineness_blaine_avg = fields.Float(string="Avg fineness_blaine m2/Kg",digits=(12,3))
+
+    
+    fineness_blaine_avg_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity', compute="_compute_avg_fineness_blaine_conformity")
+    ], string='Conformity', compute="_compute_fineness_blaine_avg_conformity")
 
-    avg_fineness_blaine_nabl = fields.Selection([
+    fineness_blaine_avg_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_avg_fineness_blaine_nabl")
+    ], string='NABL', default='fail',compute="_compute_fineness_blaine_avg_nabl")
 
 
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
-    def _compute_avg_fineness_blaine_conformity(self):
+    @api.depends('fineness_blaine_avg','eln_ref','grade')
+    def _compute_fineness_blaine_avg_conformity(self):
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_fineness_blaine_conformity = 'na'
+                record.fineness_blaine_avg_conformity = 'na'
                 continue
 
-            record.avg_fineness_blaine_conformity = 'fail'
+            record.fineness_blaine_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
             mu_value = line.mu_value
@@ -327,19 +352,19 @@ class CementNormalConsistency(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-                    upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+                    lower = record.fineness_blaine_avg - record.fineness_blaine_avg*mu_value
+                    upper = record.fineness_blaine_avg + record.fineness_blaine_avg*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_fineness_blaine_conformity = 'pass'
+                        record.fineness_blaine_avg_conformity = 'pass'
                         break
                     else:
-                        record.avg_fineness_blaine_conformity = 'fail'
+                        record.fineness_blaine_avg_conformity = 'fail'
 
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
-    def _compute_avg_fineness_blaine_nabl(self):
+    @api.depends('fineness_blaine_avg','eln_ref','grade')
+    def _compute_fineness_blaine_avg_nabl(self):
         
         for record in self:
-            record.avg_fineness_blaine_nabl = 'fail'
+            record.fineness_blaine_avg_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
             
@@ -347,23 +372,21 @@ class CementNormalConsistency(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-            upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+            lower = record.fineness_blaine_avg - record.fineness_blaine_avg*mu_value
+            upper = record.fineness_blaine_avg + record.fineness_blaine_avg*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_fineness_blaine_nabl = 'pass'
+                record.fineness_blaine_avg_nabl = 'pass'
                 break
             else:
-                record.avg_fineness_blaine_nabl = 'fail'
+                record.fineness_blaine_avg_nabl = 'fail'
 
-    @api.depends('fineness_blaine_lines.fineness')
+    @api.depends('fineness_blaine_lines.v_murcury')
     def _compute_avg_fineness_blaine(self):
         for rec in self:
-            values = [line.fineness for line in rec.fineness_blaine_lines if line.fineness is not None]
+            values = [line.v_murcury for line in rec.fineness_blaine_lines if line.v_murcury is not None]
             rec.avg_fineness_blaine = sum(values) / len(values) if values else 0.0
 
-    k = fields.Float("K :",digits=(12,3))
-  
-    e = fields.Float("E :")
+    
 
 
 
@@ -1607,31 +1630,43 @@ class FinenessBlaineLine(models.Model):
     _name = "fineness.blaine.line"
     parent_id = fields.Many2one('cement.opc',string="Parent Id")
 
-    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
    
-    wt_of_cement1 = fields.Float(string="Wt of Cement (g)",digits=(12,3))
-    time_sec = fields.Float(string="Time in Sec")
-    fineness = fields.Float(string="Fineness m2/kg",compute="_compute_fineness")
+    wt_murcurym1 = fields.Float(string="Wt. of mercury removing from cell, (M1)",digits=(12,3))
+    murcury_afterm2 = fields.Float(string="Wt. of mercury after filling Fly Ash in cell, (M2)")
+    # Parent model मधून density automatically fetch होईल
+    density_murcury = fields.Float(
+        string="Density of mercury at the 27.5",
+        related="parent_id.density_murcury_finess",
+        store=True,
+        readonly=True,
+        digits=(12, 3)
+    )
 
-    @api.depends('time_sec', 'parent_id.specific_gravity', 'parent_id.k', 'parent_id.e')
-    def _compute_fineness(self):
-        for rec in self:
-            k = rec.parent_id.k
-            e = rec.parent_id.e
-            t = rec.time_sec
-            s = rec.parent_id.specific_gravity
+    # V = (M1 - M2) / D
+    v_murcury = fields.Float(
+        string="V = (M1-M2)/D",
+        compute="_compute_v_murcury",
+        store=True,
+        digits=(12, 3)
+    )
 
-            if s and (1 - e) != 0 and t > 0:
-                try:
-                    part1 = (k / s)
-                    part2 = math.sqrt(e ** 3) / (1 - e)
-                    part3 = math.sqrt(t) / 0.001357
-                    rec.fineness = part1 * part2 * part3
-                except Exception:
-                    rec.fineness = 0.0
+    @api.depends(
+        'wt_murcurym1',
+        'murcury_afterm2',
+        'density_murcury'
+    )
+    def _compute_v_murcury(self):
+        for line in self:
+            if line.density_murcury:
+                line.v_murcury = (
+                    line.wt_murcurym1 - line.murcury_afterm2
+                ) / line.density_murcury
             else:
-                rec.fineness = 0.0
+                line.v_murcury = 0.0
+
+    
 
    
 
@@ -1648,6 +1683,75 @@ class FinenessBlaineLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(FinenessBlaineLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class AppratusConstantLine(models.Model):
+    _name = "apparatus.constant.line"
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+   
+    wt_standard = fields.Float(string="Wt. of Standard Fly Ash, W = 0.500ρV (gm)",digits=(12,3))
+    specific_standard = fields.Float(string="Specific Surface of Standard Fly Ash  , S0  (cm2/gm)")
+
+    density_standard = fields.Float(string="Density of Standard Fly Ash ,ρ0 (gm/cc)"  )
+    air_viscosity = fields.Float(string="Air viscosity at 27.5 (0C)" ,digits=(12,9))
+    measured_time = fields.Float(string="Measured Time (sec)",digits=(12,2))
+   
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(AppratusConstantLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class DeterminationOfFinessLine(models.Model):
+    _name = "determination.finess.line"
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+   
+    wt_standard_fine = fields.Float(string="Wt. of Standard Fly Ash, W = 0.500ρV (gm)",digits=(12,3))
+    density_standard_fine = fields.Float(string="Density of Standard Fly Ash ,ρ  (gm/cc)",digits=(12,3))
+
+    apparatus_fine = fields.Float(string="Apparatus constant, K "  ,digits=(12,3))
+    measured_time_fine = fields.Float(string="Measured time (sec)" ,digits=(12,3))
+    min_measured_time_fine = fields.Float(string="Mean of three measured times, t (sec)",digits=(12,2))
+   
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DeterminationOfFinessLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

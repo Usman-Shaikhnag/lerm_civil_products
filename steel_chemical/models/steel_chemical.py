@@ -764,89 +764,162 @@ class SteelChemical(models.Model):
   
     # SILICON
     
-    silicon_name = fields.Char("Name",default="DETERMINATION OF SILICON IN STEEL- IS: 228 (PART-8) 1989 RA 2023")
-    silicon_visible = fields.Boolean("DETERMINATION OF SILICON IN STEEL- IS: 228 (PART-8) 1989 RA 2023",compute="_compute_visible")
+    silicon_name = fields.Char("Name",default="DETERMINATION OF SILICA IN STEEL- IS: 228 (PART-8) 1989 RA 2023")
+    silicon_visible = fields.Boolean("DETERMINATION OF Silica IN STEEL- IS: 228 (PART-8) 1989 RA 2023",compute="_compute_visible")
 
-    wt_of_silicon1 = fields.Float(string="Weight of sample taken in gm (C)")
-    wt_of_silicon2 = fields.Float(string="Weight of sample taken in gm (C)")
-    wt_of_silicon3 = fields.Float(string="Weight of sample taken in gm (C)")
-    wt_of_silicon4 = fields.Float(string="Weight of sample taken in gm (C)")
-    wt_of_silicon5 = fields.Float(string="Weight of sample taken in gm (C)")
+    wt_of_silicon1 = fields.Float(string="Weight of crucible before HF treatment in Sample-W2",digits=(12,4))
+    wt_of_silicon2 = fields.Float(string="Weight of crucible before HF treatment in Sample-W2",digits=(12,4))
+    wt_of_silicon3 = fields.Float(string="Weight of crucible before HF treatment in Sample-W2",digits=(12,4))
+    wt_of_silicon4 = fields.Float(string="Weight of crucible before HF treatment in Sample-W2",digits=(12,4))
+    wt_of_silicon5 = fields.Float(string="Weight of crucible before HF treatment in Sample-W2",digits=(12,4))
 
-    mas_of_silicon1 = fields.Float(string="Mass in gm. Of silica obtained in sample (A)")
-    mas_of_silicon2 = fields.Float(string="Mass in gm. Of silica obtained in sample (A)")
-    mas_of_silicon3 = fields.Float(string="Mass in gm. Of silica obtained in sample (A)")
-    mas_of_silicon4 = fields.Float(string="Mass in gm. Of silica obtained in sample (A)")
-    mas_of_silicon5 = fields.Float(string="Mass in gm. Of silica obtained in sample (A)")
+    mas_of_silicon1 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
+    mas_of_silicon2 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
+    mas_of_silicon3 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
+    mas_of_silicon4 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
+    mas_of_silicon5 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
 
-    mass_of_siliconb1 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
-    mass_of_siliconb2 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
-    mass_of_siliconb3 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
-    mass_of_siliconb4 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
-    mass_of_siliconb5 = fields.Float(string="Mass in gm. Of silica obtained in blank (B)")
+    mass_of_silicona1 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
+    mass_of_silicona2 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
+    mass_of_silicona3 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
+    mass_of_silicona4 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
+    mass_of_silicona5 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
 
-    percent_of_silicon1 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
-    percent_of_silicon2 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
-    percent_of_silicon3 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
-    percent_of_silicon4 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
-    percent_of_silicon5 = fields.Float(string="% of Silicon = ((A - B) X 46.75 )/C",compute="_compute_percent_of_silicon")
+    wt_cr_w41 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
+    wt_cr_w42 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
+    wt_cr_w43 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
+    wt_cr_w44 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
+    wt_cr_w45 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
+
+    wt_cr_w51 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
+    wt_cr_w52 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
+    wt_cr_w53 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
+    wt_cr_w54 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
+    wt_cr_w55 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
+
+    mass_of_siliconb1 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+    mass_of_siliconb2 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+    mass_of_siliconb3 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+    mass_of_siliconb4 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+    mass_of_siliconb5 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+
+    wt_of_samplew1 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
+    wt_of_samplew2 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
+    wt_of_samplew3 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
+    wt_of_samplew4 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
+    wt_of_samplew5 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
+
+    percent_of_silicon1 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+    percent_of_silicon2 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+    percent_of_silicon3 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+    percent_of_silicon4 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+    percent_of_silicon5 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+
+    @api.depends(
+    'wt_cr_w41', 'wt_cr_w51',
+    'wt_cr_w42', 'wt_cr_w52',
+    'wt_cr_w43', 'wt_cr_w53',
+    'wt_cr_w44', 'wt_cr_w54',
+    'wt_cr_w45', 'wt_cr_w55'
+    )
+    def _compute_mass_of_siliconb(self):
+        for record in self:
+
+            record.mass_of_siliconb1 = (
+                record.wt_cr_w41 - record.wt_cr_w51
+            )
+
+            record.mass_of_siliconb2 = (
+                record.wt_cr_w42 - record.wt_cr_w52
+            )
+
+            record.mass_of_siliconb3 = (
+                record.wt_cr_w43 - record.wt_cr_w53
+            )
+
+            record.mass_of_siliconb4 = (
+                record.wt_cr_w44 - record.wt_cr_w54
+            )
+
+            record.mass_of_siliconb5 = (
+                record.wt_cr_w45 - record.wt_cr_w55
+            )
 
 
     @api.depends(
-        'wt_of_silicon1', 'mas_of_silicon1', 'mass_of_siliconb1',
-        'wt_of_silicon2', 'mas_of_silicon2', 'mass_of_siliconb2',
-        'wt_of_silicon3', 'mas_of_silicon3', 'mass_of_siliconb3',
-        'wt_of_silicon4', 'mas_of_silicon4', 'mass_of_siliconb4',
-        'wt_of_silicon5', 'mas_of_silicon5', 'mass_of_siliconb5'
+    'mass_of_silicona1', 'mass_of_siliconb1', 'wt_of_samplew1',
+    'mass_of_silicona2', 'mass_of_siliconb2', 'wt_of_samplew2',
+    'mass_of_silicona3', 'mass_of_siliconb3', 'wt_of_samplew3',
+    'mass_of_silicona4', 'mass_of_siliconb4', 'wt_of_samplew4',
+    'mass_of_silicona5', 'mass_of_siliconb5', 'wt_of_samplew5'
     )
     def _compute_percent_of_silicon(self):
         for record in self:
 
             # Sample 1
-            if record.wt_of_silicon1:
-                record.percent_of_silicon1 = (
-                    (record.mas_of_silicon1 - record.mass_of_siliconb1)
-                    * 46.75
-                ) / record.wt_of_silicon1
+            if record.wt_of_samplew1:
+                record.percent_of_silicon1 = round(
+                    (
+                        (record.mass_of_silicona1 - record.mass_of_siliconb1)
+                        * 46.75
+                    ) / record.wt_of_samplew1,
+                    2
+                )
             else:
                 record.percent_of_silicon1 = 0.0
 
             # Sample 2
-            if record.wt_of_silicon2:
-                record.percent_of_silicon2 = (
-                    (record.mas_of_silicon2 - record.mass_of_siliconb2)
-                    * 46.75
-                ) / record.wt_of_silicon2
+            if record.wt_of_samplew2:
+                record.percent_of_silicon2 = round(
+                    (
+                        (record.mass_of_silicona2 - record.mass_of_siliconb2)
+                        * 46.75
+                    ) / record.wt_of_samplew2,
+                    2
+                )
             else:
                 record.percent_of_silicon2 = 0.0
 
             # Sample 3
-            if record.wt_of_silicon3:
-                record.percent_of_silicon3 = (
-                    (record.mas_of_silicon3 - record.mass_of_siliconb3)
-                    * 46.75
-                ) / record.wt_of_silicon3
+            if record.wt_of_samplew3:
+                record.percent_of_silicon3 = round(
+                    (
+                        (record.mass_of_silicona3 - record.mass_of_siliconb3)
+                        * 46.75
+                    ) / record.wt_of_samplew3,
+                    2
+                )
             else:
                 record.percent_of_silicon3 = 0.0
 
             # Sample 4
-            if record.wt_of_silicon4:
-                record.percent_of_silicon4 = (
-                    (record.mas_of_silicon4 - record.mass_of_siliconb4)
-                    * 46.75
-                ) / record.wt_of_silicon4
+            if record.wt_of_samplew4:
+                record.percent_of_silicon4 = round(
+                    (
+                        (record.mass_of_silicona4 - record.mass_of_siliconb4)
+                        * 46.75
+                    ) / record.wt_of_samplew4,
+                    2
+                )
             else:
                 record.percent_of_silicon4 = 0.0
 
             # Sample 5
-            if record.wt_of_silicon5:
-                record.percent_of_silicon5 = (
-                    (record.mas_of_silicon5 - record.mass_of_siliconb5)
-                    * 46.75
-                ) / record.wt_of_silicon5
+            if record.wt_of_samplew5:
+                record.percent_of_silicon5 = round(
+                    (
+                        (record.mass_of_silicona5 - record.mass_of_siliconb5)
+                        * 46.75
+                    ) / record.wt_of_samplew5,
+                    2
+                )
             else:
                 record.percent_of_silicon5 = 0.0
 
+
+
+
+    
     
 
     avg_silicon = fields.Float(string="Average Of Silicon =",compute="_compute_avg_silicon")
@@ -958,86 +1031,134 @@ class SteelChemical(models.Model):
     chromium_volumc4 = fields.Float(string="Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)")
     chromium_volumc5 = fields.Float(string="Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)")
 
-    chromium_normalityd1 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)")
-    chromium_normalityd2 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)")
-    chromium_normalityd3 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)")
-    chromium_normalityd4 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)")
-    chromium_normalityd5 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)")
+    chromium_normalityd1 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
+    chromium_normalityd2 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
+    chromium_normalityd3 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
+    chromium_normalityd4 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
+    chromium_normalityd5 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
 
-    chromium_masse1 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
-    chromium_masse2 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
-    chromium_masse3 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
-    chromium_masse4 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
-    chromium_masse5 = fields.Float(string="Mass in gm of the sample taken for Test, (E)")
+    chromium_masse1 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
+    chromium_masse2 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
+    chromium_masse3 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
+    chromium_masse4 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
+    chromium_masse5 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
 
-    percent_chromium1 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
-    percent_chromium2 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
-    percent_chromium3 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
-    percent_chromium4 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
-    percent_chromium5 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium")
+    percent_chromium1 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium",digits=(12,3))
+    percent_chromium2 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium",digits=(12,3))
+    percent_chromium3 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium",digits=(12,3))
+    percent_chromium4 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium",digits=(12,3))
+    percent_chromium5 = fields.Float(string="Percent of Chromium= ((AB-C) X 0.01733 X 100)/E",compute="_compute_percent_chromium",digits=(12,3))
 
     @api.depends(
-        'chromium_voluma_1', 'chromium_volumb_1', 'chromium_volumc1', 'chromium_masse1',
-        'chromium_voluma_2', 'chromium_volumb_2', 'chromium_volumc2', 'chromium_masse2',
-        'chromium_voluma_3', 'chromium_volumb_3', 'chromium_volumc3', 'chromium_masse3',
-        'chromium_voluma_4', 'chromium_volumb_4', 'chromium_volumc4', 'chromium_masse4',
-        'chromium_voluma_5', 'chromium_volumb_5', 'chromium_volumc5', 'chromium_masse5'
+    'chromium_voluma_1', 'chromium_volumb_1', 'chromium_volumc1',
+    'chromium_normalityd1', 'chromium_masse1',
+
+    'chromium_voluma_2', 'chromium_volumb_2', 'chromium_volumc2',
+    'chromium_normalityd2', 'chromium_masse2',
+
+    'chromium_voluma_3', 'chromium_volumb_3', 'chromium_volumc3',
+    'chromium_normalityd3', 'chromium_masse3',
+
+    'chromium_voluma_4', 'chromium_volumb_4', 'chromium_volumc4',
+    'chromium_normalityd4', 'chromium_masse4',
+
+    'chromium_voluma_5', 'chromium_volumb_5', 'chromium_volumc5',
+    'chromium_normalityd5', 'chromium_masse5'
     )
     def _compute_percent_chromium(self):
         for record in self:
 
             # Sample 1
             if record.chromium_masse1:
-                record.percent_chromium1 = (
-                    ((record.chromium_voluma_1 * record.chromium_volumb_1) - record.chromium_volumc1)
-                    * 0.01733
-                    * 100
-                ) / record.chromium_masse1
+                record.percent_chromium1 = round(
+                    (
+                        (
+                            (record.chromium_voluma_1 * record.chromium_volumb_1)
+                            - record.chromium_volumc1
+                        )
+                        * record.chromium_normalityd1
+                        * 0.01733
+                        * 100
+                    ) / record.chromium_masse1,
+                    3
+                )
             else:
                 record.percent_chromium1 = 0.0
 
             # Sample 2
             if record.chromium_masse2:
-                record.percent_chromium2 = (
-                    ((record.chromium_voluma_2 * record.chromium_volumb_2) - record.chromium_volumc2)
-                    * 0.01733
-                    * 100
-                ) / record.chromium_masse2
+                record.percent_chromium2 = round(
+                    (
+                        (
+                            (record.chromium_voluma_2 * record.chromium_volumb_2)
+                            - record.chromium_volumc2
+                        )
+                        * record.chromium_normalityd2
+                        * 0.01733
+                        * 100
+                    ) / record.chromium_masse2,
+                    3
+                )
             else:
                 record.percent_chromium2 = 0.0
 
             # Sample 3
             if record.chromium_masse3:
-                record.percent_chromium3 = (
-                    ((record.chromium_voluma_3 * record.chromium_volumb_3) - record.chromium_volumc3)
-                    * 0.01733
-                    * 100
-                ) / record.chromium_masse3
+                record.percent_chromium3 = round(
+                    (
+                        (
+                            (record.chromium_voluma_3 * record.chromium_volumb_3)
+                            - record.chromium_volumc3
+                        )
+                        * record.chromium_normalityd3
+                        * 0.01733
+                        * 100
+                    ) / record.chromium_masse3,
+                    3
+                )
             else:
                 record.percent_chromium3 = 0.0
 
             # Sample 4
             if record.chromium_masse4:
-                record.percent_chromium4 = (
-                    ((record.chromium_voluma_4 * record.chromium_volumb_4) - record.chromium_volumc4)
-                    * 0.01733
-                    * 100
-                ) / record.chromium_masse4
+                record.percent_chromium4 = round(
+                    (
+                        (
+                            (record.chromium_voluma_4 * record.chromium_volumb_4)
+                            - record.chromium_volumc4
+                        )
+                        * record.chromium_normalityd4
+                        * 0.01733
+                        * 100
+                    ) / record.chromium_masse4,
+                    3
+                )
             else:
                 record.percent_chromium4 = 0.0
 
             # Sample 5
             if record.chromium_masse5:
-                record.percent_chromium5 = (
-                    ((record.chromium_voluma_5 * record.chromium_volumb_5) - record.chromium_volumc5)
-                    * 0.01733
-                    * 100
-                ) / record.chromium_masse5
+                record.percent_chromium5 = round(
+                    (
+                        (
+                            (record.chromium_voluma_5 * record.chromium_volumb_5)
+                            - record.chromium_volumc5
+                        )
+                        * record.chromium_normalityd5
+                        * 0.01733
+                        * 100
+                    ) / record.chromium_masse5,
+                    3
+                )
             else:
                 record.percent_chromium5 = 0.0
 
 
-    avg_chromium = fields.Float(string="Average Of Chromium % =",compute="_compute_avg_chromium")
+    
+
+
+
+    avg_chromium = fields.Float(string="Average Of Chromium % =",compute="_compute_avg_chromium",digits=(12,3))
 
     @api.depends('percent_chromium1', 'percent_chromium2', 'percent_chromium3', 'percent_chromium4', 'percent_chromium5')
     def _compute_avg_chromium(self):
@@ -1058,6 +1179,8 @@ class SteelChemical(models.Model):
                 rec.avg_chromium = sum(valid_chromium) / len(valid_chromium)
             else:
                 rec.avg_chromium = 0.0
+
+    
 
 
     
@@ -1129,77 +1252,130 @@ class SteelChemical(models.Model):
     nickel_name = fields.Char("Name",default="DETERMINATION OF NICKEL IN STEEL- IS: 228 (PART-5) 1989 RA 2023")
     nickel_visible = fields.Boolean("DETERMINATION OF NICKEL IN STEEL- IS: 228 (PART-5) 1989 RA 2023",compute="_compute_visible")
 
-    mass_nickela1 = fields.Float(string="Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)")
-    mass_nickela2 = fields.Float(string="Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)")
-    mass_nickela3 = fields.Float(string="Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)")
-    mass_nickela4 = fields.Float(string="Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)")
-    mass_nickela5 = fields.Float(string="Mass in gm of Nickel dimethylglyoximate in the aliquot, (A)")
+    mass_intial_w1_1 = fields.Float(string="Mass in gm of intial weight of gooch curible W1",digits=(12,4))
+    mass_intial_w1_2 = fields.Float(string="Mass in gm of intial weight of gooch curible W1",digits=(12,4))
+    mass_intial_w1_3 = fields.Float(string="Mass in gm of intial weight of gooch curible W1",digits=(12,4))
+    mass_intial_w1_4 = fields.Float(string="Mass in gm of intial weight of gooch curible W1",digits=(12,4))
+    mass_intial_w1_5 = fields.Float(string="Mass in gm of intial weight of gooch curible W1",digits=(12,4))
 
-    mass_nickelb1 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
-    mass_nickelb2 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
-    mass_nickelb3 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
-    mass_nickelb4 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
-    mass_nickelb5 = fields.Float(string="Mass in gm of the sample of aliquot representing the sample taken, (B)")
+    mass_final_w2_1 = fields.Float(string="Mass in gm of Final weight of gooch curible W2",digits=(12,4))
+    mass_final_w2_2 = fields.Float(string="Mass in gm of Final weight of gooch curible W2",digits=(12,4))
+    mass_final_w2_3 = fields.Float(string="Mass in gm of Final weight of gooch curible W2",digits=(12,4))
+    mass_final_w2_4 = fields.Float(string="Mass in gm of Final weight of gooch curible W2",digits=(12,4))
+    mass_final_w2_5 = fields.Float(string="Mass in gm of Final weight of gooch curible W2",digits=(12,4))
 
-    percent_nickel_1 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
-    percent_nickel_2 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
-    percent_nickel_3 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
-    percent_nickel_4 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
-    percent_nickel_5 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel")
+    mass_nickela1 = fields.Float(string="Mass in gm of nickel dimethylglyoximate in the aliquot-A",compute="_compute_mass_nickela",digits=(12,4))
+    mass_nickela2 = fields.Float(string="Mass in gm of nickel dimethylglyoximate in the aliquot-A",compute="_compute_mass_nickela",digits=(12,4))
+    mass_nickela3 = fields.Float(string="Mass in gm of nickel dimethylglyoximate in the aliquot-A",compute="_compute_mass_nickela",digits=(12,4))
+    mass_nickela4 = fields.Float(string="Mass in gm of nickel dimethylglyoximate in the aliquot-A",compute="_compute_mass_nickela",digits=(12,4))
+    mass_nickela5 = fields.Float(string="Mass in gm of nickel dimethylglyoximate in the aliquot-A",compute="_compute_mass_nickela",digits=(12,4))
+    
+
+    mass_nickelb1 = fields.Float(string="Mass in gm of the sample or aliquot representing the sample teken-B",digits=(12,4))
+    mass_nickelb2 = fields.Float(string="Mass in gm of the sample or aliquot representing the sample teken-B",digits=(12,4))
+    mass_nickelb3 = fields.Float(string="Mass in gm of the sample or aliquot representing the sample teken-B",digits=(12,4))
+    mass_nickelb4 = fields.Float(string="Mass in gm of the sample or aliquot representing the sample teken-B",digits=(12,4))
+    mass_nickelb5 = fields.Float(string="Mass in gm of the sample or aliquot representing the sample teken-B",digits=(12,4))
+
+    percent_nickel_1 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel",digits=(12,3))
+    percent_nickel_2 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel",digits=(12,3))
+    percent_nickel_3 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel",digits=(12,3))
+    percent_nickel_4 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel",digits=(12,3))
+    percent_nickel_5 = fields.Float(string="Percent of Nickel= (A X 20.32)/B",compute="_compute_percent_nickel",digits=(12,3))
+
 
     @api.depends(
-        'mass_nickela1', 'mass_nickelb1',
-        'mass_nickela2', 'mass_nickelb2',
-        'mass_nickela3', 'mass_nickelb3',
-        'mass_nickela4', 'mass_nickelb4',
-        'mass_nickela5', 'mass_nickelb5'
+    'mass_final_w2_1', 'mass_intial_w1_1',
+    'mass_final_w2_2', 'mass_intial_w1_2',
+    'mass_final_w2_3', 'mass_intial_w1_3',
+    'mass_final_w2_4', 'mass_intial_w1_4',
+    'mass_final_w2_5', 'mass_intial_w1_5'
+    )
+    def _compute_mass_nickela(self):
+        for record in self:
+
+            record.mass_nickela1 = (
+                record.mass_final_w2_1 - record.mass_intial_w1_1
+            )
+
+            record.mass_nickela2 = (
+                record.mass_final_w2_2 - record.mass_intial_w1_2
+            )
+
+            record.mass_nickela3 = (
+                record.mass_final_w2_3 - record.mass_intial_w1_3
+            )
+
+            record.mass_nickela4 = (
+                record.mass_final_w2_4 - record.mass_intial_w1_4
+            )
+
+            record.mass_nickela5 = (
+                record.mass_final_w2_5 - record.mass_intial_w1_5
+            )
+
+    @api.depends(
+    'mass_nickela1', 'mass_nickelb1',
+    'mass_nickela2', 'mass_nickelb2',
+    'mass_nickela3', 'mass_nickelb3',
+    'mass_nickela4', 'mass_nickelb4',
+    'mass_nickela5', 'mass_nickelb5'
     )
     def _compute_percent_nickel(self):
         for record in self:
 
             # Sample 1
             if record.mass_nickelb1:
-                record.percent_nickel_1 = (
-                    record.mass_nickela1 * 20.32
-                ) / record.mass_nickelb1
+                record.percent_nickel_1 = round(
+                    (record.mass_nickela1 * 20.32) / record.mass_nickelb1,
+                    3
+                )
             else:
                 record.percent_nickel_1 = 0.0
 
             # Sample 2
             if record.mass_nickelb2:
-                record.percent_nickel_2 = (
-                    record.mass_nickela2 * 20.32
-                ) / record.mass_nickelb2
+                record.percent_nickel_2 = round(
+                    (record.mass_nickela2 * 20.32) / record.mass_nickelb2,
+                    3
+                )
             else:
                 record.percent_nickel_2 = 0.0
 
             # Sample 3
             if record.mass_nickelb3:
-                record.percent_nickel_3 = (
-                    record.mass_nickela3 * 20.32
-                ) / record.mass_nickelb3
+                record.percent_nickel_3 = round(
+                    (record.mass_nickela3 * 20.32) / record.mass_nickelb3,
+                    3
+                )
             else:
                 record.percent_nickel_3 = 0.0
 
             # Sample 4
             if record.mass_nickelb4:
-                record.percent_nickel_4 = (
-                    record.mass_nickela4 * 20.32
-                ) / record.mass_nickelb4
+                record.percent_nickel_4 = round(
+                    (record.mass_nickela4 * 20.32) / record.mass_nickelb4,
+                    3
+                )
             else:
                 record.percent_nickel_4 = 0.0
 
             # Sample 5
             if record.mass_nickelb5:
-                record.percent_nickel_5 = (
-                    record.mass_nickela5 * 20.32
-                ) / record.mass_nickelb5
+                record.percent_nickel_5 = round(
+                    (record.mass_nickela5 * 20.32) / record.mass_nickelb5,
+                    3
+                )
             else:
                 record.percent_nickel_5 = 0.0
 
+
+
     
 
-    avg_nickel = fields.Float(string="Average Of Nickel % =",compute="_compute_avg_nickel")
+    
+
+    avg_nickel = fields.Float(string="Average Of Nickel % =",compute="_compute_avg_nickel",digits=(12,3))
 
 
     @api.depends('percent_nickel_1', 'percent_nickel_2', 'percent_nickel_3', 'percent_nickel_4', 'percent_nickel_5')

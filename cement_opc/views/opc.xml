@@ -270,55 +270,201 @@
                             <field name="fineness_blaine_visible" invisible="1"/>
                         </h1>
                     </div>
-
+                   <div class="d-flex gap-2">
                     <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="k">K</label></td>
-                                <td><field name="k" nolabel="1" class="blue-input" /></td>
+                                <td><label class="fw-bold" for="temp_finess"></label></td>
+                                <td><field name="temp_finess" nolabel="1" class="blue-input" /></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="e">E</label></td>
-                                <td><field name="e" nolabel="1" class="blue-input" /></td>
+                                <td><label class="fw-bold" for="density_murcury_finess"></label></td>
+                                <td><field name="density_murcury_finess" nolabel="1" class="blue-input" /></td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <div invisible = "fineness_blaine_visible == False">
-                        <field name="fineness_blaine_lines">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="wt_of_cement1" class="blue-input" decoration-info="wt_of_cement1 != 0"/>
-                                <field name="time_sec" class="blue-input" decoration-info="time_sec != 0"/>
-                                <field name="fineness"/>
-                            </tree>
-                        </field>
-                    </div>
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="viscosity_finess"></label></td>
+                                <td><field name="viscosity_finess" nolabel="1" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="n_finess"></label></td>
+                                <td><field name="n_finess" nolabel="1" class="blue-input" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     </div>
+
+                    <div invisible="fineness_blaine_visible == False">
+
+
+                  
+
+                            <div style="text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px;">
+                                DETERMINATION OF THE BED VOLUME
+                            </div>
+
+                            <field name="fineness_blaine_lines">
+                                <tree editable="bottom" class="custom_table_borders">
+                                    <field name="serial_no"/>
+                                    <field name="wt_murcurym1"
+                                        class="blue-input"
+                                        decoration-info="wt_murcurym1 != 0"/>
+                                    <field name="murcury_afterm2"
+                                        class="blue-input"
+                                        decoration-info="murcury_afterm2 != 0"/>
+                                    <field name="density_murcury"/>
+                                    <field name="v_murcury"/>
+                                </tree>
+                            </field>
+
 
                     <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine">Fineness of Cement</label></td>
+                                <td><label class="fw-bold" for="avg_fineness_blaine">Avg V</label></td>
                                 <td>
                                     <field name="avg_fineness_blaine" nolabel="1"/>
-                                    <span class="ms-2">m²/kg</span>
+                                    <!-- <span class="ms-2">m²/kg</span> -->
                                 </td>
                             </tr>
+                         
+                            </tbody>
+                        </table>
+
+                        </div>
+
+
+
+                        <div invisible="fineness_blaine_visible == False">
+
+                          <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine_conformity">Fineness Conformity</label></td>
+                                <td><label class="fw-bold" for="density_standard_finess"></label></td>
+                                <td><field name="density_standard_finess" nolabel="1" class="blue-input" /></td>
+                            </tr>
+                          
+                        </tbody>
+                    </table>
+
+                  
+
+                            <div style="text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px;">
+                                DETERMINATION OF THE BED VOLUME
+                            </div>
+
+                            <field name="apparatus_counstant_lines">
+                                <tree editable="bottom" class="custom_table_borders">
+                                    <field name="serial_no"/>
+                                    <field name="wt_standard"
+                                        class="blue-input"
+                                        decoration-info="wt_standard != 0"/>
+                                    <field name="density_standard"
+                                        class="blue-input"
+                                        decoration-info="density_standard != 0"/>
+                                    <field name="air_viscosity"/>
+                                    <field name="measured_time"/>
+                                </tree>
+                            </field>
+
+                        </div>
+
+                          <div class="d-flex gap-2">
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="mean_time"></label></td>
+                                <td><field name="mean_time" nolabel="1" class="blue-input" /></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="apparatus_constant"></label></td>
+                                <td><field name="apparatus_constant" nolabel="1" class="blue-input" /></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                     </div>
+
+
+
+                       <div invisible="fineness_blaine_visible == False">
+
+                    
+
+                            <div style="text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px;">
+                                DETERMINATION OF FINENESS
+                            </div>
+
+                            <field name="detarmination_finess_lines">
+                                <tree editable="bottom" class="custom_table_borders">
+                                    <field name="serial_no"/>
+                                    <field name="wt_standard_fine"
+                                        class="blue-input"
+                                        decoration-info="wt_standard_fine != 0"/>
+                                    <field name="density_standard_fine"
+                                        class="blue-input"
+                                        decoration-info="density_standard_fine != 0"/>
+                                    <field name="apparatus_fine"/>
+                                    <field name="measured_time_fine"/>
+                                    <field name="min_measured_time_fine"/>
+                                </tree>
+                            </field>
+
+                        </div>
+
+                          <div class="d-flex gap-2">
+                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="specific_area"></label></td>
+                                    <td><field name="specific_area" nolabel="1" class="blue-input" /></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+
+                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="fineness_blaine_avg"></label></td>
+                                    <td><field name="fineness_blaine_avg" nolabel="1" class="blue-input" /></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+
+                    
+                     </div>
+
+
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="fineness_blaine_avg_conformity">Fineness Conformity</label></td>
                                 <td>
-                                    <field name="avg_fineness_blaine_conformity"
-                                        decoration-success="avg_fineness_blaine_conformity == 'pass'"
-                                        decoration-danger="avg_fineness_blaine_conformity == 'fail'"
+                                    <field name="fineness_blaine_avg_conformity"
+                                        decoration-success="fineness_blaine_avg_conformity == 'pass'"
+                                        decoration-danger="fineness_blaine_avg_conformity == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine_nabl">Fineness NABL</label></td>
+                                <td><label class="fw-bold" for="fineness_blaine_avg_nabl">Fineness NABL</label></td>
                                 <td>
-                                    <field name="avg_fineness_blaine_nabl"
-                                        decoration-success="avg_fineness_blaine_nabl == 'pass'"
-                                        decoration-danger="avg_fineness_blaine_nabl == 'fail'"
+                                    <field name="fineness_blaine_avg_nabl"
+                                        decoration-success="fineness_blaine_avg_nabl == 'pass'"
+                                        decoration-danger="fineness_blaine_avg_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>

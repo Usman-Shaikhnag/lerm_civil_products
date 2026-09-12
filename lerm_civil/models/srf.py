@@ -940,7 +940,7 @@ class CreateSampleWizard(models.TransientModel):
    
     group_id = fields.Many2one('lerm_civil.group',string="Group")
     # department_id = fields.Char(string='Department')
-    material_id = fields.Many2one('product.template',string="Material")
+    material_id = fields.Many2one('product.template',string="Sub Group")
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
     size_ids = fields.Many2many('lerm.size.line',string="Size")
