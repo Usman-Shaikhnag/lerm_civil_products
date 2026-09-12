@@ -15,7 +15,7 @@ class ParameterMaster(models.Model):
     datasheet_report_template = fields.Many2one('ir.actions.report',string="DataSheet Report Template")
     decimal = fields.Integer("Decimal")
     time_based = fields.Boolean("Time Based")
-    mu_value = fields.Float(string="Mu Value")
+    mu_value = fields.Float(string="Mu Value",digits=(16,4))
     unit = fields.Many2one('uom.uom',string="Unit")
     calculated = fields.Boolean("Pseudo Parameter")
     calculation_type = fields.Selection([('parameter_based', 'Parameter Based'), ('form_based', 'Form Based')],default='parameter_based',string='Calculation Type')

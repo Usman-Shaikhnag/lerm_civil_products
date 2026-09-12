@@ -7,7 +7,7 @@ class SteelChemical(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name = fields.Char("Name",default="Steel Chemical")
+    name1 = fields.Char("Name",default="Mild Steel")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -84,11 +84,11 @@ class SteelChemical(models.Model):
     type_of_sample4 = fields.Float(string="Type of sample")
     type_of_sample5 = fields.Float(string="Type of sample")
 
-    wt_of_sample1 = fields.Float(string="Wt. of sample (W)")
-    wt_of_sample2 = fields.Float(string="Wt. of sample (W)")
-    wt_of_sample3 = fields.Float(string="Wt. of sample (W)")
-    wt_of_sample4 = fields.Float(string="Wt. of sample (W)")
-    wt_of_sample5 = fields.Float(string="Wt. of sample (W)")
+    wt_of_sample1 = fields.Float(string="Wt. of sample (W)",digits=(12,4))
+    wt_of_sample2 = fields.Float(string="Wt. of sample (W)",digits=(12,4))
+    wt_of_sample3 = fields.Float(string="Wt. of sample (W)",digits=(12,4))
+    wt_of_sample4 = fields.Float(string="Wt. of sample (W)",digits=(12,4))
+    wt_of_sample5 = fields.Float(string="Wt. of sample (W)",digits=(12,4))
 
     br_reading_a1 = fields.Float(string="Burette Reading for sample (A)")
     br_reading_a2 = fields.Float(string="Burette Reading for sample (A)")
@@ -108,7 +108,7 @@ class SteelChemical(models.Model):
     carbon_calculation4 = fields.Float(string="Calculation= (A - B) X F",compute="_compute_carbon_calculation"  )
     carbon_calculation5 = fields.Float(string="Calculation= (A - B) X F " ,compute="_compute_carbon_calculation" )
 
-    carbon_percentage = fields.Float(string="Average of Carbon -",compute="_compute_avg_chloride")
+    carbon_percentage = fields.Float(string="Average of Carbon -",compute="_compute_avg_chloride" ,digits=(12,3))
 
     @api.depends('carbon_calculation1', 'carbon_calculation2', 'carbon_calculation3', 'carbon_calculation4', 'carbon_calculation5')
     def _compute_avg_chloride(self):
@@ -228,11 +228,11 @@ class SteelChemical(models.Model):
     phosphorus_name = fields.Char("Name",default="DETERMINATION OF PHOSPHORUS IN STEEL- IS: 228 (PART-3) 2024")
     phosphorus_visible = fields.Boolean("DETERMINATION OF PHOSPHORUS IN STEEL- IS: 228 (PART-3) 2024",compute="_compute_visible")
 
-    wt_sample_taken1 = fields.Float(string="Weight of sample taken in gm (D)")
-    wt_sample_taken2 = fields.Float(string="Weight of sample taken in gm (D)")
-    wt_sample_taken3 = fields.Float(string="Weight of sample taken in gm (D)")
-    wt_sample_taken4 = fields.Float(string="Weight of sample taken in gm (D)")
-    wt_sample_taken5 = fields.Float(string="Weight of sample taken in gm (D)")
+    wt_sample_taken1 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    wt_sample_taken2 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    wt_sample_taken3 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    wt_sample_taken4 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    wt_sample_taken5 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
 
     hno3_a1 = fields.Float(string="Std. HNO3 solution consumed in sample in ml (A)")
     hno3_a2 = fields.Float(string="Std. HNO3 solution consumed in sample in ml (A)")
@@ -320,7 +320,7 @@ class SteelChemical(models.Model):
 
 
 
-    avg_phosphorus = fields.Float(string="Average of phosphorus =",compute="_compute_avg_phosphorus")
+    avg_phosphorus = fields.Float(string="Average of phosphorus =",compute="_compute_avg_phosphorus",digits=(12,3))
 
     @api.depends('percentage_of_phosphorus1', 'percentage_of_phosphorus2', 'percentage_of_phosphorus3', 'percentage_of_phosphorus4', 'percentage_of_phosphorus5')
     def _compute_avg_phosphorus(self):
@@ -409,11 +409,11 @@ class SteelChemical(models.Model):
     sulphur_steel_name = fields.Char("Name",default="DETERMINATION OF SULPHUR IN STEEL- IS: 228 (PART-9) 1989 RA 2023")
     sulphur_steel_visible = fields.Boolean("DETERMINATION OF SULPHUR IN STEEL- IS: 228 (PART-9) 1989 RA 2023",compute="_compute_visible")
 
-    sulpher_wt_sample1 = fields.Float(string="Weight of sample taken in gm (D)")
-    sulpher_wt_sample2 = fields.Float(string="Weight of sample taken in gm (D)")
-    sulpher_wt_sample3 = fields.Float(string="Weight of sample taken in gm (D)")
-    sulpher_wt_sample4 = fields.Float(string="Weight of sample taken in gm (D)")
-    sulpher_wt_sample5 = fields.Float(string="Weight of sample taken in gm (D)")
+    sulpher_wt_sample1 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    sulpher_wt_sample2 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    sulpher_wt_sample3 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    sulpher_wt_sample4 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
+    sulpher_wt_sample5 = fields.Float(string="Weight of sample taken in gm (D)",digits=(12,4))
 
     sulpher_potassiumb1 = fields.Float(string="Volume in ml, of potassium iodate solution  used (B)")
     sulpher_potassiumb2 = fields.Float(string="Volume in ml, of potassium iodate solution  used (B)")
@@ -504,7 +504,7 @@ class SteelChemical(models.Model):
     
    
 
-    avg_sulphur = fields.Float(string="Average of Sulphur =",compute="_compute_avg_sulphur")
+    avg_sulphur = fields.Float(string="Average of Sulphur =",compute="_compute_avg_sulphur",digits=(12,3))
 
     @api.depends('percentage_sulpher1', 'percentage_sulpher2', 'percentage_sulpher3', 'percentage_sulpher4', 'percentage_sulpher5')
     def _compute_avg_sulphur(self):
@@ -595,11 +595,11 @@ class SteelChemical(models.Model):
     manganese_name = fields.Char("Name",default="DETERMINATION OF MANGANESE IN STEEL- IS: 228 (PART-2) 2024")
     manganese_visible = fields.Boolean("DETERMINATION OF MANGANESE IN STEEL- IS: 228 (PART-2) 2024",compute="_compute_visible")
 
-    manganese_wt_samplec1 = fields.Float(string="Weight of sample taken in gm (C)")
-    manganese_wt_samplec2 = fields.Float(string="Weight of sample taken in gm (C)")
-    manganese_wt_samplec3 = fields.Float(string="Weight of sample taken in gm (C)")
-    manganese_wt_samplec4 = fields.Float(string="Weight of sample taken in gm (C)")
-    manganese_wt_samplec5 = fields.Float(string="Weight of sample taken in gm (C)")
+    manganese_wt_samplec1 = fields.Float(string="Weight of sample taken in gm (C)",digits=(12,4))
+    manganese_wt_samplec2 = fields.Float(string="Weight of sample taken in gm (C)",digits=(12,4))
+    manganese_wt_samplec3 = fields.Float(string="Weight of sample taken in gm (C)",digits=(12,4))
+    manganese_wt_samplec4 = fields.Float(string="Weight of sample taken in gm (C)",digits=(12,4))
+    manganese_wt_samplec5 = fields.Float(string="Weight of sample taken in gm (C)",digits=(12,4))
 
     manganese_sodiuma1 = fields.Float(string="Std. Sodium arsenite solution consumed in sample in ml (A)")
     manganese_sodiuma2 = fields.Float(string="Std. Sodium arsenite solution consumed in sample in ml (A)")
@@ -675,7 +675,7 @@ class SteelChemical(models.Model):
             else:
                 record.manganese_percentage5 = 0.0
 
-    avg_manganese = fields.Float(string="Average of Manganese =",compute="_compute_avg_manganese")
+    avg_manganese = fields.Float(string="Average of Manganese =",compute="_compute_avg_manganese",digits=(12,3))
 
 
 
@@ -797,11 +797,11 @@ class SteelChemical(models.Model):
     wt_cr_w54 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
     wt_cr_w55 = fields.Float(string="Weight of crucible After HF treatment in Blank-W5",digits=(12,4))
 
-    mass_of_siliconb1 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
-    mass_of_siliconb2 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
-    mass_of_siliconb3 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
-    mass_of_siliconb4 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
-    mass_of_siliconb5 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,9))
+    mass_of_siliconb1 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,4))
+    mass_of_siliconb2 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,4))
+    mass_of_siliconb3 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,4))
+    mass_of_siliconb4 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,4))
+    mass_of_siliconb5 = fields.Float(string="Mass in gm of silica in Blank-B",compute="_compute_mass_of_siliconb",digits=(12,4))
 
     wt_of_samplew1 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
     wt_of_samplew2 = fields.Float(string="Weight of sample taken-W",digits=(12,4))
@@ -922,7 +922,7 @@ class SteelChemical(models.Model):
     
     
 
-    avg_silicon = fields.Float(string="Average Of Silicon =",compute="_compute_avg_silicon")
+    avg_silicon = fields.Float(string="Average Of Silicon =",compute="_compute_avg_silicon",digits=(12,3))
 
 
     @api.depends('percent_of_silicon1', 'percent_of_silicon2', 'percent_of_silicon3', 'percent_of_silicon4', 'percent_of_silicon5')
@@ -1031,11 +1031,11 @@ class SteelChemical(models.Model):
     chromium_volumc4 = fields.Float(string="Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)")
     chromium_volumc5 = fields.Float(string="Volume in ml of std. Potassium permanganate solution required for titration corrected for the blank, (C)")
 
-    chromium_normalityd1 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
-    chromium_normalityd2 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
-    chromium_normalityd3 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
-    chromium_normalityd4 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
-    chromium_normalityd5 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,1))
+    chromium_normalityd1 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,4))
+    chromium_normalityd2 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,4))
+    chromium_normalityd3 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,4))
+    chromium_normalityd4 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,4))
+    chromium_normalityd5 = fields.Float(string="Normality of Std. Potassium Permanganate solution, (D)",digits=(12,4))
 
     chromium_masse1 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
     chromium_masse2 = fields.Float(string="Mass in gm of the sample taken for Test, (E)",digits=(12,4))
@@ -1521,7 +1521,7 @@ class SteelChemical(models.Model):
             
             # Water Absorbtion
             if result.parameter.internal_id == '1b8c8615-978b-483c-99dd-271530e3884e':
-                result.result_char = round(self.carbon_percentage,2)
+                result.result_char = round(self.carbon_percentage,3)
                 result.calculated = True
                 if self.carbon_percentage_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1530,7 +1530,7 @@ class SteelChemical(models.Model):
                 continue
 
             if result.parameter.internal_id == '3ecdf1d7-5f58-494b-a898-28a0bb3f8242':
-                result.result_char = round(self.avg_phosphorus,2)
+                result.result_char = round(self.avg_phosphorus,3)
                 result.calculated = True
                 if self.avg_phosphorus_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1539,7 +1539,7 @@ class SteelChemical(models.Model):
                 continue
 
             if result.parameter.internal_id == '2de1cf5a-ef5d-46e7-8183-048b1d415c86':
-                result.result_char = round(self.avg_sulphur,2)
+                result.result_char = round(self.avg_sulphur,3)
                 result.calculated = True
                 if self.avg_sulphur_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1548,7 +1548,7 @@ class SteelChemical(models.Model):
                 continue
 
             if result.parameter.internal_id == '9ad149fa-9fa0-4ff7-8168-c27d2505323e':
-                result.result_char = round(self.avg_manganese,2)
+                result.result_char = round(self.avg_manganese,3)
                 result.calculated = True
                 if self.avg_manganese_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1566,7 +1566,7 @@ class SteelChemical(models.Model):
                 continue
 
             if result.parameter.internal_id == '6cb22710-89a6-44a0-8df1-379ef6230a4e':
-                result.result_char = round(self.avg_chromium,2)
+                result.result_char = round(self.avg_chromium,3)
                 result.calculated = True
                 if self.avg_chromium_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1575,7 +1575,7 @@ class SteelChemical(models.Model):
                 continue
 
             if result.parameter.internal_id == '942ccb3a-4104-4a84-839e-0535d8dd39bc':
-                result.result_char = round(self.avg_nickel,2)
+                result.result_char = round(self.avg_nickel,3)
                 result.calculated = True
                 if self.avg_nickel_nabl == 'pass':
                     result.nabl_status = 'nabl'

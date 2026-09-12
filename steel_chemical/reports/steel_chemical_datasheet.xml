@@ -89,7 +89,7 @@
                            <tr>
                              <td>1</td>
                              <td><span t-field="data.type_of_sample1"/></td>
-                             <td><span t-field="data.wt_of_sample1" /></td>
+                             <td><span t-field="data.wt_of_sample1" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.br_reading_a1" /></td>
 							 <td><span t-field="data.br_reading_b1"/></td>
                              <td><span t-field="data.carbon_calculation1" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -98,7 +98,7 @@
                            <tr>
                              <td>2</td>
                              <td><span t-field="data.type_of_sample2"/></td>
-                             <td><span t-field="data.wt_of_sample2" /></td>
+                             <td><span t-field="data.wt_of_sample2" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.br_reading_a2" /></td>
 							 <td><span t-field="data.br_reading_b2"/></td>
                              <td><span t-field="data.carbon_calculation2" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -107,7 +107,7 @@
                             <tr>
                              <td>3</td>
                              <td><span t-field="data.type_of_sample3"/></td>
-                             <td><span t-field="data.wt_of_sample3" /></td>
+                             <td><span t-field="data.wt_of_sample3"  t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.br_reading_a3" /></td>
 							 <td><span t-field="data.br_reading_b3"/></td>
                              <td><span t-field="data.carbon_calculation3" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -116,7 +116,7 @@
                            <tr>
                              <td>4</td>
                              <td><span t-field="data.type_of_sample4"/></td>
-                             <td><span t-field="data.wt_of_sample4" /></td>
+                             <td><span t-field="data.wt_of_sample4" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.br_reading_a4" /></td>
 							 <td><span t-field="data.br_reading_b4"/></td>
                              <td><span t-field="data.carbon_calculation4" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -124,10 +124,10 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.type_of_sample5" t-options='{"widget": "float", "precision": 2}'/></td>
-                             <td><span t-field="data.wt_of_sample5" t-options='{"widget": "float", "precision": 2}'/></td>
-                             <td><span t-field="data.br_reading_a5" t-options='{"widget": "float", "precision": 2}'/></td>
-							 <td><span t-field="data.br_reading_b5" t-options='{"widget": "float", "precision": 2}'/></td>
+                             <td><span t-field="data.type_of_sample5" /></td>
+                             <td><span t-field="data.wt_of_sample5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.br_reading_a5"/></td>
+							               <td><span t-field="data.br_reading_b5"/></td>
                              <td><span t-field="data.carbon_calculation5" t-options='{"widget": "float", "precision": 2}'/></td>
                            </tr>
                          </tbody>
@@ -140,7 +140,7 @@
                       <tr>
                           <td ><span>Average of Carbon</span></td>
                           <!-- <td style="padding: 8px;"> <span t-field="data.carbon_percentage " /></td> -->
-                           <td><span t-field="data.carbon_percentage"  t-options='{"widget": "float", "precision": 2}'/></td>
+                           <td><span t-field="data.carbon_percentage"  t-options='{"widget": "float", "precision": 3}'/></td>
                          </tr>
                        
                      </tbody>
@@ -256,7 +256,7 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.wt_sample_taken1"/></td>
+                             <td><span t-field="data.wt_sample_taken1"  t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.hno3_a1" /></td>
                              <td><span t-field="data.hno3_b1" /></td>
 							 <td><span t-field="data.hno3_c1"/></td>
@@ -265,7 +265,7 @@
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.wt_sample_taken2"/></td>
+                             <td><span t-field="data.wt_sample_taken2" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.hno3_a2" /></td>
                              <td><span t-field="data.hno3_b2" /></td>
 							 <td><span t-field="data.hno3_c2"/></td>
@@ -274,7 +274,7 @@
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.wt_sample_taken3"/></td>
+                             <td><span t-field="data.wt_sample_taken3" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.hno3_a3" /></td>
                              <td><span t-field="data.hno3_b3" /></td>
 							 <td><span t-field="data.hno3_c3"/></td>
@@ -283,7 +283,7 @@
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.wt_sample_taken4"/></td>
+                             <td><span t-field="data.wt_sample_taken4" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.hno3_a4" /></td>
                              <td><span t-field="data.hno3_b4" /></td>
 							 <td><span t-field="data.hno3_c4"/></td>
@@ -292,7 +292,7 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.wt_sample_taken5" t-options='{"widget": "float", "precision": 2}'/></td>
+                             <td><span t-field="data.wt_sample_taken5" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.hno3_a5" t-options='{"widget": "float", "precision": 2}' /></td>
                              <td><span t-field="data.hno3_b5" t-options='{"widget": "float", "precision": 2}'/></td>
 							 <td><span t-field="data.hno3_c5" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -307,7 +307,7 @@
                       <tbody>
                       <tr>
                           <td ><span>Average of phosphorus</span></td>
-                          <td style="padding: 8px;"> <span t-field="data.avg_phosphorus" t-options='{"widget": "float", "precision": 2}'/></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_phosphorus" t-options='{"widget": "float", "precision": 3}'/></td>
                          </tr>
                        
                      </tbody>
@@ -426,7 +426,7 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.sulpher_wt_sample1"/></td>
+                             <td><span t-field="data.sulpher_wt_sample1" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.sulpher_potassiumb1" /></td>
                              <td><span t-field="data.sulpher_potassiuma1" /></td>
 							 <td><span t-field="data.sulpher_potassiumc1"/></td>
@@ -435,7 +435,7 @@
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.sulpher_wt_sample2"/></td>
+                             <td><span t-field="data.sulpher_wt_sample2" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.sulpher_potassiumb2" /></td>
                              <td><span t-field="data.sulpher_potassiuma2" /></td>
 							 <td><span t-field="data.sulpher_potassiumc2"/></td>
@@ -444,7 +444,7 @@
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.sulpher_wt_sample3"/></td>
+                             <td><span t-field="data.sulpher_wt_sample3" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.sulpher_potassiumb3" /></td>
                              <td><span t-field="data.sulpher_potassiuma3" /></td>
 							 <td><span t-field="data.sulpher_potassiumc3"/></td>
@@ -453,7 +453,7 @@
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.sulpher_wt_sample4"/></td>
+                             <td><span t-field="data.sulpher_wt_sample4" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.sulpher_potassiumb4" /></td>
                              <td><span t-field="data.sulpher_potassiuma4" /></td>
 							 <td><span t-field="data.sulpher_potassiumc4"/></td>
@@ -462,10 +462,10 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.sulpher_wt_sample5" t-options='{"widget": "float", "precision": 2}'/></td>
-                             <td><span t-field="data.sulpher_potassiumb5" t-options='{"widget": "float", "precision": 2}' /></td>
-                             <td><span t-field="data.sulpher_potassiuma5" t-options='{"widget": "float", "precision": 2}' /></td>
-							 <td><span t-field="data.sulpher_potassiumc5" t-options='{"widget": "float", "precision": 2}'/></td>
+                             <td><span t-field="data.sulpher_wt_sample5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.sulpher_potassiumb5"  /></td>
+                             <td><span t-field="data.sulpher_potassiuma5"  /></td>
+							 <td><span t-field="data.sulpher_potassiumc5" /></td>
                              <td><span t-field="data.percentage_sulpher5" t-options='{"widget": "float", "precision": 2}'/></td>
                            </tr>
                          </tbody>
@@ -477,7 +477,7 @@
                       <tbody>
                       <tr>
                           <td ><span>Average of Sulphur</span></td>
-                          <td style="padding: 8px;"> <span t-field="data.avg_sulphur" t-options='{"widget": "float", "precision": 2}'/></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_sulphur" t-options='{"widget": "float", "precision": 3}'/></td>
                          </tr>
                        
                      </tbody>
@@ -596,7 +596,7 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.manganese_wt_samplec1"/></td>
+                             <td><span t-field="data.manganese_wt_samplec1" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.manganese_sodiuma1"/></td>
                              <td><span t-field="data.manganese_sodiumb1"/></td>
 							 <td><span t-field="data.manganese_percentage1" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -605,7 +605,7 @@
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.manganese_wt_samplec2"/></td>
+                             <td><span t-field="data.manganese_wt_samplec2" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.manganese_sodiuma2"/></td>
                              <td><span t-field="data.manganese_sodiumb2"/></td>
 							 <td><span t-field="data.manganese_percentage2" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -614,7 +614,7 @@
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.manganese_wt_samplec3"/></td>
+                             <td><span t-field="data.manganese_wt_samplec3" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.manganese_sodiuma3"/></td>
                              <td><span t-field="data.manganese_sodiumb3"/></td>
 							 <td><span t-field="data.manganese_percentage3" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -623,7 +623,7 @@
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.manganese_wt_samplec4"/></td>
+                             <td><span t-field="data.manganese_wt_samplec4" t-options='{"widget": "float", "precision": 4}'/></td>
                              <td><span t-field="data.manganese_sodiuma4"/></td>
                              <td><span t-field="data.manganese_sodiumb4"/></td>
 							 <td><span t-field="data.manganese_percentage4" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -632,9 +632,9 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.manganese_wt_samplec5" t-options='{"widget": "float", "precision": 2}'/></td>
-                             <td><span t-field="data.manganese_sodiuma5" t-options='{"widget": "float", "precision": 2}'/></td>
-                             <td><span t-field="data.manganese_sodiumb5" t-options='{"widget": "float", "precision": 2}'/></td>
+                             <td><span t-field="data.manganese_wt_samplec5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.manganese_sodiuma5" /></td>
+                             <td><span t-field="data.manganese_sodiumb5" /></td>
 							 <td><span t-field="data.manganese_percentage5" t-options='{"widget": "float", "precision": 2}'/></td>
                            
                            </tr>
@@ -647,7 +647,7 @@
                       <tbody>
                       <tr>
                           <td ><span>Average of Manganese </span></td>
-                          <td style="padding: 8px;"> <span t-field="data.avg_manganese" t-options='{"widget": "float", "precision": 2}'/></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_manganese" t-options='{"widget": "float", "precision": 3}'/></td>
                          </tr>
                        
                      </tbody>
@@ -766,39 +766,39 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.wt_of_silicon1"/></td>
-                             <td><span t-field="data.mas_of_silicon1"/></td>
-                             <td><span t-field="data.mass_of_silicona1"/></td>
-							              <td><span t-field="data.wt_cr_w41"/></td>
-                            <td><span t-field="data.wt_cr_w51"/></td>
-                            <td><span t-field="data.mass_of_siliconb1"/></td>
-                            <td><span t-field="data.wt_of_samplew1"/></td>
+                             <td><span t-field="data.wt_of_silicon1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mas_of_silicon1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_of_silicona1" t-options='{"widget": "float", "precision": 4}'/></td>
+							              <td><span t-field="data.wt_cr_w41" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_cr_w51" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.mass_of_siliconb1" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_of_samplew1" t-options='{"widget": "float", "precision": 4}'/></td>
                             <td><span t-field="data.percent_of_silicon1"/></td>
                              
                            </tr>
 
                            <tr>
                              <td>2</td>
-                             <td><span t-field="data.wt_of_silicon2"/></td>
-                             <td><span t-field="data.mas_of_silicon2"/></td>
-                             <td><span t-field="data.mass_of_silicona2"/></td>
-                          <td><span t-field="data.wt_cr_w42"/></td>
-                          <td><span t-field="data.wt_cr_w52"/></td>
-                          <td><span t-field="data.mass_of_siliconb2"/></td>
-                          <td><span t-field="data.wt_of_samplew2"/></td>
-                          <td><span t-field="data.percent_of_silicon2"/></td>
+                             <td><span t-field="data.wt_of_silicon2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mas_of_silicon2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_of_silicona2" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_cr_w42" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_cr_w52" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.mass_of_siliconb2" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_of_samplew2" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.percent_of_silicon2" t-options='{"widget": "float", "precision": 4}'/></td>
                              
                            </tr>
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.wt_of_silicon3"/></td>
-                             <td><span t-field="data.mas_of_silicon3"/></td>
-                             <td><span t-field="data.mass_of_silicona3"/></td>
-                          <td><span t-field="data.wt_cr_w43"/></td>
-                          <td><span t-field="data.wt_cr_w53"/></td>
-                          <td><span t-field="data.mass_of_siliconb3"/></td>
-                          <td><span t-field="data.wt_of_samplew3"/></td>
+                             <td><span t-field="data.wt_of_silicon3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mas_of_silicon3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_of_silicona3" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_cr_w43" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_cr_w53" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.mass_of_siliconb3" t-options='{"widget": "float", "precision": 4}'/></td>
+                          <td><span t-field="data.wt_of_samplew3" t-options='{"widget": "float", "precision": 4}'/></td>
 
                           <td><span t-field="data.percent_of_silicon3"/></td>
 
@@ -807,14 +807,14 @@
 
                            <tr>
                              <td>4</td>
-                             <td><span t-field="data.wt_of_silicon4"/></td>
-                             <td><span t-field="data.mas_of_silicon4"/></td>
-                             <td><span t-field="data.mass_of_silicona4"/></td>
-                            <td><span t-field="data.wt_cr_w44"/></td>
-                            <td><span t-field="data.wt_cr_w54"/></td>
-                            <td><span t-field="data.mass_of_siliconb4"/></td>
+                             <td><span t-field="data.wt_of_silicon4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mas_of_silicon4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_of_silicona4" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_cr_w44" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_cr_w54" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.mass_of_siliconb4" t-options='{"widget": "float", "precision": 4}'/></td>
                             
-                            <td><span t-field="data.wt_of_samplew4"/></td>
+                            <td><span t-field="data.wt_of_samplew4" t-options='{"widget": "float", "precision": 4}'/></td>
                             <td><span t-field="data.percent_of_silicon4"/></td>
 
                             
@@ -822,13 +822,13 @@
 
                            <tr>
                              <td>5</td>
-                             <td><span t-field="data.wt_of_silicon5"/></td>
-                             <td><span t-field="data.mas_of_silicon5"/></td>
-                             <td><span t-field="data.mass_of_silicona5"/></td>
-                            <td><span t-field="data.wt_cr_w45"/></td>
-                            <td><span t-field="data.wt_cr_w55"/></td>
-                            <td><span t-field="data.mass_of_siliconb1"/></td>
-                            <td><span t-field="data.wt_of_samplew5"/></td>
+                             <td><span t-field="data.wt_of_silicon5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mas_of_silicon5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_of_silicona5" t-options='{"widget": "float", "precision": 4}' /></td>
+                            <td><span t-field="data.wt_cr_w45" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_cr_w55" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.mass_of_siliconb5" t-options='{"widget": "float", "precision": 4}'/></td>
+                            <td><span t-field="data.wt_of_samplew5" t-options='{"widget": "float", "precision": 4}'/></td>
                             <td><span t-field="data.percent_of_silicon5"/></td>
 
                            
@@ -842,7 +842,7 @@
                       <tbody>
                       <tr>
                           <td ><span>Average Silicon</span></td>
-                          <td style="padding: 8px;"> <span t-field="data.avg_silicon" t-options='{"widget": "float", "precision": 2}'/></td>
+                          <td style="padding: 8px;"> <span t-field="data.avg_silicon" t-options='{"widget": "float", "precision": 3}'/></td>
                          </tr>
                        
                      </tbody>
@@ -963,9 +963,9 @@
                              <td><span t-field="data.chromium_voluma_1"/></td>
                              <td><span t-field="data.chromium_volumb_1"/></td>
                              <td><span t-field="data.chromium_volumc1"/></td>
-							 <td><span t-field="data.chromium_normalityd1"/></td>
-							 <td><span t-field="data.chromium_masse1"/></td>
-							 <td><span t-field="data.percent_chromium1"/></td>
+							 <td><span t-field="data.chromium_normalityd1" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.chromium_masse1" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.percent_chromium1" t-options='{"widget": "float", "precision": 3}'/></td>
                              
                            </tr>
 
@@ -974,9 +974,9 @@
                              <td><span t-field="data.chromium_voluma_2"/></td>
                              <td><span t-field="data.chromium_volumb_2"/></td>
                              <td><span t-field="data.chromium_volumc2"/></td>
-							 <td><span t-field="data.chromium_normalityd2"/></td>
-							 <td><span t-field="data.chromium_masse2"/></td>
-							 <td><span t-field="data.percent_chromium2"/></td>
+							 <td><span t-field="data.chromium_normalityd2" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.chromium_masse2" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.percent_chromium2" t-options='{"widget": "float", "precision": 3}'/></td>
                              
                            </tr>
 
@@ -985,9 +985,9 @@
                              <td><span t-field="data.chromium_voluma_3"/></td>
                              <td><span t-field="data.chromium_volumb_3"/></td>
                              <td><span t-field="data.chromium_volumc3"/></td>
-							 <td><span t-field="data.chromium_normalityd3"/></td>
-							 <td><span t-field="data.chromium_masse3"/></td>
-							 <td><span t-field="data.percent_chromium3"/></td>
+							 <td><span t-field="data.chromium_normalityd3" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.chromium_masse3" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.percent_chromium3" t-options='{"widget": "float", "precision": 3}'/></td>
                             
                            </tr>
 
@@ -996,9 +996,9 @@
                              <td><span t-field="data.chromium_voluma_4"/></td>
                              <td><span t-field="data.chromium_volumb_4"/></td>
                              <td><span t-field="data.chromium_volumc4"/></td>
-							 <td><span t-field="data.chromium_normalityd4"/></td>
-							 <td><span t-field="data.chromium_masse4"/></td>
-							 <td><span t-field="data.percent_chromium4"/></td>
+							 <td><span t-field="data.chromium_normalityd4" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.chromium_masse4" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.percent_chromium4" t-options='{"widget": "float", "precision": 3}'/></td>
                             
                            </tr>
 
@@ -1007,9 +1007,9 @@
                              <td><span t-field="data.chromium_voluma_5"/></td>
                              <td><span t-field="data.chromium_volumb_5"/></td>
                              <td><span t-field="data.chromium_volumc5"/></td>
-							 <td><span t-field="data.chromium_normalityd5"/></td>
-							 <td><span t-field="data.chromium_masse5"/></td>
-							 <td><span t-field="data.percent_chromium5"/></td>
+							 <td><span t-field="data.chromium_normalityd5" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.chromium_masse5" t-options='{"widget": "float", "precision": 4}'/></td>
+							 <td><span t-field="data.percent_chromium5" t-options='{"widget": "float", "precision": 3}'/></td>
                            
                            </tr>
                          </tbody>
@@ -1137,70 +1137,70 @@
                            </tr>
                            <tr>
                              <td>1</td>
-                             <td><span t-field="data.mass_intial_w1_1"/></td>
-                             <td><span t-field="data.mass_final_w2_1"/></td>
+                             <td><span t-field="data.mass_intial_w1_1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_final_w2_1" t-options='{"widget": "float", "precision": 4}'/></td>
 
-                             <td><span t-field="data.mass_nickela1"/></td>
-                             <td><span t-field="data.mass_nickelb1"/></td>
+                             <td><span t-field="data.mass_nickela1" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_nickelb1" t-options='{"widget": "float", "precision": 4}'/></td>
 
                           
-                             <td><span t-field="data.percent_nickel_1"/></td>
+                             <td><span t-field="data.percent_nickel_1" t-options='{"widget": "float", "precision": 3}'/></td>
                              
                            </tr>
 
                            <tr>
                              <td>2</td>
 
-                             <td><span t-field="data.mass_intial_w1_2"/></td>
-                             <td><span t-field="data.mass_final_w2_2"/></td>
+                             <td><span t-field="data.mass_intial_w1_2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_final_w2_2" t-options='{"widget": "float", "precision": 4}'/></td>
 
-                             <td><span t-field="data.mass_nickela2"/></td>
-                             <td><span t-field="data.mass_nickelb2"/></td>
+                             <td><span t-field="data.mass_nickela2" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_nickelb2" t-options='{"widget": "float", "precision": 4}'/></td>
 
                            
-                             <td><span t-field="data.percent_nickel_2"/></td>
+                             <td><span t-field="data.percent_nickel_2" t-options='{"widget": "float", "precision": 3}'/></td>
                              
                            </tr>
 
                             <tr>
                              <td>3</td>
-                             <td><span t-field="data.mass_intial_w1_3"/></td>
-                             <td><span t-field="data.mass_final_w2_3"/></td>
+                             <td><span t-field="data.mass_intial_w1_3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_final_w2_3" t-options='{"widget": "float", "precision": 4}'/></td>
 
-                             <td><span t-field="data.mass_nickela3"/></td>
-                             <td><span t-field="data.mass_nickelb3"/></td>
+                             <td><span t-field="data.mass_nickela3" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_nickelb3" t-options='{"widget": "float", "precision": 4}'/></td>
 
                            
-                             <td><span t-field="data.percent_nickel_3"/></td>
+                             <td><span t-field="data.percent_nickel_3" t-options='{"widget": "float", "precision": 3}'/></td>
                             
                            </tr>
 
                            <tr>
                              <td>4</td>
 
-                             <td><span t-field="data.mass_intial_w1_4"/></td>
-                             <td><span t-field="data.mass_final_w2_4"/></td>
+                             <td><span t-field="data.mass_intial_w1_4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_final_w2_4" t-options='{"widget": "float", "precision": 4}'/></td>
 
-                             <td><span t-field="data.mass_nickela4"/></td>
-                             <td><span t-field="data.mass_nickelb4"/></td>
+                             <td><span t-field="data.mass_nickela4" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_nickelb4" t-options='{"widget": "float", "precision": 4}'/></td>
 
                              
-                             <td><span t-field="data.percent_nickel_4"/></td>
+                             <td><span t-field="data.percent_nickel_4" t-options='{"widget": "float", "precision": 3}'/></td>
                             
                            </tr>
 
                            <tr>
                              <td>5</td>
 
-                             <td><span t-field="data.mass_intial_w1_5"/></td>
-                             <td><span t-field="data.mass_final_w2_5"/></td>
+                             <td><span t-field="data.mass_intial_w1_5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_final_w2_5" t-options='{"widget": "float", "precision": 4}'/></td>
 
-                             <td><span t-field="data.mass_nickela5"/></td>
-                             <td><span t-field="data.mass_nickelb5"/></td>
+                             <td><span t-field="data.mass_nickela5" t-options='{"widget": "float", "precision": 4}'/></td>
+                             <td><span t-field="data.mass_nickelb5" t-options='{"widget": "float", "precision": 4}'/></td>
 
                              
 
-                             <td><span t-field="data.percent_nickel_5"/></td>
+                             <td><span t-field="data.percent_nickel_5" t-options='{"widget": "float", "precision": 3}'/></td>
                            
                            </tr>
                          </tbody>

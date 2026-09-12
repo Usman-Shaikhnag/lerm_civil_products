@@ -3,12 +3,12 @@
 
 
 {
-    'name': 'Steel Chemical',
+    'name': 'Mild Steel',
     'version': '1.2',
     'category': 'LERM CIVIL',
-    'summary': 'Steel Chemical',
+    'summary': 'Mild Steel',
     'description': """
-This module contains all the common features of Steel Chemical.
+This module contains all the common features of Mild Steel.
     """,
     'depends': ['base','lerm_civil'],
     'data': [
