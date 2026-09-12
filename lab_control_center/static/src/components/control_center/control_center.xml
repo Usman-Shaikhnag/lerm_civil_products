@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="lab_control_center.ControlCenter" owl="1">
+        <div class="lcc-root">
+
+            <!-- HEADER -->
+            <div class="lcc-header">
+                <div class="lcc-header-title">
+                    <div class="lcc-title">
+                        <span class="lcc-title-icon"><i class="fa fa-flask"/></span>
+                        <span class="lcc-title-text">Lab Operations</span>
+                    </div>
+                    <div class="lcc-subtitle" t-if="hasAccess">
+                        <span t-att-class="'lcc-role-chip ' + (state.role === 'hod' ? 'lcc-role-hod' : 'lcc-role-management')">
+                            <i t-att-class="'fa ' + this._roleIconClass()"/>
+                            <t t-esc="state.role_label"/>
+                        </span>
+                        <span class="lcc-scope"><i class="fa fa-globe"/> <t t-esc="state.scope_label"/></span>
+                    </div>
+                </div>
+                <div class="lcc-header-controls" t-if="hasAccess">
+                    <div class="lcc-search">
+                        <i class="fa fa-search lcc-search-icon"/>
+                        <input type="text" placeholder="Search sample, SRF, material, customer..."
+                               t-on-input="_onSearchInput"/>
+                    </div>
+                    <div class="lcc-asof">
+                        <i class="fa fa-calendar"/>
+                        <span class="lcc-asof-label">As of</span>
+                        <input type="date" t-att-value="filters.as_of" t-on-change="_onAsOfChange"/>
+                    </div>
+                    <button class="lcc-icon-btn" title="Refresh" t-on-click="_refresh">
+                        <i t-att-class="'fa fa-refresh' + (filters.loading ? ' lcc-spin' : '')"/>
+                    </button>
+                </div>
+            </div>
+
+            <!-- NO ACCESS -->
+            <div class="lcc-empty" t-if="!hasAccess">
+                <i class="fa fa-lock"/>
+                <h4>No Access</h4>
+                <p>This dashboard is available to Management (Lerm Admin) and HOD users only.</p>
+            </div>
+
+            <div t-if="hasAccess">
+
+                <!-- SCOPE FILTERS (management) -->
+                <div class="lcc-filter-row" t-if="isManagement">
+                    <label class="lcc-filter">
+                        <span>Company</span>
+                        <select t-on-change="_onCompanyChange">
+                            <option value="ALL">All Companies</option>
+                            <t t-foreach="state.companies" t-as="company" t-key="company.id">
+                                <option t-att-value="company.id"
+                                        t-att-selected="filters.company_id == company.id">
+                                    <t t-esc="company.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </label>
+                    <label class="lcc-filter">
+                        <span>Lab</span>
+                        <select t-on-change="_onLabChange">
+                            <option value="ALL">All Labs</option>
+                            <t t-foreach="filteredLabs" t-as="lab" t-key="lab.id">
+                                <option t-att-value="lab.id"
+                                        t-att-selected="filters.lab_id == lab.id">
+                                    <t t-esc="lab.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </label>
+                    <label class="lcc-filter">
+                        <span>Discipline</span>
+                        <select t-on-change="_onDisciplineChange">
+                            <option value="ALL">All Disciplines</option>
+                            <t t-foreach="state.disciplines" t-as="disc" t-key="disc.id">
+                                <option t-att-value="disc.id"
+                                        t-att-selected="filters.discipline_id == disc.id">
+                                    <t t-esc="disc.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- KPI ROW -->
+                <div class="lcc-kpi-grid">
+                    <t t-foreach="kpiCards" t-as="kpi" t-key="kpi.key">
+                        <div class="lcc-card lcc-kpi-card" t-on-click="() => this._open(kpi.action)">
+                            <span class="lcc-kpi-accent" t-att-style="'background:' + kpi.color"/>
+                            <div class="lcc-kpi-head">
+                                <span class="lcc-kpi-icon" t-att-style="'background:' + kpi.color + '1a;color:' + kpi.color">
+                                    <i t-attf-class="fa #{kpi.icon}"/>
+                                </span>
+                            </div>
+                            <div class="lcc-kpi-count" t-att-style="'color:' + kpi.color" t-esc="kpi.count"/>
+                            <div class="lcc-kpi-label" t-esc="kpi.label"/>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- NEEDS ATTENTION -->
+                <div class="lcc-card lcc-panel">
+                    <div class="lcc-panel-title">
+                        <span class="lcc-panel-icon warn"><i class="fa fa-bell"/></span>
+                        <span class="lcc-panel-heading">Needs Attention</span>
+                    </div>
+                    <div class="lcc-attention-grid">
+                        <t t-foreach="attentionItems" t-as="item" t-key="item.key">
+                            <button class="lcc-attention-row" t-on-click="() => this._open(item.action)">
+                                <i t-attf-class="fa #{item.icon}" t-att-style="'color:' + item.color"/>
+                                <span class="lcc-attention-label"><t t-esc="item.label"/></span>
+                                <span class="lcc-attention-count"
+                                      t-att-style="'background:' + item.color + '1a;color:' + item.color">
+                                    <t t-esc="item.count"/>
+                                </span>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- PIPELINE -->
+                <div class="lcc-card lcc-panel">
+                    <div class="lcc-panel-title">
+                        <span class="lcc-panel-icon"><i class="fa fa-random"/></span>
+                        <span class="lcc-panel-heading">Sample Pipeline</span>
+                    </div>
+                    <div class="lcc-funnel">
+                        <t t-foreach="state.pipeline" t-as="stage" t-key="stage.key">
+                            <div class="lcc-funnel-col">
+                                <button class="lcc-funnel-btn" t-on-click="() => this._open(stage.key)"
+                                        t-att-style="'--stage-color:' + this._stageColor(stage.key)">
+                                    <span class="lcc-funnel-count" t-esc="stage.count"/>
+                                    <span class="lcc-funnel-label" t-esc="stage.label"/>
+                                </button>
+                                <span class="lcc-funnel-chevron"><i class="fa fa-chevron-right"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- WORKLOAD + AGING -->
+                <div class="lcc-two-col">
+                    <div class="lcc-card lcc-panel">
+                        <div class="lcc-panel-title">
+                            <span class="lcc-panel-icon"><i class="fa fa-users"/></span>
+                            <span class="lcc-panel-heading">Technician Workload</span>
+                        </div>
+                        <div class="lcc-bars" t-if="state.workload.length">
+                            <t t-foreach="state.workload" t-as="item" t-key="item.technician_id">
+                                <div class="lcc-bar-row"
+                                     t-on-click="() => this._open('workload', {technician_id: item.technician_id})"
+                                     t-att-title="'Open ' + item.name + ' samples'">
+                                    <span class="lcc-bar-name" t-esc="item.name"/>
+                                    <div class="lcc-bar-track">
+                                        <div class="lcc-bar-fill"
+                                             t-att-style="'width:' + this._pct(item.count, this.maxWorkload) + '%'"/>
+                                    </div>
+                                    <span class="lcc-bar-count" t-esc="item.count"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="lcc-mini-empty" t-else="">
+                            <i class="fa fa-inbox"/> No samples currently in test.
+                        </div>
+                    </div>
+
+                    <div class="lcc-card lcc-panel">
+                        <div class="lcc-panel-title">
+                            <span class="lcc-panel-icon"><i class="fa fa-hourglass-half"/></span>
+                            <span class="lcc-panel-heading">Sample Aging (days left)</span>
+                        </div>
+                        <div class="lcc-bars">
+                            <t t-foreach="state.aging" t-as="item" t-key="item.key">
+                                <div class="lcc-bar-row lcc-bar-click"
+                                     t-on-click="() => this._open('aging', {bucket: item.key})">
+                                    <span class="lcc-bar-name" t-esc="item.label"/>
+                                    <div class="lcc-bar-track">
+                                        <div class="lcc-bar-fill" t-att-style="'width:' + this._pct(item.count, this.maxAging) + '%;background:' + this._agingColor(item.key)"/>
+                                    </div>
+                                    <span class="lcc-bar-count" t-esc="item.count"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRIORITY SAMPLES -->
+                <div class="lcc-card lcc-panel">
+                    <div class="lcc-panel-title">
+                        <span class="lcc-panel-icon priority"><i class="fa fa-exclamation-circle"/></span>
+                        <span class="lcc-panel-heading">Priority Samples</span>
+                        <button class="lcc-view-all" t-on-click="() => this._open('priority')">
+                            View All <i class="fa fa-angle-right"/>
+                        </button>
+                    </div>
+
+                    <div t-if="state.priority.length" class="lcc-table-wrap">
+                        <table class="lcc-table">
+                            <thead>
+                                <tr>
+                                    <th>Sample</th>
+                                    <th>Material</th>
+                                    <th>Technician</th>
+                                    <th>Stage</th>
+                                    <th>Due</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.priority" t-as="row" t-key="row.sample_id">
+                                    <tr class="lcc-table-row" t-on-click="() => this._openSample(row.sample_id)">
+                                        <td>
+                                            <span class="lcc-sample-ref"><t t-esc="row.sample_ref"/></span>
+                                            <span class="lcc-sample-material-sub" t-if="row.customer"><t t-esc="row.customer"/></span>
+                                        </td>
+                                        <td><t t-esc="row.material"/></td>
+                                        <td><t t-esc="row.technician"/></td>
+                                        <td><span class="lcc-stage-chip"><t t-esc="row.stage"/></span></td>
+                                        <td><t t-esc="this._fmtDate(row.due)"/></td>
+                                        <td>
+                                            <span class="lcc-flag-badge"
+                                                  t-att-style="'background:' + this.flagOf(row).bg + ';color:' + this.flagOf(row).color">
+                                                <t t-esc="this.flagOf(row).label"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lcc-mini-empty" t-else="">
+                        <i class="fa fa-check-circle"/> No priority samples. All caught up!
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+</templates>

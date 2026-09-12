@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_technician_blocker" model="ir.ui.view">
+        <field name="name">res.config.settings.technician.blocker</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Technician Block" string="Technician Block" name="technician_blocker">
+                    <block title="Technician New Work Popup">
+                        <setting string="Enable Technician New Work Popup"
+                                 help="When enabled, technicians receive a cancelable popup at the configured daily windows listing newly assigned work.">
+                            <field name="technician_blocker_enabled"/>
+                        </setting>
+                        <setting string="Notification Windows"
+                                 help="Daily times (24h) at which each technician is sent a consolidated digest of their new work. Jobs are notified once and never repeated.">
+                            <div class="content-group">
+                                <field name="technician_blocker_window_times" class="oe_inline"/>
+                            </div>
+                        </setting>
+                        <setting string="Enable Due-Date Popup"
+                                 help="When enabled, technicians receive the report due-tomorrow / due-today popups each morning and a red blocking Overdue popup once a sample passes its report due date.">
+                            <field name="technician_blocker_due_enabled"/>
+                        </setting>
+                        <setting string="Morning Notification Time"
+                                 help="Daily time (24h) the due-tomorrow / due-today notifications are sent. Example: 09:00">
+                            <div class="content-group">
+                                <field name="technician_blocker_morning_time" class="oe_inline"/>
+                            </div>
+                        </setting>
+                        <setting string="Notification Timezone"
+                                 help="IANA timezone the windows are interpreted in (e.g. Asia/Kolkata). Leave empty to use the running user's timezone.">
+                            <div class="content-group">
+                                <field name="technician_blocker_tz" class="oe_inline"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

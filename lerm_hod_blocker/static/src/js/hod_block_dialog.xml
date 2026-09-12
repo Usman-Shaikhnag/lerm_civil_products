@@ -13,10 +13,15 @@
                     <t t-esc="props.status.pending_count"/> pending sample(s)
                 </p>
                 <div class="table-responsive">
-                    <table class="table table-sm table-striped mb-0">
+                    <table class="table table-sm mb-0">
                         <thead>
                             <tr>
+                                <th class="text-center" style="width: 32px;">
+                                    <input type="checkbox" t-att-checked="this.allSelected"
+                                        t-on-change="() => this.toggleSelectAll()"/>
+                                </th>
                                 <th>UID</th>
+                                <th>SRF</th>
                                 <th>Client</th>
                                 <th>Material</th>
                                 <th>Received Date</th>
@@ -24,16 +29,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="props.status.samples" t-as="sample" t-key="sample.id">
+                            <tr t-foreach="props.status.samples" t-as="sample" t-key="sample.id"
+                                t-att-style="'background-color: ' + this.srfColor(sample.srf)">
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                        t-att-checked="this.isSelected(sample.id)"
+                                        t-on-change="() => this.toggleSelect(sample.id)"/>
+                                </td>
                                 <td t-esc="sample.kes_no"/>
+                                <td t-esc="sample.srf"/>
                                 <td t-esc="sample.client"/>
                                 <td t-esc="sample.material_name"/>
                                 <td t-esc="sample.received_date"/>
                                 <td class="text-end">
                                     <button type="button" class="btn btn-sm btn-primary"
                                         t-on-click="() => this.allotSample(sample.id)"
-                                        t-att-disabled="allotting">
-                                        <t t-esc="allotting ? 'Allotting...' : 'Allot'"/>
+                                        t-att-disabled="this.allotting.value">
+                                        <t t-esc="this.allotting.value ? 'Allotting...' : 'Allot'"/>
                                     </button>
                                 </td>
                             </tr>
@@ -42,6 +54,11 @@
                 </div>
             </div>
             <t t-set-slot="footer">
+                <button class="btn btn-primary"
+                    t-att-disabled="!this.selectedCount || this.allotting.value"
+                    t-on-click="() => this.allotSelected()">
+                    <t t-esc="this.allotting.value ? 'Allotting...' : ('Allot Selected (' + this.selectedCount + ')')"/>
+                </button>
                 <button t-if="!props.status.blocked" class="btn btn-secondary"
                     t-on-click="() => props.close()">Cancel</button>
             </t>

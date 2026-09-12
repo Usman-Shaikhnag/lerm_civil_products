@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="lerm_technician_dashboard.TechnicianDashboard" owl="1">
+
+        <div class="tdash-page">
+
+            <!-- ===================== HEADER ===================== -->
+            <div class="tdash-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa fa-flask tdash-logo"/>
+                    <span class="tdash-app-name">MY WORK</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="tdash-today"><t t-esc="this.todayLabel"/></span>
+                    <button class="tdash-icon-btn" title="Notifications" disabled="disabled">
+                        <i class="fa fa-bell-o"/>
+                    </button>
+                    <span class="tdash-avatar" title="Account">
+                        <t t-esc="this.initials"/>
+                    </span>
+                </div>
+            </div>
+
+            <!-- ===================== BODY ===================== -->
+            <div t-if="this.dash.loading" class="tdash-loading">
+                <i class="fa fa-spinner fa-spin"/>
+                <span>Loading your work…</span>
+            </div>
+
+            <div t-elif="this.dash.error" class="tdash-error">
+                <i class="fa fa-exclamation-triangle"/>
+                <span t-esc="this.dash.error"/>
+                <button class="tdash-btn tdash-btn-primary mt-2" t-on-click="() => this.load()">
+                    Retry
+                </button>
+            </div>
+
+            <div t-else="" class="tdash-body">
+
+                <!-- greeting -->
+                <div class="tdash-hello">
+                    <h2><t t-esc="this.greeting"/></h2>
+                    <p>Here is what needs your attention today.</p>
+                </div>
+
+                <!-- ===================== KPI CARDS ===================== -->
+                <div class="row g-2">
+                    <t t-foreach="this.kpiCards" t-as="kpi" t-key="kpi.key">
+                        <div class="col-6 col-lg-3">
+                            <div class="tdash-kpi" t-on-click="() => this.onKpiClick(kpi.key)">
+                                <span class="tdash-kpi-dot" t-att-style="'background:' + kpi.color"/>
+                                <div class="tdash-kpi-count" t-att-style="'color:' + kpi.color">
+                                    <t t-esc="kpi.count"/>
+                                </div>
+                                <div class="tdash-kpi-label"><t t-esc="kpi.label"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- ===================== WORKLOAD MATRIX ===================== -->
+                <div class="tdash-section mt-3">
+                    <div class="tdash-section-head">
+                        <div class="tdash-section-title">
+                            <i class="fa fa-tasks"/>
+                            <span>Active Work</span>
+                        </div>
+                        <button class="tdash-link" t-on-click="() => this.openList('all')">
+                            View All <i class="fa fa-arrow-right"/>
+                        </button>
+                    </div>
+
+                    <div class="tdash-card tdash-p-0">
+                        <table class="tdash-matrix">
+                            <thead>
+                                <tr>
+                                    <th class="tdash-matrix-stage"></th>
+                                    <th t-foreach="this.matrixColumns" t-as="col" t-key="col.key">
+                                        <t t-esc="col.label"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="this.matrixActiveRows" t-as="row" t-key="row.key">
+                                    <td class="tdash-matrix-stage">
+                                        <span class="tdash-matrix-dot"
+                                              t-att-style="'background:' + this.matrixColor(row.key)"/>
+                                        <t t-esc="row.label"/>
+                                    </td>
+                                    <td t-foreach="this.matrixColumns" t-as="col" t-key="col.key">
+                                        <span class="tdash-matrix-num"
+                                              t-att-class="this.matrixVal(row, col.key) > 0 ? 'tdash-matrix-num tdash-matrix-clickable' : 'tdash-matrix-num'"
+                                              t-att-style="row.key === 'verification' || row.key === 'approval' ? 'color:' + this.matrixColor(row.key) : ''"
+                                              t-on-click="() => this.matrixVal(row, col.key) > 0 &amp;&amp; this.openMatrix(row.key, col.key)">
+                                            <t t-esc="this.matrixVal(row, col.key)"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="tdash-matrix-divider">
+                                    <td colspan="6"><span class="tdash-matrix-completed-label">COMPLETED</span></td>
+                                </tr>
+                                <tr class="tdash-matrix-completed-row">
+                                    <td class="tdash-matrix-stage">
+                                        <span class="tdash-matrix-dot"
+                                              t-att-style="'background:' + this.matrixColor('approved')"/>
+                                        <t t-esc="this.matrixCompleted.label"/>
+                                    </td>
+                                    <td t-foreach="this.matrixColumns" t-as="col" t-key="col.key">
+                                        <span class="tdash-matrix-num"
+                                              t-att-class="this.matrixVal(this.matrixCompleted, col.key) > 0 ? 'tdash-matrix-num tdash-matrix-clickable' : 'tdash-matrix-num'"
+                                              t-att-style="'color:' + this.matrixColor('approved')"
+                                              t-on-click="() => this.matrixVal(this.matrixCompleted, col.key) > 0 &amp;&amp; this.openMatrix(this.matrixCompleted.key, col.key)">
+                                            <t t-esc="this.matrixVal(this.matrixCompleted, col.key)"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ===================== MY DAY + PROGRESS ===================== -->
+                <div class="row g-2 mt-2">
+                    <!-- My day -->
+                    <div class="col-lg-6">
+                        <div class="tdash-card tdash-card-day h-100">
+                            <div class="tdash-card-title">
+                                <i class="fa fa-calendar-day"/>
+                                <span>My Day</span>
+                            </div>
+                            <p class="tdash-subtle">Your work due today &amp; earlier</p>
+
+                            <div class="tdash-day-list">
+                                <t t-foreach="this.dayBuckets" t-as="b" t-key="b.key">
+                                    <div class="tdash-day-row">
+                                        <span class="d-flex align-items-center gap-2">
+                                            <i t-attf-class="fa #{b.icon} #{b.key === 'overdue' ? 'text-danger' : ''}"
+                                               t-att-style="b.key !== 'overdue' ? 'color:' + b.color : ''"
+                                               style="font-size: 0.55rem;"/>
+                                            <span class="tdash-day-label"><t t-esc="b.label"/></span>
+                                        </span>
+                                        <span class="tdash-day-count"><t t-esc="b.count"/></span>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <div class="tdash-day-total">
+                                <span>Total for today</span>
+                                <span class="tdash-day-total-num">
+                                    <t t-esc="this.dash.data.day.total"/>
+                                </span>
+                            </div>
+
+                            <button class="tdash-btn tdash-btn-outline w-100 mt-2"
+                                    t-on-click="() => this.openList('today_work')">
+                                View Today's Work <i class="fa fa-arrow-right ms-1"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Today's progress -->
+                    <div class="col-lg-6">
+                        <div class="tdash-card tdash-card-progress h-100">
+                            <div class="tdash-card-title">
+                                <i class="fa fa-bullseye"/>
+                                <span>Today's Progress</span>
+                            </div>
+
+                            <div class="tdash-progress-wrap">
+                                <div class="tdash-ring" t-att-style="this.progressStyle">
+                                    <div class="tdash-ring-inner">
+                                        <div class="tdash-ring-num">
+                                            <t t-esc="this.doneCount"/><small> / <t t-esc="this.ringTotal"/></small>
+                                        </div>
+                                        <div class="tdash-ring-pct"><t t-esc="this.progressPct"/>%</div>
+                                    </div>
+                                </div>
+
+                                <div class="tdash-legend">
+                                    <div class="tdash-legend-row">
+                                        <span class="tdash-legend-dot" style="background:#22c55e"/>
+                                        <span>Completed</span>
+                                        <span class="tdash-legend-num"><t t-esc="this.doneCount"/></span>
+                                    </div>
+                                    <div class="tdash-legend-row">
+                                        <span class="tdash-legend-dot" style="background:#e5e7eb"/>
+                                        <span>Remaining</span>
+                                        <span class="tdash-legend-num"><t t-esc="this.remainingCount"/></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="tdash-btn tdash-btn-primary w-100 mt-2"
+                                    t-on-click="() => this.openList('today_work')">
+                                View Today's Work <i class="fa fa-arrow-right ms-1"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===================== NEXT ACTION ===================== -->
+                <div class="tdash-section mt-3">
+                    <div class="tdash-section-head">
+                        <div class="tdash-section-title">
+                            <i class="fa fa-bolt"/>
+                            <span>Next Action</span>
+                        </div>
+                        <button class="tdash-link" t-on-click="() => this.openList('needs_action')">
+                            View All <i class="fa fa-arrow-right"/>
+                        </button>
+                    </div>
+
+                    <div t-if="this.nextAction" class="tdash-card tdash-next"
+                         t-on-click="() => this.openWork(this.nextAction)">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="tdash-ref">
+                                    <t t-esc="this.nextAction.ref"/>
+                                    <span class="tdash-id-chip">#<t t-esc="this.nextAction.id"/></span>
+                                </div>
+                                <div class="tdash-next-client"><t t-esc="this.nextAction.customer"/></div>
+                                <div class="tdash-next-type"><t t-esc="this.nextAction.test_type"/></div>
+                            </div>
+                            <span t-if="this.nextAction.due_badge"
+                                  t-att-class="this.dueClass(this.nextAction.due_bucket)">
+                                <t t-esc="this.nextAction.due_badge"/>
+                            </span>
+                        </div>
+
+                        <div class="tdash-next-meta">
+                            <span class="tdash-next-stage">
+                                Current Stage:
+                                <span class="tdash-stage-chip"
+                                      t-att-style="this.stateChipStyle(this.nextAction.state)">
+                                    <i t-attf-class="fa #{this.iconFor(this.nextAction.state)} me-1"/>
+                                    <t t-esc="this.nextAction.state_label"/>
+                                </span>
+                            </span>
+                            <span class="tdash-next-due">
+                                Due:
+                                <strong><t t-esc="this.nextAction.due_label || this.nextAction.due_date || '—'"/></strong>
+                            </span>
+                        </div>
+
+                        <button class="tdash-btn tdash-btn-primary tdash-next-btn"
+                                t-on-click.stop="() => this.openWork(this.nextAction)">
+                            <t t-esc="this.actionLabel(this.nextAction)"/>
+                            <i class="fa fa-arrow-right ms-1"/>
+                        </button>
+                    </div>
+
+                    <div t-else="" class="tdash-card tdash-empty">
+                        <i class="fa fa-check-circle tdash-empty-ok"/>
+                        <div>Nothing waiting on you — you're all caught up.</div>
+                    </div>
+                </div>
+
+                <!-- ===================== WORK LISTS (TABBED) ===================== -->
+                <div class="tdash-section mt-3 pb-4">
+                    <div class="tdash-section-head">
+                        <div class="tdash-tabs tdash-work-tabs">
+                            <button t-foreach="this.workTabs" t-as="tab" t-key="tab.key"
+                                    t-att-class="'tdash-tab' + (this.dash.workTab === tab.key ? ' active' : '')"
+                                    t-on-click="() => this.setWorkTab(tab.key)">
+                                <span class="tdash-tab-label"><t t-esc="tab.label"/></span>
+                                <span class="tdash-tab-count"><t t-esc="tab.count"/></span>
+                            </button>
+                        </div>
+                        <button class="tdash-link" t-on-click="() => this.openList(this.viewAllMode)">
+                            View All <i class="fa fa-arrow-right"/>
+                        </button>
+                    </div>
+
+                    <!-- ===== needs my action ===== -->
+                    <div class="tdash-card tdash-p-0" t-if="this.dash.workTab === 'needs_action'">
+                        <t t-if="this.needsAction.length">
+                            <div t-foreach="this.needsAction" t-as="row" t-key="row.id"
+                                 class="tdash-work-row"
+                                 t-on-click="() => this.openWork(row)">
+                                <div class="tdash-work-info">
+                                    <div class="tdash-ref">
+                                        <t t-esc="row.ref"/>
+                                        <span class="tdash-id-chip">#<t t-esc="row.id"/></span>
+                                    </div>
+                                    <div class="tdash-row-sub"><t t-esc="row.customer"/>
+                                        <span t-if="row.test_type"> · <t t-esc="row.test_type"/></span>
+                                    </div>
+                                </div>
+
+                                <div class="tdash-work-state">
+                                    <span class="tdash-stage-chip" t-att-style="this.stateChipStyle(row.state)">
+                                        <i t-attf-class="fa #{this.iconFor(row.state)} me-1"/>
+                                        <t t-esc="row.state_label"/>
+                                    </span>
+                                    <span t-if="row.due_badge"
+                                          t-att-class="this.dueClass(row.due_bucket)"
+                                          t-att-title="row.due_date">
+                                        <t t-esc="row.due_badge"/>
+                                    </span>
+                                    <span t-else="" class="tdash-due-plain">
+                                        Due <t t-esc="row.due_date || '—'"/>
+                                    </span>
+                                </div>
+
+                                <button class="tdash-btn tdash-btn-primary"
+                                        t-on-click.stop="() => this.openWork(row)">
+                                    <t t-esc="this.actionLabel(row)"/>
+                                </button>
+                            </div>
+                        </t>
+                        <div t-else="" class="tdash-empty-sm">
+                            No samples need your action right now.
+                        </div>
+                    </div>
+
+                    <!-- ===== waiting on others ===== -->
+                    <div class="tdash-card tdash-p-0" t-if="this.dash.workTab === 'waiting'">
+                        <t t-if="this.waitingRows.length">
+                            <div t-foreach="this.waitingRows" t-as="row" t-key="row.id"
+                                 class="tdash-wait-row"
+                                 t-on-click="() => this.openWork(row)">
+                                <div class="tdash-wait-info">
+                                    <i class="fa fa-hourglass-half tdash-wait-icon"/>
+                                    <div>
+                                        <div class="tdash-ref"><t t-esc="row.ref"/></div>
+                                        <div class="tdash-row-sub">
+                                            <t t-esc="row.wait_label"/>
+                                            <span t-if="row.customer"> · <t t-esc="row.customer"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tdash-wait-duration">
+                                    <span class="tdash-stage-chip tdash-chip-wait"
+                                          t-att-style="this.stateChipStyle(row.state)">
+                                        <t t-esc="row.state_label"/>
+                                    </span>
+                                    <span class="tdash-wait-time">
+                                        Waiting <t t-esc="row.wait_duration"/>
+                                    </span>
+                                </div>
+                                <i class="fa fa-chevron-right tdash-chev"/>
+                            </div>
+                        </t>
+                        <div t-else="" class="tdash-empty-sm">
+                            Nothing is waiting on someone else.
+                        </div>
+                    </div>
+
+                    <!-- ===== my samples ===== -->
+                    <div class="tdash-card tdash-p-0" t-if="this.dash.workTab === 'samples'">
+                        <div class="tdash-samples px-1 py-2">
+                            <!-- inner status tabs -->
+                            <div class="tdash-tabs tdash-inner-tabs">
+                                <button t-foreach="this.sampleTabs" t-as="tab" t-key="tab.key"
+                                        t-att-class="'tdash-tab' + (this.dash.sampleTab === tab.key ? ' active' : '')"
+                                        t-on-click="() => this.setTab(tab.key)">
+                                    <span class="tdash-tab-label"><t t-esc="tab.label"/></span>
+                                    <span class="tdash-tab-count"><t t-esc="tab.count"/></span>
+                                </button>
+                            </div>
+
+                            <!-- filters -->
+                            <div class="tdash-filters d-flex flex-wrap gap-2">
+                                <div class="tdash-search">
+                                    <i class="fa fa-search"/>
+                                    <input type="text" placeholder="Search…" t-model="dash.search"/>
+                                </div>
+                                <select class="tdash-select" t-model="dash.dueFilter">
+                                    <option value="all">Due Date</option>
+                                    <option value="overdue">Overdue</option>
+                                    <option value="due_today">Due Today</option>
+                                    <option value="due_tomorrow">Due Tomorrow</option>
+                                    <option value="later">Upcoming</option>
+                                </select>
+                                <select class="tdash-select" t-model="dash.typeFilter">
+                                    <option value="all">Sample Type</option>
+                                    <t t-foreach="this.sampleTypeOptions" t-as="type" t-key="type">
+                                        <option t-att-value="type"><t t-esc="type"/></option>
+                                    </t>
+                                </select>
+                            </div>
+
+                            <!-- results -->
+                            <t t-if="this.filteredSamples.length">
+                                <div t-foreach="this.filteredSamples" t-as="row" t-key="row.id"
+                                     class="tdash-sample-row"
+                                     t-on-click="() => this.openWork(row)">
+                                    <div class="tdash-sample-main">
+                                        <div class="tdash-ref"><t t-esc="row.ref"/></div>
+                                        <div class="tdash-row-sub">
+                                            <span t-if="row.customer"><t t-esc="row.customer"/> · </span>
+                                            <span t-if="row.test_type"><t t-esc="row.test_type"/></span>
+                                            <span t-elif="row.material"><t t-esc="row.material"/></span>
+                                        </div>
+                                        <div class="tdash-sample-due">
+                                            Due <t t-esc="row.due_date || '—'"/>
+                                        </div>
+                                    </div>
+                                    <div class="tdash-sample-right">
+                                        <span class="tdash-stage-chip" t-att-style="this.stateChipStyle(row.state)">
+                                            <i t-attf-class="fa #{this.iconFor(row.state)} me-1"/>
+                                            <t t-esc="row.state_label"/>
+                                        </span>
+                                        <span t-if="row.due_badge" t-att-class="this.dueClass(row.due_bucket)"
+                                              t-att-title="row.due_date">
+                                            <t t-esc="row.due_badge"/>
+                                        </span>
+                                        <button class="tdash-btn tdash-btn-primary"
+                                                t-on-click.stop="() => this.openWork(row)">
+                                            <t t-esc="this.actionLabel(row)"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </t>
+                            <div t-else="" class="tdash-empty-sm">
+                                No samples match your filters.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+</templates>
