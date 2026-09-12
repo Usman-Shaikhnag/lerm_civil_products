@@ -5,12 +5,12 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:0;">
 					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:5px; width:100%; table-layout:fixed;" class="header_table">
+						<table style="margin-top:5px; width:100%; table-layout:fixed;font-size:20px;" class="header_table">
 							<tbody>
 
 								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td colspan="5">
+									<td style="font-size:16px;"><strong>Name of Work</strong></td>
+									<td style="font-size:16px;" colspan="5">
 										<span t-field="o.srf_id.name_work"/>
 									</td>
 								</tr>
@@ -18,23 +18,23 @@
 								<tr>
 
 								<t t-if="o.srf_id.client">
-                                <td colspan="1"><strong>Customer Name</strong></td>
-                                <td colspan="2">
+                                <td style="font-size:16px;" colspan="1"><strong>Customer Name</strong></td>
+                                <td style="font-size:16px;" colspan="2">
                                     <![CDATA[&nbsp;]]>
                                     <t t-if="o.srf_id.customer">
                                         <span t-field="o.srf_id.customer"/>
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1"><strong>Client Name </strong></td>
-                                <td colspan="2" >
+                                <td style="font-size:16px;" colspan="1"><strong>Client Name </strong></td>
+                                <td style="font-size:16px;" colspan="2" >
                                     
                                         <span t-field="o.srf_id.client"/>
                                 </td>
                             </t>
                             <t t-else="">
-                             <td>Customer Name :</td>
-                             <td colspan="5" >
+                             <td style="font-size:16px;">Customer Name :</td>
+                             <td style="font-size:16px;" colspan="5" >
                                        <![CDATA[&nbsp;]]>
                                    <t t-if="o.srf_id.customer">
                                       <span t-field="o.srf_id.customer"/>
@@ -49,8 +49,8 @@
 								</tr>
 
 								<tr>
-									<td><strong>Address</strong></td>
-									<td colspan="5">
+									<td style="font-size:16px;"><strong>Address</strong></td>
+									<td style="font-size:16px;" colspan="5">
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -64,88 +64,92 @@
 
 								<!-- FIXED -->
 								<tr>
-									<td><strong>Location of Performance</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Location of Performance</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.location_name"/>
 									</td>
 
-									<td>
+									<td style="font-size:16px;">
 										<strong>Sample ID</strong>
 									</td>
 
-									<td colspan="2">
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.srf_id.srf_id"/>
 									</td>
 								</tr>
 
 								<!-- FIXED -->
 								<tr>
-									<td><strong>Date of Issue</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Date of Issue</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.end_date"/>
 									</td>
 
-									<td><strong>Date of Casting</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Date of Casting</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="data.date_of_casting"/>
 									</td>
 								</tr>
 
 								<!-- FIXED -->
 								<tr>
-									<td><strong>Description &amp; Grade of Concrete</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Description &amp; Grade of Concrete</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.grade_id.grade"/>
 										<span t-field="o.material.name"/>
 									</td>
 
-									<td><strong>Received Date</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Received Date</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.sample_received_date"/>
 									</td>
 								</tr>
 
 								<!-- FIXED -->
 								<tr>
-									<td><strong>Age of Specimen</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Age of Specimen</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="data.age_of_days"/>
 									</td>
 
-									<td><strong>Date of Test</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Date of Test</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.end_date"/>
 									</td>
 								</tr>
 
 								<tr>
-									<td><strong>Type of Failure</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Type of Failure</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="data.type_of_failure"/>
 									</td>
 
-									<td><strong>Customer Reference</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Customer Reference</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.srf_id.client_refrence"/>
 									</td>
 								</tr>
 
 								<tr>
-									<td><strong>Condition of Sample</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Condition of Sample</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.sample_condition"/>
 									</td>
 
-									<td><strong>Structure</strong></td>
-									<td colspan="2">
+									<td style="font-size:16px;"><strong>Structure</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.lab_id"/>
 									</td>
 								</tr>
 
 								<tr>
-									<td><strong>Discipline</strong></td>
-									<td colspan="5">
+									<td style="font-size:16px;"><strong>Discipline</strong></td>
+									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.discipline_id.discipline"/>
+									</td>
+									<td style="font-size:16px;"><strong>Witness By</strong></td>
+									<td style="font-size:16px;" colspan="2">
+										<span t-field="o.sample_id.witness"/>
 									</td>
 								</tr>
 
@@ -153,35 +157,35 @@
 						</table>
 					</div>
 					<div style="">
-						<table class="custom_table_borders" style="width: 100%; table-layout: fixed;">
+						<table class="custom_table_borders" style="width: 100%; table-layout: fixed;margin-top:10px;">
 							<thead>
 								<tr>
-									<th rowspan="2" style="text-align: center; font-weight: bold; width: 5%; white-space: nowrap;">Sr. No</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold; width: 12%; word-wrap: break-word;">Identification Mark</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold; width: 5%; white-space: nowrap;font-size:16px;">Sr. No</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold; width: 12%; word-wrap: break-word;font-size:16px;">Identification Mark</th>
 									<t t-if="sector_type != 'non_govt'">
-										<th colspan="3" style="text-align: center; font-weight: bold;">Dimension of Specimen (mm)</th>
+										<th colspan="3" style="text-align: center; font-weight: bold;font-size:16px;">Dimension of Specimen (mm)</th>
 									</t>
 									<t t-if="sector_type == 'normal'">
-										<th rowspan="2" style="text-align: center; font-weight: bold;">Area (mm²)</th>
+										<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Area (mm²)</th>
 									</t>
 									<t t-if="sector_type != 'non_govt'">
-										<th rowspan="2" style="text-align: center; font-weight: bold;">Weight of  Specimen (Kgs)</th>
+										<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Weight of  Specimen (Kgs)</th>
 									</t>
-									<th rowspan="2" style="text-align: center; font-weight: bold;">Density (Kg/m³)</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Density (Kg/m³)</th>
 									<t t-if="sector_type != 'non_govt'">
-										<th rowspan="2" style="text-align: center; font-weight: bold;">Maximum Load(KN)</th>
+										<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Maximum Load(KN)</th>
 									</t>
 									<!-- <th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th> -->
 									<!-- <th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th> -->
-									<th rowspan="2" style="text-align: center; font-weight: bold;">Comp. Strength (N/mm²)</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold;">Avg. Comp. Strength (N/mm²)</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Comp. Strength (N/mm²)</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold;font-size:16px;">Avg. Comp. Strength (N/mm²)</th>
 								</tr>
 								<t t-if="sector_type != 'non_govt'">
 								<tr>
-								  <th colspan="1" style="text-align: center; font-weight: bold;">Length (mm)</th>
-								  <th colspan="1" style="text-align: center; font-weight: bold;">Breadth (mm)</th>
-								  <th colspan="1" style="text-align: center; font-weight: bold;">Height (mm)</th>
+								  <th colspan="1" style="text-align: center; font-weight: bold;font-size:16px;">Length (mm)</th>
+								  <th colspan="1" style="text-align: center; font-weight: bold;font-size:16px;">Breadth (mm)</th>
+								  <th colspan="1" style="text-align: center; font-weight: bold;font-size:16px;">Height (mm)</th>
 								</tr>
 								</t>
 							</thead>
@@ -190,29 +194,29 @@
 								<t t-set="lines" t-value="data.child_lines"/>
 								<t t-foreach="lines" t-as="r">
 								<tr>
-									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
-									<td style="text-align: center; word-wrap: break-word; overflow-wrap: break-word; padding: 4px;"><span t-esc="r.id_mark"/></td>
+									<td style="text-align: center;font-size:16px;"><span t-esc="r.sr_no"/></td>
+									<td style="text-align: center; word-wrap: break-word; overflow-wrap: break-word; padding: 4px;font-size:16px;"><span t-esc="r.id_mark"/></td>
 									<t t-if="sector_type != 'non_govt'">
-										<td style="text-align: center;"><span t-esc="r.length"/></td>
-										<td style="text-align: center;"><span t-esc="r.breadth"/></td>
-										<td style="text-align: center;"><span t-esc="r.height"/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.length"/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.breadth"/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.height"/></td>
 									</t>
 									<t t-if="sector_type == 'normal'">
-										<td style="text-align: center;"><span t-esc="r.area" t-options='{"widget": "float", "precision": 0}'/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.area" t-options='{"widget": "float", "precision": 0}'/></td>
 									</t>
 									<t t-if="sector_type != 'non_govt'">
-										<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.wt_sample"/></td>
 									</t>
-									<td style="text-align: center;"><span t-esc="r.density" t-options='{"widget": "float", "precision": 0}'/></td>
+									<td style="text-align: center;font-size:16px;"><span t-esc="r.density" t-options='{"widget": "float", "precision": 0}'/></td>
 									<t t-if="sector_type != 'non_govt'">
-										<td style="text-align: center;"><span t-esc="r.load"/></td>
+										<td style="text-align: center;font-size:16px;"><span t-esc="r.load"/></td>
 									</t>
-									<td style="text-align: center;">
+									<td style="text-align: center;font-size:16px;">
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 
 									<t t-if="r_index == 0">
-										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="len(lines)">
+										<td style="text-align: center; vertical-align: middle;font-size:16px;" t-att-rowspan="len(lines)">
 											<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 										</td>
 									</t>
@@ -240,21 +244,21 @@
 						<table style="margin-top:5px">
 							<thead >
 								<tr cols="12">
-									<td >Sr no 
+									<td style="font-size:16px;">Sr no 
 									</td>
 
-									<td  style="text-align:center;">Sample Identification
+									<td  style="text-align:center;font-size:16px;">Sample Identification
 
 									</td>
 
-									<td  style="text-align:center;">Dry wt (W1)
+									<td  style="text-align:center;font-size:16px;">Dry wt (W1)
 
 									</td>
 								
-									<td  style="text-align:center;">Wet wt (W2)
+									<td  style="text-align:center;font-size:16px;">Wet wt (W2)
 									</td>
 
-									<td  style="text-align:center;"> Water Absorption %
+									<td  style="text-align:center;font-size:16px;"> Water Absorption %
 									</td>
 
 								
@@ -265,22 +269,22 @@
 							<tbody>
 								<t t-set="i" t-value="0"/>
 								<tr t-foreach="data.water_absorption_child_lines" t-as="r">
-									<td  style="text-align:center;">
+									<td  style="text-align:center;font-size:16px;">
 										<div>
 											<span t-esc="i + 1" />
 											<t t-set="i" t-value="i+1"/>
 										</div>
 									</td >
-									<td  style="text-align:center;">
+									<td  style="text-align:center;font-size:16px;">
 										<span t-esc="r['sample_identification']" />
 									</td>
-									<td   style="text-align:center;">
+									<td   style="text-align:center;font-size:16px;">
 										<span t-esc="r['dry_wt_w1']" />
 									</td>
-									<td  style="text-align:center;">
+									<td  style="text-align:center;font-size:16px;">
 										<span t-esc="r['wet_w2']" />
 									</td>
-									<td  style="text-align:center;">
+									<td  style="text-align:center;font-size:16px;">
 										<span t-esc="r['water_absorption']" />
 									</td>
 								
@@ -303,9 +307,9 @@
 
 						<table style="margin-top:5px">
 							<tr>
-								<td colspan="12">Water Absorption:</td>
+								<td style="font-size:16px;" colspan="12">Water Absorption:</td>
 								<![CDATA[&nbsp;]]>
-								<td>
+								<td style="font-size:16px;">
 									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td>
@@ -327,42 +331,42 @@
 							</span>
 							<table style="margin-top:5px" >
 								<tr cols="12">
-									<td colspan="1">Sr no 
+									<td style="font-size:16px;" colspan="1">Sr no 
 									</td>
-									<td colspan="1">Sample 
+									<td style="font-size:16px;" colspan="1">Sample 
 									</td>
-									<td colspan="1">Depth of Penetration 1
+									<td style="font-size:16px;" colspan="1">Depth of Penetration 1
 									</td>
-									<td colspan="2">Depth of Penetration 2
+									<td style="font-size:16px;" colspan="2">Depth of Penetration 2
 									</td>
-									<td colspan="2">Depth of Penetration 3
+									<td style="font-size:16px;" colspan="2">Depth of Penetration 3
 									</td>
-									<td colspan="2">Average
+									<td style="font-size:16px;" colspan="2">Average
 									</td>
 									
 								</tr>
 
 								<t t-set="i" t-value="0"/>
 								<tr t-foreach="data.wpt_child_lines" t-as="r">
-									<td colspan="1">
+									<td style="font-size:16px;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
 											<t t-set="i" t-value="i+1"/>
 										</div>
 									</td>
-									<td colspan="1">
+									<td style="font-size:16px;" colspan="1">
 										<span t-esc="r['sample']"/>
 									</td>
-									<td colspan="1">
+									<td style="font-size:16px;" colspan="1">
 										<span t-esc="r['depth1']"/>
 									</td>
-									<td colspan="2">
+									<td style="font-size:16px;" colspan="2">
 										<span t-esc="r['depth2']"/>
 									</td>
-									<td colspan="2">
+									<td style="font-size:16px;" colspan="2">
 										<span t-esc="r['depth3']"/>
 									</td>
-									<td colspan="2">
+									<td style="font-size:16px;" colspan="2">
 										<span t-esc="r['average']"/>
 									</td>
 									
@@ -370,10 +374,10 @@
 							</table>
 							<table style="margin-top:5px">
 								<tr cols="12">
-									<td colspan="6">Average Of WPT :
+									<td style="font-size:16px;" colspan="6">Average Of WPT :
 										<![CDATA[&nbsp;]]>
 									</td>
-									<td colspan="6">
+									<td style="font-size:16px;" colspan="6">
 										<span t-field="data.average_of_wpt"/>
 									</td>
 									
@@ -405,23 +409,23 @@
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<div>
 							<div>
-								<b>
+								<b style="font-size:16px;">
 									Reviewed By
 								</b>
 							</div>
-							<div style="height: 50px;">
+							<div style="height: 70px;">
 								<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
 									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
-										style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+										style="max-width: 200px; max-height: 55px; margin-top: 1px; z-index: -10;"/>
 								</t>
 							</div>
 							<div>
-								<b>
+								<b style="font-size:16px;">
 									<span t-esc="eln.sample_id.check_by.name"/>
 								</b>
 							</div>
 							<div>
-								<b>
+								<b style="font-size:16px;">
 									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
@@ -437,25 +441,25 @@
 					</div>
 					<div>
 						<div>
-							<b>
+							<b style="font-size:16px;">
 								Per pro GEONYMS INDIA PRIVATE LIMITED.
 							</b>
 						</div>
-						<div style="height: 50px;">
+						<div style="height: 70px;">
 							<t t-if="eln.sample_id.approveby_signature_required">
 								<div t-if="eln.sample_id.approved_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 55px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
 						</div>
 						<div>
-							<b>
+							<b style="font-size:16px;">
 							<span t-esc="eln.sample_id.approved_by.name"/>
 							</b>
 						</div>
 						<div>
-							<b>
+							<b style="font-size:16px;">
 								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 							</b>
 						</div>
@@ -465,7 +469,7 @@
 							......End of Report......
 						</div> -->
 						<div style="margin-top: 5px; text-align: center;">
-							<p style="font-weight:800;">...... End Of Report......</p>
+							<p style="font-weight:800;font-size:16px;">...... End Of Report......</p>
 						</div>
 				</div>
 				<!-- </div> -->

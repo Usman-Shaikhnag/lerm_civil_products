@@ -421,6 +421,28 @@ class MechanicalBricksBurntClay(models.Model):
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    efflorescence_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_efflorescence_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_efflorescence_nabl(self):
+     for rec in self:
+        rec.efflorescence_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
     
 
 

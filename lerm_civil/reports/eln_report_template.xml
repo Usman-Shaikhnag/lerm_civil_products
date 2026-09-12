@@ -54,41 +54,41 @@
 					</table> -->
 			
 			<!-- <div style="height: 110px;"></div> -->
-			<div style="width:100%;text-align:center;padding-bottom:5px">
-				<div style="font-size:20px"><b>Test Report</b></div>
+			<div style="width:100%;text-align:center;padding-bottom:12px">
+				<div style="font-size:22px"><b>Test Report</b></div>
 			</div>
 			<div class="container_eln row p-0" style="margin-right:1px;margin-left:1px;">
 
 					<table>
 						<tr>
-							<td colspan="3">Test Report no :
+							<td style="font-size:16px;" colspan="3">Test Report no :    
 							</td>
 							
 							<t t-if="fromEln">
-								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
+								<td style="font-size:16px;" t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
 									<span t-field="o.kes_no"/><span>N</span>
 								</td>
-								<td t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
+								<td style="font-size:16px;" t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
 									<span t-field="o.kes_no"/>
 								</td>
 							</t>
 							<t t-else="">
-								<td t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
+								<td style="font-size:16px;" t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
 									<span t-field="o.kes_no"/><span>N</span>
 								</td>
-								<td t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
+								<td style="font-size:16px;" t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
 									<span t-field="o.kes_no"/>
 								</td>
 							</t>
 							
-							<td colspan="3">Report Issue Date :
+							<td style="font-size:16px;" colspan="3">Report Issue Date :
 							</td>
-							<td colspan="3">
+							<td style="font-size:16px;" colspan="3">
 								<span t-field="o.end_date"/>
 							</td>
-							<td colspan="3"  t-if="nabl or fromEln">ULR NO :
+							<td style="font-size:16px;" colspan="3"  t-if="nabl or fromEln">ULR NO :
 							</td>
-							<td colspan="3" t-if="nabl or fromEln">
+							<td style="font-size:16px;" colspan="3" t-if="nabl or fromEln">
 								<span t-field="o.sample_id.ulr_no"/>
 							</td>
 						</tr>
