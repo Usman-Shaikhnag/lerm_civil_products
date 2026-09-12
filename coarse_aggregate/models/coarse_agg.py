@@ -3,8 +3,8 @@ from odoo.exceptions import UserError,ValidationError
 import math
 import re
 
-class CoarseAggregateMechanical2(models.Model):
-    _name = "mechanical.coarse.aggregate2"
+class CoarseAggregateMechanical(models.Model):
+    _name = "mechanical.coarse.aggregate"
     _inherit = "lerm.eln"
     _rec_name = "name"
 
@@ -33,7 +33,7 @@ class CoarseAggregateMechanical2(models.Model):
 
         
     def get_all_fields(self):
-        record = self.env['mechanical.coarse.aggregate2'].browse(self.ids[0])
+        record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -63,7 +63,7 @@ class CoarseAggregateMechanical2(models.Model):
         ]
 
     notes_id = fields.One2many(
-        'mechanical.coarse.aggregate2.notes', 
+        'mechanical.coarse.aggregate.notes', 
         'parent_id', 
         string="Notes", 
         ondelete='cascade', 
@@ -76,7 +76,7 @@ class CoarseAggregateMechanical2(models.Model):
     crushing_value_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    crushing_value_child_lines = fields.One2many('mechanical.crushing.value.coarse.aggregate.line2','parent_id',string="Parameter")
+    crushing_value_child_lines = fields.One2many('mechanical.crushing.value.coarse.aggregate.line','parent_id',string="Parameter")
 
     average_crushing_value = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing_value")
 
@@ -395,7 +395,7 @@ class CoarseAggregateMechanical2(models.Model):
     impact_value_name = fields.Char("Name",default="Aggregate Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
 
-    impact_value_child_lines = fields.One2many('mechanical.impact.value.coarse.aggregate.line2','parent_id',string="Parameter")
+    impact_value_child_lines = fields.One2many('mechanical.impact.value.coarse.aggregate.line','parent_id',string="Parameter")
 
     average_impact_value = fields.Float(string="Average Aggregate Impact Value", compute="_compute_average_impact_value")
 
@@ -468,6 +468,12 @@ class CoarseAggregateMechanical2(models.Model):
             else:
                 record.average_impact_value = 0.0
 
+    # @api.model
+    # def create(self, vals):
+    #     # import wdb;wdb.set_trace()
+    #     record = super(coarseAggregateMechanical, self).create(vals)
+    #     record.parameter_id.write({'model_id':record.id})
+    #     return record
    
     # !0% Fine Value
     name_10fine = fields.Char(default="10% Fine Value")
@@ -563,7 +569,7 @@ class CoarseAggregateMechanical2(models.Model):
     soundness_na2so4_name = fields.Char("Name",default="Soundness Na2SO4")
     soundness_na2so4_visible = fields.Boolean("Soundness Na2SO4 Visible",compute="_compute_visible")
 
-    soundness_na2so4_child_lines = fields.One2many('mechanical.soundness.na2so4.line2','parent_id',string="Parameter",default=lambda self: self._default_soundness_na2so4_child_lines())
+    soundness_na2so4_child_lines = fields.One2many('mechanical.soundness.na2so4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_na2so4_child_lines())
     total_na2so4 = fields.Integer(string="Total",compute="_compute_total_na2so4")
     soundness_na2so4 = fields.Float(string="Soundness",compute="_compute_soundness_na2so4")
 
@@ -688,7 +694,7 @@ class CoarseAggregateMechanical2(models.Model):
     soundness_mgso4_name = fields.Char("Name",default="Soundness MgSO4")
     soundness_mgso4_visible = fields.Boolean("Soundness MgSO4 Visible",compute="_compute_visible")
 
-    soundness_mgso4_child_lines = fields.One2many('mechanical.soundness.mgso4.line2','parent_id',string="Parameter",default=lambda self: self._default_soundness_mgso4_child_lines())
+    soundness_mgso4_child_lines = fields.One2many('mechanical.soundness.mgso4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_mgso4_child_lines())
     total_mgso4 = fields.Integer(string="Total",compute="_compute_total_mgso4")
     soundness_mgso4 = fields.Float(string="Soundness",compute="_compute_soundness_mgso4")
 
@@ -945,7 +951,7 @@ class CoarseAggregateMechanical2(models.Model):
     flakiness_name = fields.Char(default=" Flakiness Index")
     flakiness_visible = fields.Boolean(compute="_compute_visible")
 
-    elongation_table = fields.One2many('mechanical.elongation.flakiness.line2','parent_id',string="Elongation Flakiness Index",default=lambda self: self.default_flakiness_sizes())
+    elongation_table = fields.One2many('mechanical.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index",default=lambda self: self.default_flakiness_sizes())
 
     total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
     total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
@@ -1480,13 +1486,13 @@ class CoarseAggregateMechanical2(models.Model):
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line2','parent_id',string="Parameter")
+    sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
     def default_get(self, fields):
         print("From Default Value")
-        res = super(CoarseAggregateMechanical2, self).default_get(fields)
+        res = super(CoarseAggregateMechanical, self).default_get(fields)
 
         coarse_sieve_20mm = ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan']
         coarse_sieve_10mm = ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan']
@@ -1545,7 +1551,7 @@ class CoarseAggregateMechanical2(models.Model):
                         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
                         line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
                 else:
-                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line2'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained})
                     line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
                     print("Previous Cumulative",previous_line_record)
@@ -1571,25 +1577,10 @@ class CoarseAggregateMechanical2(models.Model):
     aggregate_grading_name = fields.Char("Name",default="All in Aggregate Grading")
     aggregate_grading_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    aggregate_grading_child_lines = fields.One2many(
-    'mechanical.aggregate.grading.line2',
-    'parent_id',
-    string="Parameter",
-    default=lambda self: [
-        ({'sieve_size': '80 mm'}),
-        ({'sieve_size': '40 mm'}),
-        ({'sieve_size': '20 mm'}),
-        ({'sieve_size': '4.75 mm'}),
-        ({'sieve_size': '600 micron'}),
-        ({'sieve_size': '150 micron'}),
-    ],
-)  
-
-   
-
-    # aggregate_grading_child_lines = fields.One2many('mechanical.aggregate.grading.line','parent_id',string="Parameter")
+    aggregate_grading_child_lines = fields.One2many('mechanical.aggregate.grading.line','parent_id',string="Parameter")
     total_aggregate_grading = fields.Integer(string="Total",compute="_compute_total_aggregate_grading")
     # cumulative_aggregate_grading = fields.Float(string="Cumulative",compute="_compute_cumulative_aggregate_grading")
+
 
     def calculate_aggregate(self): 
         for record in self:
@@ -1606,13 +1597,13 @@ class CoarseAggregateMechanical2(models.Model):
                         line.write({'cumulative_retained': line.percent_retained})
                         line.write({'passing_percent': 100 -line.percent_retained})
                 else:
-                    previous_line_record = self.env['mechanical.aggregate.grading.line2'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+                    previous_line_record = self.env['mechanical.aggregate.grading.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained})
                     line.write({'passing_percent': 100-(previous_line_record + line.percent_retained)})
                     print("Previous Cumulative",previous_line_record)
+                    
 
-
-   
+ 
 
     # @api.depends('aggregate_grading_child_lines.wt_retained')
     # def _compute_cumulative_aggregate_grading(self):
@@ -1958,7 +1949,7 @@ class CoarseAggregateMechanical2(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(CoarseAggregateMechanical2, self).create(vals)
+        record = super(CoarseAggregateMechanical, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -1968,7 +1959,7 @@ class CoarseAggregateMechanical2(models.Model):
         self._compute_sample_parameters()
         self._compute_visible()
 
-        return super(CoarseAggregateMechanical2, self).read(fields=fields, load=load)
+        return super(CoarseAggregateMechanical, self).read(fields=fields, load=load)
 
    
     @api.depends('eln_ref')
@@ -1979,7 +1970,7 @@ class CoarseAggregateMechanical2(models.Model):
             print("Records",records)
 
     def get_all_fields(self):
-        record = self.env['mechanical.coarse.aggregate2'].browse(self.ids[0])
+        record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -1993,15 +1984,14 @@ class CoarseAggregateMechanical2(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-
 class AggregateGradingLine(models.Model):
-    _name = "mechanical.aggregate.grading.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
+    _name = "mechanical.aggregate.grading.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Wt. Retained in gms")
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained1")
+    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
     cumulative_retained = fields.Float(string="Cum. Retained %", store=True)
     passing_percent = fields.Float(string="Passing %")
 
@@ -2054,10 +2044,10 @@ class AggregateGradingLine(models.Model):
 
 
     @api.depends('wt_retained', 'parent_id.total_aggregate_grading')
-    def _compute_percent_retained1(self):
+    def _compute_percent_retained(self):
         for record in self:
             try:
-                record.percent_retained = record.wt_retained / self.parent_id.total_aggregate_grading * 100
+                record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
             except ZeroDivisionError:
                 record.percent_retained = 0
 
@@ -2075,12 +2065,14 @@ class AggregateGradingLine(models.Model):
             # index = sorted_lines.index(record)
             # print("Working")
 
+    
+
 
 
 
 class SieveAnalysisLine(models.Model):
-    _name = "mechanical.coarse.aggregate.sieve.analysis.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
+    _name = "mechanical.coarse.aggregate.sieve.analysis.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
@@ -2210,61 +2202,61 @@ class SieveAnalysisLine(models.Model):
     #     for index, record in enumerate(records):
     #         record.sr_no = index + 1
 
-class RoddedBulkDensityLine(models.Model):
-    _name = "coarse.aggregate.rodded.bulk.density.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2',string="Parent Id")
+# class RoddedBulkDensityLine(models.Model):
+#     _name = "coarse.aggregate.rodded.bulk.density.line1"
+#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
    
-    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    weight_empty_bucket = fields.Float(string="Weight of Empty Bucket in kg")
-    volume_of_bucket = fields.Float(string="Volume of Bucket in cubic meter")
-    sample_plus_bucket = fields.Float(string="[Sample Weight + Bucket  Weight] in kg")
-    sample_weight = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight")
-    rodded_bulk_density = fields.Float(string="Rodded Bulk Density in kg per cubic meter",compute="_compute_roddede_bulk_density")
+#     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
+#     weight_empty_bucket = fields.Float(string="Weight of Empty Bucket in kg")
+#     volume_of_bucket = fields.Float(string="Volume of Bucket in cubic meter")
+#     sample_plus_bucket = fields.Float(string="[Sample Weight + Bucket  Weight] in kg")
+#     sample_weight = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight")
+#     rodded_bulk_density = fields.Float(string="Rodded Bulk Density in kg per cubic meter",compute="_compute_roddede_bulk_density")
 
 
-    @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    def _compute_sample_weight(self):
-        for record in self:
-            record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
+#     @api.depends('sample_plus_bucket', 'weight_empty_bucket')
+#     def _compute_sample_weight(self):
+#         for record in self:
+#             record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
 
     
 
-    @api.depends('sample_weight', 'volume_of_bucket')
-    def _compute_roddede_bulk_density(self):
-        for record in self:
-            if record.volume_of_bucket:
-                record.rodded_bulk_density = record.sample_weight / record.volume_of_bucket
-            else:
-                record.rodded_bulk_density = 0.0
+#     @api.depends('sample_weight', 'volume_of_bucket')
+#     def _compute_roddede_bulk_density(self):
+#         for record in self:
+#             if record.volume_of_bucket:
+#                 record.rodded_bulk_density = record.sample_weight / record.volume_of_bucket
+#             else:
+#                 record.rodded_bulk_density = 0.0
 
 
 
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
+#     # @api.model
+#     # def create(self, vals):
+#     #     # Set the serial_no based on the existing records for the same parent
+#     #     if vals.get('parent_id'):
+#     #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#     #         if existing_records:
+#     #             max_serial_no = max(existing_records.mapped('sr_no'))
+#     #             vals['sr_no'] = max_serial_no + 1
 
-    #     return super(RoddedBulkDensityLine, self).create(vals)
+#     #     return super(RoddedBulkDensityLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.sr_no = index + 1
 
-# class ElongationIndexLine(models.Model):
-#     _name = "mechanical.elongation.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+# # class ElongationIndexLine(models.Model):
+# #     _name = "mechanical.elongation.index.line"
+# #     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
    
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
+# #     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
+# #     sieve_size = fields.Char(string="I.S Sieve Size")
+# #     wt_retained = fields.Integer(string="Wt Retained (in gms)")
+# #     elongated_retain = fields.Float(string="Elongated Retained (in gms)")
+# #     # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
     
 
     
@@ -2318,8 +2310,8 @@ class RoddedBulkDensityLine(models.Model):
 #             record.sr_no = index + 1
 
 class ElongationFlacnessLine(models.Model):
-    _name = "mechanical.elongation.flakiness.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
+    _name = "mechanical.elongation.flakiness.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
 
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Wt. Retained in gms")
@@ -2328,8 +2320,8 @@ class ElongationFlacnessLine(models.Model):
 
 
 class SoundnessNa2Line(models.Model):
-    _name = "mechanical.soundness.na2so4.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
+    _name = "mechanical.soundness.na2so4.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
     
     sieve_size_passing = fields.Char(string="Sieve Size Passing")
     sieve_size_retained = fields.Char(string="Sieve Size Retained")
@@ -2368,8 +2360,8 @@ class SoundnessNa2Line(models.Model):
     
 
 class SoundnessMgLine(models.Model):
-    _name = "mechanical.soundness.mgso4.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2', string="Parent Id")
+    _name = "mechanical.soundness.mgso4.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
     
     sieve_size_passing = fields.Char(string="Sieve Size Passing")
     sieve_size_retained = fields.Char(string="Sieve Size Retained")
@@ -2407,8 +2399,8 @@ class SoundnessMgLine(models.Model):
 
     
 class ImpactValueLine(models.Model):
-    _name = "mechanical.impact.value.coarse.aggregate.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2',string="Parent Id")
+    _name = "mechanical.impact.value.coarse.aggregate.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     wt_of_cylinder = fields.Integer(string="Weight of cylindrical measure in gms")
@@ -2462,8 +2454,8 @@ class ImpactValueLine(models.Model):
 
 
 class CrushingValueLine(models.Model):
-    _name = "mechanical.crushing.value.coarse.aggregate.line2"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2',string="Parent Id")
+    _name = "mechanical.crushing.value.coarse.aggregate.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     wt_of_cylinder = fields.Integer(string="Weight of the empty cylinder in gms")
@@ -2515,9 +2507,9 @@ class CrushingValueLine(models.Model):
 
 
 class CoarseAggregateNotes(models.Model):
-    _name = "mechanical.coarse.aggregate2.notes"
+    _name = "mechanical.coarse.aggregate.notes"
 
-    parent_id = fields.Many2one('mechanical.coarse.aggregate2',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
 

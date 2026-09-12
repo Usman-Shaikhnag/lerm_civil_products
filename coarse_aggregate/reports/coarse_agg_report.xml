@@ -2,15 +2,35 @@
 <odoo>
 	
 	
-	<template id="lerm_coarse_aggregate_mech_report2">
+	<template id="lerm_coarse_aggregate_mech_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
-						
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3"  t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
 						<table style="margin-top:10px;">
 							<tr>
 								<td colspan="12">#Customer Party Name :
@@ -26,7 +46,17 @@
 								</td>
 							</tr>
 							<tr>
-								
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
 								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -107,14 +137,7 @@
 					<div t-if="data.sieve_visible" style="margin-top:20px">
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
-							<span  t-field="eln.material.method_reference"/>:   	
-						
-						
-							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_table" t-as="parameter">
-								<t t-if="parameter.grade.id == eln.grade_id.id">
-									<span t-field="parameter.specification"/>
-								</t>
-							</t>
+							<span t-esc="o.material.test_parameter "/> 
 						</div>
 						<table>
 							<tr cols="12">
@@ -157,95 +180,6 @@
 								</td>
 								<td colspan="2" t-if="k == 4">
 									<span>0% - 5%</span>
-								</td>
-								<td colspan="2" t-if="k == 5">
-									
-								</td>
-							</tr>
-						</table>
-                        
-					</div>
-
-
-
-					<div t-if="data.aggregate_grading_visible" style="margin-top:10px">
-						<div style="text-align:center;font-size:18px">
-							<span>All in Aggregate Grading </span>
-							<span  t-field="eln.material.method_reference"/>:   	
-						
-						
-							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6976f6b5-5756-4ef7-a680-50b0c0dbccc8')]).parameter_table" t-as="parameter">
-								<t t-if="parameter.grade.id == eln.grade_id.id">
-									<span t-field="parameter.specification"/>
-								</t>
-							</t>
-						</div>
-						<table>
-							<tr cols="12">
-                                <td rowspan="2">IS Sieve Size
-								</td>
-                                <td rowspan="2">Percentage of Passing (in %) observed				
-								</td>
-								<td colspan="2">
-								 
-								 <span>
-                                    <span t-esc="eln.material.specifications"/>
-                                </span>
-								</td>
-
-                            </tr>
-							<tr>
-							    <td colspan="1">40 mm Nominal Size 
-								</td>
-								<td colspan="1">20 mm Nominal Size 
-								</td>
-							</tr>
-							<t t-set="k" t-value="0"/>
-							<tr t-foreach="data.aggregate_grading_child_lines"  t-as="r">
-								
-								<td >
-									<t t-set="k" t-value="k+1"/>
-									<span t-esc="r['sieve_size']"/>
-								</td>
-								<td >
-									<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="1" t-if="k == 1">
-									<span>100</span>
-								</td>
-								<td colspan="1" t-if="k == 2">
-									<span>95 to 100</span>
-								</td>
-								<td colspan="1" t-if="k == 3">
-									<span>45 to 75</span>
-								</td>
-								<td colspan="1" t-if="k == 4">
-									<span>25 to 45</span>
-								</td>
-								<td colspan="1" t-if="k == 5">
-									<span>8 to 30</span>
-								</td>
-								<td colspan="1" t-if="k == 6">
-									<span>0 to 6</span>
-								</td>
-
-								<td colspan="1" t-if="k == 1">
-									<span>--</span>
-								</td>
-								<td colspan="1" t-if="k == 2">
-									<span>100</span>
-								</td>
-								<td colspan="1" t-if="k == 3">
-									<span>95 to 100</span>
-								</td>
-								<td colspan="1" t-if="k == 4">
-									<span>30 to 50</span>
-								</td>
-								<td colspan="1" t-if="k == 5">
-									<span>10 to 35</span>
-								</td>
-								<td colspan="1" t-if="k == 6">
-									<span>0 to 6</span>
 								</td>
 							</tr>
 						</table>
@@ -1057,7 +991,7 @@
 								</td>
 							</tr>      
 
-							<!-- <tr t-if="data.aggregate_grading_visible">
+							<tr t-if="data.aggregate_grading_visible">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -1097,10 +1031,13 @@
 								</td>
 
 								 <td t-if="eln.conformity">
-								
+									
+									<!-- <span t-attf-style="color: #{'green' if data.angularity_number_conformity and data.angularity_number_conformity.lower() == 'pass' else ('red' if data.angularity_number_conformity and data.angularity_number_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.angularity_number_conformity"/> -->
+							
 								</td>
 								
-							</tr>       -->
+							</tr>      
 						</tbody>
 					</table>
 					<div style="page-break-inside: avoid;">
