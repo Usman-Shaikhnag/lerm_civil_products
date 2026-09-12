@@ -211,41 +211,41 @@
 									<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td colspan="1" t-if="k == 1">
-									<span>100</span>
+									<span>100%</span>
 								</td>
 								<td colspan="1" t-if="k == 2">
-									<span>95 to 100</span>
+									<span>95% - 100%</span>
 								</td>
 								<td colspan="1" t-if="k == 3">
-									<span>45 to 75</span>
+									<span>45% - 75%</span>
 								</td>
 								<td colspan="1" t-if="k == 4">
-									<span>25 to 45</span>
+									<span>25% - 45%</span>
 								</td>
 								<td colspan="1" t-if="k == 5">
-									<span>8 to 30</span>
+									<span>8% - 30%</span>
 								</td>
 								<td colspan="1" t-if="k == 6">
-									<span>0 to 6</span>
+									<span>0% - 6%</span>
 								</td>
 
 								<td colspan="1" t-if="k == 1">
 									<span>--</span>
 								</td>
 								<td colspan="1" t-if="k == 2">
-									<span>100</span>
+									<span>100%</span>
 								</td>
 								<td colspan="1" t-if="k == 3">
-									<span>95 to 100</span>
+									<span>95% - 100%</span>
 								</td>
 								<td colspan="1" t-if="k == 4">
-									<span>30 to 50</span>
+									<span>30% - 50%</span>
 								</td>
 								<td colspan="1" t-if="k == 5">
-									<span>10 to 35</span>
+									<span>10% - 35%</span>
 								</td>
 								<td colspan="1" t-if="k == 6">
-									<span>0 to 6</span>
+									<span>0% - 6%</span>
 								</td>
 							</tr>
 						</table>
@@ -598,7 +598,7 @@
 										<span t-field="data.aggregate_elongation"  t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
-								<td style="text-align: center;border-bottom:none;">
+								<td rowspan="2" style="text-align: center; vertical-align: middle; border-bottom: none;">
 									<span>
 										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -646,7 +646,7 @@
 										<span t-field="data.aggregate_flakiness"  t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
-								<td style="text-align: center;border-top:none;">
+								<!-- <td style="text-align: center;border-top:none;">
 									<span>
 										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
@@ -654,7 +654,7 @@
                                             </t>
                                         </t>
 									</span>
-								</td>
+								</td> -->
 								<td style="text-align: center;">
 									<span>
 										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table" t-as="parameter">
