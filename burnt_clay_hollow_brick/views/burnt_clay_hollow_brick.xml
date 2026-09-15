@@ -26,8 +26,8 @@
 
                     <style>
                         .blue-input input {
-                            background-color: #d8ecff !important;
-                            border-color: #3b82f6 !important;
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
 
                         .o_list_view .o_data_cell.blue-input {
@@ -35,6 +35,7 @@
                              border-color: #3b82f6 !important;
                              }
 
+                        /* Input when the cell goes into edit mode */
                         .o_list_view .o_data_cell.blue-input input {
                              background-color: #d8ecff !important;
                              border-color: #3b82f6 !important;
@@ -50,197 +51,96 @@
                         </field>
                     </div>
 
-                    <!-- Crushing Value -->
-                    <div invisible= "crushing_visible == False">
-                        <h1 class="text-center">
-                            <field name="crushing_value_name" readonly="1" nolabel="1"/>
-                            <field name="crushing_visible" invisible="1"/>
-                        </h1>
+                    <!-- compressive Strength -->
+
+                    <div invisible="compressive_strength_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                          <field name="compressive_strength_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "compressive_strength_visible == False"  >
+                    <field name="compressive_strength_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name="identification_mark" width="100" class="blue-input" decoration-info="identification_mark != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='width' class="blue-input" decoration-info="height != 0"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0"/>
+                                <field name='area' />
+                                <field name='load' class="blue-input" decoration-info="load != 0"/>
+                                <field name='comp_strength_1' />
+                                
+                            </tree>
+                    </field>
                     </div>
 
-                    <div invisible= "crushing_visible == False" class="custom_table_borders">
-                        <field name="crushing_value_child_lines" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name='sample_no'/>
-                                    <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
-                                    <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
-                                    <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
-                                    <field name='acv'/>
-                                </tree>
-                        </field> 
-                    </div>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not crushing_visible" style="white-space:nowrap;">
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="average_crushing_value">Average Crushing Value (%)</label></td>
-                                <td><field name="average_crushing_value"/></td>
-                            </tr>
-
-                            <tr>
-                                <td><label class="fw-bold" for="average_crushing_value_conformity">Conformity</label></td>
+                                <td><strong>Average Compressive Strength</strong></td>
                                 <td>
-                                    <field name="average_crushing_value_conformity"
-                                        decoration-success="average_crushing_value_conformity == 'pass'" 
-                                        decoration-danger="average_crushing_value_conformity == 'fail'" 
+                                    <field name="avrg_compressive_strength"/>  <span><field name="compressive_strength_unit" readonly="1" nolabel="1"/></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Compressive Strength Conformity</strong></td>
+                                <td>
+                                    <field name="comp_strength_confirmity"
+                                        decoration-success="comp_strength_confirmity == 'pass'"
+                                        decoration-danger="comp_strength_confirmity == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="average_crushing_value_nabl">NABL</label></td>
+                                <td><strong for="comp_strength_nabl">Compressive Strength NABL</strong></td>
                                 <td>
-                                    <field name="average_crushing_value_nabl"
-                                        decoration-success="average_crushing_value_nabl == 'pass'" 
-                                        decoration-danger="average_crushing_value_nabl == 'fail'"/>
+                                    <field name="comp_strength_nabl"
+                                        decoration-success="comp_strength_nabl == 'pass'"
+                                        decoration-danger="comp_strength_nabl == 'fail'"
+                                        readonly="1"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <!-- Dimension -->
-                    <group invisible = "dimension_visible == False"  style="white-space: nowrap; width:70%;">
-                        <h1 >
-                            <field name="dimension_name" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
-                        </h1>
-                    </group>
-
-                    <div class="custom_table_borders" style="width: 100%;"  invisible="dimension_visible == False">
-                        <field name="dimension_child_lines" mode="tree" nolabel="1">
-                            <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
-                                <field name="serial_no" />
-                                <field name="length" class="blue-input" decoration-info="length != 0"/>
-                                <field name="width" class="blue-input" decoration-info="width != 0"/>
-                                <field name="height" class="blue-input" decoration-info="height != 0"/>
-                                <field name="area"/>
-                            </tree>
-                        </field>
-                    </div>
-
-                    <div class="d-flex gap-4" invisible = "dimension_visible == False">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
-                            <tbody>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_length">Avg. Length</label></td>
-                                    <td><field name="avg_length"/> <span>mm</span></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_length_conformity">Conformity</label></td>
-                                    <td><field name="avg_length_conformity"
-                                                decoration-success="avg_length_conformity == 'pass'"
-                                                decoration-danger="avg_length_conformity == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_length_nabl">NABL</label></td>
-                                    <td><field name="avg_length_nabl"
-                                                decoration-success="avg_length_nabl == 'pass'"
-                                                decoration-danger="avg_length_nabl == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
-                            <tbody>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_width">Avg. Width</label></td>
-                                    <td><field name="avg_width"/> <span>mm</span></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_width_conformity">Conformity</label></td>
-                                    <td><field name="avg_width_conformity"
-                                                decoration-success="avg_width_conformity == 'pass'"
-                                                decoration-danger="avg_width_conformity == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_width_nabl">NABL</label></td>
-                                    <td><field name="avg_width_nabl"
-                                                decoration-success="avg_width_nabl == 'pass'"
-                                                decoration-danger="avg_width_nabl == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
-                            <tbody>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_height">Avg. Height</label></td>
-                                    <td><field name="avg_height"/> <span>mm</span></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
-                                    <td><field name="avg_height_conformity"
-                                                decoration-success="avg_height_conformity == 'pass'"
-                                                decoration-danger="avg_height_conformity == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_height_nabl">NABL</label></td>
-                                    <td><field name="avg_height_nabl"
-                                                decoration-success="avg_height_nabl == 'pass'"
-                                                decoration-danger="avg_height_nabl == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
-                            <tbody>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_area">Avg. Cross Sectional Area</label></td>
-                                    <td><field name="avg_area"/> <span>mm2</span></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_area_conformity">Conformity</label></td>
-                                    <td><field name="avg_area_conformity"
-                                                decoration-success="avg_area_conformity == 'pass'"
-                                                decoration-danger="avg_area_conformity == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="fw-bold" for="avg_area_nabl">NABL</label></td>
-                                    <td><field name="avg_area_nabl"
-                                                decoration-success="avg_area_nabl == 'pass'"
-                                                decoration-danger="avg_area_nabl == 'fail'"
-                                                readonly="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
 
                     <!-- Water Absorption -->
+
+                  
                     <div invisible="water_absorbtion_visible == False" style="text-align:center">
                         <h1>
-                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
-                            <field name="water_absorbtion_visible" invisible="1"/>
+                          <field name="wt_absorption_name" readonly="1" nolabel="1"/>
+                          <field name="water_absorbtion_visible" invisible='1'/>
                         </h1>
                     </div>
+                                    
+                      <div invisible = "water_absorbtion_visible == False"  >
+                            <field name="water_absorption_lines" nolabel="1" >
+                                    <tree editable="bottom"  class="custom_table_borders">
+                                        <field name="serial_no" />
+                                        <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
+                                        <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
+                                        <field name='final_wt' class="blue-input" decoration-info="final_wt != 0"/>
+                                        <field name='water_absorption' />
+                                    
+                                    </tree>
+                            </field>
+                            </div>
+                    
 
-                    <div invisible="water_absorbtion_visible == False" class="custom_table_borders">
-                        <field name="water_absorption_lines" nolabel="1">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no" />
-                                <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
-                                <field name="initial_wt" class="blue-input" decoration-info="initial_wt != 0"/>
-                                <field name="final_wt" class="blue-input" decoration-info="final_wt != 0"/>
-                                <field name="water_absorption" />
-                            </tree>
-                        </field>
-                    </div>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not water_absorbtion_visible" style="white-space:nowrap;">
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorbtion_visible">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="avrg_water_absorption">Average Water Absorption</label></td>
+                                <td><strong>Average Water Absorption</strong></td>
                                 <td>
-                                    <field name="avrg_water_absorption"/> <span>%</span>
+                                    <field name="avrg_water_absorption"/>  <span><field name="water_absorption_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="water_absorption_confirmity">Conformity</label></td>
+                                <td><strong>Water Absorption Conformity</strong></td>
                                 <td>
                                     <field name="water_absorption_confirmity"
                                         decoration-success="water_absorption_confirmity == 'pass'"
@@ -249,7 +149,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="water_absorption_nabl">NABL</label></td>
+                                <td><strong>Water Absorption NABL</strong></td>
                                 <td>
                                     <field name="water_absorption_nabl"
                                         decoration-success="water_absorption_nabl == 'pass'"
@@ -259,16 +159,187 @@
                             </tr>
                         </tbody>
                     </table>
+                    <group/>
+
+                    <!-- Dimension -->
+
+                    <div invisible="dimension_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="dimension_name" readonly="1" nolabel="1"/>
+                          <field name="dimension_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "dimension_visible == False"  >
+                    <field name="dimension_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='lengthh' class="blue-input" decoration-info="lengthh != 0"/>
+                                <field name='width' class="blue-input" decoration-info="height != 0"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0"/>
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <div class="d-flex gap-3" invisible="dimension_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_length"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_confirmity"
+                                        decoration-success="avrg_length_confirmity == 'pass'" 
+                                        decoration-danger="avrg_length_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_nabl"
+                                        decoration-success="avrg_length_nabl == 'pass'" 
+                                        decoration-danger="avrg_length_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_width"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_confirmity"
+                                        decoration-success="avrg_width_confirmity == 'pass'" 
+                                        decoration-danger="avrg_width_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_nabl"
+                                        decoration-success="avrg_width_nabl == 'pass'" 
+                                        decoration-danger="avrg_width_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_height"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_confirmity"
+                                        decoration-success="avrg_height_confirmity == 'pass'" 
+                                        decoration-danger="avrg_height_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_nabl"
+                                        decoration-success="avrg_height_nabl == 'pass'" 
+                                        decoration-danger="avrg_height_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                      <!-- visual_observation -->
+                    <div invisible="efflorescence_visible == False" style="text-align:center">
+                        <h1>
+                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
+                            <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not efflorescence_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible="efflorescence_visible == False" class="mb-3">
+                        <table class="table custom_table_borders o_form_table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Observation 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                             <tr>
+                                    <td><strong>Observation</strong></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
 
                     <notebook>
+
                         <page string="Notes">
-                            <field name="notes_id" nolabel="1">
-                                <tree>
-                                    <field name="sr_no"/>
-                                    <field name="notes"/>
-                                </tree>
-                            </field>
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
                         </page>
+
                     </notebook>
 
                     <button

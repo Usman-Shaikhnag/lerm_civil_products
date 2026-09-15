@@ -23,6 +23,25 @@ class BurntClayHollowBrick(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    compressive_strength_unit = fields.Char(
+    compute="_compute_units", store=False
+    )
+    water_absorption_unit = fields.Char(
+        compute="_compute_units", store=False
+    )
+
+    def _compute_units(self):
+        for rec in self:
+            comp_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '97928829-9b1f-4091-aa7f-4b76f98eb47f')
+            ], limit=1)
+            water_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '1ddc7095-da2d-44a2-a70a-ab97216aee77')
+            ], limit=1)
+
+            rec.compressive_strength_unit = comp_param.unit.name if comp_param.unit else ""
+            rec.water_absorption_unit = water_param.unit.name if water_param.unit else ""
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -30,486 +49,495 @@ class BurntClayHollowBrick(models.Model):
 
 
 
-    # Crushing Value
-    crushing_value_name = fields.Char("Name",default="Crushing Value")
-    crushing_visible = fields.Boolean("Crushing Value Visible",compute="_compute_visible")
+    # Dimension 
 
-    crushing_value_child_lines = fields.One2many('burnt.clay.hollow.brick.crushing.value.line','parent_id',string="Crushing Value")
+    dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible")
+    dimension_name = fields.Char("Name",default="Dimension (mm)")
 
-    average_crushing_value = fields.Float(
-        string="Average Crushing Value",
-        compute="_compute_average_crushing_value", store=True)
+    dimension_lines = fields.One2many('hollow.bricks.dimension.line','parent_id',string="Parameter")
 
-    @api.depends('crushing_value_child_lines.acv')
-    def _compute_average_crushing_value(self):
-        for rec in self:
-            lines = rec.crushing_value_child_lines
-            if lines:
-                total = sum(line.acv for line in lines)
-                rec.average_crushing_value = round(total / len(lines), 2)
-            else:
-                rec.average_crushing_value = 0.0
+    avrg_length = fields.Float(string="Average length",compute="_compute_dimension",
+    store=True)
+    avrg_width = fields.Float(string="Average Width",compute="_compute_dimension",
+    store=True)
+    avrg_height = fields.Float(string="Average Height",compute="_compute_dimension",
+    store=True)
 
-    average_crushing_value_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
+    @api.depends('dimension_lines.lengthh', 'dimension_lines.width', 'dimension_lines.height')
+    def _compute_dimension(self):
+     for rec in self:
 
-    @api.depends('average_crushing_value','eln_ref','grade')
-    def _compute_average_crushing_value_conformity(self):
-        
+        lengths = [l for l in rec.dimension_lines.mapped('lengthh') if l]
+        widths = [w for w in rec.dimension_lines.mapped('width') if w]
+        heights = [h for h in rec.dimension_lines.mapped('height') if h]
+
+        rec.avrg_length = sum(lengths) / len(lengths) if lengths else 0.0
+        rec.avrg_width = sum(widths) / len(widths) if widths else 0.0
+        rec.avrg_height = sum(heights) / len(heights) if heights else 0.0
+
+
+    avrg_length_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_length_confirmity")
+
+    avrg_length_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_length_nabl",store=True)
+
+
+    @api.depends('avrg_length','eln_ref')
+    def _compute_avrg_length_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.average_crushing_value_conformity = 'na'
+                record.avrg_length_confirmity = 'na'
                 continue
-            record.average_crushing_value_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea70f185-651e-456c-83ec-253420b76855')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea70f185-651e-456c-83ec-253420b76855')]).parameter_table
+            record.avrg_length_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7d2db878-79ae-472f-ac61-c215bb037fa9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7d2db878-79ae-472f-ac61-c215bb037fa9')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.average_crushing_value - record.average_crushing_value*mu_value
-                    upper = record.average_crushing_value + record.average_crushing_value*mu_value
+                    lower = record.avrg_length - record.avrg_length*mu_value
+                    upper = record.avrg_length + record.avrg_length*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.average_crushing_value_conformity = 'pass'
+                        record.avrg_length_confirmity = 'pass'
                         break
                     else:
-                        record.average_crushing_value_conformity = 'fail'
+                        record.avrg_length_confirmity = 'fail'
 
-    average_crushing_value_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_crushing_value_nabl", store=True)
-
-    @api.depends('average_crushing_value','eln_ref','grade')
-    def _compute_average_crushing_value_nabl(self):
+    @api.depends('avrg_length','eln_ref')
+    def _compute_avrg_length_nabl(self):
         
         for record in self:
-            record.average_crushing_value_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea70f185-651e-456c-83ec-253420b76855')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea70f185-651e-456c-83ec-253420b76855')]).parameter_table
+            record.avrg_length_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7d2db878-79ae-472f-ac61-c215bb037fa9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7d2db878-79ae-472f-ac61-c215bb037fa9')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_length - record.avrg_length*mu_value
+                  upper = record.avrg_length + record.avrg_length*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_length_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_length_nabl = 'fail'
+
+
+    
+
+    avrg_width_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_width_confirmity")
+
+    avrg_width_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_width_nabl",store=True)
+
+
+    @api.depends('avrg_width','eln_ref')
+    def _compute_avrg_width_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avrg_width_confirmity = 'na'
+                continue
+            record.avrg_width_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','694179a5-2a07-458f-8a8e-26640addc228')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','694179a5-2a07-458f-8a8e-26640addc228')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_width - record.avrg_width*mu_value
+                    upper = record.avrg_width + record.avrg_width*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avrg_width_confirmity = 'pass'
+                        break
+                    else:
+                        record.avrg_width_confirmity = 'fail'
+
+    @api.depends('avrg_width','eln_ref')
+    def _compute_avrg_width_nabl(self):
+        
+        for record in self:
+            record.avrg_width_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','694179a5-2a07-458f-8a8e-26640addc228')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','694179a5-2a07-458f-8a8e-26640addc228')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_width - record.avrg_width*mu_value
+                  upper = record.avrg_width + record.avrg_width*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_width_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_width_nabl = 'fail'
+
+
+    avrg_height_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_height_confirmity")
+
+    avrg_height_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_height_nabl",store=True)
+
+
+    @api.depends('avrg_height','eln_ref')
+    def _compute_avrg_height_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avrg_height_confirmity = 'na'
+                continue
+            record.avrg_height_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ab86c43-3150-46fd-85fb-bd430ef487e0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ab86c43-3150-46fd-85fb-bd430ef487e0')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_height - record.avrg_height*mu_value
+                    upper = record.avrg_height + record.avrg_height*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avrg_height_confirmity = 'pass'
+                        break
+                    else:
+                        record.avrg_height_confirmity = 'fail'
+
+    @api.depends('avrg_height','eln_ref')
+    def _compute_avrg_height_nabl(self):
+        
+        for record in self:
+            record.avrg_height_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ab86c43-3150-46fd-85fb-bd430ef487e0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ab86c43-3150-46fd-85fb-bd430ef487e0')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_height - record.avrg_height*mu_value
+                  upper = record.avrg_height + record.avrg_height*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_height_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_height_nabl = 'fail'
+
+
+    
+
+
+
+
+    # Compressive Strength
+
+    compressive_strength_visible = fields.Boolean("Compressive Strengt Visible",compute="_compute_visible")
+    compressive_strength_name = fields.Char("Name",default="Compressive Strength")
+
+
+    compressive_strength_lines = fields.One2many('hollow.compressive.line','parent_id',string="Parameter")
+
+    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength")
+
+    comp_strength_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
+
+    comp_strength_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
+
+
+
+    @api.depends('avrg_compressive_strength','eln_ref')
+    def _compute_comp_strength_conformity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.comp_strength_confirmity = 'na'
+                continue
+            record.comp_strength_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9418326f-da29-405e-97ff-db38ed227b16')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9418326f-da29-405e-97ff-db38ed227b16')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
+                    upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.comp_strength_confirmity = 'pass'
+                        break
+                    else:
+                        record.comp_strength_confirmity = 'fail'
+
+    @api.depends('avrg_compressive_strength','eln_ref')
+    def _compute_comp_strength_nabl(self):
+        
+        for record in self:
+            record.comp_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9418326f-da29-405e-97ff-db38ed227b16')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9418326f-da29-405e-97ff-db38ed227b16')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.average_crushing_value - record.average_crushing_value*mu_value
-                    upper = record.average_crushing_value + record.average_crushing_value*mu_value
+                    lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
+                    upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.average_crushing_value_nabl = 'pass'
+                        record.comp_strength_nabl = 'pass'
                         break
                     else:
-                        record.average_crushing_value_nabl = 'fail'
+                        record.comp_strength_nabl = 'fail'
 
+    
+
+    
+
+    @api.depends('compressive_strength_lines.comp_strength_1')
+    def _compute_avrg_compressive_strength(self):
+        for rec in self:
+            comp_strength_1s = rec.compressive_strength_lines.filtered(lambda l: l.comp_strength_1 is not None)
+            total = sum(line.comp_strength_1 for line in comp_strength_1s)
+            count = len(comp_strength_1s)
+            rec.avrg_compressive_strength = total / count if count > 0 else 0.0
+
+      
+
+
+    
+
+    
 
     # Water Absorption
-    water_absorption_name = fields.Char("Name", default="Water Absorption")
-    water_absorbtion_visible = fields.Boolean("Water Absorption Visible", compute="_compute_visible")
 
-    water_absorption_lines = fields.One2many('mechanical.burnt.clay.hollow.brick.water.absorption.line', 'parent_id', string="Water Absorption")
-
-    avrg_water_absorption = fields.Float(
-        string="Average Water Absorption, %",
-        compute="_compute_avrg_water_absorption", store=True)
-
+    water_absorbtion_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
+    wt_absorption_name = fields.Char("Name",default="Water Absorption")
+    water_absorption_lines = fields.One2many('hollow.water.absorption.line','parent_id',string="Parameter")
+   
+    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption")
     @api.depends('water_absorption_lines.water_absorption')
     def _compute_avrg_water_absorption(self):
         for rec in self:
-            lines = rec.water_absorption_lines
-            if lines:
-                total = sum(line.water_absorption for line in lines)
-                rec.avrg_water_absorption = round(total / len(lines), 2)
-            else:
-                rec.avrg_water_absorption = 0.0
+            water_absorptions = rec.water_absorption_lines.filtered(lambda l: l.water_absorption is not None)
+            total = sum(line.water_absorption for line in water_absorptions)
+            count = len(water_absorptions)
+            rec.avrg_water_absorption = total / count if count > 0 else 0.0
 
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('na', 'NA'),
-    ], string='Confirmity', compute="_compute_water_absorption_confirmity", store=True)
+    ('na', 'NA'),], string='Confirmity', compute="_compute_water_absorption_confirmity")
 
-    @api.depends('avrg_water_absorption', 'eln_ref', 'grade')
+    water_absorption_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_water_absorption_nabl",store=True)
+
+
+    @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.water_absorption_confirmity = 'na'
                 continue
             record.water_absorption_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8429317-d4e2-46aa-9047-1d457a81fe50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8429317-d4e2-46aa-9047-1d457a81fe50')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = record.avrg_water_absorption - record.avrg_water_absorption * mu_value
-                    upper = record.avrg_water_absorption + record.avrg_water_absorption * mu_value
+                    
+                    lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
+                    upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.water_absorption_confirmity = 'pass'
                         break
                     else:
                         record.water_absorption_confirmity = 'fail'
 
-    water_absorption_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string="NABL", compute="_compute_water_absorption_nabl", store=True)
-
-    @api.depends('avrg_water_absorption', 'eln_ref', 'grade')
+    @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_nabl(self):
+        
         for record in self:
             record.water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8429317-d4e2-46aa-9047-1d457a81fe50')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8429317-d4e2-46aa-9047-1d457a81fe50')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
-                    lower = record.avrg_water_absorption - record.avrg_water_absorption * mu_value
-                    upper = record.avrg_water_absorption + record.avrg_water_absorption * mu_value
+                    
+                    lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
+                    upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.water_absorption_nabl = 'pass'
                         break
                     else:
                         record.water_absorption_nabl = 'fail'
 
-    # Dimension
-    dimension_name = fields.Char("Name",default="Dimension")
-    dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible")
 
-    dimension_child_lines = fields.One2many('burnt.clay.hollow.brick.dimension.line','parent_id',string="Dimension")
+    # Efflorescence Visual Observation 
+    efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
+    visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
+    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
-    avg_length = fields.Float(
-        string="Average Length",
-        compute="_compute_averages",
-        store=True
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
     )
 
-    avg_width = fields.Float(
-        string="Average Width",
-        compute="_compute_averages",
-        store=True
-    )
+    efflorescence_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_efflorescence_nabl",
+    store=True
+)
 
-    avg_height = fields.Float(
-        string="Average Height",
-        compute="_compute_averages",
-        store=True
-    )
+    @api.depends('report_type')
+    def _compute_efflorescence_nabl(self):
+     for rec in self:
+        rec.efflorescence_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+    
 
-    avg_area = fields.Float(
-        string="Average Cross Sectional Area",
-        compute="_compute_averages",
-        store=True
-    )
-
-    @api.depends(
-        'dimension_child_lines.length',
-        'dimension_child_lines.width',
-        'dimension_child_lines.height',
-        'dimension_child_lines.area'
-    )
-    def _compute_averages(self):
-        for rec in self:
-            lines = rec.dimension_child_lines
-
-            if not lines:
-                rec.avg_length = 0.0
-                rec.avg_width = 0.0
-                rec.avg_height = 0.0
-                rec.avg_area = 0.0
-                continue
-
-            count = len(lines)
-
-            rec.avg_length = round(sum(lines.mapped('length')) / count, 2)
-            rec.avg_width = round(sum(lines.mapped('width')) / count, 2)
-            rec.avg_height = round(sum(lines.mapped('height')) / count, 2)
-            rec.avg_area = round(sum(lines.mapped('area')) / count, 2)
-
-
-    avg_length_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_length_conformity", store=True)
-
-    @api.depends('avg_length','eln_ref','grade')
-    def _compute_avg_length_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_length_conformity = 'na'
-                continue
-            record.avg_length_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70024868-33a5-41e1-bc5f-17a9e34d5c00')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70024868-33a5-41e1-bc5f-17a9e34d5c00')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_length - record.avg_length*mu_value
-                    upper = record.avg_length + record.avg_length*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_length_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_length_conformity = 'fail'
-
-    avg_length_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_length_nabl", store=True)
-
-    @api.depends('avg_length','eln_ref','grade')
-    def _compute_avg_length_nabl(self):
-        
-        for record in self:
-            record.avg_length_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70024868-33a5-41e1-bc5f-17a9e34d5c00')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70024868-33a5-41e1-bc5f-17a9e34d5c00')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_length - record.avg_length*mu_value
-                    upper = record.avg_length + record.avg_length*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_length_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_length_nabl = 'fail'
-
-    avg_width_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_width_conformity", store=True)
-
-    @api.depends('avg_width','eln_ref','grade')
-    def _compute_avg_width_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_width_conformity = 'na'
-                continue
-            record.avg_width_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f510e3df-e0f4-4266-909b-6765a99b04db')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f510e3df-e0f4-4266-909b-6765a99b04db')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_width - record.avg_width*mu_value
-                    upper = record.avg_width + record.avg_width*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_width_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_width_conformity = 'fail'
-
-    avg_width_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_width_nabl", store=True)
-
-    @api.depends('avg_width','eln_ref','grade')
-    def _compute_avg_width_nabl(self):
-        
-        for record in self:
-            record.avg_width_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f510e3df-e0f4-4266-909b-6765a99b04db')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f510e3df-e0f4-4266-909b-6765a99b04db')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_width - record.avg_width*mu_value
-                    upper = record.avg_width + record.avg_width*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_width_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_width_nabl = 'fail'
 
     
-    avg_height_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_height_conformity", store=True)
+    
 
-    @api.depends('avg_height','eln_ref','grade')
-    def _compute_avg_height_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_height_conformity = 'na'
-                continue
-            record.avg_height_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3b508566-fa84-4a8e-9162-bfc13971e348')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3b508566-fa84-4a8e-9162-bfc13971e348')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_height - record.avg_height*mu_value
-                    upper = record.avg_height + record.avg_height*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_height_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_height_conformity = 'fail'
+    
 
-    avg_height_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_height_nabl", store=True)
-
-    @api.depends('avg_height','eln_ref','grade')
-    def _compute_avg_height_nabl(self):
-        
-        for record in self:
-            record.avg_height_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3b508566-fa84-4a8e-9162-bfc13971e348')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3b508566-fa84-4a8e-9162-bfc13971e348')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_height - record.avg_height*mu_value
-                    upper = record.avg_height + record.avg_height*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_height_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_height_nabl = 'fail'
+    confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Confirmity', default='fail')
 
 
-    avg_area_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_area_conformity", store=True)
-
-    @api.depends('avg_area','eln_ref','grade')
-    def _compute_avg_area_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_area_conformity = 'na'
-                continue
-            record.avg_area_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4368958-ca01-4724-8bd9-67514a3eb2ad')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4368958-ca01-4724-8bd9-67514a3eb2ad')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_area - record.avg_area*mu_value
-                    upper = record.avg_area + record.avg_area*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_area_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_area_conformity = 'fail'
-
-    avg_area_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_area_nabl", store=True)
-
-    @api.depends('avg_area','eln_ref','grade')
-    def _compute_avg_area_nabl(self):
-        
-        for record in self:
-            record.avg_area_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4368958-ca01-4724-8bd9-67514a3eb2ad')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4368958-ca01-4724-8bd9-67514a3eb2ad')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_area - record.avg_area*mu_value
-                    upper = record.avg_area + record.avg_area*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_area_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_area_nabl = 'fail'
-
-
+    ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
         
         for record in self:
-            record.crushing_visible = False
-            record.dimension_visible = False
+            record.compressive_strength_visible = False
             record.water_absorbtion_visible = False
+            record.efflorescence_visible = False
+            record.dimension_visible = False
             
+
             for sample in record.sample_parameters:
-
-                if sample.internal_id == "ea70f185-651e-456c-83ec-253420b76855":
-                    record.crushing_visible = True
-
-                if sample.internal_id == "65a8f5a6-5915-49b9-8fdd-70dc724bab58":
-                    record.dimension_visible = True
-
-                if sample.internal_id == "df78443d-7cd6-425b-b647-58be1489a14e":
+                print("Internal Ids",sample.internal_id)
+                if sample.internal_id == "9418326f-da29-405e-97ff-db38ed227b16":
+                    record.compressive_strength_visible = True
+                if sample.internal_id == "f8429317-d4e2-46aa-9047-1d457a81fe50":
                     record.water_absorbtion_visible = True
+                if sample.internal_id == "db04ecdf-e4a9-43c0-bf0c-6207a864a117":
+                    record.efflorescence_visible = True
+                if sample.internal_id == "ae2b8807-7dfa-408f-8a3c-898129521768":
+                    record.dimension_visible = True 
 
+
+     
     def open_eln_page(self):
+        # parameter_based_assignment
         current_user = self.env.user
+        # 🔹 Only results assigned to current technician
         technician_results = self.eln_ref.parameters_result.filtered(
             lambda r: r.technician == current_user
         )
 
         for result in technician_results:
-
-            if result.parameter.internal_id == '65a8f5a6-5915-49b9-8fdd-70dc724bab58':
+            
+            # Compressive Strength 
+            if result.parameter.internal_id == '9418326f-da29-405e-97ff-db38ed227b16':
+                result.result_char = round(self.avrg_compressive_strength,2)
                 result.calculated = True
-
-            if result.parameter.internal_id == '70024868-33a5-41e1-bc5f-17a9e34d5c00':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'f510e3df-e0f4-4266-909b-6765a99b04db':
-                result.calculated = True
-
-            if result.parameter.internal_id == '3b508566-fa84-4a8e-9162-bfc13971e348':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'b4368958-ca01-4724-8bd9-67514a3eb2ad':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'ea70f185-651e-456c-83ec-253420b76855':
-                result.calculated = True
-                result.result_char = round(self.average_crushing_value,2)
-                if self.average_crushing_value_nabl == 'pass':
+                if self.comp_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == 'df78443d-7cd6-425b-b647-58be1489a14e':
+            # water absorbtion
+            if result.parameter.internal_id == 'f8429317-d4e2-46aa-9047-1d457a81fe50':
+                result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
-                result.result_char = round(self.avrg_water_absorption, 2)
                 if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
+                continue 
+
+            # Efflorence
+            if result.parameter.internal_id == 'db04ecdf-e4a9-43c0-bf0c-6207a864a117':
+                result.result_char = self.visual_observation_1
+                result.calculated = True
+
+            # Dimension
+            if result.parameter.internal_id == 'ae2b8807-7dfa-408f-8a3c-898129521768':
+                result.calculated = True
+
+            # Length - Dimension
+            if result.parameter.internal_id == '7d2db878-79ae-472f-ac61-c215bb037fa9':
+                result.result_char = round(self.avrg_length,2)
+                result.calculated = True
+                if self.avrg_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
                 continue
+
+            # Width - Dimension
+            if result.parameter.internal_id == '694179a5-2a07-458f-8a8e-26640addc228':
+                result.result_char = round(self.avrg_width,2)
+                result.calculated = True
+                if self.avrg_width_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Height - Dimension
+            if result.parameter.internal_id == '8ab86c43-3150-46fd-85fb-bd430ef487e0':
+                result.result_char = round(self.avrg_height,2)
+                result.calculated = True
+                if self.avrg_height_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            
+            
 
         return {
                 'view_mode': 'form',
@@ -609,107 +637,122 @@ class BurntClayHollowBrick(models.Model):
         ]
 
 
-class CrushingValueLine(models.Model):
-    _name = "burnt.clay.hollow.brick.crushing.value.line"
-    parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick',string="Parent Id")
 
-    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
-    w1 = fields.Float(string="Weight of Mould + Aggregate (W1)")
-    w2 = fields.Float(string="Weight of Empty Mould (W2)")
-    w3 = fields.Float(string="Weight Passing 2.36 mm Sieve (W3)")
-    acv = fields.Float(string="Aggregate Crushing Value (A.C.V) = W3/(W1-W2)x 100",
-                        compute="_compute_acv", store=True)
+class HollowCompressiveLine(models.Model):
+    _name = "hollow.compressive.line"
+    parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick', string="Parent Id")
 
-    @api.depends('w1', 'w2', 'w3')
-    def _compute_acv(self):
-        for rec in self:
-            if (rec.w1 - rec.w2) != 0:
-                rec.acv = (rec.w3 / (rec.w1 - rec.w2)) * 100
-            else:
-                rec.acv = 0.0
-
-    @api.model
-    def create(self, vals):
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sample_no'))
-                vals['sample_no'] = max_serial_no + 1
-        return super(CrushingValueLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sample_no = index + 1
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+    identification_mark = fields.Char(string="Identification Mark")
+    length = fields.Float(string="Length mm")
+    width = fields.Float(string="Width mm")
+    height = fields.Float(string="Height mm")
+    area = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area")
+    load = fields.Float(string=" Load in, Kn", digits=(12,1))
+    comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
 
 
-class DimensionLine(models.Model):
-    _name = "burnt.clay.hollow.brick.dimension.line"
-    parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick',string="Parent Id")
 
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    length = fields.Float(string="Length")
-    width = fields.Float(string="Width")
-    height = fields.Float(string="Height")
 
-    area = fields.Float(
-    string="Cross Sectional Area",
-    compute="_compute_area",
-    store=True
-)
-
-    @api.depends('width', 'height')
+    @api.depends('length', 'width')
     def _compute_area(self):
-     for line in self:
-        line.area = (line.width or 0.0) * (line.height or 0.0)
+        for record in self:
+            record.area = record.length * record.width
 
-
-    
+    @api.depends('load', 'area')
+    def _compute_comp_strength_1(self):
+        for record in self:
+            if record.area != 0:
+                record.comp_strength_1 = record.load / record.area * 1000
+            else:
+                record.comp_strength_1 = 0.0
+   
+   
     @api.model
     def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
-        return super(DimensionLine, self).create(vals)
+
+        return super(HollowCompressiveLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
 
-class BurntClayHollowBrickWaterAbsorptionLine(models.Model):
-    _name = "mechanical.burnt.clay.hollow.brick.water.absorption.line"
+class HollowWaterAbsorptionLine(models.Model):
+    _name = "hollow.water.absorption.line"
     parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick', string="Parent Id")
-    serial_no = fields.Integer(string="Sr. No.", readonly=True, copy=False, default=1)
-    identification_mark = fields.Char(string="Identification No.")
+
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+    identification_mark = fields.Char(string="Identification Mark")
     initial_wt = fields.Float(string="Initial wt after 24 hr emersion water")
     final_wt = fields.Float(string="Final wt after 24 hr oven")
-    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption", store=True)
+    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")
 
-    @api.depends('initial_wt', 'final_wt')
+    @api.depends('initial_wt' , 'final_wt')
     def _compute_water_absorption(self):
         for record in self:
             if record.initial_wt != 0:
                 record.water_absorption = (record.final_wt - record.initial_wt) / record.initial_wt * 100
             else:
                 record.water_absorption = 0
+    
 
+
+
+   
     @api.model
     def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
-        return super(BurntClayHollowBrickWaterAbsorptionLine, self).create(vals)
+
+        return super(HollowWaterAbsorptionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class HollowBrickDimensionLine(models.Model):
+    _name = "hollow.bricks.dimension.line"
+    parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+    lengthh = fields.Float(string="Length")
+    width = fields.Float(string="Width")
+    height = fields.Float(string="Height")
+    
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(HollowBrickDimensionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 
 class BurntClayHollowBrickNotes(models.Model):
