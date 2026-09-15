@@ -219,7 +219,7 @@ class CementNormalConsistency(models.Model):
 
     density_cement_lines = fields.One2many('density.cement.line','parent_id',string="Fineness density")
 
-    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density")
+    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density",digits=(12,3))
 
     # specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
@@ -309,7 +309,7 @@ class CementNormalConsistency(models.Model):
 
     apparatus_counstant_lines = fields.One2many('apparatus.constant.line','parent_id',string="Fineness blaine")
 
-    density_standard_finess = fields.Float("Density of Standard",digits=(12,3))
+    density_standard_finess = fields.Float("Density of CRM",digits=(12,3))
 
     mean_time = fields.Float(string="Mean of three measured times, t0 (sec)",digits=(12,2),compute="_compute_mean_time")
 
@@ -1777,11 +1777,11 @@ class FinenessBlaineLine(models.Model):
     serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
    
-    wt_murcurym1 = fields.Float(string="Wt. of mercury removing from cell, (M1)",digits=(12,3))
-    murcury_afterm2 = fields.Float(string="Wt. of mercury after filling Fly Ash in cell, (M2)")
+    wt_murcurym1 = fields.Float(string="Wt. of mercury removing from cell, (M1) (gm)",digits=(12,2))
+    murcury_afterm2 = fields.Float(string="Wt. of mercury after filling CRM in cell, (M2) (gm)")
     # Parent model मधून density automatically fetch होईल
     density_murcury = fields.Float(
-        string="Density of mercury at the 27.5",
+        string="Density of mercury",
         related="parent_id.density_murcury_finess",
         store=True,
         readonly=True,
@@ -1843,11 +1843,11 @@ class AppratusConstantLine(models.Model):
 
    
     wt_standard = fields.Float(string="Wt. of Standard Fly Ash, W = 0.500ρV (gm)",digits=(12,3),compute="_compute_wt_standard")
-    specific_standard = fields.Float(string="Specific Surface of Standard Fly Ash  , S0  (cm2/gm)")
+    specific_standard = fields.Float(string="Specific Surface of CRM, S0  (cm2/gm)")
 
-    density_standard = fields.Float(string="Density of Standard Fly Ash ,ρ0 (gm/cc)" ,compute="_compute_density_standard" ,digits=(12,3))
-    air_viscosity = fields.Float(string="Air viscosity at 27.5 (0C)" ,digits=(12,9),compute="_compute_air_viscosity")
-    measured_time = fields.Float(string="Measured Time (sec)",digits=(12,2))
+    density_standard = fields.Float(string="Density of CRM ,ρ0 (gm/cc)" ,compute="_compute_density_standard" ,digits=(12,3))
+    air_viscosity = fields.Float(string="Air viscosity η0 (0C)" ,digits=(12,9),compute="_compute_air_viscosity")
+    measured_time = fields.Float(string="Measured Time",digits=(12,2))
 
 
     @api.depends(
@@ -1914,10 +1914,10 @@ class DeterminationOfFinessLine(models.Model):
     serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
    
-    wt_standard_fine = fields.Float(string="Wt. of Standard Fly Ash, W = 0.500ρV (gm)",digits=(12,3),compute="_compute_wt_standard_fine")
-    density_standard_fine = fields.Float(string="Density of Standard Fly Ash ,ρ  (gm/cc)",digits=(12,3))
+    wt_standard_fine = fields.Float(string="Wt. of Test sample, W = 0.500ρV (gm)",digits=(12,3),compute="_compute_wt_standard_fine")
+    density_standard_fine = fields.Float(string="Density of Test sample,ρ  (gm/cc)",digits=(12,3))
 
-    apparatus_fine = fields.Float(string="Apparatus constant, K "  ,digits=(12,3),compute="_compute_apparatus_fine")
+    apparatus_fine = fields.Float(string="Apparatus constant, K  "  ,digits=(12,3),compute="_compute_apparatus_fine")
     measured_time_fine = fields.Float(string="Measured time (sec)" ,digits=(12,2))
     
 
@@ -2294,7 +2294,7 @@ class InitialTimeLine(models.Model):
     
     clock_time = fields.Datetime(string="Date & Time")
     time_in_minutes = fields.Char("Time In minutes")
-    penetration_intial = fields.Float(string="Penetration Of Needle")
+    penetration_intial = fields.Char(string="Penetration Of Needle")
 
 
     @api.depends('clock_time', 'parent_id.intial_time_lines.clock_time')
@@ -2346,7 +2346,7 @@ class FinalTimeLine(models.Model):
     
     clock_time1 = fields.Datetime(string="Date & Time")
     time_in_minutes1 = fields.Char("Time In minutes")
-    impression_intial1 = fields.Float(string="Impression Of Needle")
+    impression_intial1 = fields.Char(string="Impression Of Needle")
 
     @api.depends('clock_time1', 'parent_id.intial_time_lines.clock_time')
     def _compute_time_in_minutes1(self):
