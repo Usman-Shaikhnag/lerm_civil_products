@@ -255,8 +255,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.max_fsi - record.max_fsi*mu_value
-            upper = record.max_fsi + record.max_fsi*mu_value
+            lower = record.max_fsi - record.max_fsi*(mu_value/100)
+            upper = record.max_fsi + record.max_fsi*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.max_fsi_nabl = 'pass'
                 break
@@ -725,8 +725,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.liquid_limit - record.liquid_limit*mu_value
-            upper = record.liquid_limit + record.liquid_limit*mu_value
+            lower = record.liquid_limit - record.liquid_limit*(mu_value/100)
+            upper = record.liquid_limit + record.liquid_limit*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.liquid_limit_nabl = 'pass'
                 break
@@ -840,8 +840,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.plastic_limit - record.plastic_limit*mu_value
-            upper = record.plastic_limit + record.plastic_limit*mu_value
+            lower = record.plastic_limit - record.plastic_limit*(mu_value/100)
+            upper = record.plastic_limit + record.plastic_limit*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.plasticity_index_nabl = 'pass'
                 break
