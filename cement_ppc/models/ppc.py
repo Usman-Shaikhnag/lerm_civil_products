@@ -216,7 +216,7 @@ class CementPPC(models.Model):
 
     density_cement_lines = fields.One2many('density.cement.ppc.line','parent_id',string="Fineness density")
 
-    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density")
+    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density",digits=(12,3))
 
     # specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
@@ -290,9 +290,115 @@ class CementPPC(models.Model):
     fineness_blaine_name = fields.Char("Name",default="Fineness by Blaine's Air Permeability")
     fineness_blaine_visible = fields.Boolean("Fineness by Blaine's Air Permeability Visible",compute="_compute_visible")
 
+    temp_finess = fields.Float("Temperature (°C)",digits=(12,2))
+  
+    density_murcury_finess = fields.Float("Mass Density of Mercury (g/cm³)",digits=(12,2))
+    
+    viscosity_finess = fields.Float("Viscosity of Air, η (Pa·s)",digits=(12,9))
+
+    n_finess = fields.Float("√(0.1η)",digits=(12,6))
+
     fineness_blaine_lines = fields.One2many('fineness.blaine.ppc.line','parent_id',string="Fineness blaine")
 
-    avg_fineness_blaine = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_fineness_blaine")
+    avg_fineness_blaine = fields.Float(string="Avg V",compute="_compute_avg_fineness_blaine")
+
+
+    apparatus_counstant_lines = fields.One2many('apparatus.constant.ppc.line','parent_id',string="Fineness blaine")
+
+    density_standard_finess = fields.Float("Density of CRM",digits=(12,3))
+
+    mean_time = fields.Float(string="Mean of three measured times, t0 (sec)",digits=(12,2),compute="_compute_mean_time")
+
+    @api.depends('apparatus_counstant_lines.measured_time')
+    def _compute_mean_time(self):
+        for record in self:
+            times = record.apparatus_counstant_lines.mapped('measured_time')
+            times = [time for time in times if time]
+
+            record.mean_time = sum(times) / len(times) if times else 0.0
+
+    apparatus_constant = fields.Float(string="Apparatus Constant",digits=(12,3),compute="_compute_apparatus_constant")
+
+    @api.depends(
+    'mean_time',
+    'apparatus_counstant_lines.specific_standard',
+    'apparatus_counstant_lines.density_standard',
+    'apparatus_counstant_lines.air_viscosity'
+    )
+    def _compute_apparatus_constant(self):
+        for record in self:
+            record.apparatus_constant = 0.0
+
+            line = record.apparatus_counstant_lines[:1]
+
+            if (
+                line
+                and line.specific_standard
+                and line.density_standard
+                and line.air_viscosity
+                and record.mean_time > 0
+            ):
+                record.apparatus_constant = (
+                    1.414
+                    * line.specific_standard
+                    * line.density_standard
+                    * math.sqrt(0.1 * line.air_viscosity)
+                    / math.sqrt(record.mean_time)
+                )
+
+
+    detarmination_finess_lines = fields.One2many('determination.finess.ppc.line','parent_id',string="Fineness blaine")
+
+    specific_area = fields.Float(string="Specific surface area",digits=(12,3),compute="_compute_fineness_values")
+
+    min_measured_time_fine = fields.Float(string="Mean of three measured times, t (sec)",digits=(12,2),compute="_compute_fineness_values")
+
+    fineness_blaine_avg = fields.Float(string="Avg fineness_blaine m2/Kg",digits=(12,3),compute="_compute_fineness_values")
+
+    @api.depends(
+    'detarmination_finess_lines.measured_time_fine',
+    'detarmination_finess_lines.apparatus_fine',
+    'detarmination_finess_lines.density_standard_fine',
+    )
+    def _compute_fineness_values(self):
+        for record in self:
+
+            lines = record.detarmination_finess_lines
+
+            # Average of measured_time_fine
+            times = [
+                line.measured_time_fine
+                for line in lines
+                if line.measured_time_fine
+            ]
+
+            if times:
+                mean_time = sum(times) / len(times)
+            else:
+                mean_time = 0.0
+
+            record.min_measured_time_fine = mean_time
+
+            record.specific_area = 0.0
+            record.fineness_blaine_avg = 0.0
+
+            line = lines[:1]
+
+            if line and mean_time > 0:
+                apparatus = line.apparatus_fine
+                density = line.density_standard_fine
+
+                if apparatus and density:
+                    record.specific_area = (
+                        521.08
+                        * apparatus
+                        * math.sqrt(mean_time)
+                        / density
+                    )
+
+                    record.fineness_blaine_avg = (
+                        record.specific_area / 10
+                    )
 
     avg_fineness_blaine_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -306,7 +412,7 @@ class CementPPC(models.Model):
     ], string='NABL', default='fail',compute="_compute_avg_fineness_blaine_nabl")
 
 
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
+    @api.depends('fineness_blaine_avg','eln_ref','grade')
     def _compute_avg_fineness_blaine_conformity(self):
         for record in self:
 
@@ -323,15 +429,15 @@ class CementPPC(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-                    upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+                    lower = record.fineness_blaine_avg - record.fineness_blaine_avg*mu_value
+                    upper = record.fineness_blaine_avg + record.fineness_blaine_avg*mu_value
                     if lower >= req_min and upper <= req_max :
                         record.avg_fineness_blaine_conformity = 'pass'
                         break
                     else:
                         record.avg_fineness_blaine_conformity = 'fail'
 
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
+    @api.depends('fineness_blaine_avg','eln_ref','grade')
     def _compute_avg_fineness_blaine_nabl(self):
         
         for record in self:
@@ -343,26 +449,21 @@ class CementPPC(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-            upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+            lower = record.fineness_blaine_avg - record.fineness_blaine_avg*mu_value
+            upper = record.fineness_blaine_avg + record.fineness_blaine_avg*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.avg_fineness_blaine_nabl = 'pass'
                 break
             else:
                 record.avg_fineness_blaine_nabl = 'fail'
 
-    @api.depends('fineness_blaine_lines.fineness')
+    @api.depends('fineness_blaine_lines.v_murcury')
     def _compute_avg_fineness_blaine(self):
         for rec in self:
-            values = [line.fineness for line in rec.fineness_blaine_lines if line.fineness is not None]
+            values = [line.v_murcury for line in rec.fineness_blaine_lines if line.v_murcury is not None]
             rec.avg_fineness_blaine = sum(values) / len(values) if values else 0.0
 
-    k = fields.Float("K :",digits=(12,3))
-  
-    e = fields.Float("E :")
-
-
-
+    
       ## Soundness of Cement
 
     # soundness_cement_name = fields.Char("Name",default="Soundness of Cement")
@@ -1033,11 +1134,26 @@ class CementPPC(models.Model):
 
     compressive_name = fields.Char("Name",default="Cement Compressive Strength")
     compressive_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    
+    
     days_3_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
-    days_7_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
-    days_28_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    casting_3_name = fields.Char("Name",default="3 Days")
 
     compressive_lines = fields.One2many('compressive.ppc.line','parent_id',string="Compressive")
+
+    casting_date_3days = fields.Date(string="Date of Casting")
+    testing_date_3days = fields.Date(string="Date of Testing",compute="_compute_testing_date_3days")
+    status_3days = fields.Boolean("Done")
+
+    @api.depends('casting_date_3days')
+    def _compute_testing_date_3days(self):
+        for record in self:
+            if record.casting_date_3days:
+                cast_date = fields.Datetime.from_string(record.casting_date_3days)
+                testing_date = cast_date + timedelta(days=3)
+                record.testing_date_3days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_3days = False
 
     @api.onchange('start_date', 'compressive_lines')
     def _onchange_start_date_or_lines(self):
@@ -1104,6 +1220,26 @@ class CementPPC(models.Model):
             else:
                 record.avg_3_days_nabl = 'fail'
 
+
+    days_7_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    
+    casting_7_name = fields.Char("Name",default="7 Days")
+    compressive_lines_7days = fields.One2many('compressive.line.ppc.7days','parent_id',string="Compressive")
+
+    casting_date_7days = fields.Date(string="Date of Casting")
+    testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
+    status_7days = fields.Boolean("Done")
+
+    @api.depends('casting_date_7days')
+    def _compute_testing_date_7days(self):
+        for record in self:
+            if record.casting_date_7days:
+                cast_date = fields.Datetime.from_string(record.casting_date_7days)
+                testing_date = cast_date + timedelta(days=7)
+                record.testing_date_7days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_7days = False
+
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
 
     avg_7_days_conformity = fields.Selection([
@@ -1163,6 +1299,24 @@ class CementPPC(models.Model):
             else:
                 record.avg_7_days_nabl = 'fail'
 
+    days_28_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    casting_28_name = fields.Char("Name",default="28 Days")
+
+    compressive_lines_28days = fields.One2many('compressive.line.ppc.28days','parent_id',string="Compressive")
+
+    casting_date_28days = fields.Date(string="Date of Casting")
+    testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
+    status_28days = fields.Boolean("Done")
+
+    @api.depends('casting_date_28days')
+    def _compute_testing_date_28days(self):
+        for record in self:
+            if record.casting_date_28days:
+                cast_date = fields.Datetime.from_string(record.casting_date_28days)
+                testing_date = cast_date + timedelta(days=28)
+                record.testing_date_28days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_28days = False
 
     avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
@@ -1337,7 +1491,7 @@ class CementPPC(models.Model):
 
 
             if result.parameter.internal_id == '210456321t-372f-4775-9bcb-e9dd70214578r':
-                result.result_char = round(self.avg_fineness_blaine,2)
+                result.result_char = round(self.fineness_blaine_avg,2)
                 result.calculated = True
                 if self.avg_fineness_blaine_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1591,31 +1745,43 @@ class FinenessBlaineLine(models.Model):
     _name = "fineness.blaine.ppc.line"
     parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
-    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
    
-    wt_of_cement1 = fields.Float(string="Wt of Cement (g)",digits=(12,3))
-    time_sec = fields.Float(string="Time in Sec")
-    fineness = fields.Float(string="Fineness m2/kg",compute="_compute_fineness")
+    wt_murcurym1 = fields.Float(string="Wt. of mercury removing from cell, (M1) (gm)",digits=(12,2))
+    murcury_afterm2 = fields.Float(string="Wt. of mercury after filling CRM in cell, (M2) (gm)")
+    # Parent model मधून density automatically fetch होईल
+    density_murcury = fields.Float(
+        string="Density of mercury",
+        related="parent_id.density_murcury_finess",
+        store=True,
+        readonly=True,
+        digits=(12, 3)
+    )
 
-    @api.depends('time_sec', 'parent_id.specific_gravity', 'parent_id.k', 'parent_id.e')
-    def _compute_fineness(self):
-        for rec in self:
-            k = rec.parent_id.k
-            e = rec.parent_id.e
-            t = rec.time_sec
-            s = rec.parent_id.specific_gravity
+    # V = (M1 - M2) / D
+    v_murcury = fields.Float(
+        string="V = (M1-M2)/D",
+        compute="_compute_v_murcury",
+        store=True,
+        digits=(12, 3)
+    )
 
-            if s and (1 - e) != 0 and t > 0:
-                try:
-                    part1 = (k / s)
-                    part2 = math.sqrt(e ** 3) / (1 - e)
-                    part3 = math.sqrt(t) / 0.001357
-                    rec.fineness = part1 * part2 * part3
-                except Exception:
-                    rec.fineness = 0.0
+    @api.depends(
+        'wt_murcurym1',
+        'murcury_afterm2',
+        'density_murcury'
+    )
+    def _compute_v_murcury(self):
+        for line in self:
+            if line.density_murcury:
+                line.v_murcury = (
+                    line.wt_murcurym1 - line.murcury_afterm2
+                ) / line.density_murcury
             else:
-                rec.fineness = 0.0
+                line.v_murcury = 0.0
+
+    
 
    
 
@@ -1632,6 +1798,137 @@ class FinenessBlaineLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(FinenessBlaineLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class AppratusConstantLine(models.Model):
+    _name = "apparatus.constant.ppc.line"
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+   
+    wt_standard = fields.Float(string="Wt. of Standard Fly Ash, W = 0.500ρV (gm)",digits=(12,3),compute="_compute_wt_standard")
+    specific_standard = fields.Float(string="Specific Surface of CRM, S0  (cm2/gm)")
+
+    density_standard = fields.Float(string="Density of CRM ,ρ0 (gm/cc)" ,compute="_compute_density_standard" ,digits=(12,3))
+    air_viscosity = fields.Float(string="Air viscosity η0 (0C)" ,digits=(12,9),compute="_compute_air_viscosity")
+    measured_time = fields.Float(string="Measured Time",digits=(12,2))
+
+
+    @api.depends(
+    'parent_id.density_standard_finess',
+    'parent_id.fineness_blaine_lines.v_murcury',
+    'serial_no'
+    )
+    def _compute_wt_standard(self):
+        for record in self:
+            record.wt_standard = 0.0
+
+            if not record.parent_id:
+                continue
+
+            density = record.parent_id.density_standard_finess
+
+            fineness_line = record.parent_id.fineness_blaine_lines.filtered(
+                lambda line: line.serial_no == record.serial_no
+            )[:1]
+
+            if fineness_line:
+                record.wt_standard = (
+                    0.5 *
+                    density *
+                    fineness_line.v_murcury
+                )
+
+    @api.depends('parent_id.density_standard_finess')
+    def _compute_density_standard(self):
+        for record in self:
+            record.density_standard = record.parent_id.density_standard_finess or 0.0
+
+    @api.depends('parent_id.viscosity_finess')
+    def _compute_air_viscosity(self):
+        for record in self:
+            record.air_viscosity = record.parent_id.viscosity_finess or 0.0
+
+   
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(AppratusConstantLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class DeterminationOfFinessLine(models.Model):
+    _name = "determination.finess.ppc.line"
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+   
+    wt_standard_fine = fields.Float(string="Wt. of Test sample, W = 0.500ρV (gm)",digits=(12,3),compute="_compute_wt_standard_fine")
+    density_standard_fine = fields.Float(string="Density of Test sample,ρ  (gm/cc)",digits=(12,3))
+
+    apparatus_fine = fields.Float(string="Apparatus constant, K  "  ,digits=(12,3),compute="_compute_apparatus_fine")
+    measured_time_fine = fields.Float(string="Measured time (sec)" ,digits=(12,2))
+    
+
+    @api.depends(
+    'density_standard_fine',
+    'parent_id.fineness_blaine_lines.v_murcury',
+    'serial_no'
+    )
+    def _compute_wt_standard_fine(self):
+        for record in self:
+            record.wt_standard_fine = 0.0
+
+            fineness_line = record.parent_id.fineness_blaine_lines.filtered(
+                lambda line: line.serial_no == record.serial_no
+            )[:1]
+
+            if fineness_line:
+                record.wt_standard_fine = (
+                    0.5
+                    * record.density_standard_fine
+                    * fineness_line.v_murcury
+                )
+
+    @api.depends('parent_id.apparatus_constant')
+    def _compute_apparatus_fine(self):
+        for record in self:
+            record.apparatus_fine = record.parent_id.apparatus_constant or 0.0
+   
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DeterminationOfFinessLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1819,6 +2116,143 @@ class CompressiveCementLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class CompressiveCementLine7days(models.Model):
+    _name = "compressive.line.ppc.7days"
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Specimen No", readonly=True, copy=False, default=1)
+
+   
+    
+    dt_of_casting = fields.Date(string="Date of Casting ")
+    days = fields.Integer(string="Days")
+    dt_of_testing = fields.Date(string="Date of Testing")
+    wt_of_cube = fields.Float(string="Wt of cube")
+    area = fields.Float(string="Area",compute="_compute_area",store=True)
+    load = fields.Float(string="Load in KN")
+    strenght = fields.Float(string="Strength N/mm2",compute="_compute_strength")
+
+    # @api.onchange('parent_id')
+    # def _onchange_set_dt_of_casting(self):
+    #     if self.parent_id and self.parent_id.start_date:
+    #         self.dt_of_casting = self.parent_id.start_date
+
+    
+
+    @api.onchange('days')
+    def _onchange_days_set_testing_date(self):
+        if self.dt_of_casting and self.days:
+            self.dt_of_testing = self.dt_of_casting + timedelta(days=self.days)
+        else:
+            self.dt_of_testing = False
+
+    @api.depends('parent_id')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = 70.6 * 70.6
+
+    @api.depends('load', 'area')
+    def _compute_strength(self):
+        for rec in self:
+            if rec.area:
+                rec.strenght = (rec.load * 1000) / rec.area
+            else:
+                rec.strenght = 0.0
+
+    
+
+
+    
+
+   
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CompressiveCementLine7days, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class CompressiveCementLine28days(models.Model):
+    _name = "compressive.line.ppc.28days"
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Specimen No", readonly=True, copy=False, default=1)
+
+   
+    
+    dt_of_casting = fields.Date(string="Date of Casting ")
+    days = fields.Integer(string="Days")
+    dt_of_testing = fields.Date(string="Date of Testing")
+    wt_of_cube = fields.Float(string="Wt of cube")
+    area = fields.Float(string="Area",compute="_compute_area",store=True)
+    load = fields.Float(string="Load in KN")
+    strenght = fields.Float(string="Strength N/mm2",compute="_compute_strength")
+
+    # @api.onchange('parent_id')
+    # def _onchange_set_dt_of_casting(self):
+    #     if self.parent_id and self.parent_id.start_date:
+    #         self.dt_of_casting = self.parent_id.start_date
+
+    
+
+    @api.onchange('days')
+    def _onchange_days_set_testing_date(self):
+        if self.dt_of_casting and self.days:
+            self.dt_of_testing = self.dt_of_casting + timedelta(days=self.days)
+        else:
+            self.dt_of_testing = False
+
+    @api.depends('parent_id')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = 70.6 * 70.6
+
+    @api.depends('load', 'area')
+    def _compute_strength(self):
+        for rec in self:
+            if rec.area:
+                rec.strenght = (rec.load * 1000) / rec.area
+            else:
+                rec.strenght = 0.0
+
+    
+
+
+    
+
+   
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CompressiveCementLine28days, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
     
 
 class InitialTimeLine(models.Model):
@@ -1830,8 +2264,8 @@ class InitialTimeLine(models.Model):
    
     
     clock_time = fields.Datetime(string="Date & Time")
-    time_in_minutes = fields.Char("Time In minutes",compute="_compute_time_in_minutes",store=True)
-    penetration_intial = fields.Float(string="Penetration Of Needle")
+    time_in_minutes = fields.Char("Time In minutes")
+    penetration_intial = fields.Char(string="Penetration Of Needle")
 
     @api.depends('clock_time', 'parent_id.intial_time_lines.clock_time')
     def _compute_time_in_minutes(self):
@@ -1879,8 +2313,8 @@ class FinalTimeLine(models.Model):
    
     
     clock_time1 = fields.Datetime(string="Date & Time")
-    time_in_minutes1 = fields.Char("Time In minutes",compute="_compute_time_in_minutes1",store=True)
-    impression_intial1 = fields.Float(string="Impression Of Needle")
+    time_in_minutes1 = fields.Char("Time In minutes")
+    impression_intial1 = fields.Char(string="Impression Of Needle")
 
     @api.depends('clock_time1', 'parent_id.intial_time_lines.clock_time')
     def _compute_time_in_minutes1(self):
@@ -1970,23 +2404,18 @@ class CementSoundnessAutocalveLine(models.Model):
     serial_no = fields.Integer(string="Mould No",readonly=True, copy=False, default=1)
 
 
-    # mould_no = fields.Integer("Mould No")
-    intial_ref = fields.Float("Reference Bar Reading (R1)",digits=(12,3))
-    initial_reading = fields.Float("Reading (Ri)",digits=(12,3))
-    intial_a = fields.Float(string="A (Ri – R1)" ,compute="_compute_values",store=True,digits=(12,3))
-    final_ref = fields.Float("Reference Bar Reading (R2)",digits=(12,3))
-    final_reading = fields.Float("Reading (Rf)",digits=(12,3))
-
-    final_b = fields.Float("B (Rf – R2)",compute="_compute_values",store=True,digits=(12,3))
+   
+    intial_reading = fields.Float("Initial Reading of Indicator Point Before Boiling (A) (mm)",digits=(12,2))
+    final_reading = fields.Float("Final Reading of Indicator Point After 3 Hrs. Boiling (B) (mm)",digits=(12,2))
     
-    autoclave = fields.Float("Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_values",store=True,digits=(12,4))
+    autoclave = fields.Float("Autoclave Expansion  %",compute="_compute_values",store=True,digits=(12,3))
 
-    @api.depends('intial_ref', 'initial_reading', 'final_ref', 'final_reading')
+    @api.depends("intial_reading", "final_reading")
     def _compute_values(self):
-        for rec in self:
-            rec.intial_a = (rec.initial_reading or 0) - (rec.intial_ref or 0)
-            rec.final_b = (rec.final_reading or 0) - (rec.final_ref or 0)
-            rec.autoclave = ((rec.final_b - rec.intial_a) / 250) * 100 if rec.final_b and rec.intial_a else 0
+        for record in self:
+            record.autoclave = (
+                (record.final_reading - record.intial_reading) / 282
+            ) * 100
   
    
    
