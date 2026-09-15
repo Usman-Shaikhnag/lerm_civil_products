@@ -490,7 +490,7 @@
 								
 							</tr>
 
-							<tr t-if="data.plastic_limit_visible and (data.plasticity_index_nabl == 'pass' and nabl or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<tr t-if="data.plastic_limit_visible and (data.plastic_limit_nabl == 'pass' and nabl or (data.plastic_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -597,7 +597,7 @@
 
 							</tr>
 
-							<tr t-if="data.plastic_limit_visible and (data.plasticity_index_nabl == 'pass' and nabl or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<tr t-if="data.plasticity_index_visible and (data.plasticity_index_nabl == 'pass' and nabl or (data.plasticity_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -605,12 +605,12 @@
 									</div>
 								</td>
 								<td colspan="2">
-								      Plasticity Index
-                                 <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_name"/> -->
+								      <!-- Plasticity Index -->
+                                 <span t-field="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_name"/>
                                 </td>
 								<td colspan="2" style="text-align: center; vertical-align: middle;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).unit.name"/>
 									</span>
 								</td>
 								<td colspan="2" style="text-align: center;">
@@ -629,20 +629,20 @@
 									</div>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<!-- <div>
+									<div>
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
                                         </t>
 									</span>
-									</div> -->
-									Max 25 %
+									</div>
+									<!-- Max 25 % -->
 								</td>
 								
 								<td colspan="2" style="text-align: center;">
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
 											</t>
@@ -655,7 +655,7 @@
                                         <span t-esc="data.plasticity_index_conformity"/>
                                  </td>
 							</tr>
-							<tr t-if="data.plastic_limit_visible and  fromEln">
+							<tr t-if="data.plasticity_index_visible and  fromEln">
 								<td colspan="1" style="text-align: center;">
 									<div>
 										<span t-esc="i + 1" />
@@ -663,12 +663,12 @@
 									</div>
 								</td>
 								<td colspan="2">
-								  Plasticity Index
-                                 <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_name"/> -->
+								  <!-- Plasticity Index -->
+                                 <span t-field="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_name"/>
                                 </td>
 								<td colspan="2" style="text-align: center; vertical-align: middle;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).unit.name"/>
 									</span>
 								</td>
 								<td colspan="2" style="text-align: center;">
@@ -687,16 +687,16 @@
 									</div>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<!-- <div>
+									<div>
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                             </t>
                                         </t>
 									</span>
-									</div> -->
-									Max 25 %
+									</div>
+									<!-- Max 25 % -->
 								</td>
 								
 								<td colspan="2" style="text-align: center;">
