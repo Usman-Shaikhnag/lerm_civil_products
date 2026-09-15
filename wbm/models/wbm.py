@@ -1114,6 +1114,9 @@ class WbmMechanical(models.Model):
     cbr_name = fields.Char("Name",default="CBR")
     cbr_visible = fields.Boolean("CBR Visible",compute="_compute_visible")
 
+    division_factor = fields.Float(string="Division Factor",digits=(8, 2))
+
+
     cbr_table = fields.One2many('mechanical.wbm.cbr.line','parent_id',string="CBR")
     chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
@@ -1230,10 +1233,13 @@ class WbmCBRLine(models.Model):
     load = fields.Float(string="Load in Kg", compute="_compute_load")
 
 
-    @api.depends('proving_reading')
+    @api.depends('proving_reading', 'parent_id.division_factor')
     def _compute_load(self):
         for record in self:
-            record.load = record.proving_reading * 6.96
+            avg = record.proving_reading or 0.0
+            factor = record.parent_id.division_factor or 0.0
+
+            record.load = avg * factor
 
 
 

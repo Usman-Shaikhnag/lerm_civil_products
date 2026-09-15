@@ -1,0 +1,637 @@
+/* Lab Control Center styles */
+
+.lcc-root {
+    --lcc-primary: #1e293b;
+    background: #eef1f6;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 18px 22px 40px;
+    color: #1e293b;
+}
+
+.lcc-root *,
+.lcc-root *::before,
+.lcc-root *::after {
+    box-sizing: border-box;
+}
+
+.lcc-card {
+    background: #fff;
+    border: 1px solid #e5e9f2;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+}
+
+/* ---------- header ---------- */
+.lcc-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.lcc-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lcc-title-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 6px 14px rgba(29, 78, 216, 0.3);
+}
+
+.lcc-title-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+}
+
+.lcc-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.lcc-role-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.lcc-role-management {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.lcc-role-hod {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.lcc-scope {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.lcc-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.lcc-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.lcc-search-icon {
+    position: absolute;
+    left: 12px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.lcc-search input {
+    width: 320px;
+    max-width: 60vw;
+    border: 1px solid #d7dde8;
+    border-radius: 24px;
+    padding: 9px 16px 9px 34px;
+    font-size: 0.85rem;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.lcc-search input:focus {
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+}
+
+.lcc-asof {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #d7dde8;
+    border-radius: 24px;
+    padding: 7px 14px;
+    color: #475569;
+}
+
+.lcc-asof i {
+    color: #1d4ed8;
+}
+
+.lcc-asof-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.lcc-asof input {
+    border: none;
+    outline: none;
+    font-size: 0.85rem;
+    color: #1e293b;
+    background: transparent;
+}
+
+.lcc-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #d7dde8;
+    background: #fff;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.lcc-icon-btn:hover {
+    color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.lcc-spin {
+    animation: lcc-rotate 0.8s linear infinite;
+}
+
+@keyframes lcc-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- no access / empty ---------- */
+.lcc-empty {
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.lcc-empty i {
+    font-size: 2.4rem;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+
+.lcc-empty h4 {
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+/* ---------- management filters ---------- */
+.lcc-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    background: #fff;
+    border: 1px solid #e5e9f2;
+    border-radius: 12px;
+    padding: 10px 16px;
+}
+
+.lcc-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lcc-filter > span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+}
+
+.lcc-filter select {
+    border: 1px solid #d7dde8;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.83rem;
+    color: #1e293b;
+    background: #fff;
+    min-width: 180px;
+    outline: none;
+}
+
+.lcc-filter select:focus {
+    border-color: #1d4ed8;
+}
+
+/* ---------- KPI ---------- */
+.lcc-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.lcc-kpi-card {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 16px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.lcc-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+}
+
+.lcc-kpi-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.lcc-kpi-head {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.lcc-kpi-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.lcc-kpi-count {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.lcc-kpi-label {
+    margin-top: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+/* ---------- panels ---------- */
+.lcc-panel {
+    margin-bottom: 18px;
+    padding: 16px 18px;
+}
+
+.lcc-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.lcc-panel-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.lcc-panel-icon.warn {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.lcc-panel-icon.priority {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.lcc-panel-heading {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #334155;
+    flex: 1;
+}
+
+.lcc-view-all {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.lcc-view-all:hover {
+    background: #dbeafe;
+}
+
+/* ---------- attention ---------- */
+.lcc-attention-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.lcc-attention-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid #e5e9f2;
+    border-radius: 10px;
+    background: #fafbfe;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.lcc-attention-row:hover {
+    border-color: #cbd5e1;
+    background: #fff;
+}
+
+.lcc-attention-row > i {
+    font-size: 1rem;
+}
+
+.lcc-attention-label {
+    flex: 1;
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.lcc-attention-count {
+    min-width: 30px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 3px 9px;
+    border-radius: 16px;
+}
+
+/* ---------- funnel ---------- */
+.lcc-funnel {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.lcc-funnel-col {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lcc-funnel-btn {
+    flex: 1;
+    border: 1px solid #e5e9f2;
+    border-top: 4px solid var(--stage-color, #2563eb);
+    border-radius: 10px;
+    background: #fafbfe;
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.lcc-funnel-btn:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.lcc-funnel-count {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--stage-color, #2563eb);
+    line-height: 1.1;
+}
+
+.lcc-funnel-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.lcc-funnel-chevron {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.lcc-funnel-col:last-child .lcc-funnel-chevron {
+    display: none;
+}
+
+/* ---------- two column ---------- */
+.lcc-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+/* ---------- bars ---------- */
+.lcc-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lcc-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: default;
+}
+
+.lcc-bar-click {
+    cursor: pointer;
+}
+
+.lcc-bar-name {
+    width: 110px;
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lcc-bar-track {
+    flex: 1;
+    height: 12px;
+    background: #eef1f6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lcc-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    border-radius: 8px;
+    min-width: 4px;
+    transition: width 0.4s ease;
+}
+
+.lcc-bar-count {
+    width: 28px;
+    flex-shrink: 0;
+    text-align: right;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.lcc-mini-empty {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 16px;
+}
+
+/* ---------- table ---------- */
+.lcc-table-wrap {
+    overflow-x: auto;
+}
+
+.lcc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+}
+
+.lcc-table thead th {
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #94a3b8;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e5e9f2;
+}
+
+.lcc-table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #eef1f6;
+    vertical-align: middle;
+}
+
+.lcc-table tbody tr {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.lcc-table tbody tr:hover {
+    background: #f6f9ff;
+}
+
+.lcc-sample-ref {
+    display: block;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+
+.lcc-sample-material-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: #94a3b8;
+}
+
+.lcc-stage-chip {
+    background: #eef1f6;
+    color: #334155;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 3px 8px;
+}
+
+.lcc-flag-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 3px 10px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+    .lcc-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .lcc-two-col {
+        grid-template-columns: 1fr;
+    }
+    .lcc-attention-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .lcc-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .lcc-funnel {
+        flex-wrap: wrap;
+    }
+    .lcc-funnel-col {
+        min-width: 45%;
+    }
+}

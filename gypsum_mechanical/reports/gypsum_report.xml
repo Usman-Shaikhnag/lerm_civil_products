@@ -204,8 +204,8 @@
 									</span>
 								</th>
 								<th style="text-align: center;">
-									<span colspan="3" style="font-weight: bold;">
-										      IS 2547 ( Part I ) : 1976 
+									<span>
+										<span t-esc="eln.material.specifications"/>
 									</span>
 								</th>
 							</tr>
@@ -375,6 +375,45 @@
 								<td style="text-align: center;">
 									<span>
 										<span t-field="gypsum.average_casting_1days" t-options='{"widget": "float", "precision": 2}'/>
+									</span>									
+								</td>
+								<td>
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','65321ea8-98e6-4d73-8941-5ac65d2504a9')]).unit.name"/>
+									</span>
+								</td>
+								<td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','65321ea8-98e6-4d73-8941-5ac65d2504a9')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+								
+							</tr>
+							<tr t-if="gypsum.compressive_visible">
+								<td>
+									<span>
+										Compressive Strength (7 Days)
+									</span>
+								</td>
+								<td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','65321ea8-98e6-4d73-8941-5ac65d2504a9')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span t-if="gypsum.status_7days">
+										<span t-field="gypsum.average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+									</span>
+									<span t-if="not gypsum.status_7days">
+										<span>Awaited</span>
 									</span>									
 								</td>
 								<td>
