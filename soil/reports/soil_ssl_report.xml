@@ -280,8 +280,15 @@
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
 							<span t-esc="eln.material.test_parameter "/> 
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5a0ac62b-5c56-475b-9a89-93a59c9ee3a2')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
 						</div>
-						<table t-if="data.sieve_visible">
+						<table style="page-break-inside: avoid;" t-if="data.sieve_visible">
 							<tr cols="12">
                                 <td colspan="2">IS Sieve Size
 								</td>
