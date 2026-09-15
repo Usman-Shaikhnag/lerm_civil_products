@@ -246,11 +246,11 @@ class SteelChemical(models.Model):
     hno3_b4 = fields.Float(string="Std. HNO3 solution consumed in Blank in ml (B)")
     hno3_b5 = fields.Float(string="Std. HNO3 solution consumed in Blank in ml (B)")
 
-    hno3_c1 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)")
-    hno3_c2 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)")
-    hno3_c3 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)")
-    hno3_c4 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)")
-    hno3_c5 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)")
+    hno3_c1 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)",digits=(12,7))
+    hno3_c2 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)",digits=(12,7))
+    hno3_c3 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)",digits=(12,7))
+    hno3_c4 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)",digits=(12,7))
+    hno3_c5 = fields.Float(string="Phosphorus equivalent of 1 ml std. HNO3 solution (C)",digits=(12,7))
 
     percentage_of_phosphorus1 = fields.Float(string="Percentage of phosphorus ((B - A) × C / D) × 100",compute="_compute_percentage_of_phosphorus")
     percentage_of_phosphorus2 = fields.Float(string="Percentage of phosphorus ((B - A) × C / D) × 100",compute="_compute_percentage_of_phosphorus")
@@ -607,11 +607,11 @@ class SteelChemical(models.Model):
     manganese_sodiuma4 = fields.Float(string="Std. Sodium arsenite solution consumed in sample in ml (A)")
     manganese_sodiuma5 = fields.Float(string="Std. Sodium arsenite solution consumed in sample in ml (A)")
 
-    manganese_sodiumb1 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
-    manganese_sodiumb2 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
-    manganese_sodiumb3 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
-    manganese_sodiumb4 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
-    manganese_sodiumb5 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml")
+    manganese_sodiumb1 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml",digits=(12,7))
+    manganese_sodiumb2 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml",digits=(12,7))
+    manganese_sodiumb3 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml",digits=(12,7))
+    manganese_sodiumb4 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml",digits=(12,7))
+    manganese_sodiumb5 = fields.Float(string="Manganese equipment of std. sodium arsenite solution  (B) gm/ml",digits=(12,7))
 
     manganese_percentage1 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
     manganese_percentage2 = fields.Float(string="% of Manganese = [(A × B) / C] × 100)",compute="_compute_percentage_manganese")
@@ -779,11 +779,11 @@ class SteelChemical(models.Model):
     mas_of_silicon4 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
     mas_of_silicon5 = fields.Float(string="Weight of crucible before HF treatment in sample-W3",digits=(12,4))
 
-    mass_of_silicona1 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
-    mass_of_silicona2 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
-    mass_of_silicona3 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
-    mass_of_silicona4 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
-    mass_of_silicona5 = fields.Float(string="Mass in gm of silica in Sample-A",digits=(12,4))
+    mass_of_silicona1 = fields.Float(string="Mass in gm of silica in Sample-A",compute="_compute_mass_of_silicona",digits=(12,4))
+    mass_of_silicona2 = fields.Float(string="Mass in gm of silica in Sample-A",compute="_compute_mass_of_silicona",digits=(12,4))
+    mass_of_silicona3 = fields.Float(string="Mass in gm of silica in Sample-A",compute="_compute_mass_of_silicona",digits=(12,4))
+    mass_of_silicona4 = fields.Float(string="Mass in gm of silica in Sample-A",compute="_compute_mass_of_silicona",digits=(12,4))
+    mass_of_silicona5 = fields.Float(string="Mass in gm of silica in Sample-A",compute="_compute_mass_of_silicona",digits=(12,4))
 
     wt_cr_w41 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
     wt_cr_w42 = fields.Float(string="Weight of crucible After HF treatment in Blank-W4",digits=(12,4))
@@ -814,6 +814,33 @@ class SteelChemical(models.Model):
     percent_of_silicon3 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
     percent_of_silicon4 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
     percent_of_silicon5 = fields.Float(string="Calculation",compute="_compute_percent_of_silicon",digits=(12,2))
+
+
+    @api.depends(
+    'wt_of_silicon1', 'mas_of_silicon1',
+    'wt_of_silicon2', 'mas_of_silicon2',
+    'wt_of_silicon3', 'mas_of_silicon3',
+    'wt_of_silicon4', 'mas_of_silicon4',
+    'wt_of_silicon5', 'mas_of_silicon5',
+    )
+    def _compute_mass_of_silicona(self):
+        for record in self:
+            record.mass_of_silicona1 = (
+                record.wt_of_silicon1 - record.mas_of_silicon1
+            )
+            record.mass_of_silicona2 = (
+                record.wt_of_silicon2 - record.mas_of_silicon2
+            )
+            record.mass_of_silicona3 = (
+                record.wt_of_silicon3 - record.mas_of_silicon3
+            )
+            record.mass_of_silicona4 = (
+                record.wt_of_silicon4 - record.mas_of_silicon4
+            )
+            record.mass_of_silicona5 = (
+                record.wt_of_silicon5 - record.mas_of_silicon5
+            )
+
 
     @api.depends(
     'wt_cr_w41', 'wt_cr_w51',

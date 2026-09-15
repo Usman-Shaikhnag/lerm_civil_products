@@ -341,7 +341,14 @@
 
                         <div invisible="fineness_blaine_visible == False">
 
-                          <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                         
+                  
+
+                            <div style="text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px;">
+                                DETERMINATION OF APPARATUS CONSTANT
+                            </div>
+
+                             <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="density_standard_finess"></label></td>
@@ -351,23 +358,18 @@
                         </tbody>
                     </table>
 
-                  
-
-                            <div style="text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px;">
-                                DETERMINATION OF THE BED VOLUME
-                            </div>
 
                             <field name="apparatus_counstant_lines">
                                 <tree editable="bottom" class="custom_table_borders">
                                     <field name="serial_no"/>
-                                    <field name="wt_standard"
+                                    <field name="wt_standard"/>
+                                    <field name="specific_standard"
                                         class="blue-input"
-                                        decoration-info="wt_standard != 0"/>
-                                    <field name="density_standard"
-                                        class="blue-input"
-                                        decoration-info="density_standard != 0"/>
+                                        decoration-info="specific_standard != 0"/>
+                                        <field name="density_standard"/>
                                     <field name="air_viscosity"/>
-                                    <field name="measured_time"/>
+                                    <field name="measured_time"  class="blue-input"
+                                        decoration-info="measured_time != 0"/>
                                 </tree>
                             </field>
 
@@ -408,22 +410,21 @@
                             <field name="detarmination_finess_lines">
                                 <tree editable="bottom" class="custom_table_borders">
                                     <field name="serial_no"/>
-                                    <field name="wt_standard_fine"
-                                        class="blue-input"
-                                        decoration-info="wt_standard_fine != 0"/>
+                                    <field name="wt_standard_fine"/>
                                     <field name="density_standard_fine"
                                         class="blue-input"
                                         decoration-info="density_standard_fine != 0"/>
                                     <field name="apparatus_fine"/>
-                                    <field name="measured_time_fine"/>
-                                    <field name="min_measured_time_fine"/>
+                                    <field name="measured_time_fine"  class="blue-input"
+                                        decoration-info="measured_time_fine != 0"/>
                                 </tree>
                             </field>
 
                         </div>
 
                           <div class="d-flex gap-2">
-                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+
+                          <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-40 mt-2 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label class="fw-bold" for="specific_area"></label></td>
@@ -432,12 +433,21 @@
                             
                             </tbody>
                         </table>
-
-                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-30 mt-2 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label class="fw-bold" for="fineness_blaine_avg"></label></td>
                                     <td><field name="fineness_blaine_avg" nolabel="1" class="blue-input" /></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+
+                        <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-30 mt-2 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="min_measured_time_fine"></label></td>
+                                    <td><field name="min_measured_time_fine" nolabel="1" class="blue-input" /></td>
                                 </tr>
                             
                             </tbody>
@@ -533,7 +543,7 @@
 
                
 
-                        <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;" invisible = "soundness_autoclave_visible == False">
+                        <!-- <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;" invisible = "soundness_autoclave_visible == False">
                         <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
                             <thead>
                                 <tr>
@@ -549,7 +559,7 @@
                                 </tr>
                             </thead>
                         </table>
-                    </div>
+                    </div> -->
 
 
              
@@ -560,12 +570,9 @@
                         <tree editable="bottom">
                           <field name="serial_no"/>
                           <!-- <field name="mould_no" /> -->
-                          <field name="intial_ref" class="blue-input" decoration-info="intial_ref != 0"/>
-                          <field name="initial_reading" class="blue-input" decoration-info="initial_reading != 0"/>
-                           <field name="intial_a"/>
-                          <field name="final_ref" class="blue-input" decoration-info="final_ref != 0"/>
+                          <field name="intial_reading" class="blue-input" decoration-info="intial_reading != 0"/>
                           <field name="final_reading" class="blue-input" decoration-info="final_reading != 0"/>
-                           <field name="final_b"/>
+                         
                           <field name="autoclave"/>
                           
                         </tree>
@@ -752,7 +759,7 @@
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
                                     <field name="clock_time" class="blue-input" decoration-info="clock_time != 0"/>
-                                    <field name="time_in_minutes" />
+                                    <field name="time_in_minutes" class="blue-input" decoration-info="time_in_minutes != 0" />
                                     <field name="penetration_intial" class="blue-input" decoration-info="penetration_intial != 0"/>
                                 </tree>
                             </field>
@@ -773,7 +780,7 @@
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
                                     <field name="clock_time1" class="blue-input" decoration-info="clock_time1 != 0"/>
-                                    <field name="time_in_minutes1" />
+                                    <field name="time_in_minutes1" class="blue-input" decoration-info="time_in_minutes1 != 0" />
                                     <field name="impression_intial1" class="blue-input" decoration-info="impression_intial1 != 0"/>
                                 </tree>
                             </field>
@@ -1017,8 +1024,53 @@
                         </h1>
                     </div>
 
+                    <div invisible="not days_3_visible ">
+                        <h1 >
+                            <field name="casting_3_name" readonly="1" nolabel="1"/>
+                            <field name="days_3_visible" invisible="1"/>
+                           
+                        </h1>
+                    </div>
+                    <div class="d-flex gap-2" invisible="not days_3_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="status_3days"></label></td>
+                                    <td><field name="status_3days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
-                    <div invisible="not (days_3_visible or days_7_visible or days_28_visible)">
+                        
+                    </div>
+
+                     <!-- <div class="d-flex gap-2" invisible="not days_3_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_3days"></label></td>
+                                    <td><field name="casting_date_3days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="testing_date_3days"></label></td>
+                                    <td><field  name="testing_date_3days" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div> -->
+
+
+                    <div invisible="not days_3_visible ">
                         <field name="compressive_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
@@ -1068,6 +1120,67 @@
                         </tbody>
                     </table>
 
+                     <div invisible="not days_7_visible ">
+                        <h1 >
+                            <field name="casting_7_name" readonly="1" nolabel="1"/>
+                            <field name="days_7_visible" invisible="1"/>
+                           
+                        </h1>
+                    </div>
+                    <div class="d-flex gap-2" invisible="not days_7_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="status_7days"></label></td>
+                                    <td><field name="status_7days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        
+                    </div>
+
+                     <!-- <div class="d-flex gap-2" invisible="not days_7_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_7days"></label></td>
+                                    <td><field name="casting_date_7days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="testing_date_7days"></label></td>
+                                    <td><field  name="testing_date_7days" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div> -->
+
+
+                    <div invisible="not days_7_visible ">
+                        <field name="compressive_lines_7days">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="dt_of_casting" />
+                                <field name="days" class="blue-input" decoration-info="days != 0" />
+                                <field name="dt_of_testing" class="blue-input" decoration-info="dt_of_testing != 0"/>
+                                <field name="wt_of_cube" class="blue-input" decoration-info="wt_of_cube != 0"/>
+                                <field name="area" />
+                                <field name="load" class="blue-input" decoration-info="load != 0"/>
+                                <field name="strenght" />
+                            </tree>
+                        </field>
+                    </div>
+
                     <table invisible="days_7_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
@@ -1102,6 +1215,68 @@
                             </tr>
                         </tbody>
                     </table>
+
+
+                    <div invisible="not days_28_visible ">
+                        <h1 >
+                            <field name="casting_28_name" readonly="1" nolabel="1"/>
+                            <field name="days_28_visible" invisible="1"/>
+                           
+                        </h1>
+                    </div>
+                    <div class="d-flex gap-2" invisible="not days_28_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="status_28days"></label></td>
+                                    <td><field name="status_28days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        
+                    </div>
+
+                     <!-- <div class="d-flex gap-2" invisible="not days_28_visible ">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_28days"></label></td>
+                                    <td><field name="casting_date_28days" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="testing_date_28days"></label></td>
+                                    <td><field  name="testing_date_28days" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div> -->
+
+
+                    <div invisible="not days_28_visible ">
+                        <field name="compressive_lines_28days">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="dt_of_casting" />
+                                <field name="days" class="blue-input" decoration-info="days != 0" />
+                                <field name="dt_of_testing" class="blue-input" decoration-info="dt_of_testing != 0"/>
+                                <field name="wt_of_cube" class="blue-input" decoration-info="wt_of_cube != 0"/>
+                                <field name="area" />
+                                <field name="load" class="blue-input" decoration-info="load != 0"/>
+                                <field name="strenght" />
+                            </tree>
+                        </field>
+                    </div>
 
                     <table invisible="days_28_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>

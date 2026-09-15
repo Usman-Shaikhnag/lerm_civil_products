@@ -543,11 +543,11 @@ class ChemicalDrinkingWater(models.Model):
     chloride_sample_taken4 = fields.Float(string="Volume of sample to be taken. (V)")
     chloride_sample_taken5 = fields.Float(string="Volume of sample to be taken. (V)")
 
-    chloride_normality1 = fields.Float(string="Normality of AgNo3   0.0141N")
-    chloride_normality2 = fields.Float(string="Normality of AgNo3   0.0141N")
-    chloride_normality3 = fields.Float(string="Normality of AgNo3   0.0141N")
-    chloride_normality4 = fields.Float(string="Normality of AgNo3   0.0141N")
-    chloride_normality5 = fields.Float(string="Normality of AgNo3   0.0141N")
+    chloride_normality1 = fields.Float(string="Normality of AgNo3   0.0141N",digits=(12,3))
+    chloride_normality2 = fields.Float(string="Normality of AgNo3   0.0141N",digits=(12,3))
+    chloride_normality3 = fields.Float(string="Normality of AgNo3   0.0141N",digits=(12,3))
+    chloride_normality4 = fields.Float(string="Normality of AgNo3   0.0141N",digits=(12,3))
+    chloride_normality5 = fields.Float(string="Normality of AgNo3   0.0141N",digits=(12,3))
 
     chloride_nitratev2_1 = fields.Float(string="Volume in ml of silver nitrate 0.0141 N used in the blank titration. (V2)")
     chloride_nitratev2_2 = fields.Float(string="Volume in ml of silver nitrate 0.0141 N used in the blank titration. (V2)")
