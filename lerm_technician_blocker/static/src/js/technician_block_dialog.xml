@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="lerm_technician_blocker.TechnicianBlockDialog">
+        <Dialog title="props.title" size="'lg'" header="showHeader">
+            <div>
+                <h4 t-if="!showHeader" class="modal-title text-danger mb-2">Work Overdue - Action Required</h4>
+                <div t-if="props.variant === 'overdue'" class="alert alert-danger mb-2">
+                    Work is Overdue. Pending Reassignment - please complete or
+                    have the sample reassigned before you can continue.
+                </div>
+                <div t-elif="props.variant === 'due'" class="mb-2 text-muted">
+                    Report due-date reminders for your assigned work.
+                </div>
+                <div t-else="" class="text-muted mb-2">
+                    New work has been assigned to you since your last notification.
+                </div>
+                <p t-if="rows.length" class="text-muted">
+                    <t t-esc="rows.length"/> job(s)
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th t-if="props.variant !== 'new_work'">Message</th>
+                                <th t-if="props.variant !== 'new_work'">SRF</th>
+                                <th>Material</th>
+                                <th>Parameter</th>
+                                <th t-if="props.variant === 'new_work'">Received</th>
+                                <th>Report Due</th>
+                                <th>State</th>
+                                <th t-if="props.variant === 'new_work'" class="text-end">Open</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="row" t-key="row.id">
+                                <td t-if="props.variant !== 'new_work'">
+                                    <t t-esc="row.message || ''"/>
+                                </td>
+                                <td t-if="props.variant !== 'new_work'" t-esc="row.srf_id"/>
+                                <td t-esc="row.material_name"/>
+                                <td t-esc="row.parameters"/>
+                                <td t-if="props.variant === 'new_work'" t-esc="row.received_date"/>
+                                <td t-esc="row.due_date"/>
+                                <td t-esc="row.state"/>
+                                <td t-if="props.variant === 'new_work'" class="text-end">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        t-on-click="() => this.openSample(row.id)"
+                                        t-att-disabled="opening">
+                                        <t t-esc="opening ? 'Opening...' : 'Open'"/>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <t t-if="!isBlocking" t-set-slot="footer">
+                <button class="btn btn-secondary"
+                    t-on-click="() => this.close()">Close</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
