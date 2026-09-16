@@ -143,6 +143,7 @@
 								</tr>
 
 								<tr>
+								<t t-if="o.sample_id.witness">
 									<td style="font-size:16px;"><strong>Discipline</strong></td>
 									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.discipline_id.discipline"/>
@@ -151,6 +152,12 @@
 									<td style="font-size:16px;" colspan="2">
 										<span t-field="o.sample_id.witness"/>
 									</td>
+									</t>
+								   <t t-else="">
+								   <td style="font-size:16px;"><strong>Discipline</strong></td>
+									<td style="font-size:16px;" colspan="5">
+										<span t-field="o.sample_id.discipline_id.discipline"/>
+									</td></t>
 								</tr>
 
 							</tbody>

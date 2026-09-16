@@ -5,6 +5,12 @@
             <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
                 <div class="container_eln" style="padding-top:2px;">
 
+                <style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
+
                     <div class="" t-foreach="eln" t-as="o">
                         <table style="width:100%; border-collapse: collapse;" border="1">
 
@@ -599,6 +605,8 @@
                                 </td>
                             </tr>
 
+                            <t t-if="data.rebend_visible and ((data.rebend_report_type == 'nabl' and nabl) or (data.rebend_report_type == 'non_nabl' and not nabl))">
+                            
                             <tr style="font-size:12px;" t-if="data.rebend_visible">
                                 <td style="text-align: center;">
                                     <span t-esc="i + 1" />
@@ -639,6 +647,51 @@
                                 <td t-if="eln.conformity" style="text-align: center;">
                                 </td>
                             </tr>
+                            </t>
+
+                            
+                            <t t-if="data.bend_visible and ((data.bend_report_type == 'nabl' and nabl) or (data.bend_report_type == 'non_nabl' and not nabl))">
+                            <tr style="font-size:12px;" t-if="data.bend_visible">
+                                <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+                                </td>
+                                <td>
+                                    <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','addd0c61-adb6-447d-b668-1fba0744680f')]).parameter_name"/>
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <span>
+                                        <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','addd0c61-adb6-447d-b668-1fba0744680f')]).unit.name"/>
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span t-esc="data.bend_test1"/>
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <t t-if="data.bend_test1 == 'satisfactory'">
+                                        <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','addd0c61-adb6-447d-b668-1fba0744680f')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                            </t>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>Cracks Observed</span>
+                                    </t>
+                                </td>
+                                <td style="text-align: center;">
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','addd0c61-adb6-447d-b668-1fba0744680f')])" t-as="parameter">
+												<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+													<span t-field="parameter.test_method.test_method"/>
+												<!-- </t> -->
+											</t>
+										</span>
+									</td>
+                                <td t-if="eln.conformity" style="text-align: center;">
+                                </td>
+                            </tr>
+                            </t>
 
                             <!--
                             <tr style="font-size:12px;" t-if="data.bend_visible">
@@ -729,24 +782,24 @@
                             </table>
                         </div>
                         <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
-                            <div>
-                                <div>
+                            <div style="font-size:16px;">
+                                <div style="font-size:16px;">
                                     <b>
                                         Reviewed By
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
                                         <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
                                             style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.check_by.job_title"/>)
                                     </b>
@@ -756,32 +809,32 @@
                             <div>
                             </div>
 
-                            <div>
-                                <div>
+                            <div style="font-size:16px;">
+                                <div style="font-size:16px;">
                                     <b>
                                         Per pro GEONYMS INDIA PRIVATE LIMITED.
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.approveby_signature_required">
                                         <div t-if="eln.sample_id.approved_by.employee_id.signature">
                                             <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
                                         </div>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.approved_by.job_title"/>)
                                     </b>
                                 </div>
                             </div>
                         </div>
-                        <div style="margin-top: 5px; text-align: center;">
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
                             <p style="font-weight:800;">...... End Of Report......</p>
                         </div>
                     </div>

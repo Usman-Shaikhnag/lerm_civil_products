@@ -187,7 +187,51 @@ class SteelTmtBarLine(models.Model):
 
     fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
     bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
+
+    bend_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Bend Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    bend_sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_bend_sieve_nabl",
+    store=True
+)
+
+    @api.depends('bend_report_type')
+    def _compute_bend_sieve_nabl(self):
+     for rec in self:
+        rec.bend_sieve_nabl = 'pass' if rec.bend_report_type == 'nabl' else 'fail'
+
+
     rebend_visible = fields.Boolean("Rebend Test",compute="_compute_visible")
+
+    rebend_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="ReBend Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    rebend_sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_rebend_sieve_nabl",
+    store=True
+)
+
+    @api.depends('rebend_report_type')
+    def _compute_rebend_sieve_nabl(self):
+     for rec in self:
+        rec.rebend_sieve_nabl = 'pass' if rec.rebend_report_type == 'nabl' else 'fail'
     
     uts_visible = fields.Boolean("Ultimate Tensile Strength",compute="_compute_visible")
     elongation_visible = fields.Boolean("Elongation",compute="_compute_visible")
