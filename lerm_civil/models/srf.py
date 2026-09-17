@@ -158,7 +158,7 @@ class SrfForm(models.Model):
     casting = fields.Boolean(string="Casting")
     
     days_casting = fields.Selection(
-    [(str(i), f'{i} Days') for i in range(1, 101)],
+    [(str(i), f'{i} Days') for i in range(1, 201)],
     string='Days of Testing',
     default='3')
     
@@ -987,7 +987,7 @@ class CreateSampleWizard(models.TransientModel):
     #     ('112', '112 Days'),
     # ], string='Days of Testing', default='3')
     days_casting = fields.Selection(
-    [(str(i), f'{i} Days') for i in range(1, 101)],
+    [(str(i), f'{i} Days') for i in range(1, 201)],
     string='Days of Testing',
     default='3')
     date_casting = fields.Date(string="Date of Casting")

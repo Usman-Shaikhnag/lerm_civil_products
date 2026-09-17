@@ -242,7 +242,7 @@ class MechanicalConcreteCube(models.Model):
     
     
     age_of_days = fields.Selection(
-        [(f'{i}days', f'{i} Days') for i in range(1, 101)],
+        [(f'{i}days', f'{i} Days') for i in range(1, 201)],
         string='Age',
         default='28days',
         required=True,

@@ -6,6 +6,12 @@
                 <div class="container_eln" style="padding-top:2px;">
 
                     <div class="" t-foreach="eln" t-as="o">
+
+                    <style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
                         <table style="width:100%; border-collapse: collapse;" border="1">
  
                             <tr>
@@ -180,40 +186,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="length.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.dimension_line_ids.mapped('length')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.0f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.avg_length" t-options='{"widget": "float", "precision": 0}'/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="length.unit.name"/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="length.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="length.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
 
                                 </tr>
@@ -230,40 +236,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="height.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.dimension_line_ids.mapped('height')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.0f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.avg_height" t-options='{"widget": "float", "precision": 0}'/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="height.unit.name"/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="height.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="height.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
 
                                 </tr>
@@ -280,40 +286,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="width.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.dimension_line_ids.mapped('width')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.0f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.avg_width" t-options='{"widget": "float", "precision": 0}'/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="width.unit.name"/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="width.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="width.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
 
                                 </tr>
@@ -330,40 +336,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="block_density.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.block_density_ids.mapped('block_density')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.2f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.mean_block_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="block_density.unit.name"/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="block_density.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="block_density.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
 
                                 </tr>
@@ -380,40 +386,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="compressive_strength.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.compressive_strength_line_ids.mapped('compressive_strength')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.2f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.average_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="compressive_strength.unit.name"/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="compressive_strength.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="compressive_strength.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
 
                                 </tr>
@@ -430,40 +436,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="water.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.water_absorption_line_ids.mapped('water_absorption')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.2f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.mean_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-esc="water.unit.name"/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                       
                                             <t t-foreach="water.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="water.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                        
                                     </td>
 
                                 </tr>
@@ -480,40 +486,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="drying.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.drying_shrinkage_ids.mapped('drying_shrinkage')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.4f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                       
                                             <span t-field="data.avg_drying_shrinkage" t-options='{"widget": "float", "precision": 4}'/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                       
                                             <span t-esc="drying.unit.name"/>
-                                        </div>
+                                        
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="drying.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="drying.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
 
                                 </tr>
@@ -530,40 +536,40 @@
                                     <td style="text-align: center;">
                                         <span t-esc="moisture.parameter_name"/>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td style="text-align: center;font-size:16px;">
                                         <t t-foreach="data.moisture_movement_ids.mapped('moisture_movement')" t-as="val">
-                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                            <div t-att-style="'text-align:center;font-size:14px;' + ('border-bottom:1px solid #000;' if not val_last else '')">
                                                 <span t-esc="'%.4f' % val"/>
                                             </div>
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <span t-field="data.avg_moisture_movement" t-options='{"widget": "float", "precision": 4}'/>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                       
                                             <span t-esc="moisture.unit.name"/>
-                                        </div>
+                                      
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="moisture.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="text-align:center;">
+                                        
                                             <t t-foreach="moisture.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </div>
+                                       
                                     </td>
 
                                 </tr>
@@ -592,26 +598,26 @@
                                     </td>
                                 </tr>
                             </table>
-                        </div>
+                        </div> 
                         <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         Reviewed By
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
                                         <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
                                             style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.check_by.job_title"/>)
                                     </b>
@@ -622,31 +628,31 @@
                             </div>
 
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         Per pro GEONYMS INDIA PRIVATE LIMITED.
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.approveby_signature_required">
                                         <div t-if="eln.sample_id.approved_by.employee_id.signature">
                                             <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
                                         </div>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.approved_by.job_title"/>)
                                     </b>
                                 </div>
                             </div>
                         </div>
-                        <div style="margin-top: 5px; text-align: center;">
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
                             <p style="font-weight:800;">...... End Of Report......</p>
                         </div>
                     </div>

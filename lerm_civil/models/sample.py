@@ -69,7 +69,7 @@ class LermSampleForm(models.Model):
     #     ('112', '112 Days'),
     # ], string='Days of casting', default='3')
     days_casting = fields.Selection(
-    [(str(i), f'{i} Days') for i in range(1, 101)],
+    [(str(i), f'{i} Days') for i in range(1, 201)],
     string='Days of Testing',
     default='3')
     date_casting = fields.Date("Date of Casting")
