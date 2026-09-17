@@ -8,16 +8,44 @@ import math
 class WptMechanical(models.Model):
     _name = "mechanical.wpt"
     _inherit = "lerm.eln"
-    _description = 'mechanical.wpt'
     _rec_name = "name"
 
 
     name = fields.Char("Name",default="Water Permeability Test")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     child_lines = fields.One2many('mechanical.wpt.line','parent_id',string="Parameter")
 
+
+
+    notes_id = fields.One2many('mechanical.wpt.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(WptMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
     average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")
 
@@ -32,17 +60,25 @@ class WptMechanical(models.Model):
 
     wpt_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_wpt_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_wpt_conformity", store=True)
 
     @api.depends('average_of_wpt','eln_ref','grade')
     def _compute_wpt_conformity(self):
         
         for record in self:
             record.wpt_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.wpt_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -65,8 +101,8 @@ class WptMechanical(models.Model):
         
         for record in self:
             record.wpt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -175,10 +211,17 @@ class WptMechanical(models.Model):
             print("Records",records)
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
 
-        for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '32145ght-0268-46ef-ba88-9c0453210lkit1':
+        for result in technician_results:
+
+
+            if result.parameter.internal_id == '92a72eba-0268-46ef-ba88-9c04558006ec':
                 result.result_char = round(self.average_of_wpt,2)
                 result.calculated = True
                 if self.wpt_nabl == 'pass':
@@ -188,7 +231,8 @@ class WptMechanical(models.Model):
                 continue
 
 
-
+           
+            
 
         return {
                 'view_mode': 'form',
@@ -230,7 +274,6 @@ class WptMechanical(models.Model):
     # def _compute_casting_date(self):
     #     if self.eln_ref:
     #         self.casting_date = self.eln_ref.sample_id.date_casting
-    
 
 
 class WptMechanicalLine(models.Model):
@@ -265,3 +308,12 @@ class WptMechanicalLine(models.Model):
                 record.sample = record.parent_id.eln_ref.sample_id.client_sample_id
             except:
                 record.sample = None
+
+
+
+class WPTNotes(models.Model):
+    _name = "mechanical.wpt.notes"
+
+    parent_id = fields.Many2one('mechanical.wpt',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
