@@ -135,7 +135,9 @@
 <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/>
 </div> -->
 			<div style="padding-top:5px">
-				<span t-esc="o.material.test_parameter"/> 
+				<div t-foreach="eln" t-as="o">
+					<span t-esc="o.material.test_parameter"/> 
+				</div>
 
 				
 			  <t t-if="data.bend_visible">
