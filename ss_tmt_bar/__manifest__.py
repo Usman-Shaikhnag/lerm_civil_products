@@ -14,7 +14,8 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
             'security/ir.model.access.csv',
            'views/ss_tmt_bar.xml',
-           'reports/ss_tmt_ds_report.xml'
+           'reports/ss_tmt_datasheet.xml',
+           'reports/ss_tmt_report.xml'
     ],
     'assets': {
         'web.assets_backend': [
