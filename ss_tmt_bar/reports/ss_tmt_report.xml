@@ -85,6 +85,32 @@
 						</table>
 					</div>
 
+					<div style="padding-top:2px">
+				<span style="font-size:12px;" t-field="eln.material.method_reference"/> 
+
+				
+					<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe')])" t-as="parameter">
+						<span style="font-size:12px;" t-esc="parameter.test_method.test_method"/>
+					</t>
+
+			  <t t-if="data.bend_visible">
+				<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','25fcb167-68bc-48d0-880f-77ca213fd995')])" t-as="parameter">
+					<span style="font-size:12px;" t-esc="parameter.test_method.test_method"/>
+				</t>
+				</t>
+			
+				
+				
+                 <t t-if="data.rebend_visible ">
+				<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','709c7024-d1b9-48bb-8c94-fc0742a3e080')])" t-as="parameter">
+					<span style="font-size:12px;" t-esc="parameter.test_method.test_method"/>
+				</t>
+				</t>
+		      
+			 
+				
+			</div>
+
 					<table style="margin-top:10px">
 						<thead>
 							<tr>
