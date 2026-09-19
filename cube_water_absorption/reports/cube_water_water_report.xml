@@ -252,6 +252,13 @@
 								<td style="text-align: center;">
 									<span t-esc="r.sample_id"/>
 								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r.dia_specimen" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.length_specimen" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
 							
 								<td style="text-align: center;">
 									<span t-esc="r.oven_dry_weight" t-options='{"widget": "float", "precision": 3}'/>
