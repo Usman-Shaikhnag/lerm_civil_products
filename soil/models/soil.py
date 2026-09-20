@@ -2070,10 +2070,10 @@ class Soil(models.Model):
 
     plastic_limit_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="Plastic Limit NABL", compute="_compute_plasticity_limi_nabl", store=True)
+        ('fail', 'Fail')], string="Plastic Limit NABL", compute="_compute_plastic_limit_nabl", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
-    def _compute_plasticity_limi_nabl(self):
+    def _compute_plastic_limit_nabl(self):
         
         for record in self:
             record.plastic_limit_nabl = 'fail'

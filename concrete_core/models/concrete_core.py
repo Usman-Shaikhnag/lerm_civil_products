@@ -193,26 +193,26 @@ class ConcreteCore(models.Model):
     type_of_sample = fields.Char("Type of Sample:")
 
 
-    area_equvalent_cube = fields.Float(string="The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :",compute="_compute_area_equivalent_cube")
-    any_individual_cube = fields.Float(string="Any individual Cube strength computed not less than 75% of the grade of Concrete specified :  ",compute="_compute_any_individual_cube")
+    # area_equvalent_cube = fields.Float(string="The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :",compute="_compute_area_equivalent_cube")
+    # any_individual_cube = fields.Float(string="Any individual Cube strength computed not less than 75% of the grade of Concrete specified :  ",compute="_compute_any_individual_cube")
 
-    @api.depends('grade.grade')
-    def _compute_area_equivalent_cube(self):
-        for rec in self:
-            try:
-                grade_num = float(rec.grade.grade.strip('Mm'))  # 'M25' → 25
-                rec.area_equvalent_cube = grade_num * 0.85
-            except:
-                rec.area_equvalent_cube = 0.0
+    # @api.depends('grade.grade')
+    # def _compute_area_equivalent_cube(self):
+    #     for rec in self:
+    #         try:
+    #             grade_num = float(rec.grade.grade.strip('Mm'))  # 'M25' → 25
+    #             rec.area_equvalent_cube = grade_num * 0.85
+    #         except:
+    #             rec.area_equvalent_cube = 0.0
 
-    @api.depends('grade.grade')
-    def _compute_any_individual_cube(self):
-        for rec in self:
-            try:
-                grade_val = float(rec.grade.grade.strip('Mm'))  # 'M25' → 25
-                rec.any_individual_cube = grade_val * 0.75
-            except:
-                rec.any_individual_cube = 0.0
+    # @api.depends('grade.grade')
+    # def _compute_any_individual_cube(self):
+    #     for rec in self:
+    #         try:
+    #             grade_val = float(rec.grade.grade.strip('Mm'))  # 'M25' → 25
+    #             rec.any_individual_cube = grade_val * 0.75
+    #         except:
+    #             rec.any_individual_cube = 0.0
 
     
 
@@ -222,6 +222,81 @@ class ConcreteCore(models.Model):
     #     for record in self:
     #         total_value = sum(record.child_lines.mapped('final_cube_strength'))
     #         record.average = round((total_value / len(record.child_lines) if record.child_lines else 0.0),2)
+
+
+    average_strength = fields.Float(string="Average Equivalent Cube Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
+
+    show_average_strength = fields.Boolean(
+    string='Show Average Equivalent Cube Strength in N/mm2 in Report',
+    default=False
+)
+
+    @api.depends('child_lines.equivalent_cube_strength')
+    def _compute_average_strength(self):
+        for rec in self:
+            strengths = [line.equivalent_cube_strength for line in rec.child_lines if line.equivalent_cube_strength]
+            rec.average_strength = sum(strengths) / len(strengths) if strengths else 0.0
+
+
+    average_strength_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_average_strength_conformity", store=True)
+
+    @api.depends('average_strength','eln_ref','grade')
+    def _compute_average_strength_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_strength_conformity = 'na'
+                continue
+            record.average_strength_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_strength - record.average_strength*mu_value
+                    upper = record.average_strength + record.average_strength*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_strength_conformity = 'pass'
+                        break
+                    else:
+                        record.average_strength_conformity = 'fail'
+
+
+    average_strength_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'NON NABL')], string="NABL",compute="_compute_average_strength_nabl", store=True)
+
+    @api.depends('average_strength','eln_ref','grade')
+    def _compute_average_strength_nabl(self):
+        
+        for record in self:
+            record.average_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_strength - record.average_strength*mu_value
+            upper = record.average_strength + record.average_strength*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_strength_nabl = 'pass'
+                break
+            else:
+                record.average_strength_nabl = 'fail'
+
+
+
+
+    # Water Permeability Test
 
 
     wpt_name = fields.Char("Name",default=" Water Permeability Test")
@@ -583,87 +658,525 @@ class ConcreteCoreLine(models.Model):
     parent_id = fields.Many2one('mechanical.concrete.core',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    location = fields.Char(string="Location")
-    grade_con = fields.Date(string="Grade of  Concrite")
-    depth = fields.Float(string="Depth after Trimming in mm")
-    actual_depth = fields.Float(string="Actual Depth of Core in mm")
-    load = fields.Float(string="Load kN")
-    ld_ratio = fields.Float(string=" L /D RATIO  ",compute="_compute_ld_ratio")
-    load_n = fields.Float(string="Load in N ",compute="_compute_load_n")
-    core_comp = fields.Float(string="Core Comp., strength N/ mm2",compute="_compute_core_comp")
-    correction_factor_ld = fields.Float(string="Correction Factor LD",compute="_compute_correction_factor_ld")
-    correction_factor_dia = fields.Float(string="Correction Factor Dia",compute="_compute_correction_factor")
-    correct_comp = fields.Float(string="Corrected Cyl.Comp.strength  N/ mm2",compute="_compute_corrected_compression")
-    equivalent_cube = fields.Float(string="Equivalent Cube.Comp Strength  (N/ mm2)",compute="_compute_equivalent_cube")
+    location = fields.Char(string="Location/ Sample Id")
 
-    @api.depends('parent_id.thickness2', 'parent_id.dia_lines')
-    def _compute_correction_factor(self):
-        for line in self:
-            correction = 0.0
-            core_dia_value = line.parent_id.thickness2
-            if core_dia_value and line.parent_id.dia_lines:
-                matched_line = line.parent_id.dia_lines.filtered(
-                    lambda l: float(l.dia_core) == float(core_dia_value)
+    # sample_no = fields.Selection(
+    #     [
+    #         ('W1', 'W1'),
+    #         ('W2', 'W2'),
+    #         ('W3', 'W3'),
+    #     ],
+    #     string='Sample No',
+    #     required=True
+    # )
+
+    # =========================================================
+    # HEIGHT BEFORE CAPPING
+    # =========================================================
+
+    height_before_1 = fields.Float(
+        string='Height Before 1'
+    )
+
+    height_before_2 = fields.Float(
+        string='Height Before 2'
+    )
+
+    height_before_3 = fields.Float(
+        string='Height Before 3'
+    )
+
+    average_height_before = fields.Float(
+        string='Average Height Before Capping',
+        compute='_compute_averages',
+        store=True
+    )
+
+    # =========================================================
+    # HEIGHT AFTER CAPPING
+    # =========================================================
+
+    height_after_1 = fields.Float(
+        string='Height After 1'
+    )
+
+    height_after_2 = fields.Float(
+        string='Height After 2'
+    )
+
+    height_after_3 = fields.Float(
+        string='Height After 3'
+    )
+
+    average_height_after = fields.Float(
+        string='Average Height After Capping',
+        compute='_compute_averages',
+        store=True
+    )
+
+    # =========================================================
+    # CORE DIAMETER
+    # =========================================================
+
+    diameter_1 = fields.Float(
+        string='Core Dia 1'
+    )
+
+    diameter_2 = fields.Float(
+        string='Core Dia 2'
+    )
+
+    diameter_3 = fields.Float(
+        string='Core Dia 3'
+    )
+
+    average_diameter = fields.Float(
+        string='Average Dia',
+        compute='_compute_averages',
+        store=True
+    )
+
+    # =========================================================
+    # CROSS AREA
+    # =========================================================
+
+    cross_area = fields.Float(
+        string='Cross Area',
+        compute='_compute_cross_area',
+        store=True
+    )
+
+    # =========================================================
+    # LOAD
+    # =========================================================
+
+    load_at_failure = fields.Float(
+        string='Load at Failure'
+    )
+
+    # =========================================================
+    # COMPRESSIVE STRENGTH
+    # =========================================================
+
+    compressive_strength = fields.Float(
+        string='Compressive Strength Core',
+        compute='_compute_compressive_strength',
+        store=True
+    )
+
+    # =========================================================
+    # L/D RATIO
+    # =========================================================
+
+    ld_ratio = fields.Float(
+        string='L/D Ratio',
+        compute='_compute_ld_ratio',
+        store=True,
+        digits=(16, 2)
+    )
+
+    # =========================================================
+    # L/D CORRECTION FACTOR
+    #
+    # Excel:
+    # =0.11*B18+0.78
+    # =========================================================
+
+    ld_correction_factor = fields.Float(
+        string='L/D Correction Factor',
+        compute='_compute_ld_correction_factor',
+        store=True,
+        digits=(16, 2)
+    )
+
+    # =========================================================
+    # CORRECTED COMPRESSIVE STRENGTH
+    #
+    # Excel:
+    # =IF(B19<1,B19*B17,B17)
+    # =========================================================
+
+    corrected_compressive_strength = fields.Float(
+        string='Corrected Compressive Strength Core',
+        compute='_compute_corrected_strength',
+        store=True,
+        digits=(16, 1)
+    )
+
+    # =========================================================
+    # CORRECTION FACTOR
+    # =========================================================
+
+    correction_factor = fields.Float(
+        string='Correction Factor'
+    )
+
+    # =========================================================
+    # EQUIVALENT CUBE STRENGTH
+    # =========================================================
+
+    equivalent_cube_strength = fields.Float(
+        string='Equivalent Cube Strength',
+        compute='_compute_cube_strength',
+        store=True,
+        digits=(16, 2)
+    )
+
+    # =========================================================
+    # WEIGHT
+    # =========================================================
+
+    weight = fields.Float(
+        string='Weight',
+        digits=(16, 3)
+    )
+
+    # =========================================================
+    # VOLUME
+    # =========================================================
+
+    volume_m3 = fields.Float(
+        string='Volume m³',
+        compute='_compute_volume',
+        store=True,
+        digits=(16, 5)
+    )
+
+    # =========================================================
+    # DENSITY
+    # =========================================================
+
+    density = fields.Float(
+        string='Density',
+        compute='_compute_density',
+        store=True,
+        digits=(16, 0)
+    )
+
+    # =========================================================
+    # AVERAGES
+    # =========================================================
+
+    @api.depends(
+        'height_before_1',
+        'height_before_2',
+        'height_before_3',
+        'height_after_1',
+        'height_after_2',
+        'height_after_3',
+        'diameter_1',
+        'diameter_2',
+        'diameter_3'
+    )
+    def _compute_averages(self):
+
+        for rec in self:
+
+            # -----------------------------
+            # HEIGHT BEFORE
+            # -----------------------------
+
+            before_values = [
+                rec.height_before_1,
+                rec.height_before_2,
+                rec.height_before_3
+            ]
+
+            before_values = [
+                value for value in before_values
+                if value
+            ]
+
+            rec.average_height_before = (
+                sum(before_values) / len(before_values)
+                if before_values else 0
+            )
+
+            # -----------------------------
+            # HEIGHT AFTER
+            # -----------------------------
+
+            after_values = [
+                rec.height_after_1,
+                rec.height_after_2,
+                rec.height_after_3
+            ]
+
+            after_values = [
+                value for value in after_values
+                if value
+            ]
+
+            rec.average_height_after = (
+                sum(after_values) / len(after_values)
+                if after_values else 0
+            )
+
+            # -----------------------------
+            # DIAMETER
+            # -----------------------------
+
+            diameter_values = [
+                rec.diameter_1,
+                rec.diameter_2,
+                rec.diameter_3
+            ]
+
+            diameter_values = [
+                value for value in diameter_values
+                if value
+            ]
+
+            rec.average_diameter = (
+                sum(diameter_values) / len(diameter_values)
+                if diameter_values else 0
+            )
+
+    # =========================================================
+    # CROSS AREA
+    #
+    # Excel equivalent:
+    # =PI()*B14^2/4
+    #
+    # =========================================================
+
+    @api.depends('average_diameter')
+    def _compute_cross_area(self):
+
+        for rec in self:
+
+            if rec.average_diameter:
+
+                rec.cross_area = (
+                    3.14 *
+                    rec.average_diameter ** 2
+                    / 4
                 )
-                if matched_line:
-                    correction = matched_line[0].correction_dia
-            line.correction_factor_dia = correction
+
+            else:
+                rec.cross_area = 0
+
+    # =========================================================
+    # COMPRESSIVE STRENGTH
+    #
+    # Excel:
+    #
+    # Load / Area * 1000
+    #
+    # Example:
+    # 120.3 / 3316.6 * 1000
+    # = 36.27
+    #
+    # =========================================================
+
+    @api.depends(
+        'load_at_failure',
+        'cross_area'
+    )
+    def _compute_compressive_strength(self):
+
+        for rec in self:
+
+            if rec.cross_area:
+
+                rec.compressive_strength = (
+                    rec.load_at_failure
+                    * 1000
+                    / rec.cross_area
+                )
+
+            else:
+                rec.compressive_strength = 0
+
+    # =========================================================
+# L/D RATIO
+# =========================================================
+
+    @api.depends(
+    'average_height_after',
+    'average_diameter'
+)
+    def _compute_ld_ratio(self):
+
+     for rec in self:
+
+        if rec.average_diameter:
+            rec.ld_ratio = (
+                rec.average_height_after /
+                rec.average_diameter
+            )
+        else:
+            rec.ld_ratio = 0
+
+    @api.depends('ld_ratio')
+    def _compute_ld_correction_factor(self):
+
+     for rec in self:
+
+        rec.ld_correction_factor = (
+            0.11 * rec.ld_ratio + 0.78
+        )
+
+    @api.depends(
+    'ld_correction_factor',
+    'compressive_strength'
+)
+    def _compute_corrected_strength(self):
+
+      for rec in self:
+
+        if rec.ld_correction_factor < 1:
+
+            rec.corrected_compressive_strength = (
+                rec.ld_correction_factor *
+                rec.compressive_strength
+            )
+
+        else:
+
+            rec.corrected_compressive_strength = (
+                rec.compressive_strength
+            )
 
 
+    @api.depends(
+    'corrected_compressive_strength',
+    'correction_factor'
+)
+    def _compute_cube_strength(self):
+ 
+     for rec in self:
 
-    # @api.depends('parent_id.dia_core', 'parent_id.dia_lines')
-    # def _compute_correction_factor_dia(self):
+        rec.equivalent_cube_strength = (
+            rec.corrected_compressive_strength
+            * rec.correction_factor
+            * 1.25
+        )
+
+
+    @api.depends(
+    'average_height_before',
+    'average_diameter'
+)
+    def _compute_volume(self):
+
+     for rec in self:
+
+        if (
+            rec.average_height_before
+            and rec.average_diameter
+        ):
+
+            diameter_m = (
+                rec.average_diameter / 1000
+            )
+
+            height_m = (
+                rec.average_height_before / 1000
+            )
+
+            rec.volume_m3 = (
+                math.pi
+                * diameter_m ** 2
+                / 4
+                * height_m
+            )
+
+        else:
+
+            rec.volume_m3 = 0
+
+
+    # =========================================================
+    # DENSITY
+    # =========================================================
+
+    @api.depends(
+    'weight',
+    'volume_m3'
+)
+    def _compute_density(self):
+
+      for rec in self:
+
+        if rec.volume_m3:
+
+            rec.density = (
+                rec.weight /
+                rec.volume_m3
+            )
+
+        else:
+
+            rec.density = 0
+
+
+    # grade_con = fields.Date(string="Grade of  Concrite")
+    # depth = fields.Float(string="Depth after Trimming in mm")
+    # actual_depth = fields.Float(string="Actual Depth of Core in mm")
+    # load = fields.Float(string="Load kN")
+    # ld_ratio = fields.Float(string=" L /D RATIO  ",compute="_compute_ld_ratio")
+    # load_n = fields.Float(string="Load in N ",compute="_compute_load_n")
+    # core_comp = fields.Float(string="Core Comp., strength N/ mm2",compute="_compute_core_comp")
+    # correction_factor_ld = fields.Float(string="Correction Factor LD",compute="_compute_correction_factor_ld")
+    # correction_factor_dia = fields.Float(string="Correction Factor Dia",compute="_compute_correction_factor")
+    # correct_comp = fields.Float(string="Corrected Cyl.Comp.strength  N/ mm2",compute="_compute_corrected_compression")
+    # equivalent_cube = fields.Float(string="Equivalent Cube.Comp Strength  (N/ mm2)",compute="_compute_equivalent_cube")
+
+    # @api.depends('parent_id.thickness2', 'parent_id.dia_lines')
+    # def _compute_correction_factor(self):
     #     for line in self:
-    #         correction = ''
-    #         core_dia_value = line.parent_id.dia_core
+    #         correction = 0.0
+    #         core_dia_value = line.parent_id.thickness2
     #         if core_dia_value and line.parent_id.dia_lines:
-    #             matched_line = line.parent_id.dia_lines.filtered(lambda l: float(l.dia_core) == core_dia_value)
+    #             matched_line = line.parent_id.dia_lines.filtered(
+    #                 lambda l: float(l.dia_core) == float(core_dia_value)
+    #             )
     #             if matched_line:
     #                 correction = matched_line[0].correction_dia
     #         line.correction_factor_dia = correction
 
+    # @api.depends('depth', 'parent_id.thickness2')
+    # def _compute_ld_ratio(self):
+    #     for record in self:
+    #         if record.parent_id.thickness2:
+    #             record.ld_ratio = record.depth / record.parent_id.thickness2
+    #         else:
+    #             record.ld_ratio = 0
 
-    @api.depends('depth', 'parent_id.thickness2')
-    def _compute_ld_ratio(self):
-        for record in self:
-            if record.parent_id.thickness2:
-                record.ld_ratio = record.depth / record.parent_id.thickness2
-            else:
-                record.ld_ratio = 0
+    # @api.depends('load')
+    # def _compute_load_n(self):
+    #     for record in self:
+    #         record.load_n = record.load * 1000 if record.load else 0
 
-    @api.depends('load')
-    def _compute_load_n(self):
-        for record in self:
-            record.load_n = record.load * 1000 if record.load else 0
+    # @api.depends('load_n', 'parent_id.area_core')
+    # def _compute_core_comp(self):
+    #     for record in self:
+    #         if record.parent_id.area_core:
+    #             record.core_comp = record.load_n / record.parent_id.area_core
+    #         else:
+    #             record.core_comp = 0
 
-    @api.depends('load_n', 'parent_id.area_core')
-    def _compute_core_comp(self):
-        for record in self:
-            if record.parent_id.area_core:
-                record.core_comp = record.load_n / record.parent_id.area_core
-            else:
-                record.core_comp = 0
+    # @api.depends('ld_ratio')
+    # def _compute_correction_factor_ld(self):
+    #     for record in self:
+    #         if record.ld_ratio:
+    #             record.correction_factor_ld = (0.11 * record.ld_ratio) + 0.78
+    #         else:
+    #             record.correction_factor_ld = 0
 
-    @api.depends('ld_ratio')
-    def _compute_correction_factor_ld(self):
-        for record in self:
-            if record.ld_ratio:
-                record.correction_factor_ld = (0.11 * record.ld_ratio) + 0.78
-            else:
-                record.correction_factor_ld = 0
+    # @api.depends('core_comp', 'correction_factor_ld', 'correction_factor_dia')
+    # def _compute_corrected_compression(self):
+    #     for rec in self:
+    #         try:
+    #             rec.correct_comp = rec.core_comp * rec.correction_factor_ld * rec.correction_factor_dia
+    #         except:
+    #             rec.correct_comp = 0
 
-    @api.depends('core_comp', 'correction_factor_ld', 'correction_factor_dia')
-    def _compute_corrected_compression(self):
-        for rec in self:
-            try:
-                rec.correct_comp = rec.core_comp * rec.correction_factor_ld * rec.correction_factor_dia
-            except:
-                rec.correct_comp = 0
-
-    @api.depends('correct_comp')
-    def _compute_equivalent_cube(self):
-        for rec in self:
-            rec.equivalent_cube = rec.correct_comp * 1.25 if rec.correct_comp else 0.0
+    # @api.depends('correct_comp')
+    # def _compute_equivalent_cube(self):
+    #     for rec in self:
+    #         rec.equivalent_cube = rec.correct_comp * 1.25 if rec.correct_comp else 0.0
 
 
     @api.model

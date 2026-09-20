@@ -56,6 +56,8 @@
 							</tr>
 						</table>
 						<div style="text-align:center;font-size:18px;margin-top:10px">
+
+
 						<!-- Concrete Cube -->
 							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
 							<span>
@@ -67,56 +69,231 @@
 							</span>
 						</div>
 					</div>
-                    <!-- <table style="margin-top:10px">
-				
+
+					<table style="margin-top:30px;">
+						<thead>
 							<tr>
-								<td colspan="6">Type of Sample :  <span t-field="data.type_of_sample"></span>
-								</td>
-							
+								<th style="text-align: center;"> 
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th	style="text-align: center;">
+									<span>
+										Location/ Sample Id
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span>
+									Height Before 1
+									</span>
+								</th>
+								
+								<th style="text-align: center;">
+									<span>
+									Height Before 2
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span>
+									Height Before 3
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+									Average Height Before Capping
+									</span>
+								</th>
+								
+								<th style="text-align: center;">
+									<span>
+										Height After 1
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span>
+										Height After 2
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Height After 3
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Average Height After Capping
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span>
+										Core Dia 1
+									</span>
+								</th>
+
+								<th style="text-align: center;">
+									<span>
+										Core Dia 2
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Core Dia 3
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Average Dia
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Cross Area
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Load at Failure
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Compressive Strength Core
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										L/D Ratio
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										L/D Correction Factor
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Corrected Compressive Strength Core
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Correction Factor
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Equivalent Cube Strength
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Weight
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Volume m³
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span>
+										Density
+									</span>
+								</th>
 							
 							</tr>
-						
-						</table> -->
-                    <!-- <table style="margin-top:10px">
-                        <thead >
-                            <tr cols="12">
-                                <td  style="text-align: center;">Sr no 
-                                </td>
+						</thead>
+						<tbody>
+							<tr t-foreach="data.child_lines" t-as="r">
+							  <!-- <t t-set="lines" t-value="data.child_lines"/>
+								<t t-set="line_count" t-value="0"/>
+								<t t-foreach="lines" t-as="r"> -->
 
-                                <td  style="text-align:center;">Dia of Core, mm
-
-                                </td>
-
-                                <td  style="text-align:center;">Correction Factor for dia
-
-                                </td>
-                            
-                            </tr>
-                            
-                            </thead>
-                            <tbody>
-
-                            <t t-set="i" t-value="0"/>
-                            <tr t-foreach="data.dia_lines" t-as="r">
-                                <td  style="text-align: center;">
-                                    <div>
-                                        <span t-esc="i + 1" />
-                                        <t t-set="i" t-value="i+1"/>
-                                    </div>
-                                </td>
-                                <td style="text-align: center;" >
-                                    <span t-esc="r['dia_core']" />
-                                </td>
-                                <td  style="text-align: center;">
-                                    <span t-esc="r['correction_dia']" />
-                                </td>
-
-                            
-                            </tr>
-                            </tbody>
-					</table> -->
-
-						<table style="margin-top:10px">
+								<td style="text-align: center;">
+									<span t-esc="r.serial_no"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.location"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_before_1"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_before_2"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_before_3"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.average_height_before" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_after_1"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_after_2" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.height_after_3" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.average_height_after" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.diameter_1" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.diameter_2" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.diameter_3" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.average_diameter" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.cross_area" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.load_at_failure" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.ld_correction_factor" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.corrected_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.correction_factor"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.equivalent_cube_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.weight" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.volume_m3" t-options='{"widget": "float", "precision": 5}'/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.density" t-options='{"widget": "float", "precision": 0}'/>
+								</td>
+							</tr>  
+						</tbody>
+					</table>
+                    
+						<!-- <table style="margin-top:10px">
 				
 							
 							<tr>
@@ -135,8 +312,8 @@
 								</td>
 							</tr>
 						
-						</table>
-						<table style="margin-top:10px;">
+						</table> -->
+						<!-- <table style="margin-top:10px;">
 						<thead>
 							<tr>
 								<th rowspan="2" style="text-align: center;"> 
@@ -150,11 +327,7 @@
 									</span>
 								</th>
 
-								<!-- <th rowspan="2" style="text-align: center;font-weight: bold;">
-									<span>
-									Grade of  Concrite
-									</span>
-								</th> -->
+							
 								
 								<th rowspan="2" style="text-align: center;">
 									<span>
@@ -207,11 +380,7 @@
 
 									</span>
 								</th>
-                                	<!-- <th colspan="1" style="text-align: center;">
-									<span>
-									Dia
-									</span>
-								</th> -->
+                                
                             </tr>
 						</thead>
 						<tbody>
@@ -222,9 +391,7 @@
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.location"/>
 								</td>
-								<!-- <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r.grade_con"/>
-								</td> -->
+								
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.depth"/>
 								</td>
@@ -243,9 +410,7 @@
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-                                <!-- <td colspan="1" style="text-align: center;">
-									<span t-esc="r.correction_factor_dia" t-options='{"widget": "float", "precision": 2}'/>
-								</td> -->
+                               
                                 <td colspan="1" style="text-align: center;">
 									<span t-esc="r.correct_comp" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
@@ -256,9 +421,9 @@
 
                           
 						</tbody>
-					</table>
+					</table> -->
 
-					<div style="margin-top:10px">
+					<!-- <div style="margin-top:10px">
 					<table style="margin-top:2px">
 							<tr>
 								<td colspan="12">The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :</td>
@@ -281,13 +446,15 @@
 								</td>
 							</tr>
 						</table>
-					</div>
+					</div> -->
+					
+
 					<div class="authorizeRowDataSheet">
 						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','254187-47c9-4662-9298-3095ac900ffc')], limit=1).technician"/>
 						<div>
 							<div>
-									<b>
-																		Tested By 
+								<b>
+										Tested By 
 								</b>
 								
 							</div>
@@ -517,7 +684,7 @@
 							</tr>
 
 							<t t-set="i" t-value="0"/>
-							<tr t-foreach="data.child_lines" t-as="r">
+							<tr t-foreach="data.wpt_child_lines" t-as="r">
 								<td colspan="1">
 									<div>
 										<span t-esc="i + 1" />

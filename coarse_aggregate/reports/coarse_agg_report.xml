@@ -5,112 +5,21 @@
 			
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:2px">
-					<!-- <div t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; border:none">
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
-									<span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-									,
-									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-							</tr>
-							<tr> -->
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<!-- <td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
-							</tr>
-
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
-							</tr> -->
-						<!-- </table>
-
-						<table class="table" style="width:100%; font-size: 13px;"> -->
-							<!-- <tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
-									<span t-field="o.material.name"/>
-								</td>
-							</tr> -->
-
-							<!-- Source of Sample (only if value exists) -->
-							<!-- <tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
-								</td>
-							</tr> -->
-
-							<!-- Test method adopted (only if value exists) -->
-							<!-- <tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
-									<span t-field="o.material.test_method_adopted"/>
-								</td>
-							</tr>
-
-						</table>
-
-					</div> -->
-
+					
                     <div class="" t-foreach="eln" t-as="o">
+
+					<style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
 						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
 								<td colspan="1">Project Name/Site Name :</td>
 								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-
 									<span t-field="o.srf_id.name_work"/>
-
-
-									<!-- <t t-if="o.srf_id.customer.name">
-									  <span t-field="o.srf_id.customer.name"/>
-									 </t>
-        							<t t-else=""></t>
-		                            <br/> -->
-
-									<!-- <span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-											,
-									<span t-field="o.srf_id.customer.country_id"/> -->
 									</td>
 								
 							</tr>
@@ -130,12 +39,6 @@
 								<td colspan="1" >Address:</td>
 								  <td colspan="1" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<!-- <t t-if="o.srf_id.customer.name">
-									  <span t-field="o.srf_id.customer.name"/>
-									 </t>
-        							<t t-else=""></t>
-		                            <br/> -->
-
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
@@ -161,7 +64,7 @@
 									<t t-else="">--</t>
 								</td>
 
-                                <td colspan="1">Sample ID  :-</td>
+                                <td colspan="1">Client Sample ID  :-</td>
 								<td colspan="1">
 
 								  <t t-if="o.sample_id.client_sample_id">
@@ -176,10 +79,8 @@
 							<tr>
 								<td colspan="1">Samples Description :-</td>
 								<td colspan="1">
-								      <t t-if="o.material and o.material.lab_name and o.sample_id.size_id">
-											<span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
-										</t>
-									<t t-else="">--</t>
+								       <![CDATA[&nbsp;]]>
+                                    <span t-field="o.sample_id.sample_description"/>
 								</td>
 
                                 <td colspan="1">Date of Receipt :-</td>
@@ -1324,71 +1225,64 @@
 								</tr>
 							</table>
 						</div>
-                        <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
-
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-								Checked By
+                                        Reviewed By
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
                                         <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
                                             style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-								        (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                        (<span t-esc="eln.sample_id.check_by.job_title"/>)
                                     </b>
                                 </div>
                             </div>
 
-							<div>
-						<!-- <div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div> -->
-						<!-- <div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div> -->
-					</div>
                             <div>
-                                <div>
-                                    <b>
-								Approved By 
-                                    </b>
+                            </div>
 
+                            <div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        Per pro GEONYMS INDIA PRIVATE LIMITED.
+                                    </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.approveby_signature_required">
                                         <div t-if="eln.sample_id.approved_by.employee_id.signature">
                                             <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
                                         </div>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.approved_by.job_title"/>)
                                     </b>
                                 </div>
-                                
                             </div>
                         </div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
+                            <p style="font-weight:800;">...... End Of Report......</p>
                         </div>
                     </div>
+
                         
 				</div>
 			</t>

@@ -11,6 +11,12 @@
 
                 <div class="container_eln">
                     <div t-foreach="eln" t-as="o">
+
+                    <style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
                         <table style="width:100%; border-collapse: collapse;" border="1">
 
                            <tr>
@@ -69,12 +75,11 @@
                                             ,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                     </td>
-                                    <td colspan="1" >Test Report No :</td>
-                                  <td colspan="1" style="font-weight:bold;">
+                                   <td colspan="1">SRF ID :</td>
+                                   <td colspan="1" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="o.sample_id.kes_no"/>
-
-                                    </td>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
+                                </td>
                             </tr>
 
                             <tr>
@@ -84,9 +89,9 @@
                                              <span t-field="o.sample_id.location_name"/>
                                         </t>
                                     <t t-else="">--</t>
-                                </td>
+                                </td> 
 
-                                <td colspan="1">Sample ID  :-</td>
+                                <td colspan="1" >Client Sample ID  :-</td>
                                 <td colspan="1">
 
                                   <t t-if="o.sample_id.client_sample_id">
@@ -100,11 +105,8 @@
                             
                             <tr>
                                 <td colspan="1">Samples Description :-</td>
-                                <td colspan="1">
-                                      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-                                            <span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
-                                        </t>
-                                    <t t-else="">--</t>
+                                <td colspan="1"><![CDATA[&nbsp;]]>
+                                       <span t-field="o.sample_id.sample_description"/>
                                 </td>
 
                                 <td colspan="1">Date of Receipt :-</td>
@@ -121,10 +123,7 @@
                             <tr>
                                 <td colspan="1">#Source of Sample :-</td>
                                 <td colspan="1">
-                                <t t-if="o.material.source_sample">
-                                            <span t-field="o.material.source_sample"/>
-                                        </t>
-                                    <t t-else="">-</t>
+                                   <span t-field="o.sample_id.source_of_sample"/>
                                 </td>
 
                                 <td colspan="1">Date of Performance of Test :-</td>
@@ -139,10 +138,7 @@
                             <tr>
                                 <td colspan="1">Condition of Sample  :-</td>
                                 <td colspan="1">
-                                    <!-- <t t-if="o.sample_id.sample_received_date">
-                                            <span t-field="o.sample_id.sample_received_date"/>
-                                        </t>
-                                    <t t-else="">-</t> -->
+                                   <span t-field="o.sample_id.sample_condition"/>
                                 </td>
 
                                     <td colspan="1">Date of Report Issue :-</td>
@@ -164,17 +160,20 @@
                                     <t t-else="">-</t>
                                 </td>
 
-                                    <td colspan="1">Test Method Followed :-</td>
-                                        <td colspan="1" >
-                                            <t t-if="o.material.test_method_adopted">
-                                            <span t-field="o.material.test_method_adopted"/>
+
+                                <td colspan="1">Reference No.  :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.srf_id.client_refrence">
+                                            <span t-field="o.srf_id.client_refrence"/>
                                         </t>
-                                        <t t-else="">-</t>
-                                        </td>
+                                    <t t-else="">-</t>
+                                </td>
+
+                                  
                                 
                             </tr>
 
-                            <tr>
+                            <!-- <tr>
                                     <td colspan="1">Temperature :-</td>
                                         <td colspan="1" >
                                             <t t-if="data.admixture_temp is not None">
@@ -191,10 +190,10 @@
                                     <t t-else="">-</t>
                                         </td>
                                 
-                            </tr>
+                            </tr> -->
                             
 
-                            <tr>
+                            <!-- <tr>
                                 <td colspan="1">Reference No.  :-</td>
                                 <td colspan="3">
                                     <t t-if="o.srf_id.client_refrence">
@@ -203,7 +202,7 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                            </tr>
+                            </tr> -->
 
                             </table>
                         </div>
@@ -837,25 +836,25 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         Reviewed By
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
                                         <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
                                             style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.check_by.job_title"/>)
                                     </b>
@@ -864,36 +863,37 @@
 
                             <div>
                             </div>
-                            
+
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         Per pro GEONYMS INDIA PRIVATE LIMITED.
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.approveby_signature_required">
                                         <div t-if="eln.sample_id.approved_by.employee_id.signature">
                                             <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
                                         </div>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-                                    <span t-esc="eln.sample_id.approved_by.name"/>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-                                         (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
                                     </b>
                                 </div>
                             </div>
                         </div>
-                        <div style="margin-top: 5px; text-align: center;">
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
                             <p style="font-weight:800;">...... End Of Report......</p>
                         </div>
                     </div>
+
 
                 </div>
                 
