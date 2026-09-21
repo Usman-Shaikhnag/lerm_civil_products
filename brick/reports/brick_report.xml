@@ -254,27 +254,7 @@
 								</td>
 							</tr>
 
-							<tr>
-								
-
-								<td>Week No.  :-</td>
-								<td >
-
-									<t t-if="brick.week_no">
-									<span t-field="brick.week_no"/>
-								</t>
-							<t t-else="">--</t>
-								</td>
-
-								<td>Other Details  :-</td>
-								<td >
-
-									<t t-if="brick.other_details">
-									<span t-field="brick.other_details"/>
-								</t>
-							<t t-else="">--</t>
-								</td>
-							</tr>
+							
 
 						
 							<tr t-if="o.material.test_method_adopted" >
@@ -469,13 +449,11 @@
 							<tbody>
 								
 
-								<tr t-if="brick.dimension_visible ">
-									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										1
-										
-									</td>
+								<tr t-if="brick.dimension_visible and (brick.length_in_mm_nabl == 'pass' and nabl or (brick.length_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
 									<td >
 										<span>
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).parameter_name"/>
@@ -511,7 +489,7 @@
 									</td>
 								</tr>
 
-								<tr t-if="brick.dimension_visible">
+								<tr t-if="brick.dimension_visible and (brick.length_in_mm_nabl == 'pass' and nabl or (brick.length_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -560,14 +538,14 @@
 									
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<!-- <span t-field="brick.initial_setting_conformity"/> -->
+									<span t-field="data.length_in_mm_confirmity"/>
 									</td>
 								</tr>
 
 
 
 
-								<tr t-if="brick.dimension_visible">
+								<tr t-if="brick.dimension_visible and (brick.width_in_mm_nabl == 'pass' and nabl or (brick.width_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -616,13 +594,13 @@
 									
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<!-- <span t-field="brick.initial_setting_conformity"/> -->
+										<span t-field="brick.width_in_mm_confirmity"/>
 									</td>
 								</tr>
 
 
 
-								<tr t-if="brick.dimension_visible">
+								<tr t-if="brick.dimension_visible and (brick.height_in_mm_nabl == 'pass' and nabl or (brick.height_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -671,17 +649,16 @@
 									
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<!-- <span t-field="brick.initial_setting_conformity"/> -->
+										<span t-field="brick.height_in_mm_confirmity"/>
 									</td>
 								</tr>
 
 
 								<!-- efflorescence_visible  -->
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										2
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
 										
 									</td>
 									<td >
@@ -726,7 +703,7 @@
 								</tr>
 
 
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td>
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -771,7 +748,7 @@
 								</tr>
 
 
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td>
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -816,7 +793,7 @@
 								</tr>
 
 
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td>
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -860,7 +837,7 @@
 									</td> -->
 								</tr>
 
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td>
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -905,7 +882,7 @@
 								</tr>
 
 
-								<tr t-if="brick.efflorescence_visible ">
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
 									<td>
 										<!-- <span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/> -->
@@ -959,7 +936,11 @@
 
 						<div style="margin-top:20px; page-break-before: always;" t-if="brick.compressive_strength_visible and brick.water_absorbtion_visible and ((nabl and brick.comp_strength_nabl != 'fail' and brick.water_absorption_nabl != 'fail') or (not nabl and (brick.comp_strength_nabl == 'fail' or brick.water_absorption_nabl == 'fail')))">
 					<table style="">
-							<t t-set="i" t-value="0"/>
+							<!-- Pahilya table madhlya visible rows count karun 'i' chi value set karat ahot -->
+							<t t-set="dim_pass" t-value="brick.dimension_visible and (brick.length_in_mm_nabl == 'pass' and nabl or (brick.length_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
+							<t t-set="eff_pass" t-value="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))"/>
+							
+							<t t-set="i" t-value="(1 if dim_pass else 0) + (1 if eff_pass else 0)"/>
 							<thead>
 								<tr>
 									<th style="text-align: center;">
@@ -1018,11 +999,10 @@
 							<!-- Compressive Strength  -->
 								<tr t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
 
-										3
-										
+									
 									</td>
 									<td >
 										<span>
@@ -1342,10 +1322,9 @@
 								<!-- water_absorbtion_visible  -->
 								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or (brick.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										4
-										
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									
 									</td>
 									<td >
 											<span>
@@ -1658,15 +1637,6 @@
 								</tr>
 
 
-
-
-
-								
-
-
-								
-
-								
 
 
 							
