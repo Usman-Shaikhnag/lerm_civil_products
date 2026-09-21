@@ -12,12 +12,13 @@
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                     <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
-
+                      <group>
                       <field name="srf_id" invisible="1"/>
                       <field name="sample_id"  readonly="1"/>
                       <field name="eln_ref" readonly="1"/>
                       <field name="parameter_id" invisible="1"/>
                       <field name="eln_state" />
+                        </group>
                       <field name="sample_parameters" class="custom_table_borders">
                         <tree>
                           <field name="parameter_name"/>
