@@ -793,7 +793,7 @@ class Soil(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Plasticity Index Conformity", compute="_compute_plasticity_limit_conformity", store=True)
 
-    @api.depends('plastic_limit', 'eln_ref', 'grade')
+    @api.depends('plasticity_index', 'eln_ref', 'grade')
     def _compute_plasticity_limit_conformity(self):
 
         for record in self:
@@ -881,7 +881,7 @@ class Soil(models.Model):
     def _compute_plastic_limit_conformity(self):
 
         for record in self:
-            record.plasticity_index_conformity = 'fail'
+            record.plastic_limit_conformity = 'fail'
 
             line = self.env['lerm.parameter.master'].sudo().search([
                 ('internal_id', '=', 'f797da97-2ff0-4b81-aca1-0e07dab7cd87')
@@ -899,7 +899,7 @@ class Soil(models.Model):
                         material.permissable_limit == '--'
                         or not material.permissable_limit
                     ):
-                        record.plasticity_index_conformity = '--'
+                        record.plastic_limit_conformity = '--'
                         break
 
                     req_min = material.req_min
@@ -910,10 +910,10 @@ class Soil(models.Model):
                     upper = record.plastic_limit + record.plastic_limit * (mu_value/100)
 
                     if lower >= req_min and upper <= req_max:
-                        record.plasticity_index_conformity = 'pass'
+                        record.plastic_limit_conformity = 'pass'
                         break
                     else:
-                        record.plasticity_index_conformity = 'fail'
+                        record.plastic_limit_conformity = 'fail'
 
 
 

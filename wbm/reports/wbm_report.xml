@@ -98,8 +98,8 @@
 						</table> 
 					</div>
 
-					<div t-if="data.dry_gradation_visible and fromEln" style="margin-top:20px">
-						<div style="text-align:center;font-size:18px">
+					<div t-if="data.dry_gradation_visible and fromEln" style="margin-top:20px;page-break-inside: avoid;">
+						<div style="text-align:center;font-size:18px;">
 							<span>Sieve Analysis </span>
 							<span>
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','4525465214-3497-4b7f-819a-a26f25c9848')]).parameter_table" t-as="parameter">
@@ -109,7 +109,7 @@
 								</t>
 							</span>
 						</div>
-						<table t-if="data.dry_gradation_visible and fromEln">
+						<table style="page-break-inside: avoid;" t-if="data.dry_gradation_visible and fromEln">
 							<tr cols="12">
 							<!-- <td colspan="2">Sr. No
 								 
@@ -176,7 +176,7 @@
 						</table>
                         
 					</div>
-					<div t-if="data.dry_gradation_visible and not fromEln" style="margin-top:20px">
+					<div t-if="data.dry_gradation_visible and not fromEln" style="margin-top:20px;page-break-inside: avoid;">
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
 							<span t-esc="o.material.test_parameter "/> 
@@ -188,7 +188,7 @@
 								</t>
 							</span>
 						</div>
-						<table t-if="data.dry_gradation_visible and not fromEln">
+						<table style="page-break-inside: avoid;" t-if="data.dry_gradation_visible and not fromEln">
 							<tr cols="12">
 								<!-- <td colspan="2">Sr. No
 								</td> -->
@@ -1346,7 +1346,7 @@
 										</span>
 									</div>
 									<div>
-											CONDITION SOAKED 1 Div. = 6.96kg
+											CONDITION SOAKED 1 Div. = <span t-esc="data.division_factor"/>
 									</div>
 								</div>
 							</tr>
@@ -1433,7 +1433,7 @@
 								CBR at 5mm Penetration = (PT/PS) X 100
 							</div>
 							<div>
-								From Graph PT = <span t-esc="load5"/>
+								From Graph PT = <span t-esc="round(load5, 2)"/>
 							</div>
 							<div>
 								PS = 2055

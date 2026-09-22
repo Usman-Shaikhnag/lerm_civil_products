@@ -15,6 +15,7 @@
                         <field name="projects" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="project_name" />
+                                <field name="reporting_customer" domain="[('parent_id', '=', parent.id), ('type', '=', 'reporting_customer')]" />
                                 <field name="client_name" />
                                 <field name="consultant_name" />
                                 <field name="closed_boolean" />
