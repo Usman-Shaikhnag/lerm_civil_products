@@ -201,7 +201,10 @@
 								<td colspan="3">
 								      <t t-if="o.material and o.material.lab_name">
 											<span t-field="o.material.lab_name"/>
-										</t>
+										</t> 
+										(	<t t-if="brick.brick_size">
+											<span t-field="brick.brick_size"/>
+										</t>)
 								</td>
 								
 							</tr>
@@ -653,350 +656,7 @@
 									</td>
 								</tr>
 
-
-								<!-- efflorescence_visible  -->
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-										
-									</td>
-									<td >
-											<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_name"/>
-										</span>
-									</td>
-
-									<td rowspan="7" style="text-align: center; vertical-align: middle;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).unit.name"/>
-										</span>							
-									</td>
-									
-									<td rowspan="7" style="text-align: center; vertical-align: middle;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
-									</td>
-									
-									
-									<td>
-										<span>
-										</span>
-									</td>
-									<td rowspan="7" style="text-align: center; vertical-align: middle;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td>
-									<td rowspan="7" t-if="eln.conformity" style="text-align: center;">
-										<!-- <span t-field="brick.water_absorption_confirmity"/> -->
-									</td>
-								</tr>
-
-
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td>
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										
-									</td>
-									<td >
-										
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
-										</span> -->
-										(a)
-										
-									</td>
-
-										<!-- <td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td> -->
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="brick.visual_observation_1" />
-										</span>									
-									</td>
-									
-									<!-- <td style="text-align: center;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td> -->
-								
-									
-									<!-- <td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.avg_3_days_conformity"/>
-									</td> -->
-								</tr>
-
-
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td>
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										
-									</td>
-									<td >
-										
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
-										</span> -->
-										(b)
-										
-									</td>
-
-										<!-- <td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td> -->
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="brick.visual_observation_2" />
-										</span>									
-									</td>
-									
-									<!-- <td style="text-align: center;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td> -->
-								
-									
-									<!-- <td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.avg_3_days_conformity"/>
-									</td> -->
-								</tr>
-
-
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td>
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										
-									</td>
-									<td >
-										
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
-										</span> -->
-										(c)
-										
-									</td>
-
-										<!-- <td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td> -->
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="brick.visual_observation_3" />
-										</span>									
-									</td>
-									
-									<!-- <td style="text-align: center;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td> -->
-								
-									
-									<!-- <td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.avg_3_days_conformity"/>
-									</td> -->
-								</tr>
-
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td>
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										
-									</td>
-									<td >
-										
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
-										</span> -->
-										(d)
-										
-									</td>
-
-										<!-- <td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td> -->
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="brick.visual_observation_4" />
-										</span>									
-									</td>
-									
-									<!-- <td style="text-align: center;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td> -->
-								
-									
-									<!-- <td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.avg_3_days_conformity"/>
-									</td> -->
-								</tr>
-
-
-								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
-									<td>
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
-										
-									</td>
-									<td >
-										
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
-										</span> -->
-										(e)
-										
-									</td>
-
-										<!-- <td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td> -->
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="brick.visual_observation_5" />
-										</span>									
-									</td>
-									
-									<!-- <td style="text-align: center;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.size.id == eln.size_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-										</span>
-									</td> -->
-								
-									
-									<!-- <td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.avg_3_days_conformity"/>
-									</td> -->
-								</tr>
-
-
-								
-							</tbody>
-						</table>
-						</div>
-
-
-
-						<div style="margin-top:20px; page-break-before: always;" t-if="brick.compressive_strength_visible and brick.water_absorbtion_visible and ((nabl and brick.comp_strength_nabl != 'fail' and brick.water_absorption_nabl != 'fail') or (not nabl and (brick.comp_strength_nabl == 'fail' or brick.water_absorption_nabl == 'fail')))">
-					<table style="">
-							<!-- Pahilya table madhlya visible rows count karun 'i' chi value set karat ahot -->
-							<t t-set="dim_pass" t-value="brick.dimension_visible and (brick.length_in_mm_nabl == 'pass' and nabl or (brick.length_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
-							<t t-set="eff_pass" t-value="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))"/>
-							
-							<t t-set="i" t-value="(1 if dim_pass else 0) + (1 if eff_pass else 0)"/>
-							<thead>
-								<tr>
-									<th style="text-align: center;">
-										<span>
-											Sr. No
-										</span>
-									</th>
-									<th style="text-align: center;">
-									   <span t-esc="eln.material.test_parameter"/>
-										<!-- <span>
-											Test Parameter
-										</span> -->
-									</th>
-									<!-- <th style="text-align: center;">
-										<span t-field="eln.material.method_reference"></span>
-									</th> -->
-									<th style="text-align: center;">
-									  <span t-esc="eln.material.unit"/>
-										<!-- <span>
-											Unit
-										</span> -->
-									</th>
-									<th style="text-align: center;">
-										<!-- <span>Test Method</span> -->
-										<span t-esc="eln.material.method_reference"/>
-									</th>
-
-									
-									
-									<th style="text-align: center;">
-
-									<span t-esc="eln.material.result_remark"/>
-										<!-- <span>
-											Test Result
-										</span> -->
-									</th>
-									
-									
-									<th rowspan="1" style="text-align: center;"> 
-										<span t-field="eln.material.specifications"></span>
-									</th>
-
-									
-
-									
-									<th t-if="eln.conformity" style="text-align: center;">
-										<span>
-											Conformity
-										</span>
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-
-
-							<!-- Compressive Strength  -->
+											<!-- Compressive Strength  -->
 								<tr t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
@@ -1315,6 +975,81 @@
 								</tr>
 
 
+							
+
+
+								
+							</tbody>
+						</table>
+						</div>
+
+
+
+						<div style="margin-top:20px; page-break-before: always;" t-if="brick.compressive_strength_visible and brick.water_absorbtion_visible and ((nabl and brick.comp_strength_nabl != 'fail' and brick.water_absorption_nabl != 'fail') or (not nabl and (brick.comp_strength_nabl == 'fail' or brick.water_absorption_nabl == 'fail')))">
+					<table style="">
+							<!-- Pahilya table madhlya visible rows count karun 'i' chi value set karat ahot -->
+							<t t-set="dim_pass" t-value="brick.dimension_visible and (brick.length_in_mm_nabl == 'pass' and nabl or (brick.length_in_mm_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
+							<t t-set="eff_pass" t-value="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))"/>
+							
+							<t t-set="i" t-value="(1 if dim_pass else 0) + (1 if eff_pass else 0)"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th style="text-align: center;">
+									   <span t-esc="eln.material.test_parameter"/>
+										<!-- <span>
+											Test Parameter
+										</span> -->
+									</th>
+									<!-- <th style="text-align: center;">
+										<span t-field="eln.material.method_reference"></span>
+									</th> -->
+									<th style="text-align: center;">
+									  <span t-esc="eln.material.unit"/>
+										<!-- <span>
+											Unit
+										</span> -->
+									</th>
+									<th style="text-align: center;">
+										<!-- <span>Test Method</span> -->
+										<span t-esc="eln.material.method_reference"/>
+									</th>
+
+									
+									
+									<th style="text-align: center;">
+
+									<span t-esc="eln.material.result_remark"/>
+										<!-- <span>
+											Test Result
+										</span> -->
+									</th>
+									
+									
+									<th rowspan="1" style="text-align: center;"> 
+										<span t-field="eln.material.specifications"></span>
+									</th>
+
+									
+
+									
+									<th t-if="eln.conformity" style="text-align: center;">
+										<span>
+											Conformity
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+
+
+				
+
+
 								
 
 								
@@ -1617,6 +1352,279 @@
 									<td style="text-align: center;">
 										<span>
 											<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									
+									<!-- <td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> -->
+								
+									
+									<!-- <td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_3_days_conformity"/>
+									</td> -->
+								</tr>
+
+
+									<!-- efflorescence_visible  -->
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+										
+									</td>
+									<td >
+											<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_name"/>
+										</span>
+									</td>
+
+									<td rowspan="7" style="text-align: center; vertical-align: middle;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).unit.name"/>
+										</span>							
+									</td>
+									
+									<td rowspan="7" style="text-align: center; vertical-align: middle;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+									</td>
+									
+									
+									<td>
+										<span>
+										</span>
+									</td>
+									<td rowspan="7" style="text-align: center; vertical-align: middle;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td>
+									<td rowspan="7" t-if="eln.conformity" style="text-align: center;">
+										<!-- <span t-field="brick.water_absorption_confirmity"/> -->
+									</td>
+								</tr>
+
+
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td>
+										<!-- <span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/> -->
+										
+									</td>
+									<td >
+										
+										<!-- <span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span> -->
+										(a)
+										
+									</td>
+
+										<!-- <td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td> -->
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="brick.visual_observation_1" />
+										</span>									
+									</td>
+									
+									<!-- <td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> -->
+								
+									
+									<!-- <td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_3_days_conformity"/>
+									</td> -->
+								</tr>
+
+
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td>
+										<!-- <span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/> -->
+										
+									</td>
+									<td >
+										
+										<!-- <span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span> -->
+										(b)
+										
+									</td>
+
+										<!-- <td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td> -->
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="brick.visual_observation_2" />
+										</span>									
+									</td>
+									
+									<!-- <td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> -->
+								
+									
+									<!-- <td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_3_days_conformity"/>
+									</td> -->
+								</tr>
+
+
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td>
+										<!-- <span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/> -->
+										
+									</td>
+									<td >
+										
+										<!-- <span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span> -->
+										(c)
+										
+									</td>
+
+										<!-- <td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td> -->
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="brick.visual_observation_3" />
+										</span>									
+									</td>
+									
+									<!-- <td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> -->
+								
+									
+									<!-- <td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_3_days_conformity"/>
+									</td> -->
+								</tr>
+
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td>
+										<!-- <span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/> -->
+										
+									</td>
+									<td >
+										
+										<!-- <span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span> -->
+										(d)
+										
+									</td>
+
+										<!-- <td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td> -->
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="brick.visual_observation_4" />
+										</span>									
+									</td>
+									
+									<!-- <td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.size.id == eln.size_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> -->
+								
+									
+									<!-- <td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_3_days_conformity"/>
+									</td> -->
+								</tr>
+
+
+								<tr t-if="brick.efflorescence_visible and ((brick.efflorescence_type == 'nabl' and nabl) or (brick.efflorescence_type == 'non_nabl' and not nabl))">
+									<td>
+										<!-- <span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/> -->
+										
+									</td>
+									<td >
+										
+										<!-- <span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span> -->
+										(e)
+										
+									</td>
+
+										<!-- <td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td> -->
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="brick.visual_observation_5" />
 										</span>									
 									</td>
 									
