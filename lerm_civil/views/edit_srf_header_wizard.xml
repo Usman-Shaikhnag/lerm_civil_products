@@ -17,12 +17,12 @@
                         <field name="client_refrence"/>
                     </group>
                     <group style="width:50%">
-                        <field name="customer" />
+                        <field name="billing_customer" domain="[('parent_id', '=', False)]"/>
+                        <field name="customer" domain="[('parent_id', '=', billing_customer), ('type', '=', 'reporting_customer')]" />
                         <field name="client" />
                         <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
                         <field name="contractor_ids" invisible="1"/>
                         <field name="contact_other_ids" invisible="1"/>
-                        <field name="billing_customer"/>
                         <field name="name_work" domain="[('id', 'in', name_works)]"/>
                         <field name="name_works" invisible="1"/>
                         <field name="attachment" filename="attachment_name"/>
