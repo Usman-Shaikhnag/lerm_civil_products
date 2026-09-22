@@ -16,7 +16,7 @@ This module contains all the common features of Sales Management and eCommerce.
                'views/acil_crack_depth.xml',
                'views/acil_upv.xml',
                'views/carbonation_test.xml',
-               'views/concrete_core.xml',
+            #    'views/concrete_core.xml',
                'views/cover_meter.xml',
                'views/crack_depth.xml',
                'views/crack_width.xml',

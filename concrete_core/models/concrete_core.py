@@ -13,6 +13,8 @@ class ConcreteCore(models.Model):
     child_lines = fields.One2many('mechanical.concrete.core.line','parent_id',string="Parameter")
     average = fields.Float(string="Average Compressive Strength in Mpa",compute="_compute_average")
     structure = fields.Char("Structure")
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
 
     notes = fields.One2many('mechanical.concrete.core.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -46,6 +48,11 @@ class ConcreteCore(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
     
