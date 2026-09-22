@@ -44,7 +44,7 @@
                             <field name="srf_id" readonly="1"/>
                             <field name="srf_date" readonly="state == '2-confirm' and date_editable == False"/>
                             <field name="kes_number" invisible='1'/>
-                            <field name="customer" readonly="state == '2-confirm'" />
+                            <field name="customer" domain="[('parent_id', '=', billing_customer), ('type', '=', 'reporting_customer')]" readonly="state == '2-confirm'" />
                             <field name="contact_person" domain="[('id', 'in', contact_site_ids)]"
                                 readonly="state == '2-confirm'"/>
                             <field name="site_address"/>
@@ -60,7 +60,7 @@
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]" invisible="1"/>
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
-                            <field name="billing_customer" readonly="state == '2-confirm'"/>
+                            <field name="billing_customer" domain="[('parent_id', '=', False)]" readonly="state == '2-confirm'"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
                         </group>
@@ -80,7 +80,7 @@
 
                     <field name="samples"
                                         readonly="1"
-                                        context="{'default_customer_id': customer, 'is_local': True}"
+                                        context="{'default_customer_id': billing_customer, 'is_local': True}"
                                         >
                         <tree>
                             <field name="kes_no" string="Sample No."/>
@@ -149,7 +149,7 @@
                 <field name="kes_number" string="SSL NO" />
                 <field name="srf_date" string="SRF Date" />
                 <field name="job_date" string="JOB Date" />
-                <field name="customer" string="Customer" />
+                <field name="customer" string="Reporting Customer" />
                 <field name="billing_customer" string="Billing Customer" />
                 <field name="contact_person" string="Contact Person" />
                 <field name="client" string="Client" />

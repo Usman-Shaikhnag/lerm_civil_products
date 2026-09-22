@@ -100,7 +100,8 @@
 							</tr>
 
 							<tr>
-								<td colspan="12">Material/Test Name :<![CDATA[&nbsp;]]>
+								<td colspan="12">Material/Test Name :
+																											<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
@@ -127,11 +128,11 @@
 					</div>
 
 					<div>
-						<h6> <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/></h6>
+						<h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_name"/></h6>
 					</div>
 					<t t-if="len(data.child_lines) &lt;= o.sample_id.page_break">
 						<div style="margin-top:10px">
-							<table style="margin-top:10px" t-if="(data.wpt_nabl == 'pass' and nabl or (data.wpt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<table style="margin-top:10px">
 
 								
 
@@ -179,19 +180,19 @@
 									</td>
 										<td style="text-align: center; vertical-align: middle;">
 											<span>
-												<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).unit.name"/>
+												<span t-field="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).unit.name"/>
 											</span>
 										</td>
 								
 										<td  style="text-align: center; vertical-align: middle;">
-											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
 											</t>
 										</td>
 											<td  style="text-align: center; vertical-align: middle;">
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
 											</t>
@@ -205,38 +206,46 @@
 								</tr>
 								
 							</table>
+							<table style="margin-top:20px">
+								<tr cols="12">
+									<td colspan="6">Average Of WPT  (mm) :
+										<![CDATA[&nbsp;]]>
+									</td>
+									<td colspan="6">
+										<span t-field="data.average_of_wpt" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+								
+							</table>
 						</div>
 					</t>
 
 					
 					
-					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ol>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory
-									</li>
-									<li>
-										This Report may not br reproduced in except full/ part without the permission of the Lab Head of the Laboratory
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ol>
-							</div>
-						</div>
-						</div>
+					 <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
+									<ul>
+									   
+										<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+				</div>
 						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -247,7 +256,7 @@
 								<div style="height: 40px;">
 									<t t-if="eln.sample_id.checkby_signature_required">
 										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 										</div>
 										
 									</t>
@@ -264,13 +273,14 @@
 								</div>
 							</div>
 							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					<div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
 						<div>
 							<b>
 								Approved By 
@@ -280,7 +290,7 @@
 						<div style="height: 40px;">
 							<t t-if="eln.sample_id.approveby_signature_required">
 								<div t-if="eln.sample_id.approved_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
@@ -308,7 +318,6 @@
 						</div>
 					</div>
 				<!-- </div> -->
-				</div>
 			</t>
 		</t>
 	</template>

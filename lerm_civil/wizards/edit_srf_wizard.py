@@ -14,7 +14,7 @@ class SRFEditWizard(models.TransientModel):
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date())
     job_date = fields.Date(string="JOB Date")
-    customer = fields.Many2one('res.partner',string="Customer",tracking=True)
+    customer = fields.Many2one('res.partner',string="Reporting Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
     client = fields.Char("Client")
@@ -52,7 +52,7 @@ class SRFEditWizard(models.TransientModel):
         samples = self.env['lerm.civil.srf'].search([("id","=",self.srf_id.id)]).samples
         for sample in samples:
             sample.write({
-                'customer_id': self.customer.id
+                'customer_id': self.billing_customer.id
                 # 'sample_received_date':self.srf_date
             })
         
@@ -85,13 +85,9 @@ class SRFEditWizard(models.TransientModel):
     def _compute_name_work(self):
         for record in self:
             if(record.customer):
-                child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
-                if child_ids:
-                    partner_record = record.env['res.partner'].browse(child_ids.id)
-                else:
-                    partner_record = record.env['res.partner'].browse(record.customer.id)
-                name_work = partner_record.projects
-                record.name_works = name_work
+                record.name_works = self.env['res.partner.project'].search([
+                    ('reporting_customer', '=', record.customer.id)
+                ])
             else:
                 record.name_works = None
 
@@ -107,27 +103,39 @@ class SRFEditWizard(models.TransientModel):
     #         else:
     #             record.name_works = None
     
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_other_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','other')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','other')])
             record.contact_other_ids = contact_ids
     
     
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_contact_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','contact')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','contact')])
             record.contact_contact_ids = contact_ids
 
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_site_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','delivery')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','delivery')])
             record.contact_site_ids = contact_ids
 
-    @api.onchange('customer')
+    @api.onchange('billing_customer')
     def compute_client(self):
         for record in self:
-            if record.customer:
-                self.client = self.env['res.partner'].search([("id","=",self.customer.id)]).consultant
+            if record.billing_customer:
+                self.client = record.billing_customer.consultant
+            else:
+                self.client = False
+
+    @api.onchange('billing_customer')
+    def _onchange_billing_customer(self):
+        if self.customer and self.customer.parent_id != self.billing_customer:
+            self.customer = False
+
+    @api.onchange('customer')
+    def _onchange_customer(self):
+        if self.name_work and self.name_work.reporting_customer != self.customer:
+            self.name_work = False

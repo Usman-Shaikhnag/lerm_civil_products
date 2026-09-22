@@ -798,7 +798,7 @@ class ReportDownloadControllerCoarse(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'coarse_aggregate.lerm_coarse_aggregate_mech_report'
+            report_name = 'coarse_aggregate2.lerm_coarse_aggregate_mech_report2'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': True}
             )
@@ -824,7 +824,7 @@ class ReportDownloadControllerCoarse(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'coarse_aggregate.lerm_coarse_aggregate_mech_report'
+            report_name = 'coarse_aggregate2.lerm_coarse_aggregate_mech_report2'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': False}
             )
@@ -3138,6 +3138,61 @@ class ReportDownloadControllerCubeWaterAbsorption(http.Controller):
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
             report_name = 'concrete_cube_water_absorption.cube_absorption_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+
+
+class ReportDownloadControllerSSTMTBAR(http.Controller):
+    @http.route(['/download_report/sstmtbar/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl_sstmtbar(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'ss_tmt_bar.stainless_steel_tmt_bar_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+    @http.route(['/download_report/sstmtbar/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl_sstmtbar(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'ss_tmt_bar.stainless_steel_tmt_bar_report'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': False}
             )

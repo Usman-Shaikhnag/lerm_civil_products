@@ -36,6 +36,7 @@ class Customer(models.Model):
             ('delivery', 'Site Address'),
             ('other', 'Delivery Address'),
             ("private", "Private Address"),
+            ('reporting_customer', 'Reporting Customer'),
             ]
         return selection
 
@@ -60,6 +61,7 @@ class CustomerProject(models.Model):
     _rec_name = "project_name" 
 
     contact_id = fields.Many2one('res.partner',string="Contact ID")
+    reporting_customer = fields.Many2one('res.partner',string="Reporting Customer")
     project_name = fields.Char(string="Project Name")
     client_name = fields.Char(string="Client Name")
     consultant_name = fields.Char(string="Consultant Name")

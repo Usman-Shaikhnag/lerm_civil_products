@@ -6,7 +6,7 @@ from io import BytesIO
 from lxml import etree
 
 class StructuralSteelRoundDataSheet(models.AbstractModel):
-    _name = 'report.structural_steel_datasheet'
+    _name = 'report.structural_steel.structural_steel_datasheet'
     _description = 'Structural Steel DataSheet'
     
     @api.model
@@ -37,7 +37,7 @@ class StructuralSteelRoundDataSheet(models.AbstractModel):
 
 
 class StructuralSteelReport(models.AbstractModel):
-    _name = 'report.structural_steel_report'
+    _name = 'report.structural_steel.structural_steel_report'
     _description = 'Structural Steel Report'
     
     @api.model

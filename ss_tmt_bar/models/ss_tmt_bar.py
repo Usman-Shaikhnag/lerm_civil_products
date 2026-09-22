@@ -18,12 +18,12 @@ from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 class StainlessSteel(models.Model):
     _name = "mechanical.stainless.steel.tmt.bar"
     _inherit = "lerm.eln"
-    _description = 'mechanical.stainless.steel.tmt.bar'
+    # _description = 'mechanical.stainless.steel.tmt.bar'
    
 
 
         
-    bar_test_line_ids = fields.One2many('stainless.tmt.bar.line','parent_id',string='TMT Bar Test Lines')
+    # bar_test_line_ids = fields.One2many('stainless.tmt.bar.line','parent_id',string='TMT Bar Test Lines')
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     def prefill_data(self):
@@ -40,49 +40,77 @@ class StainlessSteel(models.Model):
                 },
         }
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        default_lines = []
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     default_lines = []
 
-        bar_data = [
-            (8, 0.395),
-            (10, 0.617),
-            (12, 0.888),
-            (16, 1.580),
-            (20, 2.470),
-            (25, 3.850),
-            (28, 4.830),
-            (32, 6.330),
+    #     bar_data = [
+    #         (8, 0.395),
+    #         (10, 0.617),
+    #         (12, 0.888),
+    #         (16, 1.580),
+    #         (20, 2.470),
+    #         (25, 3.850),
+    #         (28, 4.830),
+    #         (32, 6.330),
+    #     ]
+
+    #     for dia, weight in bar_data:
+    #         for _ in range(3):  # Repeat 3 times
+    #             default_lines.append((0, 0, {
+    #                 'dia_of_bar': dia,
+    #                 'weight_kg_min': weight,
+    #             }))
+
+    #     res['bar_test_line_ids'] = default_lines
+    #     return res
+
+
+
+    # def open_add_bar_line_wizard(self):
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'Add TMT Bar Line',
+    #         'res_model': 'stainless.tmt.bar.wizard',
+    #         'view_mode': 'form',
+    #         'target': 'new',
+    #         'context': {
+    #             'default_parent_id': self.id,
+    #         }
+    #     }
+
+    notes_id = fields.One2many('stainless.steel.tmtbar.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(StainlessSteel, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
         ]
 
-        for dia, weight in bar_data:
-            for _ in range(3):  # Repeat 3 times
-                default_lines.append((0, 0, {
-                    'dia_of_bar': dia,
-                    'weight_kg_min': weight,
-                }))
-
-        res['bar_test_line_ids'] = default_lines
+        res['notes_id'] = default_notes
         return res
-
-
-
-    def open_add_bar_line_wizard(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Add TMT Bar Line',
-            'res_model': 'stainless.tmt.bar.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_parent_id': self.id,
-            }
-        }
 
     Id_no = fields.Char("ID No")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    name = fields.Char("Name",default="STEEL TMT BAR")
+    name = fields.Char("Name",default="STAINLESS STEEL TMT BAR")
     size = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     diameter = fields.Integer(string="Dia. in mm",compute="_compute_dia")
     lentgh = fields.Float(string="Length in meter",digits=(10, 3))
@@ -91,7 +119,7 @@ class StainlessSteel(models.Model):
     crossectional_area = fields.Float(string="Area mm²",compute="_compute_crossectional_area")
     gauge_length = fields.Integer(string="Gauge Length mm",compute="_compute_gauge_length",store=True)
     elongated_gauge_length = fields.Float(string="Final Length, mm")
-    percent_elongation = fields.Float(string="% Elongation",compute="_compute_elongation_percent",store=True)
+    percent_elongation = fields.Float(string="% Elongation",compute="_compute_elongation_percent")
     yeild_load = fields.Float(string="0.2% Proof Load / Yield Load, KN")
     ultimate_load = fields.Float(string="Ultimate Load, Kn")
     proof_yeid_stress = fields.Float(string="0.2% Proof Stress",compute="_compute_proof_yeid_stress",store=True)
@@ -121,23 +149,33 @@ class StainlessSteel(models.Model):
 
     uts_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_uts_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_uts_conformity",store=True)
 
     yield_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_yield_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_yield_conformity",store=True)
 
     elongation_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_elongation_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_elongation_conformity",store=True)
 
     ts_ys_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
 
     weight_per_meter_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
 
     fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
     bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
@@ -170,6 +208,8 @@ class StainlessSteel(models.Model):
     weight_per_meter_visible = fields.Boolean("Weight Per Meter",compute="_compute_visible")
     yield_visible = fields.Boolean("Yield",compute="_compute_visible")
     ts_ys_visible = fields.Boolean("TS/YS",compute="_compute_visible")
+    # total_elongation = fields.Float(string="Total Elongation at maximum force")
+    # total_elongation_visible = fields.Boolean("Total Elongation",compute="_compute_visible")
 
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
@@ -243,6 +283,12 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51b0c744-b113-477a-8fde-b33cf309c1e3')]).parameter_table
             for material in materials:
                 if material.size.id == record.size.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.weight_per_meter_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -288,6 +334,12 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.uts_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -348,6 +400,12 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f244daa5-d08f-4336-bdbf-968dfc3c37dc')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.elongation_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -408,6 +466,12 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d46dfca3-0395-4c5b-86a8-918bca950ef3')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.yield_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -468,6 +532,12 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c7908eda-7bf1-4fd4-aae6-f89c9fdab187')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.ts_ys_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -559,6 +629,7 @@ class StainlessSteel(models.Model):
             else:
                 record.proof_yeid_stress = 0.0
 
+
     @api.depends('ultimate_load')
     def _compute_ult_tens_strgth(self):
         for record in self:
@@ -633,10 +704,18 @@ class StainlessSteel(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+         # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
             if result.parameter.internal_id == 'ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe':
                 result.result_char = round(self.ult_tens_strgth,2)
+                result.calculated = True
                 if self.uts_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -644,6 +723,7 @@ class StainlessSteel(models.Model):
                 continue
             if result.parameter.internal_id == 'd46dfca3-0395-4c5b-86a8-918bca950ef3':
                 result.result_char = round(self.proof_yeid_stress,2)
+                result.calculated = True
                 if self.yield_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -651,6 +731,7 @@ class StainlessSteel(models.Model):
                 continue
             if result.parameter.internal_id == 'f244daa5-d08f-4336-bdbf-968dfc3c37dc':
                 result.result_char = self.percent_elongation
+                result.calculated = True
                 if self.elongation_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -658,6 +739,7 @@ class StainlessSteel(models.Model):
                 continue
             if result.parameter.internal_id == 'c7908eda-7bf1-4fd4-aae6-f89c9fdab187':
                 result.result_char = round(self.ts_ys_ratio,2)
+                result.calculated = True
                 if self.ts_ys_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -665,6 +747,7 @@ class StainlessSteel(models.Model):
                 continue
             if result.parameter.internal_id == '51b0c744-b113-477a-8fde-b33cf309c1e3':
                 result.result_char = round(self.weight_per_meter,3)
+                result.calculated = True
                 if self.weight_per_meter_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -672,12 +755,53 @@ class StainlessSteel(models.Model):
                 continue
             if result.parameter.internal_id == 'fafcb7b0-8df1-47d0-92a9-b6eb99af38e0':
                 result.result_char =self.fracture
+                result.calculated = True
                 continue
             if result.parameter.internal_id == '25fcb167-68bc-48d0-880f-77ca213fd995':
                 result.result_char = self.bend_test1
+                result.calculated = True
                 continue
             if result.parameter.internal_id == '709c7024-d1b9-48bb-8c94-fc0742a3e080':
                 result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+
+            if result.parameter.internal_id == 'a2485f5c-0376-4c23-a2d0-afa562f7e186':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+
+            if result.parameter.internal_id == '611663e4-e8b5-4002-94b2-792d3bcb185f':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+            if result.parameter.internal_id == '0bf1db05-aaab-422d-93d8-9926f16ff16b':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+            if result.parameter.internal_id == '7f059f38-2735-4d3a-b85a-8ed252931e3c':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+
+            if result.parameter.internal_id == '43e73b4a-e0a3-45f3-8333-51c63c989965':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+
+            if result.parameter.internal_id == '02ca5b8e-5aa3-42e1-a008-3db2dfbdf843':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+
+            if result.parameter.internal_id == 'bd7f75c3-7d45-43d1-a63f-547df75409ba':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
+                continue
+            
+            if result.parameter.internal_id == 'e01fa336-3e33-4b56-8a17-c28f8f4265f9':
+                # result.result_char = self.re_bend_test1
+                result.calculated = True
                 continue
 
         return {
@@ -696,63 +820,71 @@ class StainlessSteel(models.Model):
             record.sample_parameters = records
             print("Records",records)
 
-class StainlessTMTBarLine(models.Model):
-    _name = 'stainless.tmt.bar.line'
-    _description = 'TMT Bar Line'
+# class StainlessTMTBarLine(models.Model):
+#     _name = 'stainless.tmt.bar.line'
+#     _description = 'TMT Bar Line'
 
-    parent_id = fields.Many2one('mechanical.stainless.steel.tmt.bar',string='Parent Test')
+#     parent_id = fields.Many2one('mechanical.stainless.steel.tmt.bar',string='Parent Test')
 
-    dia_of_bar = fields.Float(string="Dia of Bar (mm)")
-    yield_stress = fields.Float(string="Yield Stress (N/mm²)")
-    ultimate_tensile_stress = fields.Float(string="Ultimate Tensile Stress (N/mm²)")
-    elongation = fields.Float(string="Elongation (%)")
-    weight_per_meter = fields.Float(string="Weight / Meter (kg/m)", store=True)
-    weight_kg_min = fields.Float(string="Weight kg/m (Min.)", store=True, digits=(12,3))
-    bend_test = fields.Char("Bend Test",store=True)
+#     dia_of_bar = fields.Float(string="Dia of Bar (mm)")
+#     yield_stress = fields.Float(string="Yield Stress (N/mm²)")
+#     ultimate_tensile_stress = fields.Float(string="Ultimate Tensile Stress (N/mm²)")
+#     elongation = fields.Float(string="Elongation (%)")
+#     weight_per_meter = fields.Float(string="Weight / Meter (kg/m)", store=True)
+#     weight_kg_min = fields.Float(string="Weight kg/m (Min.)", store=True, digits=(12,3))
+#     bend_test = fields.Char("Bend Test",store=True)
 
-    # @api.onchange('bend_test')
-    # def _onchange_bend_test(self):
-    #     if self.parent_id and self.dia_of_bar:
-    #         for line in self.parent_id.bar_test_line_ids:
-    #             if line != self and line.dia_of_bar == self.dia_of_bar:
-    #                 line.bend_test = self.bend_test
+#     # @api.onchange('bend_test')
+#     # def _onchange_bend_test(self):
+#     #     if self.parent_id and self.dia_of_bar:
+#     #         for line in self.parent_id.bar_test_line_ids:
+#     #             if line != self and line.dia_of_bar == self.dia_of_bar:
+#     #                 line.bend_test = self.bend_test
 
-    def write(self, vals):
-        res = super().write(vals)
+#     def write(self, vals):
+#         res = super().write(vals)
 
-        if self._context.get('sync_bend_test'):
-            return res  # Prevent recursion
+#         if self._context.get('sync_bend_test'):
+#             return res  # Prevent recursion
 
-        for record in self:
-            if 'bend_test' in vals and record.dia_of_bar and record.parent_id:
-                lines = self.search([
-                    ('parent_id', '=', record.parent_id.id),
-                    ('dia_of_bar', '=', record.dia_of_bar),
-                    ('id', '!=', record.id),
-                ])
-                lines.with_context(sync_bend_test=True).write({'bend_test': vals['bend_test']})
+#         for record in self:
+#             if 'bend_test' in vals and record.dia_of_bar and record.parent_id:
+#                 lines = self.search([
+#                     ('parent_id', '=', record.parent_id.id),
+#                     ('dia_of_bar', '=', record.dia_of_bar),
+#                     ('id', '!=', record.id),
+#                 ])
+#                 lines.with_context(sync_bend_test=True).write({'bend_test': vals['bend_test']})
 
-        return res
+#         return res
 
 
-class StainlessTMTBarWizard(models.TransientModel):
-    _name = 'stainless.tmt.bar.wizard'
-    _description = 'Wizard for adding TMT Bar Line'
+# class StainlessTMTBarWizard(models.TransientModel):
+#     _name = 'stainless.tmt.bar.wizard'
+#     _description = 'Wizard for adding TMT Bar Line'
 
-    parent_id = fields.Many2one('mechanical.stainless.steel.tmt.bar', required=True)
-    dia_of_bar = fields.Float(required=True)
-    yield_stress = fields.Float(required=True)
-    ultimate_tensile_stress = fields.Float(required=True)
-    elongation = fields.Float(required=True)
+#     parent_id = fields.Many2one('mechanical.stainless.steel.tmt.bar', required=True)
+#     dia_of_bar = fields.Float(required=True)
+#     yield_stress = fields.Float(required=True)
+#     ultimate_tensile_stress = fields.Float(required=True)
+#     elongation = fields.Float(required=True)
 
-    def action_add_bar_line(self):
-        for wizard in self:
-            self.env['stainless.tmt.bar.line'].create({
-                'parent_id': wizard.parent_id.id,
-                'dia_of_bar': wizard.dia_of_bar,
-                'yield_stress': wizard.yield_stress,
-                'ultimate_tensile_stress': wizard.ultimate_tensile_stress,
-                'elongation': wizard.elongation,
-            })
+#     def action_add_bar_line(self):
+#         for wizard in self:
+#             self.env['stainless.tmt.bar.line'].create({
+#                 'parent_id': wizard.parent_id.id,
+#                 'dia_of_bar': wizard.dia_of_bar,
+#                 'yield_stress': wizard.yield_stress,
+#                 'ultimate_tensile_stress': wizard.ultimate_tensile_stress,
+#                 'elongation': wizard.elongation,
+#             })
+
+
+class StainlesssteeltmtbarNotes(models.Model):
+    _name = "stainless.steel.tmtbar.notes"
+
+    parent_id = fields.Many2one('mechanical.stainless.steel.tmt.bar',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 

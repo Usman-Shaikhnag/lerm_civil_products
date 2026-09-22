@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <delete model="ir.ui.menu" id="menu_child_contacts_invoice"/>
+        <delete model="ir.actions.act_window" id="action_child_contacts_invoice"/>
+
+        <record id="action_child_contacts" model="ir.actions.act_window">
+            <field name="name">Child Contacts</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False)]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <record id="action_child_contacts_contact" model="ir.actions.act_window">
+            <field name="name">Contact</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False), ('type', '=', 'contact')]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <record id="action_child_contacts_delivery" model="ir.actions.act_window">
+            <field name="name">Site Address</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False), ('type', '=', 'delivery')]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <record id="action_child_contacts_other" model="ir.actions.act_window">
+            <field name="name">Delivery Address</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False), ('type', '=', 'other')]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <record id="action_child_contacts_private" model="ir.actions.act_window">
+            <field name="name">Private Address</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False), ('type', '=', 'private')]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <record id="action_child_contacts_reporting_customer" model="ir.actions.act_window">
+            <field name="name">Reporting Customer</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('parent_id', '!=', False), ('type', '=', 'reporting_customer')]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        </record>
+
+        <menuitem id="menu_child_contacts"
+            name="Child Contacts"
+            parent="contacts.menu_contacts"
+            action="action_child_contacts"
+            sequence="3"/>
+
+        <menuitem id="menu_child_contacts_contact"
+            name="Contact"
+            parent="menu_child_contacts"
+            action="action_child_contacts_contact"
+            sequence="10"/>
+
+        <menuitem id="menu_child_contacts_delivery"
+            name="Site Address"
+            parent="menu_child_contacts"
+            action="action_child_contacts_delivery"
+            sequence="20"/>
+
+        <menuitem id="menu_child_contacts_other"
+            name="Delivery Address"
+            parent="menu_child_contacts"
+            action="action_child_contacts_other"
+            sequence="30"/>
+
+        <menuitem id="menu_child_contacts_private"
+            name="Private Address"
+            parent="menu_child_contacts"
+            action="action_child_contacts_private"
+            sequence="40"/>
+
+        <menuitem id="menu_child_contacts_reporting_customer"
+            name="Reporting Customer"
+            parent="menu_child_contacts"
+            action="action_child_contacts_reporting_customer"
+            sequence="50"/>
+    </data>
+</odoo>

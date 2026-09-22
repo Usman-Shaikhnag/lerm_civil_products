@@ -1481,8 +1481,8 @@ class FlyaschNormalConsistency(models.Model):
         
         for record in self:
             record.avg_expantion_fly_ash_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
             for material in materials:
 
                 if material.grade.id == record.grade.id:
@@ -1512,21 +1512,21 @@ class FlyaschNormalConsistency(models.Model):
         
         for record in self:
             record.avg_expantion_fly_ash_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_expantion_fly_ash - record.avg_expantion_fly_ash*mu_value
-                    upper = record.avg_expantion_fly_ash + record.avg_expantion_fly_ash*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_expantion_fly_ash_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_expantion_fly_ash_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104534c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_expantion_fly_ash - record.avg_expantion_fly_ash*mu_value
+            upper = record.avg_expantion_fly_ash + record.avg_expantion_fly_ash*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_expantion_fly_ash_nabl = 'pass'
+                break
+            else:
+                record.avg_expantion_fly_ash_nabl = 'fail'
 
     ### Compute Visible
     @api.depends('sample_parameters')

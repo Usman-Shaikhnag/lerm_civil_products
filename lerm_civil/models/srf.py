@@ -121,7 +121,7 @@ class SrfForm(models.Model):
         tracking=True
     )
     job_date = fields.Date(string="JOB Date")
-    customer = fields.Many2one('res.partner',string="Customer",tracking=True)
+    customer = fields.Many2one('res.partner',string="Reporting Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
     client = fields.Char("Client")
@@ -248,15 +248,9 @@ class SrfForm(models.Model):
     def _compute_name_work(self):
         for record in self:
             if record.customer:
-                # import wdb; wdb.set_trace() 
-                child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
-                if child_ids:
-                    partner_record = record.env['res.partner'].browse(child_ids.id)
-                else:
-                    partner_record = record.env['res.partner'].browse(record.customer.id)
-                name_work = partner_record.projects
-                print("Name Work", name_work)
-                record.name_works = name_work
+                record.name_works = self.env['res.partner.project'].search([
+                    ('reporting_customer', '=', record.customer.id)
+                ])
             else:
                 record.name_works = None
 
@@ -364,11 +358,23 @@ class SrfForm(models.Model):
         self.eln_count = count
         
 
-    @api.onchange('customer')
+    @api.onchange('billing_customer')
     def compute_client(self):
         for record in self:
-            if record.customer:
-                self.client = self.env['res.partner'].search([("id","=",self.customer.id)]).consultant
+            if record.billing_customer:
+                self.client = record.billing_customer.consultant
+            else:
+                self.client = False
+
+    @api.onchange('billing_customer')
+    def _onchange_billing_customer(self):
+        if self.customer and self.customer.parent_id != self.billing_customer:
+            self.customer = False
+
+    @api.onchange('customer')
+    def _onchange_customer(self):
+        if self.name_work and self.name_work.reporting_customer != self.customer:
+            self.name_work = False
 
 
 
@@ -746,30 +752,32 @@ class SrfForm(models.Model):
     # name_of_work = fields.Many2one('res.partner.project',string='Name of Work')
     last_srf_number = fields.Integer(string="Last SRF Number", default=0)
 
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_contact_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','contact')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','contact')])
             record.contact_contact_ids = contact_ids
 
-    @api.onchange('customer')
+    @api.onchange('billing_customer')
     def compute_contractor_ids(self):
         for record in self:
-            contractor_ids = self.env['res.partner'].search([('id', '=', record.customer.id)]).contractor_table
-            record.contractor_ids = contractor_ids
+            if record.billing_customer:
+                record.contractor_ids = record.billing_customer.contractor_table
+            else:
+                record.contractor_ids = False
 
     
 
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_other_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','other')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','other')])
             record.contact_other_ids = contact_ids
 
-    @api.depends('customer')
+    @api.depends('billing_customer')
     def compute_site_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id)])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id)])
             record.contact_site_ids = contact_ids
     
 
@@ -886,9 +894,9 @@ class SrfForm(models.Model):
             'view_id': action.id,
             'target': 'new',
             'context':{
-                'default_customer_id': self.customer.id,
+                'default_customer_id': self.billing_customer.id,
                 'default_sample_received_date':self.srf_date,
-                'default_pricelist':self.customer.property_product_pricelist.id,
+                'default_pricelist':self.billing_customer.property_product_pricelist.id,
                 'default_is_update': False,
                 # 'default_discipline_id': self.discipline_id.id,
                 }

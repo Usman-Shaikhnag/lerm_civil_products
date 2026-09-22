@@ -23,6 +23,7 @@
     'views/sample_range.xml',
     'views/eln.xml',
     'views/contractor.xml',
+    'views/child_contacts.xml',
     'views/lab_master.xml',
     'views/employee.xml',
     'views/product_grade_wizard.xml',

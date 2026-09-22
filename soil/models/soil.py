@@ -229,8 +229,8 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.max_fsi - record.max_fsi * mu_value
-                    upper = record.max_fsi + record.max_fsi * mu_value
+                    lower = record.max_fsi - record.max_fsi * (mu_value/100)
+                    upper = record.max_fsi + record.max_fsi * (mu_value/100)
 
                     if lower >= req_min and upper <= req_max:
                         record.max_fsi_conformity = 'pass'
@@ -255,8 +255,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.max_fsi - record.max_fsi*mu_value
-            upper = record.max_fsi + record.max_fsi*mu_value
+            lower = record.max_fsi - record.max_fsi*(mu_value/100)
+            upper = record.max_fsi + record.max_fsi*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.max_fsi_nabl = 'pass'
                 break
@@ -699,8 +699,8 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.liquid_limit - record.liquid_limit * mu_value
-                    upper = record.liquid_limit + record.liquid_limit * mu_value
+                    lower = record.liquid_limit - record.liquid_limit * (mu_value/100)
+                    upper = record.liquid_limit + record.liquid_limit * (mu_value/100)
 
                     if lower >= req_min and upper <= req_max:
                         record.liquid_limit_conformity = 'pass'
@@ -725,8 +725,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.liquid_limit - record.liquid_limit*mu_value
-            upper = record.liquid_limit + record.liquid_limit*mu_value
+            lower = record.liquid_limit - record.liquid_limit*(mu_value/100)
+            upper = record.liquid_limit + record.liquid_limit*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.liquid_limit_nabl = 'pass'
                 break
@@ -773,29 +773,38 @@ class Soil(models.Model):
     plastic_limit_table = fields.One2many('mechanical.plasticl.limit.line','parent_id',string="Parameter")
 
     plastic_limit = fields.Float(string="Average of % Moisture", compute="_compute_plastic_limit")
+    plastic_limit_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Plastic Limit NABL", compute="_compute_plastic_limit_nabl", store=True)
+
+    plastic_limit_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
     remarks_plastic = fields.Selection([
         ('plastic', 'Plastic'),
         ('non-plastic', 'Non-Plastic')],"Remarks",store=True)
 
     plasticity_index = fields.Char(string="Plasticity Index", compute="_compute_plasticity_index")
+    plasticity_index_visible = fields.Boolean("Plasticity Index Visible")
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_plasticity_limit_conformity", store=True)
+            ('--', '--')], string="Plasticity Index Conformity", compute="_compute_plasticity_limit_conformity", store=True)
 
-    @api.depends('plastic_limit', 'eln_ref', 'grade')
+    @api.depends('plasticity_index', 'eln_ref', 'grade')
     def _compute_plasticity_limit_conformity(self):
 
         for record in self:
             record.plasticity_index_conformity = 'fail'
 
             line = self.env['lerm.parameter.master'].sudo().search([
-                ('internal_id', '=', 'f797da97-2ff0-4b81-aca1-0e07dab7cd87')
+                ('internal_id', '=', '49c2978c-e6db-4be8-94a3-4f914fc672ea')
             ])
 
             materials = self.env['lerm.parameter.master'].sudo().search([
-                ('internal_id', '=', 'f797da97-2ff0-4b81-aca1-0e07dab7cd87')
+                ('internal_id', '=', '49c2978c-e6db-4be8-94a3-4f914fc672ea')
             ]).parameter_table
 
             for material in materials:
@@ -813,24 +822,19 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.plastic_limit - record.plastic_limit * mu_value
-                    upper = record.plastic_limit + record.plastic_limit * mu_value
+                    lower = record.plastic_limit - record.plastic_limit * (mu_value/100)
+                    upper = record.plastic_limit + record.plastic_limit * (mu_value/100)
 
                     if lower >= req_min and upper <= req_max:
                         record.plasticity_index_conformity = 'pass'
                         break
                     else:
                         record.plasticity_index_conformity = 'fail'
-
-    plasticity_index_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_plasticity_limi_nabl", store=True)
-
     @api.depends('plastic_limit','eln_ref','grade')
-    def _compute_plasticity_limi_nabl(self):
+    def _compute_plastic_limit_nabl(self):
         
         for record in self:
-            record.plasticity_index_nabl = 'fail'
+            record.plastic_limit_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f797da97-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
             # for material in materials:
@@ -839,14 +843,77 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.plastic_limit - record.plastic_limit*mu_value
-            upper = record.plastic_limit + record.plastic_limit*mu_value
+            lower = record.plastic_limit - record.plastic_limit*(mu_value/100)
+            upper = record.plastic_limit + record.plastic_limit*(mu_value/100)
+            if lower >= lab_min and upper <= lab_max:
+                record.plastic_limit_nabl = 'pass'
+                break
+            else:
+                record.plastic_limit_nabl = 'fail'
+
+    plasticity_index_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Plasticity Index NABL", compute="_compute_plasticity_limi_nabl", store=True)
+
+    @api.depends('plastic_limit','eln_ref','grade')
+    def _compute_plasticity_limi_nabl(self):
+        
+        for record in self:
+            record.plasticity_index_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','49c2978c-e6db-4be8-94a3-4f914fc672ea')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.plastic_limit - record.plastic_limit*(mu_value/100)
+            upper = record.plastic_limit + record.plastic_limit*(mu_value/100)
             if lower >= lab_min and upper <= lab_max:
                 record.plasticity_index_nabl = 'pass'
                 break
             else:
                 record.plasticity_index_nabl = 'fail'
 
+
+    @api.depends('plastic_limit', 'eln_ref', 'grade')
+    def _compute_plastic_limit_conformity(self):
+
+        for record in self:
+            record.plastic_limit_conformity = 'fail'
+
+            line = self.env['lerm.parameter.master'].sudo().search([
+                ('internal_id', '=', 'f797da97-2ff0-4b81-aca1-0e07dab7cd87')
+            ])
+
+            materials = self.env['lerm.parameter.master'].sudo().search([
+                ('internal_id', '=', 'f797da97-2ff0-4b81-aca1-0e07dab7cd87')
+            ]).parameter_table
+
+            for material in materials:
+                if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (
+                        material.permissable_limit == '--'
+                        or not material.permissable_limit
+                    ):
+                        record.plastic_limit_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+
+                    lower = record.plastic_limit - record.plastic_limit * (mu_value/100)
+                    upper = record.plastic_limit + record.plastic_limit * (mu_value/100)
+
+                    if lower >= req_min and upper <= req_max:
+                        record.plastic_limit_conformity = 'pass'
+                        break
+                    else:
+                        record.plastic_limit_conformity = 'fail'
 
 
 
@@ -1481,6 +1548,8 @@ class Soil(models.Model):
             # added
             record.field_density_visible = False
             record.moisture_content_visible = False
+            record.plasticity_index_visible = False
+
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
@@ -1529,6 +1598,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == 'a59bdedd-72cb-40e8-be97-e17fc20ff3fa':
                     record.moisture_content_visible = True
+
+                if sample.internal_id == '49c2978c-e6db-4be8-94a3-4f914fc672ea':
+                    record.plasticity_index_visible = True
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()

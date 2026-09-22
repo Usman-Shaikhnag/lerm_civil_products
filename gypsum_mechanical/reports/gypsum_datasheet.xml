@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="gypsum_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Gypsum
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-if="data.normal_consistency_visible">
+
+
+						<div style="text-align:center;font-size:18px">
+							Normal Consistency
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.eln_id"/> -->
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.start_date"/> -->
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.material.name"/> -->
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.end_date"/> -->
+								</td>
+							</tr>
+						</table>
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_normal"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_normal"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_normal"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_normal" />
+								</td>
+							</tr>
+							<tr cols="12" style="margin-top:20px">
+								<td colspan="6">Wt. of  Gypsum Plaster (g) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_gypsum_plaster"/>
+
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Water Required(g) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_water_req"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Penetraion of vicat's Plunger (mm) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.penetration_vicat"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Normal Consistency (%) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.normal_consistency"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Setting time  -->
+
+					<div t-if="data.setting_time_visible">
+						<div style="text-align:center;font-size:18px">
+							Setting Time
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_setting"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_setting"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_setting"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_setting"/>
+								</td>
+							</tr>
+
+
+							<!-- <tr cols="12">
+								<td colspan="12">
+									<h6>
+										<span t-field="data.initial_setting_time"/>
+									</h6>
+								</td>
+							</tr> -->
+
+							<tr cols="12">
+								<td colspan="6">The Time When water is added to cement (t1) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_water_added"/>
+								</td>
+							</tr>
+
+
+							<tr cols="12">
+								<td colspan="6">The time at which needle fails to penetrate the test block (t2) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_needle_penetrate"/>
+								</td>
+							</tr>
+
+
+							<tr cols="12">
+								<td colspan="6">Setting Time (Minutes) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.setting_time_minutes"/>
+								</td>
+							</tr>
+						</table>
+
+					</div>
+
+					<!-- Dry Bulk Density  -->
+					<div t-if="data.dry_bulk_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Dry Bulk Density
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_dry_bulk"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_dry_bulk"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_dry_bulk"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_dry_bulk"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="4">Trial 1
+								</td>
+								<td colspan="4">Trial 2
+								</td>
+								<td colspan="4">Trial 3
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="4">Wt of Empty Cylinder w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_trial1"/>
+								</td>
+								<td colspan="4">Wt of Empty Cylinder w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_trial2"/>
+								</td>
+								<td colspan="4">Wt of Empty Cylinder w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="4">Wt of Empty Gypsum w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_gypsum_trial1"/>
+								</td>
+								<td colspan="4">Wt of Empty Gypsum w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_gypsum_trial2"/>
+								</td>
+								<td colspan="4">Wt of Empty Gypsum w1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_gypsum_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="4">Weight of empty Cylinder  + Gypsum (w2) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_gypsum_trial1"/>
+								</td>
+								<td colspan="4">Weight of empty Cylinder  + Gypsum (w2) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_gypsum_trial2"/>
+								</td>
+								<td colspan="4">Weight of empty Cylinder  + Gypsum (w2) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_empty_cylinder_gypsum_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="4">Volume of Cylinder :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.volume_of_cylinder_trial1"/>
+								</td>
+								<td colspan="4">Volume of Cylinder :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.volume_of_cylinder_trial2"/>
+								</td>
+								<td colspan="4">Volume of Cylinder :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.volume_of_cylinder_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="4">Dry Loose Bulk Density (kg/m³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.dry_loose_bulf_density_trial1"/>
+								</td>
+								<td colspan="4">Dry Loose Bulk Density (kg/m³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.dry_loose_bulf_density_trial2"/>
+								</td>
+								<td colspan="4">Dry Loose Bulk Density (kg/m³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.dry_loose_bulf_density_trial3"/>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">Average Dry Loose Bulk Density (kg/m³) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.average_dry_loose_bulk_density"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Free From Coarse Particle Visible  -->
+
+
+					<div t-if="data.coarse_particle_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Free From Coarse Particle Visible
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_coarse_particle"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_coarse_particle"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_coarse_particle"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_coarse_particle"/>
+								</td>
+							</tr>
+
+						</table>
+
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Sample Weight
+								</td>
+								<td colspan="3">Retained Weight on 150 mic sieve (g)
+								</td>
+								<td colspan="3">Free From Coarse Particle %
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.coarse_particle_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['sample_weight']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['retained_weight']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['coarse_particle']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_coarse_particle"/>
+								</td>
+
+							</tr>
+						</table>
+					</div>
+
+
+					<!-- Compressive Strength  -->
+
+					<div t-if="data.compressive_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Compressive Strength
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_compressive"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_compressive"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_compressive"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_compressive"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="6">Wt. of Gypsum(g) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_gypsum_compressive"/>
+								</td>
+
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-I :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade1"/>
+								</td>
+
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-II :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade2"/>
+								</td>
+
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-III :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade3"/>
+								</td>
+
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Total Weight :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.total_weight"/>
+								</td>
+
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Quantity of Water :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.quantity_of_water"/>
+								</td>
+
+							</tr>
+						</table>
+
+
+						<!-- 1 days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_1days">
+							1 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_1days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_1days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_1days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_1days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_1_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_1days"/>
+								</td>
+								
+							</tr>
+						</table>
+
+
+						<!-- 7 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_7days">
+							7 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_7days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_7days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_7days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_7days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_7_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<!-- <td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td> -->
+							</tr>
+						</table>
+
+
+					</div>
+
+
+					<div class="authorizeRowDataSheet">
+
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+							<div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+						
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

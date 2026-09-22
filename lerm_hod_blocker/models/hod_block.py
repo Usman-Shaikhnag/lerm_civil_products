@@ -31,16 +31,26 @@ class LermHodBlock(models.Model):
         return str(value).lower() in ('1', 'true', 'yes', 'on')
 
     @api.model
+    def _sample_srf_ref(self, sample):
+        """Human readable SRF reference for a sample (SRF ID or KES number)."""
+        return sample.srf_id.srf_id if sample.srf_id and sample.srf_id.srf_id \
+            else (sample.srf_id.kes_number if sample.srf_id else False)
+
+    @api.model
     def _get_pending_samples(self):
         """Pending samples belonging to the current HOD's department(s),
         i.e. samples whose discipline's HOD is the current user."""
         if not self._is_hod_user():
             return self.env['lerm.srf.sample']
-        return self.env['lerm.srf.sample'].sudo().search([
+        samples = self.env['lerm.srf.sample'].sudo().search([
             ('status', '=', '2-confirmed'),
             ('state', 'in', self.PENDING_STATES),
             ('discipline_id.hod', '=', self.env.user.id),
         ])
+        # Group samples of the same SRF together so the popup can colour-code
+        # them and the HOD can bulk-allot a whole SRF at once.
+        return samples.sorted(
+            key=lambda s: (self._sample_srf_ref(s) or '', s.kes_no or ''))
 
     @api.model
     def check_hod_block(self):
@@ -66,6 +76,7 @@ class LermHodBlock(models.Model):
             'samples': [{
                 'id': sample.id,
                 'kes_no': sample.kes_no,
+                'srf': self._sample_srf_ref(sample),
                 'client': sample.srf_id.client if sample.srf_id else False,
                 'material_name': sample.material_id.name if sample.material_id else False,
                 'discipline': sample.discipline_id.discipline if sample.discipline_id else False,

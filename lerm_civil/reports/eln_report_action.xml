@@ -68,7 +68,7 @@
 </record>
 
 <record id="stainless_steel_tmt_bar_report_action" model="ir.actions.report">
-    <field name="name"> SS TMT Bar Report</field>
+    <field name="name">SS TMT Bar Report</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">ss_tmt_bar.stainless_steel_tmt_bar_report</field>
@@ -79,7 +79,7 @@
 </record>
 
     <record id="stainless_steel_tmt_bar_datasheet_action" model="ir.actions.report">
-        <field name="name"> SS TMT Bar DataSheet</field>
+        <field name="name">SS TMT Bar DataSheet</field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">ss_tmt_bar.stainless_steel_tmt_bar_datasheet</field>
@@ -111,22 +111,22 @@
     <field name="binding_type">report</field>
 </record>
 
-<record id="coarse_aggregate_datasheet_action" model="ir.actions.report">
+<record id="coarse_aggregate_datasheet2_action" model="ir.actions.report">
     <field name="name">Coarse Aggregate DataSheet</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">coarse_aggregate.coarse_aggregate_datasheet</field>
-    <field name="report_file">coarse_aggregate.coarse_aggregate_datasheet</field>
+    <field name="report_name">coarse_aggregate2.coarse_aggregate_datasheet2</field>
+    <field name="report_file">coarse_aggregate2.coarse_aggregate_datasheet2</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
 
-<record id="lerm_coarse_aggregate_mech_report_action" model="ir.actions.report">
+<record id="lerm_coarse_aggregate_mech2_report_action" model="ir.actions.report">
     <field name="name">Coarse Aggregate Report</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
-    <field name="report_file">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
+    <field name="report_name">coarse_aggregate2.lerm_coarse_aggregate_mech_report2</field>
+    <field name="report_file">coarse_aggregate2.lerm_coarse_aggregate_mech_report2</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
@@ -630,8 +630,8 @@
     <field name="name">GSB DataSheet </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">gsb.gsb_mech_datasheet</field>
-    <field name="report_file">gsb.gsb_mech_datasheet</field>
+    <field name="report_name">gsb1.gsb_mech_datasheet</field>
+    <field name="report_file">gsb1.gsb_mech_datasheet</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
@@ -640,8 +640,8 @@
     <field name="name">GSB Report </field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">gsb.gsb_mec_report</field>
-    <field name="report_file">gsb.gsb_mec_report</field>
+    <field name="report_name">gsb1.gsb_mec_report</field>
+    <field name="report_file">gsb1.gsb_mec_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
@@ -1504,26 +1504,71 @@
 </record>
 
 
-<record id="cube_absorption_datasheet_action" model="ir.actions.report">
-    <field name="name">Cube Water Absorption DataSheet</field>
+
+
+
+
+<record id="gypsum_mechanical_datasheet_action" model="ir.actions.report">
+    <field name="name">Gypsum DataSheet</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">concrete_cube_water_absorption.cube_absorption_datasheet</field>
-    <field name="report_file">concrete_cube_water_absorption.cube_absorption_datasheet</field>
+    <field name="report_name">gypsum_mechanical.gypsum_datasheet</field>
+    <field name="report_file">gypsum_mechanical.gypsum_datasheet</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
 
-<record id="cube_absorption_report_action" model="ir.actions.report">
-    <field name="name">Cube Water Absorption Report</field>
+<record id="gypsum_mechanical_report_action" model="ir.actions.report">
+    <field name="name">Gypsum Mechanical Report</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">concrete_cube_water_absorption.cube_absorption_report</field>
-    <field name="report_file">concrete_cube_water_absorption.cube_absorption_report</field>
+    <field name="report_name">gypsum_mechanical.gypsum_report</field>
+    <field name="report_file">gypsum_mechanical.gypsum_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="gsb_mech_soilrock_datasheet_action" model="ir.actions.report">
+    <field name="name">GSB (Soil &amp; Rock) DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gsb_soil_rock.gsb_mech_soilrock_datasheet</field>
+    <field name="report_file">gsb_soil_rock.gsb_mech_soilrock_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gsb_mec_soilrock_report_action" model="ir.actions.report">
+    <field name="name">GSB (Soil &amp; Rock) Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gsb_soil_rock.gsb_mec_soilrock_report</field>
+    <field name="report_file">gsb_soil_rock.gsb_mec_soilrock_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="cube_water_absorption_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete Water Absorption DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cube_water_absorption.cube_water_absorption_datasheet</field>
+    <field name="report_file">cube_water_absorption.cube_water_absorption_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="cube_water_absorption_report_action" model="ir.actions.report">
+    <field name="name">Concrete Water Absorption Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cube_water_absorption.cube_water_absorption_report</field>
+    <field name="report_file">cube_water_absorption.cube_water_absorption_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
 
 
 

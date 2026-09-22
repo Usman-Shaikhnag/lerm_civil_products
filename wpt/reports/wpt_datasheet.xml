@@ -89,7 +89,7 @@
 						
 					</div>
 						<div style="margin-top:20px;">
-                           <h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/></h6>
+                           <h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_name"/></h6>
 						</div>
 
 
@@ -102,12 +102,12 @@
 								</td>
 								<td colspan="1">Depth of Penetration 1
 								</td>
-								<td colspan="2">Depth of Penetration 2
+								<!-- <td colspan="2">Depth of Penetration 2
 								</td>
 								<td colspan="2">Depth of Penetration 3
-								</td>
-								<td colspan="2">Average
-								</td>
+								</td> -->
+								<!-- <td colspan="2">Average
+								</td> -->
 								
 							</tr>
 
@@ -125,21 +125,21 @@
 								<td colspan="1">
 									<span t-esc="r['depth1']"/>
 								</td>
-								<td colspan="2">
+								<!-- <td colspan="2">
 									<span t-esc="r['depth2']"/>
 								</td>
 								<td colspan="2">
 									<span t-esc="r['depth3']"/>
-								</td>
-								<td colspan="2">
+								</td> -->
+								<!-- <td colspan="2">
 									<span t-esc="r['average']"/>
-								</td>
+								</td> -->
 								
 							</tr>
 						</table>
 					<table style="margin-top:20px">
 						<tr cols="12">
-							<td colspan="6">Average Of WPT :
+							<td colspan="6">Average Of WPT  mm:
 								<![CDATA[&nbsp;]]>
 							</td>
 							<td colspan="6">
@@ -159,6 +159,16 @@
                                 </b>
                                 
                             </div>
+							  <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -179,9 +189,9 @@
                                 </b>
                             </div>
 							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checkby_signature_required">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
