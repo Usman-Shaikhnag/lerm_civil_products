@@ -2,10 +2,17 @@ from odoo import api, fields, models
 from datetime import timedelta
 import base64
 import io
+import math
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import make_interp_spline
+from matplotlib.ticker import (
+    FuncFormatter,
+    LogLocator,
+    MultipleLocator,
+    NullFormatter,
+)
+from scipy.interpolate import PchipInterpolator
 
 
 class FstInitialVerticalLoadTest(models.Model):
@@ -110,6 +117,24 @@ class FstInitialVerticalLoadTest(models.Model):
     )
 
     graph_image = fields.Binary("Load Settlement Graph")
+
+    graph_image_log = fields.Binary("Load vs Uplift Log Graph")
+
+    graph_break_loads = fields.Char(
+        "Break Loading Graph At Load (MT)",
+        help="Comma separated load values. The loading curve is not drawn "
+             "between a matching point and the next point, e.g. '90' leaves a "
+             "gap between 90 and 120 MT.",
+        copy=False
+    )
+
+    graph_break_unload_loads = fields.Char(
+        "Break Unloading Graph At Load (MT)",
+        help="Comma separated load values. The unloading curve is not drawn "
+             "between a matching point and the next point, e.g. '90' leaves a "
+             "gap between 90 and 120 MT.",
+        copy=False
+    )
 
     gross_settlement = fields.Float(
         compute="_compute_settlement_values",
@@ -688,8 +713,10 @@ class FstInitialVerticalLoadTest(models.Model):
                                  for s in summaries[i:]]
                     break
 
-        load_x = [0] + [p[0] for p in loading]
-        load_y = [0] + [p[1] for p in loading]
+        # Full test path, kept in testing sequence. The (0, 0) origin starts the
+        # loading branch; the unloading branch starts at the peak of loading.
+        load_x = [0.0] + [p[0] for p in loading]
+        load_y = [0.0] + [p[1] for p in loading]
 
         if unloading:
             unload_x = [load_x[-1]] + [p[0] for p in unloading]
@@ -697,69 +724,143 @@ class FstInitialVerticalLoadTest(models.Model):
         else:
             unload_x, unload_y = [], []
 
-        def smooth(x, y):
-            if len(x) < 3:
-                return x, y
-            x_np = np.array(x, dtype=float)
-            y_np = np.array(y, dtype=float)
-            if not np.all(np.diff(x_np) >= 0):
-                x_np = x_np[::-1]
-                y_np = y_np[::-1]
-                if not np.all(np.diff(x_np) >= 0):
-                    return x, y
-            try:
-                spline = make_interp_spline(x_np, y_np, k=2)
-                x_s = np.linspace(x_np.min(), x_np.max(), 200)
-                y_s = spline(x_s)
-                return x_s, y_s
-            except Exception:
-                return x, y
+        def _smooth_branch(x, y):
+            """Shape-preserving smoothing that keeps the measured sequence.
 
-        load_xs, load_ys = smooth(load_x, load_y)
-        unload_xs, unload_ys = smooth(unload_x, unload_y)
+            The points are never sorted by load. A branch is only smoothed when
+            its load is monotonic, and the smoothed samples are emitted in the
+            same order as the readings (loading low->high, unloading high->low).
+            PCHIP passes through every measured point without overshoot, so the
+            measured curve is not distorted.
+            """
+            if len(x) < 3:
+                return list(x), list(y)
+            x_np = np.asarray(x, dtype=float)
+            y_np = np.asarray(y, dtype=float)
+            diffs = np.diff(x_np)
+            if np.all(diffs > 0):
+                sign = 1.0
+            elif np.all(diffs < 0):
+                sign = -1.0
+            else:
+                # Non-monotonic branch (e.g. reloading): draw as measured.
+                return list(x), list(y)
+            # PCHIP needs a strictly increasing abscissa; flip the sign for the
+            # unloading branch without reordering the readings.
+            t = sign * x_np
+            # A vertical hold gives duplicate loads; keep the last reading so the
+            # interpolant stays a single-valued function of load.
+            keep = np.concatenate((np.diff(t) > 0, [True]))
+            t_u, y_u = t[keep], y_np[keep]
+            if len(t_u) < 3:
+                return list(x), list(y)
+            try:
+                interp = PchipInterpolator(t_u, y_u)
+                t_dense = np.linspace(t_u.min(), t_u.max(), 200)
+                return sign * t_dense, interp(t_dense)
+            except Exception:
+                return list(x), list(y)
+
+        # User-defined gaps. Each branch has its own list of break loads: a load
+        # listed there is not connected to the next point, so that branch is
+        # drawn as separate segments.
+        def _parse_loads(value):
+            loads = []
+            for token in (value or '').replace('\n', ',').split(','):
+                token = token.strip()
+                if not token:
+                    continue
+                try:
+                    loads.append(float(token))
+                except ValueError:
+                    continue
+            return loads
+
+        load_breaks = _parse_loads(self.graph_break_loads)
+        unload_breaks = _parse_loads(self.graph_break_unload_loads)
+
+        def _segments(x, y, breaks):
+            """Split a branch where the load matches a configured break point."""
+            if not breaks or len(x) < 2:
+                return [(list(x), list(y))]
+            cut = set()
+            for i, xv in enumerate(x):
+                if i < len(x) - 1 and any(abs(xv - b) <= 1.0 for b in breaks):
+                    cut.add(i)
+            segments = []
+            start = 0
+            for i in range(len(x)):
+                if i in cut:
+                    segments.append((list(x[start:i + 1]), list(y[start:i + 1])))
+                    start = i + 1
+            if start < len(x):
+                segments.append((list(x[start:]), list(y[start:])))
+            return segments
 
         fig, ax = plt.subplots(figsize=(7.5, 5.5))
         fig.patch.set_facecolor('white')
         ax.set_facecolor('white')
 
         BLUE = '#1e3a5f'
-        ax.plot(load_xs, load_ys, color=BLUE, linewidth=2.2, label='Loading')
-        ax.scatter(load_x, load_y, color=BLUE, s=30, marker='D',
-                   zorder=5, edgecolors='none')
+        for seg_x, seg_y in _segments(load_x, load_y, load_breaks):
+            seg_xs, seg_ys = _smooth_branch(seg_x, seg_y)
+            ax.plot(seg_xs, seg_ys, color=BLUE, linewidth=2.0, zorder=2)
+        ax.scatter(load_x, load_y, color=BLUE, s=32, marker='D',
+                   zorder=5, edgecolors='white', linewidths=0.6)
         if unload_x:
-            ax.plot(unload_xs, unload_ys, color=BLUE, linewidth=2.2,
-                    label='Unloading')
-            ax.scatter(unload_x, unload_y, color=BLUE, s=30, marker='D',
-                       zorder=5, edgecolors='none')
+            for seg_x, seg_y in _segments(unload_x, unload_y, unload_breaks):
+                seg_xs, seg_ys = _smooth_branch(seg_x, seg_y)
+                ax.plot(seg_xs, seg_ys, color=BLUE, linewidth=2.0, zorder=2)
+            ax.scatter(unload_x, unload_y, color=BLUE, s=32, marker='D',
+                       zorder=5, edgecolors='white', linewidths=0.6)
 
+        # Geotechnical convention: load on the top axis, settlement on the left.
         ax.xaxis.set_label_position('top')
         ax.xaxis.tick_top()
-        ax.tick_params(bottom=False)
-        ax.set_xlabel('Load (t)', fontsize=10, fontweight='bold')
-        ax.set_ylabel('Cumulative Settlement (mm)', fontsize=10, fontweight='bold')
-        ax.set_title('LOAD SETTLEMENT CURVE', fontsize=12, fontweight='bold', pad=12)
+        ax.tick_params(axis='x', which='both', bottom=False, top=True,
+                       direction='out', length=5)
+        ax.tick_params(axis='y', which='both', direction='out', length=5)
+        ax.set_xlabel('Load in MT', fontsize=10, fontweight='bold', labelpad=8)
+        ax.set_ylabel('Settlement, mm', fontsize=10, fontweight='bold', labelpad=8)
+        ax.set_title('LOAD Vs SETTLEMENT CURVE', fontsize=12, fontweight='bold',
+                     pad=14)
 
-        ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.4)
-        ax.set_xlim(left=0)
+        for spine in ax.spines.values():
+            spine.set_linewidth(0.8)
+            spine.set_color('#000000')
+
+        # Numeric (non-categorical) axes with major/minor ticks.
+        all_x = list(load_x) + list(unload_x)
+        x_peak = max(all_x) if all_x else 30.0
+        x_top = int(np.ceil(x_peak / 30.0)) * 30 or 30
+        ax.set_xlim(0, x_top)
+        ax.xaxis.set_major_locator(MultipleLocator(30))
+        ax.xaxis.set_minor_locator(MultipleLocator(10))
+
+        all_y = list(load_y) + list(unload_y)
+        y_peak = max(all_y) if all_y else 10.0
+        y_top = int(np.ceil(y_peak / 2.0)) * 2 or 2
+        ax.set_ylim(0, y_top)
+        ax.invert_yaxis()
+        ax.yaxis.set_major_locator(MultipleLocator(2))
+        ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+        ax.grid(True, which='major', color='#b0b0b0', linestyle='--',
+                linewidth=0.5, alpha=0.5)
 
         y_target = row['target_settlement'] or 0.0
         x_limit = row['allowable_load'] or 0.0
-        y_max = max(load_y) if load_y else 10
-        x_max = max(load_x) if load_x else 10
-
-        y_pad = y_max * 0.1 or 1.0
-        ax.set_ylim(y_max + y_pad, 0)
-        if y_target and x_limit and y_max > y_target:
+        if y_target and x_limit and y_peak > y_target:
             ax.annotate('', xy=(0, y_target), xytext=(x_limit, y_target),
                         arrowprops=dict(arrowstyle='<->', color='red', lw=1.2))
-            ax.text(x_max * 0.01, y_target + y_max * 0.03,
+            ax.text(x_top * 0.01, y_target + y_top * 0.03,
                     f'{y_target} mm Settlement',
                     fontsize=8, color='red', va='bottom')
 
             ax.annotate('', xy=(x_limit, y_target),
                         xytext=(x_limit, 0),
                         arrowprops=dict(arrowstyle='<->', color='red', lw=1.2))
-            ax.text(x_limit + x_max * 0.02, y_target / 2,
+            ax.text(x_limit + x_top * 0.02, y_target / 2,
                     'Allowable\nLoad', fontsize=8, color='red', ha='left',
                     va='center')
 
@@ -769,6 +870,135 @@ class FstInitialVerticalLoadTest(models.Model):
         fig.savefig(buf, format='png', dpi=150, facecolor='white')
         plt.close(fig)
         self.graph_image = base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    def action_generate_log_graph(self):
+        """Log-log Load vs Uplift/Settlement engineering curve."""
+        self.ensure_one()
+        self._recompute_loading_summary()
+
+        summaries = self.loading_summary_ids.sorted('sequence')
+        if not summaries:
+            self.graph_image_log = False
+            return
+
+        # X = uplift / settlement (mm), Y = load (MT), kept in test sequence.
+        # A logarithmic axis cannot show zero or negative values, so those
+        # readings are skipped.
+        points = [
+            (s.cumulative_settlement, s.load_tonne, s.load_type)
+            for s in summaries
+            if s.cumulative_settlement > 0 and s.load_tonne > 0
+        ]
+        if not points:
+            self.graph_image_log = False
+            return
+
+        def _parse_loads(value):
+            loads = []
+            for token in (value or '').replace('\n', ',').split(','):
+                token = token.strip()
+                if not token:
+                    continue
+                try:
+                    loads.append(float(token))
+                except ValueError:
+                    continue
+            return loads
+
+        load_breaks = _parse_loads(self.graph_break_loads)
+        unload_breaks = _parse_loads(self.graph_break_unload_loads)
+
+        # Split the test sequence where a point's load matches a configured
+        # break for its stage; the measured order is otherwise preserved.
+        segments = []
+        start = 0
+        for i in range(len(points) - 1):
+            _, load_val, stage = points[i]
+            breaks = load_breaks if stage == 'loading' else unload_breaks
+            if breaks and any(abs(load_val - b) <= 1.0 for b in breaks):
+                segments.append(points[start:i + 1])
+                start = i + 1
+        segments.append(points[start:])
+
+        x_vals = [p[0] for p in points]
+        y_vals = [p[1] for p in points]
+
+        fig, ax = plt.subplots(figsize=(7.5, 5.5))
+        fig.patch.set_facecolor('white')
+        ax.set_facecolor('white')
+
+        # XY plot of the measured points in test sequence (never sorted).
+        for seg in segments:
+            ax.plot(
+                [p[0] for p in seg],
+                [p[1] for p in seg],
+                color='#1f4e9c',
+                linewidth=1.8,
+                marker='D',
+                markersize=6,
+                markerfacecolor='#1f4e9c',
+                markeredgecolor='#1f4e9c',
+                zorder=3,
+            )
+
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+
+        # Major ticks at powers of ten, logarithmic minor ticks in between.
+        ax.xaxis.set_major_locator(LogLocator(base=10.0, numticks=15))
+        ax.xaxis.set_minor_locator(
+            LogLocator(base=10.0, subs=tuple(range(2, 10)), numticks=15))
+        ax.yaxis.set_major_locator(LogLocator(base=10.0, numticks=15))
+        ax.yaxis.set_minor_locator(
+            LogLocator(base=10.0, subs=tuple(range(2, 10)), numticks=15))
+
+        def _plain_log_label(value, _pos):
+            return '' if value <= 0 else f'{value:g}'
+
+        ax.xaxis.set_major_formatter(FuncFormatter(_plain_log_label))
+        ax.yaxis.set_major_formatter(FuncFormatter(_plain_log_label))
+        ax.xaxis.set_minor_formatter(NullFormatter())
+        ax.yaxis.set_minor_formatter(NullFormatter())
+
+        # Engineering defaults (0.1-10 mm, 1-1000 MT), expanded only if the
+        # measured data needs a wider logarithmic range.
+        def _log_floor(value):
+            return 10.0 ** math.floor(math.log10(value))
+
+        def _log_ceil(value):
+            return 10.0 ** math.ceil(math.log10(value))
+
+        ax.set_xlim(min(0.1, _log_floor(min(x_vals))),
+                    max(10.0, _log_ceil(max(x_vals))))
+        ax.set_ylim(min(1.0, _log_floor(min(y_vals))),
+                    max(1000.0, _log_ceil(max(y_vals))))
+
+        serif = 'serif'
+        ax.set_title('LOAD SETTLEMENT CURVE', fontsize=13, fontweight='bold',
+                     fontfamily=serif, pad=14)
+        ax.set_xlabel('Uplift in mm', fontsize=11, fontfamily=serif, labelpad=8)
+        ax.set_ylabel('Load in MT', fontsize=11, fontfamily=serif, labelpad=8)
+
+        ax.tick_params(axis='both', which='major', length=6, width=0.9,
+                       color='black', labelcolor='black')
+        ax.tick_params(axis='both', which='minor', length=3, width=0.7,
+                       color='black')
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_fontfamily(serif)
+            label.set_fontsize(9)
+
+        for spine in ax.spines.values():
+            spine.set_color('black')
+            spine.set_linewidth(1.0)
+
+        ax.grid(False)
+
+        fig.tight_layout()
+
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=150, facecolor='white')
+        plt.close(fig)
+        self.graph_image_log = base64.b64encode(buf.getvalue()).decode('utf-8')
 
     def action_recompute_all(self):
         for rec in self:
@@ -787,14 +1017,18 @@ class FstInitialVerticalLoadTest(models.Model):
             Summary.search([('parent_id', '=', rec.id)]).unlink()
 
             def _group_lines(lines):
-                # A load step is a run of readings at the same load. Sub-readings
-                # entered without a pressure gauge value (load 0) continue the
-                # current step instead of starting a new one.
+                # A load step starts at every reading carrying a pressure gauge
+                # value (non-zero load) or explicitly marked with a zero reading
+                # interval (e.g. the final unloading step held at 0 load).
+                # Sub-readings entered without a pressure gauge value (load 0)
+                # continue the current step instead of starting a new one.
+                # Consecutive steps may share the same load (e.g. test load
+                # held), so the load value alone must not be used to merge steps.
                 result = []
                 cur = None
                 for line in lines:
                     load = line.load_tonne
-                    if not result or (load != 0 and load != cur):
+                    if not result or load != 0 or line.reading_interval == 0:
                         cur = load
                         result.append((cur, []))
                     result[-1][1].append(line)
