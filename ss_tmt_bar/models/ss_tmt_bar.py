@@ -130,11 +130,11 @@ class StainlessSteel(models.Model):
     weight_per_meter = fields.Float(string="Weight per meter",compute="_compute_weight_per_meter",store=True,digits=(10, 3))
     variation = fields.Float(string="Variation")
 
-    requirement_utl = fields.Float(string="Requirement",compute="_compute_requirement_utl",store=True)
-    requirement_yield = fields.Float(string="Requirement",compute="_compute_requirement_yield",store=True)
-    requirement_ts_ys = fields.Float(string="Requirement",compute="_compute_requirement_ts_ys",store=True)
-    requirement_elongation = fields.Float(string="Requirement",compute="_compute_requirement_elongation",store=True)
-    requirement_weight_per_meter = fields.Float(string="Requirement",compute="_compute_requirement_weight_per_meter",digits=(16, 4),store=True)
+    requirement_utl = fields.Char(string="Requirement",compute="_compute_requirement_utl",store=True)
+    requirement_yield = fields.Char(string="Requirement",compute="_compute_requirement_yield",store=True)
+    requirement_ts_ys = fields.Char(string="Requirement",compute="_compute_requirement_ts_ys",store=True)
+    requirement_elongation = fields.Char(string="Requirement",compute="_compute_requirement_elongation",store=True)
+    requirement_weight_per_meter = fields.Char(string="Requirement",compute="_compute_requirement_weight_per_meter",digits=(16, 4),store=True)
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     # tests = fields.Many2many("mechanical.tmt.test",string="Tests")
@@ -310,11 +310,14 @@ class StainlessSteel(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51b0c744-b113-477a-8fde-b33cf309c1e3')]).parameter_table
             for material in materials:
                 if material.size.id == record.size.id:
-                    req_min = material.req_min
-                    record.requirement_weight_per_meter = req_min
+                    permissable_limit = material.permissable_limit
+                    record.requirement_weight_per_meter = permissable_limit
                     break
                 else:
                     record.requirement_weight_per_meter = 0
+
+    
+
 
     @api.depends('ult_tens_strgth','proof_yeid_stress')
     def _compute_ts_ys_ratio(self):
@@ -377,14 +380,14 @@ class StainlessSteel(models.Model):
             else:
                 record.uts_nabl = 'fail'
 
-    @api.depends('eln_ref','grade')
+    @api.depends('eln_ref','size')
     def _compute_requirement_utl(self):
         for record in self:
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    record.requirement_utl = req_min
+                if material.size.id == record.size.id:
+                    permissable_limit = material.permissable_limit
+                    record.requirement_utl = permissable_limit
                     break
                 else:
                     record.requirement_utl = 0
@@ -441,7 +444,7 @@ class StainlessSteel(models.Model):
             else:
                 record.elongation_nabl = 'fail'
 
-    @api.depends('eln_ref','grade')
+    @api.depends('eln_ref','size')
     def _compute_requirement_elongation(self):
         for record in self:
             # record.requirement_elongation = 0
@@ -449,9 +452,9 @@ class StainlessSteel(models.Model):
             # materials = self.env['lerm.parameter.master'].sudo().search([('id','=',line.id)]).parameter_table
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f244daa5-d08f-4336-bdbf-968dfc3c37dc')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    record.requirement_elongation = req_min
+                if material.size.id == record.size.id:
+                    permissable_limit = material.permissable_limit
+                    record.requirement_elongation = permissable_limit
                     break
                 else:
                     record.requirement_elongation = 0
@@ -506,7 +509,7 @@ class StainlessSteel(models.Model):
                 record.yield_nabl = 'fail'
 
 
-    @api.depends('eln_ref','grade')
+    @api.depends('eln_ref','size')
     def _compute_requirement_yield(self):
         for record in self:
             # record.requirement_yield = 0
@@ -516,9 +519,9 @@ class StainlessSteel(models.Model):
             
             for material in materials:
                 print("DATA ", material)
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    record.requirement_yield = req_min
+                if material.size.id == record.size.id:
+                    permissable_limit = material.permissable_limit
+                    record.requirement_yield = permissable_limit
                     break
                 else:
                     record.requirement_yield = 0
@@ -572,7 +575,7 @@ class StainlessSteel(models.Model):
             else:
                 record.ts_ys_nabl = 'fail'
 
-    @api.depends('eln_ref','grade')
+    @api.depends('eln_ref','size')
     def _compute_requirement_ts_ys(self):
         for record in self:
             # record.requirement_yield = 0
@@ -580,9 +583,9 @@ class StainlessSteel(models.Model):
             # materials = self.env['lerm.parameter.master'].sudo().search([('id','=',line.id)]).parameter_table
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c7908eda-7bf1-4fd4-aae6-f89c9fdab187')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    record.requirement_ts_ys = req_min
+                if material.size.id == record.size.id:
+                    permissable_limit = material.permissable_limit
+                    record.requirement_ts_ys = permissable_limit
                     break
                 else:
                     record.requirement_ts_ys = 0
