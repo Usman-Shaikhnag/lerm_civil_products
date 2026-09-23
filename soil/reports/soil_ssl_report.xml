@@ -12,6 +12,12 @@
 				<div class="container_eln" style="padding-top:20px;">
 					
 					<div class="" t-foreach="eln" t-as="o">
+
+					<style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
 						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
@@ -246,7 +252,7 @@
 										<span t-esc="sieve.parameter_name"/>
 									</td>
 									<td colspan="3" >  
-										<span><![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> % passing</span>
+										<span style="font-size:16px;"><![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> % passing</span>
 									</td>
 									
 								</tr>
@@ -1516,72 +1522,63 @@
 								</tr>
 							</table>
 						</div>
-                        <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
-
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-								Checked By
+                                        Reviewed By
                                     </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
                                         <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
                                             style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
-								        (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                        (<span t-esc="eln.sample_id.check_by.job_title"/>)
                                     </b>
                                 </div>
                             </div>
 
-							<div>
-						<!-- <div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div> -->
-						<!-- <div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div> -->
-					</div>
                             <div>
-                                <div>
-                                    <b>
-								Approved By 
-                                    </b>
+                            </div>
 
+                            <div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        Per pro GEONYMS INDIA PRIVATE LIMITED.
+                                    </b>
                                 </div>
-                                <div style="height: 50px;">
+                                <div style="height: 50px;font-size:16px;">
                                     <t t-if="eln.sample_id.approveby_signature_required">
                                         <div t-if="eln.sample_id.approved_by.employee_id.signature">
                                             <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
                                         </div>
                                     </t>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
                                     </b>
                                 </div>
-                                <div>
+                                <div style="font-size:16px;">
                                     <b>
                                         (<span t-esc="eln.sample_id.approved_by.job_title"/>)
                                     </b>
                                 </div>
-                                
                             </div>
                         </div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
+                            <p style="font-weight:800;">...... End Of Report......</p>
                         </div>
                     </div>
-                        
 				
 			</t>
 		</t>
