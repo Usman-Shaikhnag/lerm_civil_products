@@ -9,26 +9,28 @@ class ConcreteCore(models.Model):
 
     name = fields.Char("Name",default="Concrete Core")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
+    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
+
     temperature = fields.Float("Temperature °C")
     child_lines = fields.One2many('mechanical.concrete.core.line','parent_id',string="Parameter")
     average = fields.Float(string="Average Compressive Strength in Mpa",compute="_compute_average")
     structure = fields.Char("Structure")
-    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
-
 
     notes = fields.One2many('mechanical.concrete.core.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
+        if record.eln_ref:
+            record.eln_ref.write({
+                'model_id': record.id
+            })
 
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+        return record
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -59,15 +61,13 @@ class ConcreteCore(models.Model):
                 
             }
 
+
+    
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
-
-
-    
-
-
 
 
     @api.depends('child_lines.final_cube_strength')
@@ -77,12 +77,24 @@ class ConcreteCore(models.Model):
             record.average = round((total_value / len(record.child_lines) if record.child_lines else 0.0),2)
 
    
-    @api.model
-    def create(self, vals):
+    
+
+    def get_all_fields(self):
         # import wdb;wdb.set_trace()
-        record = super(ConcreteCore, self).create(vals)
-        record.parameter_id.write({'model_id':record.id})
-        return record
+        record = self.env['mechanical.concrete.core'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+
 
 class ConcreteCoreLine(models.Model):
     _name = "mechanical.concrete.core.line"

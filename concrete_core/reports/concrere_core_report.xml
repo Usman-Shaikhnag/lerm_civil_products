@@ -102,7 +102,7 @@
 								</td>
 								<td colspan="4">Temperature :
 									<![CDATA[&nbsp;]]>
-									<span t-field="data.temperature"/>	
+									<span t-field="data.temperature"/>°C 
 								</td>
 								<td colspan="4">#Structure Age:
 									<![CDATA[&nbsp;]]>
@@ -145,15 +145,15 @@
 									<td style="text-align: center;"><span t-field="r.date_testing"/></td>
 									<td style="text-align: center;"><span t-field="r.dia"/></td>
 									<td style="text-align: center;"><span t-field="r.length"/></td>
-									<td style="text-align: center;"><span t-field="r.ld"/></td>
-									<td style="text-align: center;"><span t-field="r.area"/></td>
-									<td style="text-align: center;"><span t-field="r.dry"/></td>
+									<td style="text-align: center;"><span t-field="r.ld" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-field="r.area" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-field="r.dry" /></td>
 									<td style="text-align: center;"><span t-field="r.failure_load"/></td>
-									<td style="text-align: center;"><span t-field="r.measured_comp_str"/></td>
-									<td style="text-align: center;"><span t-field="r.core_factor_ld"/></td>
-									<td style="text-align: center;"><span t-field="r.core_factor_dia"/></td>
+									<td style="text-align: center;"><span t-field="r.measured_comp_str" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-field="r.core_factor_ld" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-field="r.core_factor_dia" t-options='{"widget": "float", "precision": 2}'/></td>
 									<td style="text-align: center;"><span t-field="r.core_factor_cube"/></td>
-									<td style="text-align: center;"><span t-field="r.final_cube_strength"/></td>
+									<td style="text-align: center;"><span t-field="r.final_cube_strength" t-options='{"widget": "float", "precision": 2}'/></td>
 								</tr>
 							</tbody>
 						</table>
@@ -163,7 +163,7 @@
 						<table style="margin-top:2px; width: 100%;">
 							<tr>
 								<td style="text-align: center; font-weight: bold;">Average Compressive Strength in Mpa</td>
-								<td style="text-align: center;"><span t-field="data.average"/></td>
+								<td style="text-align: center;"><span t-field="data.average" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 						</table>
 					</div>
