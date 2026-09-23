@@ -410,6 +410,16 @@ class MechanicalBricksBurntClay(models.Model):
         #-2----------Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
+
+    efflorescence_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),
+        ],
+        string="Test Type",
+        default='nabl',
+    )
+    
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
     visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
     visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')

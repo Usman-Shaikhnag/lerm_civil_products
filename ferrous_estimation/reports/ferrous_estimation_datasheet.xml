@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="ferrous_estimation_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                 Ferrous Materials Estimation Datasheet
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+
+				   <table style="margin-top:10px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+			
+
+		
+
+
+				<div style="margin-top:20px;"  invisible="feroous_estimation_visible == False">
+                       
+            <table>
+                       
+                 <tr >
+							  <td colspan="7">
+                           <b>Estimation of Grain size by comparison method</b>
+								</td>
+                                
+                               
+                </tr>
+							  <tr cols="12">
+                    <td  style="text-align: center;"><b>Sr No.</b></td>
+                    <td   style="text-align: center;"><b>Sample  Identity</b></td>
+                    <td   style="text-align: center;"><b>Test Parameter</b></td>
+                    <td   style="text-align: center;"><b>Observation</b></td>
+                    <td   style="text-align: center;"><b>Remarks </b></td>
+                    
+                    
+                </tr>
+
+							
+
+                            
+						
+                    <t t-set="f" t-value="0"/>
+                    <tr t-foreach="data.feroous_estimation_lines" t-as="r">
+                        <td  style="text-align: center;">
+                            <div>
+                                <span t-esc="f + 1" />
+                                <t t-set="f" t-value="f + 1"/>
+                            </div>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['sample_identity']"/>
+                        </td>
+                      <td  style="text-align: center;">
+                            <span t-esc="r['test_parameter']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['observation']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['remarks']"/>
+                        </td>
+                       
+                        
+                        
+                    </tr>
+
+
+
+
+							
+                     </table>
+
+                      <!-- Images below table -->
+                    <div style="margin-top: 10px; text-align: center;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 50%; text-align: center;">
+                                <b>Original Image</b>
+                            </td>
+                            <td style="width: 50%; text-align: center;">
+                                <b>Processed Image</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%; text-align: center; vertical-align: middle;">
+                                <t t-if="data.original_image">
+                                    <img t-att-src="'data:image/png;base64,' + data.original_image.decode('utf-8')"
+                                        style="width: 150px; height: 150px; object-fit: contain;"/>
+                                </t>
+                            </td>
+
+                            <td style="width: 50%; text-align: center; vertical-align: middle;">
+                                <t t-if="data.processed_image">
+                                    <img t-att-src="'data:image/png;base64,' + data.processed_image.decode('utf-8')"
+                                        style="width: 150px; height: 150px; object-fit: contain;"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+						 <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+                    <div style="height: 40px;">
+                      <t t-if="eln.sample_id.tested_by_signature_datasheet">
+                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                          <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                        </div>
+                        
+                      </t>
+                    </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							 <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+                       
+          </div>
+
+
+
+
+				
+
+                    
+
+					
+
+							
+
+				</div>
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>
