@@ -28,3 +28,4 @@ from . import customer_sample_request
 from . import partner_document
 from . import res_users
 from . import sale_order
+from . import res_config_settings

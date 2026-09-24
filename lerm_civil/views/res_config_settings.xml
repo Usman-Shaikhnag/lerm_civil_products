@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_lerm_civil" model="ir.ui.view">
+        <field name="name">res.config.settings.lerm.civil</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="LERM CIVIL" string="LERM CIVIL" name="lerm_civil">
+                    <block title="Pricelist">
+                        <setting string="Pricelist Validation"
+                                 help="When enabled, the pricelist validations in the LERM Civil Sale module are enforced. Disabled by default.">
+                            <field name="lerm_civil_sale_pricelist_validation"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

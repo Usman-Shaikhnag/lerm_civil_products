@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -13,6 +13,17 @@ class SaleOrderLermCivilSale(models.Model):
         copy=False,
         help='SRF generated from this sales order.',
     )
+
+    @api.model
+    def _lerm_pricelist_validation_enabled(self):
+        """Return True when the LERM Civil Sale pricelist validations are enabled.
+
+        Configured from Settings > LERM CIVIL > Pricelist Validation (disabled
+        by default).
+        """
+        value = self.env['ir.config_parameter'].sudo().get_param(
+            'lerm_civil_sale.pricelist_validation', 'False')
+        return str(value).lower() in ('1', 'true', 'yes', 'on')
 
     def _lerm_get_customer_pricelist(self):
         """Return the pricelist attached to the customer (billing partner)."""
@@ -42,15 +53,16 @@ class SaleOrderLermCivilSale(models.Model):
         self.ensure_one()
         pricelist = self._lerm_get_customer_pricelist()
         partner = self.partner_id
-        if not pricelist:
-            raise ValidationError(_(
-                'No pricelist is attached to customer %s. Please set a pricelist '
-                'on the customer contact first.') % (partner.name or ''))
-        if self._lerm_is_default_pricelist(pricelist):
-            raise ValidationError(_(
-                'The pricelist "%s" is the default pricelist and cannot be updated. '
-                'Please assign a customer-specific pricelist to %s first.')
-                % (pricelist.name, partner.name or ''))
+        if self._lerm_pricelist_validation_enabled():
+            if not pricelist:
+                raise ValidationError(_(
+                    'No pricelist is attached to customer %s. Please set a pricelist '
+                    'on the customer contact first.') % (partner.name or ''))
+            if self._lerm_is_default_pricelist(pricelist):
+                raise ValidationError(_(
+                    'The pricelist "%s" is the default pricelist and cannot be updated. '
+                    'Please assign a customer-specific pricelist to %s first.')
+                    % (pricelist.name, partner.name or ''))
         action = self.env['ir.actions.act_window']._for_xml_id(
             'lerm_civil_sale.action_sale_order_pricelist_wizard')
         action['context'] = {

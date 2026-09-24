@@ -122,15 +122,20 @@ class SaleOrderPricelistWizard(models.TransientModel):
 
     def _action_update(self, order, data):
         pricelist = order._lerm_get_customer_pricelist()
-        if not pricelist:
-            raise ValidationError(_(
-                'No pricelist is attached to customer %s. Please set a pricelist '
-                'on the customer contact first.') % (order.partner_id.name or ''))
-        if order._lerm_is_default_pricelist(pricelist):
-            raise ValidationError(_(
-                'The pricelist "%s" is the default pricelist and cannot be updated. '
-                'Please assign a customer-specific pricelist to %s first.')
-                % (pricelist.name, order.partner_id.name or ''))
+        if order._lerm_pricelist_validation_enabled():
+            if not pricelist:
+                raise ValidationError(_(
+                    'No pricelist is attached to customer %s. Please set a pricelist '
+                    'on the customer contact first.') % (order.partner_id.name or ''))
+            if order._lerm_is_default_pricelist(pricelist):
+                raise ValidationError(_(
+                    'The pricelist "%s" is the default pricelist and cannot be updated. '
+                    'Please assign a customer-specific pricelist to %s first.')
+                    % (pricelist.name, order.partner_id.name or ''))
+        elif not pricelist:
+            # Pricelist validation is disabled and there is no pricelist to
+            # update, so there is nothing to write.
+            return pricelist
         audit_ctx = {
             'audit_source': 'sale_order',
             'audit_sale_order_id': order.id,
