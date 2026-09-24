@@ -25,7 +25,16 @@ class AacBlockMechanical(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    week_no = fields.Char("Week No")
+    grade_type = fields.Selection(
+        [
+            ('grade1', 'GRADE 1'),
+            ('grade2', 'GRADE 2'),
+        ],
+        string="Grade Type",
+        
+    )
+
+    size = fields.Char("Size")
 
     other_details = fields.Char("Other Details")
 
@@ -33,11 +42,7 @@ class AacBlockMechanical(models.Model):
 
     description_work = fields.Text("Description Of Work")
 
-    @api.depends("eln_ref")
-    def _compute_size_id(self):
-        for record in self:
-            print("Size iD",record.eln_ref.size_id)
-            record.size_id = record.eln_ref.size_id.id
+    
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -98,23 +103,24 @@ class AacBlockMechanical(models.Model):
     def _compute_visible(self):
         for record in self:
             record.dimension_visible = False
-            record.moisture_visible  = False  
             record.density_visible = False
             record.drying_shrinkage_visible = False
             record.compressive_strength_visible = False
+            record.thermal_conductivity_visible = False
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
                 if sample.internal_id == '12478fdr3w-ac79-4102-aeda-622dc0f973f6':
                     record.dimension_visible = True
-                if sample.internal_id == '6478fde2-8097-4275-b80f-48ebdbcfe244':
-                    record.moisture_visible = True
+               
                 if sample.internal_id == '254879sw-4ef4-4e51-abeb-57dd2abe29a4':
                     record.density_visible = True
                 if sample.internal_id == '214578ews-b1a2-4dac-b8cb-e077770af52f':
                     record.drying_shrinkage_visible = True
                 if sample.internal_id == '21457896dfe-cb61-45db-91c5-0167b27a9ab5':
                     record.compressive_strength_visible = True
+                if sample.internal_id == '098765y63-b1a2-4dac-b8cb-e077770af7865':
+                    record.thermal_conductivity_visible = True
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -136,15 +142,7 @@ class AacBlockMechanical(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 # continue
 
-             # Moisture Content
-            if result.parameter.internal_id == '6478fde2-8097-4275-b80f-48ebdbcfe244':
-                result.result_char = round(self.average_moisture_content,2)
-                result.calculated = True
-                if self.moisture_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            
 
 
              # Density
@@ -201,6 +199,15 @@ class AacBlockMechanical(models.Model):
                 result.result_char = round(self.average_height,2)
                 result.calculated = True
                 if self.average_height_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '098765y63-b1a2-4dac-b8cb-e077770af7865':
+                result.result_char = round(self.average_thermal_conductivity,2)
+                result.calculated = True
+                if self.thermal_conductivity_aac_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -303,17 +310,17 @@ class AacBlockMechanical(models.Model):
 
     dimension_table = fields.One2many('mech.aac.dimension.line','parent_id')
     average_length = fields.Float('Average Length',compute="_compute_average_length")
-    length_grade1 = fields.Char("Length pecification Grade - 1")
-    length_grade2 = fields.Char("Length Specification Grade - 2")
+    length_grade1 = fields.Char("Length Specification",default="±5 mm")
+    # length_grade2 = fields.Char("Length Specification Grade - 2")
 
     average_width = fields.Float('Average Width',compute="_compute_average_width")
-    width_grade1 = fields.Char("Width Specification Grade - 1")
-    width_grade2 = fields.Char("Width Specification Grade - 2")
+    width_grade1 = fields.Char("Width Specification",default="±3 mm")
+    # width_grade2 = fields.Char("Width Specification Grade - 2")
 
     average_height = fields.Float('Average Height',compute="_compute_average_height")
 
-    height_grade1 = fields.Char("Height Specification Grade - 1")
-    height_grade2 = fields.Char("Height Specification Grade - 2")
+    height_grade1 = fields.Char("Height Specification",default="±3 mm")
+    # height_grade2 = fields.Char("Height Specification Grade - 2")
 
     average_length_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -517,86 +524,84 @@ class AacBlockMechanical(models.Model):
                 record.average_height = 0
 
     # Moisture Content
-    moisture_name = fields.Char(default="Moisture Content")
-    moisture_visible = fields.Boolean(compute="_compute_visible")
-    moisture_grade1 = fields.Char("Specification Grade - 1")
-    moisture_grade2 = fields.Char("Specification Grade - 2")
+    # moisture_name = fields.Char(default="Moisture Content")
+    # moisture_visible = fields.Boolean(compute="_compute_visible")
+    # moisture_grade1 = fields.Char("Specification Grade - 1")
+    # moisture_grade2 = fields.Char("Specification Grade - 2")
 
-    moisture_content_table = fields.One2many('mech.aac.moisture.line','parent_id')
-    average_moisture_content = fields.Float("Average Moisture Content %",compute="_compute_average_moisture_content")
-    moisture_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-        ('na', 'NA'),
-    ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
-    moisture_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'NON NABL'),
-    ], string='NABL', compute="_compute_moisture_nabl")
+    # moisture_content_table = fields.One2many('mech.aac.moisture.line','parent_id')
+    # average_moisture_content = fields.Float("Average Moisture Content %",compute="_compute_average_moisture_content")
+    # moisture_confirmity = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail'),
+    #     ('na', 'NA'),
+    # ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
+    # moisture_nabl = fields.Selection([
+    #     ('pass', 'NABL'),
+    #     ('fail', 'NON NABL'),
+    # ], string='NABL', compute="_compute_moisture_nabl")
 
 
-    @api.depends('average_moisture_content','eln_ref','grade')
-    def _compute_moisture_confirmity(self):
-        for record in self:
+    # @api.depends('average_moisture_content','eln_ref','grade')
+    # def _compute_moisture_confirmity(self):
+    #     for record in self:
 
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.moisture_confirmity = 'na'
-                continue
+    #         if not record.eln_ref or not record.eln_ref.conformity:
+    #             record.moisture_confirmity = 'na'
+    #             continue
 
-            record.moisture_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.average_moisture_content - record.average_moisture_content*mu_value
-                    upper = record.average_moisture_content + record.average_moisture_content*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.moisture_confirmity = 'pass'
-                        break
-                    else:
-                        record.moisture_confirmity = 'fail'
+    #         record.moisture_confirmity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+    #                 lower = record.average_moisture_content - record.average_moisture_content*mu_value
+    #                 upper = record.average_moisture_content + record.average_moisture_content*mu_value
+    #                 if lower >= req_min and upper <= req_max :
+    #                     record.moisture_confirmity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.moisture_confirmity = 'fail'
 
-    @api.depends('average_moisture_content','eln_ref','grade')
-    def _compute_moisture_nabl(self):
+    # @api.depends('average_moisture_content','eln_ref','grade')
+    # def _compute_moisture_nabl(self):
         
-        for record in self:
-            record.moisture_nabl = 'pass'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.moisture_nabl = 'pass'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 lab_min = line.lab_min_value
+    #                 lab_max = line.lab_max_value
+    #                 mu_value = line.mu_value
                     
-                    lower = record.average_moisture_content - record.average_moisture_content*mu_value
-                    upper = record.average_moisture_content + record.average_moisture_content*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.moisture_nabl = 'pass'
-                        break
-                    else:
-                        record.moisture_nabl = 'fail'
+    #                 lower = record.average_moisture_content - record.average_moisture_content*mu_value
+    #                 upper = record.average_moisture_content + record.average_moisture_content*mu_value
+    #                 if lower >= lab_min and upper <= lab_max:
+    #                     record.moisture_nabl = 'pass'
+    #                     break
+    #                 else:
+    #                     record.moisture_nabl = 'fail'
 
-    @api.depends('moisture_content_table.moisture_content')
-    def _compute_average_moisture_content(self):
-        for record in self:
-            try:
-                record.average_moisture_content = round(sum(record.moisture_content_table.mapped('moisture_content')) / len(
-                    record.moisture_content_table),2)
-            except:
-                record.average_moisture_content = 0
+    # @api.depends('moisture_content_table.moisture_content')
+    # def _compute_average_moisture_content(self):
+    #     for record in self:
+    #         try:
+    #             record.average_moisture_content = round(sum(record.moisture_content_table.mapped('moisture_content')) / len(
+    #                 record.moisture_content_table),2)
+    #         except:
+    #             record.average_moisture_content = 0
 
     # Density 
     density_name = fields.Char(default="Density")
     density_visible = fields.Boolean(compute="_compute_visible")
 
-    density_grade1 = fields.Char("Specification Grade - 1")
-    density_grade2 = fields.Char("Specification Grade - 2")
+    density_grade1 = fields.Char("Specification")
 
-    density_unit = fields.Char("Unit",default="mm",readonly=True)
 
     density_table = fields.One2many('mech.aac.density.line','parent_id')
     average_density = fields.Float("Average Density",compute="_compute_average_density")
@@ -671,10 +676,8 @@ class AacBlockMechanical(models.Model):
     drying_shrinkage_name = fields.Char(default="Drying Shrinkage")
     drying_shrinkage_visible = fields.Boolean(compute="_compute_visible")
 
-    drying_shrinkage_table = fields.One2many('mech.aac.drying.shrinkage.line','parent_id')
-    average_drying_shrinkage = fields.Float("Average Drying Shrinkage",compute="_compute_average_drying_shrinkage",digits=(12,3))
-    drying_grade1 = fields.Char("Specification Grade - 1")
-    drying_grade2 = fields.Char("Specification Grade - 2")
+    average_drying_shrinkage = fields.Float("Average Drying Shrinkage",digits=(12,3))
+    drying_grade1 = fields.Char("Specification")
     drying_shrinkage_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -734,14 +737,74 @@ class AacBlockMechanical(models.Model):
                     else:
                         record.drying_shrinkage_aac_nabl = 'fail'
 
-    @api.depends('drying_shrinkage_table.drying_shrinkage')
-    def _compute_average_drying_shrinkage(self):
+
+
+    #Thermal Conductivity
+    thermal_conductivity_name = fields.Char(default="Thermal Conductivity")
+    thermal_conductivity_visible = fields.Boolean(compute="_compute_visible")
+
+    average_thermal_conductivity = fields.Float("Thermal Conductivity",digits=(12,2))
+    thermal_conductivity_grade1 = fields.Char("Specification")
+    thermal_conductivity_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_thermal_conductivity_confirmity")
+    
+
+    thermal_conductivity_aac_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'NON NABL'),
+    ], string='NABL', compute="_compute_thermal_conductivity_nabl")
+
+
+    @api.depends('average_thermal_conductivity','eln_ref','grade')
+    def _compute_thermal_conductivity_confirmity(self):
         for record in self:
-            try:
-                record.average_drying_shrinkage = round(sum(record.drying_shrinkage_table.mapped('drying_shrinkage')) / len(
-                    record.drying_shrinkage_table),2)
-            except:
-                record.average_drying_shrinkage = 0
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.thermal_conductivity_confirmity = 'na'
+                continue
+
+            record.thermal_conductivity_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','098765y63-b1a2-4dac-b8cb-e077770af7865')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','098765y63-b1a2-4dac-b8cb-e077770af7865')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_thermal_conductivity - record.average_thermal_conductivity*mu_value
+                    upper = record.average_thermal_conductivity + record.average_thermal_conductivity*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.thermal_conductivity_confirmity = 'pass'
+                        break
+                    else:
+                        record.thermal_conductivity_confirmity = 'fail'
+
+
+    @api.depends('average_thermal_conductivity','eln_ref','grade')
+    def _compute_thermal_conductivity_nabl(self):
+        
+        for record in self:
+            record.thermal_conductivity_aac_nabl = 'pass'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','098765y63-b1a2-4dac-b8cb-e077770af7865')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','098765y63-b1a2-4dac-b8cb-e077770af7865')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_thermal_conductivity - record.average_thermal_conductivity*mu_value
+                    upper = record.average_thermal_conductivity + record.average_thermal_conductivity*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.thermal_conductivity_aac_nabl = 'pass'
+                        break
+                    else:
+                        record.thermal_conductivity_aac_nabl = 'fail'
+
+    
 
 
     # Compressive Strength
@@ -750,8 +813,7 @@ class AacBlockMechanical(models.Model):
 
     compressive_strength_table = fields.One2many('mech.aac.compressive.strength.line','parent_id')
     average_compressive_strength = fields.Float("Average Compressive Strength",compute="_compute_average_compressive_strength")
-    compressive_grade1 = fields.Char("Specification Grade - 1")
-    compressive_grade2 = fields.Char("Specification Grade - 2")
+    compressive_grade1 = fields.Char("Specification")
     compressive_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -828,101 +890,98 @@ class AacDimensionLine(models.Model):
     height = fields.Float('Height')
 
 
-class AacMoistureLine(models.Model):
-    _name = "mech.aac.moisture.line"
-    parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
+# class AacMoistureLine(models.Model):
+#     _name = "mech.aac.moisture.line"
+#     parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
 
-    wt_sample = fields.Float('Weight of sample W1 in gm')
-    oven_wt = fields.Float('Oven dry Weight of sample W in gm')
-    moisture_content = fields.Float('Moisture Content %',compute="_compute_moisture_content")
+#     wt_sample = fields.Float('Weight of sample W1 in gm')
+#     oven_wt = fields.Float('Oven dry Weight of sample W in gm')
+#     moisture_content = fields.Float('Moisture Content %',compute="_compute_moisture_content")
 
-    @api.depends('wt_sample','oven_wt')
-    def _compute_moisture_content(self):
-        for record in self:
-            if record.oven_wt != 0:
-                moisture = (record.wt_sample - record.oven_wt)/record.oven_wt *100
-                record.moisture_content = round(moisture,2)
-            else:
-                record.moisture_content = 0
+#     @api.depends('wt_sample','oven_wt')
+#     def _compute_moisture_content(self):
+#         for record in self:
+#             if record.oven_wt != 0:
+#                 moisture = (record.wt_sample - record.oven_wt)/record.oven_wt *100
+#                 record.moisture_content = round(moisture,2)
+#             else:
+#                 record.moisture_content = 0
 
 class AacDensityLine(models.Model):
     _name = "mech.aac.density.line"
     parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
 
-    length = fields.Float(string='Length of Sample before Drying in mm', digits=(16, 3), help='Length of Sample before Drying in millimeters')
-    width = fields.Float(string='Width of Sample before Drying in mm', digits=(16, 3),widget='text_wrap')
-    height = fields.Float(string='Height of Sample before Drying in mm', digits=(16, 3),widget='text_wrap')
-    volume = fields.Float(string='Volume of Sample mm3', compute="_compute_volume", digits=(16, 7))
-    wt_sample = fields.Float(string='Weight of Sample after Drying in g', digits=(16, 3))
-    density = fields.Float(string='Density of Sample Kg/mm3', compute="compute_density", digits=(16, 1))
+    length = fields.Float(string='Length', digits=(16, 2), )
+    width = fields.Float(string='Width', digits=(16, 2))
+    height = fields.Float(string='Height', digits=(16, 2))
+    volume = fields.Float(string="Volume of Sample (V) cm3", compute="_compute_volume", digits=(16, 2))
+    initial_wt = fields.Float(string='Initial Weight (W1) gm', digits=(16, 2))
+    dry_wt = fields.Float(string='Oven Dry Weight (W2) gm', digits=(16, 2))
+    density = fields.Float(string='Density of Sample Kg/mm3', compute="_compute_density", digits=(16, 3))
+    moisture = fields.Float(string='Moisture Content (%) F = ((W1-W2)/W2) *100', compute="_compute_moisture",digits=(16, 2))
 
     
 
-    @api.depends('length','width','height')
+    @api.depends('length', 'width', 'height')
     def _compute_volume(self):
         for record in self:
-            record.volume = round((record.length * record.width * record.height),7)
+            record.volume = record.length * record.width * record.height
 
-    @api.depends('volume','wt_sample')
-    def compute_density(self):
+
+    @api.depends('dry_wt', 'volume')
+    def _compute_density(self):
         for record in self:
-            if record.volume != 0:
-                density = (record.wt_sample / record.volume) * 1000000
-                record.density = round(density,1)
+            if record.volume:
+                record.density = record.dry_wt / record.volume
             else:
-                record.density = 0
+                record.density = 0.0
 
 
-class AacDryingShrinkageLine(models.Model):
-    _name = "mech.aac.drying.shrinkage.line"
-    parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
-
-    length = fields.Float('Length of Specimen')
-    initial_length = fields.Float('Initial Length L1 in mm',digits=(12,3))
-    final_length = fields.Float('Final Length L2 in mm',digits=(12,3))
-    change_length = fields.Float('Change in Length in mm',compute="_compute_change_length",digits=(12,3))
-    drying_shrinkage = fields.Float('Drying Shrinkage in %',compute="_compute_drying_shrinkage",digits=(12,3))
-
-    @api.depends('initial_length','final_length')
-    def _compute_change_length(self):
+    @api.depends('initial_wt', 'dry_wt')
+    def _compute_moisture(self):
         for record in self:
-            record.change_length = record.final_length - record.initial_length
-
-    # @api.depends('change_length','length')
-    # def _compute_drying_shrinkage(self):
-    #     for record in self:
-    #         if record.length != 0:
-    #             record.drying_shrinkage = round(record.change_length / record.length * 100,2)
-    #         else:
-    #             record.drying_shrinkage = 0
-
-    @api.depends('initial_length', 'final_length', 'length')
-    def _compute_drying_shrinkage(self):
-        for record in self:
-            if record.length:  # Avoid division by zero
-                record.drying_shrinkage = ((record.final_length - record.initial_length) / record.length) * 100
+            if record.dry_wt:
+                record.moisture = (
+                    (record.initial_wt - record.dry_wt) / record.dry_wt
+                ) * 100
             else:
-                record.drying_shrinkage = 0.0
+                record.moisture = 0.0
+        
+
 
 
 class AacCompressiveStrengthLine(models.Model):
     _name = "mech.aac.compressive.strength.line"
     parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
 
-    crosssectional_area = fields.Float('Crosssectional Area Sqmm')
+
+    length = fields.Float(string="Length (mm)")
+    breadth = fields.Float(string="Breadth (mm)")
+    height = fields.Float(string="Height (mm)")
+    area = fields.Float(string="Cross Sectional Area (mm2), A", compute="_compute_area")
+
+    @api.depends('length', 'breadth')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = rec.length * rec.breadth
+
     aac_load = fields.Float('Load (p) kN')
-    compressive_strength = fields.Float('Compressive Strength MPa',compute="_compute_compressive_strength")
+    compressive_strength = fields.Float('Compressive Strength (N/mm2)  σcu = L/A ',compute="_compute_compressive_strength",digits=(12,2))
+    kg_cm = fields.Float('kg/cm2',compute="_compute_kg_cm",digits=(12,5))
 
-
-    @api.depends('crosssectional_area','aac_load')
+    @api.depends('aac_load')
     def _compute_compressive_strength(self):
         for record in self:
-            print("CrossSectional",record.crosssectional_area)
-            if record.crosssectional_area != 0:
-                compressive_strength = (record.aac_load/record.crosssectional_area)*1000
-                record.compressive_strength = round(compressive_strength,2)
-            else:
-                record.compressive_strength = 0
+            record.compressive_strength = record.aac_load / 22.5
+
+
+    @api.depends('compressive_strength')
+    def _compute_kg_cm(self):
+        for record in self:
+            record.kg_cm = record.compressive_strength * 10.1972
+
+
+    
 
 
 class aacNotes(models.Model):
