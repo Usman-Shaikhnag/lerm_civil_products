@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="lerm_technician_digest_tree" model="ir.ui.view">
+        <field name="name">lerm.tech.digest.tree</field>
+        <field name="model">lerm.tech.digest</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="technician_id"/>
+                <field name="notification_type"/>
+                <field name="state"/>
+                <field name="digest_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="lerm_technician_notification_tree" model="ir.ui.view">
+        <field name="name">lerm.technician.notification.tree</field>
+        <field name="model">lerm.technician.notification</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="technician_id"/>
+                <field name="sample_id"/>
+                <field name="digest_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="lerm_technician_digest_action" model="ir.actions.act_window">
+        <field name="name">Technician Digests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.tech.digest</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="lerm_technician_digest_tree"/>
+        <field name="groups_id" eval="[(4, ref('lerm_civil.kes_admin_access_group'))]"/>
+    </record>
+
+    <record id="lerm_technician_notification_action" model="ir.actions.act_window">
+        <field name="name">Technician Notified Jobs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.technician.notification</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="lerm_technician_notification_tree"/>
+        <field name="groups_id" eval="[(4, ref('lerm_civil.kes_admin_access_group'))]"/>
+    </record>
+
+    <record id="lerm_technician_blocker_menu" model="ir.ui.menu">
+        <field name="name">Technician Block</field>
+        <field name="sequence">60</field>
+        <field name="groups_id" eval="[(4, ref('lerm_civil.kes_admin_access_group'))]"/>
+        <field name="parent_id" ref="lerm_civil.lerm_root"/>
+    </record>
+    <record id="lerm_technician_blocker_menu_digests" model="ir.ui.menu">
+        <field name="name">Digests</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" ref="lerm_technician_blocker_menu"/>
+        <field name="action" ref="lerm_technician_digest_action"/>
+    </record>
+    <record id="lerm_technician_blocker_menu_notifications" model="ir.ui.menu">
+        <field name="name">Notified Jobs</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" ref="lerm_technician_blocker_menu"/>
+        <field name="action" ref="lerm_technician_notification_action"/>
+    </record>
+</odoo>

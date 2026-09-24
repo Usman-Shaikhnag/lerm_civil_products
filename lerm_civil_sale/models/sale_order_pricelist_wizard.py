@@ -2,7 +2,7 @@
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrderPricelistWizardLine(models.TransientModel):
@@ -123,11 +123,11 @@ class SaleOrderPricelistWizard(models.TransientModel):
     def _action_update(self, order, data):
         pricelist = order._lerm_get_customer_pricelist()
         if not pricelist:
-            raise UserError(_(
+            raise ValidationError(_(
                 'No pricelist is attached to customer %s. Please set a pricelist '
                 'on the customer contact first.') % (order.partner_id.name or ''))
         if order._lerm_is_default_pricelist(pricelist):
-            raise UserError(_(
+            raise ValidationError(_(
                 'The pricelist "%s" is the default pricelist and cannot be updated. '
                 'Please assign a customer-specific pricelist to %s first.')
                 % (pricelist.name, order.partner_id.name or ''))

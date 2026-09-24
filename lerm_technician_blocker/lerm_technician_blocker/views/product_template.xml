@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_ownership_form_inherited" model="ir.ui.view">
+        <field name="name">product.template.ownership.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="lerm_civil.product_template_form_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_ids']" position="after">
+                <field name="ownership_ids"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"
+                       string="Ownership"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

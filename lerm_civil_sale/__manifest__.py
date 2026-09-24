@@ -13,6 +13,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
+        'views/srf_views.xml',
         'views/pricelist_wizard_views.xml',
         'views/pricelist_item_views.xml',
         'views/pricelist_audit_views.xml',
