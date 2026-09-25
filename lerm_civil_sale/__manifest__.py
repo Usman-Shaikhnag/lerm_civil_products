@@ -9,6 +9,7 @@
     'depends': [
         'sale',
         'lerm_civil',
+        'ftp_storage',
     ],
     'data': [
         'security/ir.model.access.csv',

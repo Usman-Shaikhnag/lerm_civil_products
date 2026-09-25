@@ -18,6 +18,14 @@ class SrfFormLermCivilSale(models.Model):
         ('sale_order', 'Sales Order'),
         ('customer_portal', 'Customer Portal'),
     ], string='Source', compute='_compute_source', store=True, copy=False)
+    sales_person_id = fields.Many2one(
+        'res.users',
+        string='Sales Person',
+        related='sale_order_id.user_id',
+        store=True,
+        readonly=True,
+        copy=False,
+    )
 
     @api.depends('sale_order_id', 'customer_portal_request')
     def _compute_source(self):

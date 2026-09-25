@@ -7,9 +7,11 @@
             <field name="model">lerm.civil.srf</field>
             <field name="inherit_id" ref="lerm_civil.lerm_civil_srf_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='srf_date']" position="after">
+                <xpath expr="//button[@name='download_attachment']" position="after">
                     <field name="source"/>
                     <field name="sale_order_id"
+                        invisible="source != 'sale_order'"/>
+                    <field name="sales_person_id"
                         invisible="source != 'sale_order'"/>
                 </xpath>
             </field>
