@@ -604,7 +604,7 @@ class AacBlockMechanical(models.Model):
 
 
     density_table = fields.One2many('mech.aac.density.line','parent_id')
-    average_density = fields.Float("Average Density",compute="_compute_average_density")
+    average_density = fields.Integer("Average Density Kg/cm3",compute="_compute_average_density")
 
     density_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -668,7 +668,7 @@ class AacBlockMechanical(models.Model):
         for record in self:
             try:
                 record.average_density = round(sum(record.density_table.mapped('density')) / len(
-                    record.density_table),2)
+                    record.density_table),1)
             except:
                 record.average_density = 0
 
@@ -917,7 +917,7 @@ class AacDensityLine(models.Model):
     volume = fields.Float(string="Volume of Sample (V) cm3", compute="_compute_volume", digits=(16, 2))
     initial_wt = fields.Float(string='Initial Weight (W1) gm', digits=(16, 2))
     dry_wt = fields.Float(string='Oven Dry Weight (W2) gm', digits=(16, 2))
-    density = fields.Float(string='Density of Sample Kg/mm3', compute="_compute_density", digits=(16, 3))
+    density = fields.Float(string='Density of Sample Kg/cm3', compute="_compute_density", digits=(16, 3))
     moisture = fields.Float(string='Moisture Content (%) F = ((W1-W2)/W2) *100', compute="_compute_moisture",digits=(16, 2))
 
     
@@ -932,7 +932,7 @@ class AacDensityLine(models.Model):
     def _compute_density(self):
         for record in self:
             if record.volume:
-                record.density = record.dry_wt / record.volume
+                record.density = (record.dry_wt / record.volume)*1000
             else:
                 record.density = 0.0
 
@@ -956,7 +956,7 @@ class AacCompressiveStrengthLine(models.Model):
 
 
     length = fields.Float(string="Length (mm)")
-    breadth = fields.Float(string="Breadth (mm)")
+    breadth = fields.Float(string="Width (mm)")
     height = fields.Float(string="Height (mm)")
     area = fields.Float(string="Cross Sectional Area (mm2), A", compute="_compute_area")
 

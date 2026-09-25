@@ -312,11 +312,11 @@
                           <field name="length"   class="blue-input" decoration-info="length != 0"/>
                           <field name="width" class="blue-input" decoration-info="width != 0"/>
                           <field name="height" class="blue-input" decoration-info="height != 0"/>
-                          <field name="volume" />
-                          <field name="initial_wt" class="blue-input" decoration-info="initial_wt != 0"/>
-                          <field name="dry_wt" class="blue-input" decoration-info="dry_wt != 0"/>
-                          <field name="density" />
-                          <field name="moisture" />
+                          <field name="volume" width="25%"/>
+                          <field name="initial_wt" class="blue-input" decoration-info="initial_wt != 0" width="25%"/>
+                          <field name="dry_wt" class="blue-input" decoration-info="dry_wt != 0" width="25%"/>
+                          <field name="density" string="Average Density Kg/cm3"  width="25%"/>
+                          <field name="moisture"  width="25%"/>
                         </tree>
                         </field>
                     </div>
@@ -325,7 +325,7 @@
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
                          <tbody>
                          <tr>
-                           <td><label for="average_density" class="text-bold">Average Density</label></td>
+                           <td><label for="average_density" class="text-bold">Average </label></td>
                            <td><field name="average_density"/></td>
                           </tr>
                            <tr>
@@ -382,11 +382,11 @@
                         <field name="compressive_strength_table" nolabel="1" >
                         <tree editable="bottom">
                           <field name="length" class="blue-input" decoration-info="length != 0"/>
-                          <field name="breadth" class="blue-input" decoration-info="breadth != 0"/>
+                          <field name="breadth" class="blue-input" decoration-info="breadth != 0" string="Width (mm)"/>
                           <field name="height" class="blue-input" decoration-info="height != 0"/>
-                          <field name="area" class="blue-input" decoration-info="area != 0"/>
+                          <field name="area" class="blue-input" decoration-info="area != 0"  width="20%"/>
                           <field name="aac_load" class="blue-input" decoration-info="aac_load != 0"/>
-                          <field name="compressive_strength"/>
+                          <field name="compressive_strength" width="25%"/>
                            <field name="kg_cm"/>
                         </tree>
                         </field>
