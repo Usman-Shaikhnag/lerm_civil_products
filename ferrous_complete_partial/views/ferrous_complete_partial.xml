@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ferrous_complate_partial_view" model="ir.ui.view">
+        <field name="name">ferrous.complete.partial.form</field>
+        <field name="model">ferrous.complete.partial</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+
+                
+                   <h1>
+                        <field name="name1" readonly="1" nolabel="1"/>
+                    </h1>
+                     <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <!-- <field name="grade" readonly="1"/> -->
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                        <field name="grade"/>
+                    </group>
+                    
+                   
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                   
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="magnification"></label></td>
+                                    <td><field name="magnification" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="etching"></label></td>
+                                    <td><field  name="etching" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="product_name"></label></td>
+                                    <td><field  name="product_name" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+
+                     <div invisible="feroous_complate_partial_visible == False" style="text-align:center">
+                        <h1>
+                          
+                          <field name="feroous_complate_partial_visible" invisible='1'/>
+                          <field name="feroous_complate_partial_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                
+
+                
+
+                    <div invisible="feroous_complate_partial_visible == False" class="mb-3">
+                    <field name="feroous_complate_partial_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
+                                <field name="test_parameter"  class="blue-input" decoration-info="test_parameter != 0"/>
+                                <field name="reading_1"  class="blue-input" decoration-info="reading_1 != 0"/>
+                                <field name="reading_2"  class="blue-input" decoration-info="reading_2 != 0"/>
+                                <field name="reading_3"  class="blue-input" decoration-info="reading_3 != 0"/>
+                                <field name="reading_4"  class="blue-input" decoration-info="reading_4 != 0"/>
+                                <field name="reading_5"  class="blue-input" decoration-info="reading_5 != 0"/>
+                                <field name="remarks"  class="blue-input" decoration-info="remarks != 0"/>
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="original_image"></label></td>
+                                    <td><field name="original_image" widget="image" options="{'size': [200, 200]}"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="processed_image"></label></td>
+                                    <td><field name="processed_image" widget="image" options="{'size': [200, 200]}"/></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+
+                 
+
+                  
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        
+    </data>
+</odoo>
