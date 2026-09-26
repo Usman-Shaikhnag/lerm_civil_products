@@ -64,6 +64,10 @@ class ConcreteCore(models.Model):
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
     date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
 
+
+    date_of_casting_new = fields.Char(string="Date of Casting")
+    date_of_testing_new = fields.Char(string="Date of Testing")
+
     @api.depends('eln_ref')
     def _compute_date_testing(self):
         if self.eln_ref:

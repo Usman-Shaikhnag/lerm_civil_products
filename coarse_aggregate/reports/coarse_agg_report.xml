@@ -173,7 +173,9 @@
 									<!-- Unit -->
 									</th>
 
-                                    <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+									<t t-if="data.specification">
+									  <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+									</t>
 
 									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
 									
@@ -201,6 +203,7 @@
 								</tr>
 
                                 <tr t-if="data.sieve_visible">
+								<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')])"/>
                                     <td  style="text-align: center;">
 										<span>
 											IS Sieve Size
@@ -219,11 +222,14 @@
 										</span>
 									</td>
 
-                                    <td  style="text-align: center;">
+									<t t-if="data.specification">
+									<td  style="text-align: center;">
 										<span>
 											Limit As per IS 383:2016
 										</span>
 									</td>
+									</t>
+									
 
                                     <td  style="text-align: center;">
 										<span>
@@ -234,6 +240,7 @@
 								</tr>
 
                                 <tr t-if="data.sieve_visible" t-foreach="valid_sieve_lines" t-as="r">
+								<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')])"/>
 									
 									<td>
 							     		<span t-esc="r['sieve_size']"/>
@@ -249,9 +256,34 @@
 										</span>
 									</td>
 
-                                    <td style="text-align: center;font-weight:bold;">
+								<t t-if="data.specification">
+								<td style="text-align: center;">
+
+    <!-- Check whether a parameter exists for this SIZE -->
+    <t t-set="size_parameter"
+       t-value="sieve.parameter_table.filtered(lambda p: p.size and p.size.id == eln.size_id.id)"/>
+
+    <t t-if="size_parameter">
+        <!-- SIZE matched -->
+        <span t-esc="r['specific_limits']"/>
+    </t>
+
+    <t t-else="">
+        <!-- SIZE did not match, so find by GRADE -->
+        <t t-set="grade_parameter"
+           t-value="sieve.parameter_table.filtered(lambda p: p.grade and p.grade.id == eln.grade_id.id)"/>
+
+        <t t-foreach="grade_parameter" t-as="parameter">
+            <span t-field="parameter.permissable_limit"/>
+        </t>
+    </t>
+
+</td>
+</t>
+
+                                    <!-- <td style="text-align: center;font-weight:bold;">
 									  <span t-esc="r['specific_limits']" />
-                                     </td>
+                                     </td> -->
 
 									<!-- <td  style="text-align: center;">
 										<span>
@@ -306,6 +338,8 @@
 										</span>
 									</td>								
 									</td>
+									<t t-if="data.specification">
+									
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="fineness_mod.parameter_table" t-as="parameter">
@@ -315,6 +349,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -374,6 +409,7 @@
 										</span>
 									</td>
 
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="loose_bulk_density.parameter_table" t-as="parameter">
@@ -383,6 +419,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -416,6 +453,7 @@
 										</span>
 									</td>
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="rodded_bulk_density.parameter_table" t-as="parameter">
@@ -425,6 +463,8 @@
 											</t>
 										</span>
 									</td>
+									</t>
+
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="rodded_bulk_density.parameter_table" t-as="parameter">
@@ -460,6 +500,7 @@
 										</span>
 									</td>								
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="moisture.parameter_table" t-as="parameter">
@@ -469,6 +510,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -506,6 +548,7 @@
 										</span>
 									</td>
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="crushing_value.parameter_table" t-as="parameter">
@@ -515,6 +558,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="crushing_value.parameter_table" t-as="parameter">
@@ -552,6 +596,7 @@
 									</td>
 									
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -561,6 +606,8 @@
 											</t>
 										</span>
 									</td>
+									</t>
+
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -598,6 +645,7 @@
 									</td>
 									
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
@@ -607,6 +655,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
@@ -643,6 +692,7 @@
 										</span>
 									</td>
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="impact.parameter_table" t-as="parameter">
@@ -652,6 +702,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -690,6 +741,7 @@
 									</td>
 																		
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
@@ -699,6 +751,8 @@
 											</t>
 										</span>
 									</td>
+									</t>
+
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
@@ -738,6 +792,7 @@
 									</td>
 									
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
@@ -747,6 +802,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -785,6 +841,7 @@
 									</td>
 									
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
@@ -794,6 +851,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -832,6 +890,7 @@
 										</span>
 									</td>
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="abrasion.parameter_table" t-as="parameter">
@@ -841,6 +900,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -878,6 +938,7 @@
 										</span>
 									</td>
 									
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="finer75.parameter_table" t-as="parameter">
@@ -887,6 +948,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -924,6 +986,7 @@
 									</td>	
 									
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="fine10.parameter_table" t-as="parameter">
@@ -933,6 +996,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -971,6 +1035,7 @@
 									</td>
 									
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="clay_lump.parameter_table" t-as="parameter">
@@ -980,6 +1045,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1017,6 +1083,7 @@
 									</td>
 									
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="stripping_value.parameter_table" t-as="parameter">
@@ -1026,6 +1093,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1065,6 +1133,7 @@
 									</td>
 									
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="wet_impact.parameter_table" t-as="parameter">
@@ -1074,6 +1143,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1111,6 +1181,7 @@
 									</td>
 																	
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="sodium.parameter_table" t-as="parameter">
@@ -1120,6 +1191,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1156,6 +1228,7 @@
 										</span>
 									</td>								
 									</td>
+									<t t-if="data.specification">
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="magnesium.parameter_table" t-as="parameter">
@@ -1165,6 +1238,7 @@
 											</t>
 										</span>
 									</td>
+									</t>
 
                                     <td style="text-align: center;">
 										<span>

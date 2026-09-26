@@ -23,6 +23,8 @@ class CoarseAggregateMechanical(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    specification = fields.Boolean(string="Show Specification")
+
 
     notes_id = fields.One2many('coarse.notes', 'parent_id',string="Notes",
     default=lambda self: self._default_notes_lines())

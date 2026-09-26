@@ -139,6 +139,18 @@
 										</td>
 								
 							</tr>
+							<tr>
+								<td colspan="1">Date of Casting  :-</td>
+								<td colspan="1">
+									<span t-field="data.date_of_casting_new"/>
+								</td>
+
+									<td colspan="1">Test Method :-</td>
+									<td colspan="1" >
+										IS 516 P-4: 2018
+									</td>
+								
+							</tr>
 
                             <tr>
 								<td colspan="1">Discipline  :-</td>
@@ -211,10 +223,11 @@
 									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Corrected Compressive Strength Core N/mm2</th>
 									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Equivalent Cube Strength N/mm2</th>
 									<t t-if="data.show_average_strength">
-									<th style="text-align:center;border: 1px solid black; padding: 8px;width:80px;vertical-align: middle;"  >
-									 Average Equivalent Cube Strength in N/mm2
-                                     </th>
+								      	<th style="text-align:center;border: 1px solid black; padding: 8px;width:100px;vertical-align: middle;"  colspan="2">
+									       Average Equivalent Cube Strength in N/mm2
+                                        </th>
 									 </t>
+									 <th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Specifications </th>
 								</tr>
 							</thead>
 							<tbody>
@@ -242,11 +255,19 @@
 								 <t t-if="data.show_average_strength">
 								
                                   <t t-if="k == 1">
-                                      <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
+                                      <td colspan="2" t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
                                           <span t-field="data.average_strength"/>
                                       </td>
                                   </t>
 								  </t>
+
+								   <t t-if="k == 1">
+								   <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" width="30%" colspan="2">
+										The average equivalent cube strength of the cores is equal to at least 85 percent of the cube strength, of the grade of concrete specified for the corresponding age and no individual core has a strength less than 75 percent as per IS 456:2000 RA-2021
+									</td>
+									</t>
+
+
 								</tr>
 								
 								
