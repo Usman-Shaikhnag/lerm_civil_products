@@ -235,6 +235,11 @@ class ConcreteCore(models.Model):
     default=False
 )
 
+    show_specification = fields.Boolean(
+        string='Show Specification in Report',
+        default=False
+    )
+
     @api.depends('child_lines.equivalent_cube_strength')
     def _compute_average_strength(self):
         for rec in self:

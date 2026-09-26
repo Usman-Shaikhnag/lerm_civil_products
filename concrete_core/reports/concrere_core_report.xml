@@ -214,7 +214,348 @@
 							Compressive Strength
 						</div>
 
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+
+						<table style="width:100%; border-collapse:collapse; font-size:14px;">
+
+    <!-- ===================== HEADER ===================== -->
+    <thead>
+        <tr style="text-align:center;">
+
+            <th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Sr No.
+            </th>
+
+            <th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Location/ Sample Id
+            </th>
+
+            <th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Density
+            </th>
+
+            <th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Corrected Compressive Strength Core N/mm2
+            </th>
+
+            <th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Equivalent Cube Strength N/mm2
+            </th>
+
+            <t t-if="data.show_average_strength">
+                <th style="text-align:center;
+                           border:1px solid black;
+                           padding:8px;
+                           width:100px;
+                           vertical-align:middle;"
+                    colspan="2">
+                    Average Equivalent Cube Strength in N/mm2
+                </th>
+            </t>
+
+            <t t-if="data.show_specification">
+			<th style="text-align:center;
+                       border:1px solid black;
+                       padding:8px;
+                       vertical-align:middle;"
+                colspan="2">
+                Specifications
+            </th>
+			</t>
+
+        </tr>
+    </thead>
+
+
+    <!-- ===================== VARIABLES ===================== -->
+
+    <t t-set="k" t-value="0"/>
+    <t t-set="total_rows" t-value="len(data.child_lines)"/>
+    <t t-set="remaining_rows" t-value="total_rows - 6"/>
+
+
+    <!-- ====================================================== -->
+    <!--                    FIRST PAGE                          -->
+    <!--                    ROWS 1 TO 6                         -->
+    <!-- ====================================================== -->
+
+    <tbody>
+
+        <t t-foreach="data.child_lines[:6]" t-as="r">
+
+            <tr style="text-align:center; page-break-inside:avoid;">
+
+                <!-- SR NO -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="k + 1"/>
+
+                    <t t-set="k" t-value="k + 1"/>
+
+                </td>
+
+
+                <!-- LOCATION -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['location']"/>
+
+                </td>
+
+
+                <!-- DENSITY -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['density']"
+                          t-options='{"widget":"float","precision":0}'/>
+
+                </td>
+
+
+                <!-- CORRECTED COMPRESSIVE STRENGTH -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['corrected_compressive_strength']"
+                          t-options='{"widget":"float","precision":2}'/>
+
+                </td>
+
+
+                <!-- EQUIVALENT CUBE STRENGTH -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['equivalent_cube_strength']"
+                          t-options='{"widget":"float","precision":2}'/>
+
+                </td>
+
+
+                <!-- ================================================= -->
+                <!-- AVERAGE - ONLY FIRST ROW OF FIRST PAGE -->
+                <!-- ================================================= -->
+
+                <t t-if="data.show_average_strength">
+
+                    <t t-if="k == 1">
+
+                        <td colspan="2"
+                            rowspan="6"
+                            style="border:1px solid black;
+                                   padding:6px;
+                                   text-align:center;
+                                   vertical-align:middle;">
+
+                            <span t-field="data.average_strength"/>
+
+                        </td>
+
+                    </t>
+
+                </t>
+
+
+                <!-- ================================================= -->
+                <!-- SPECIFICATION - ONLY FIRST ROW OF FIRST PAGE -->
+                <!-- ================================================= -->
+
+                <t t-if="data.show_specification">
+				<t t-if="k == 1">
+
+                    <td colspan="2"
+                        rowspan="6"
+                        width="30%"
+                        style="border:1px solid black;
+                               padding:6px;
+                               text-align:center;
+                               vertical-align:middle;">
+
+                        The average equivalent cube strength of the cores
+                        is equal to at least 85 percent of the Equivalent
+                        cube strength, of the grade of concrete specified
+                        for the corresponding age and no individual core
+                        has a strength less than 75 percent as per
+                        IS 456:2000 RA-2021
+
+                    </td>
+
+                </t>
+				</t>
+
+            </tr>
+
+        </t>
+
+    </tbody>
+
+
+    <!-- ====================================================== -->
+    <!--              FORCE PAGE BREAK AFTER ROW 6              -->
+    <!-- ====================================================== -->
+
+    <tbody style="page-break-before:always;">
+
+        <!-- ================================================== -->
+        <!--                    ROW 7 ONWARDS                    -->
+        <!-- ================================================== -->
+
+        <t t-foreach="data.child_lines[6:]" t-as="r">
+
+            <tr style="text-align:center; page-break-inside:avoid;">
+
+                <!-- SR NO -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="k + 1"/>
+
+                    <t t-set="k" t-value="k + 1"/>
+
+                </td>
+
+
+                <!-- LOCATION -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['location']"/>
+
+                </td>
+
+
+                <!-- DENSITY -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['density']"
+                          t-options='{"widget":"float","precision":0}'/>
+
+                </td>
+
+
+                <!-- CORRECTED COMPRESSIVE STRENGTH -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['corrected_compressive_strength']"
+                          t-options='{"widget":"float","precision":2}'/>
+
+                </td>
+
+
+                <!-- EQUIVALENT CUBE STRENGTH -->
+                <td style="text-align:center;
+                           border:1px solid black;
+                           padding:6px;"
+                    colspan="2">
+
+                    <span t-esc="r['equivalent_cube_strength']"
+                          t-options='{"widget":"float","precision":2}'/>
+
+                </td>
+
+
+                <!-- ================================================= -->
+                <!-- AVERAGE - FIRST ROW OF SECOND PAGE -->
+                <!-- ================================================= -->
+
+                <t t-if="data.show_average_strength">
+
+                    <t t-if="k == 7">
+
+                        <td colspan="2"
+                            t-att-rowspan="remaining_rows"
+                            style="border:1px solid black;
+                                   padding:6px;
+                                   text-align:center;
+                                   vertical-align:middle;">
+
+                            <span t-field="data.average_strength"/>
+
+                        </td>
+
+                    </t>
+
+                </t>
+
+
+                <!-- ================================================= -->
+                <!-- SPECIFICATION - FIRST ROW OF SECOND PAGE -->
+                <!-- ================================================= -->
+
+                <t t-if="data.show_specification">
+				<t t-if="k == 7">
+
+                    <td colspan="2"
+                        t-att-rowspan="remaining_rows"
+                        width="30%"
+                        style="border:1px solid black;
+                               padding:6px;
+                               text-align:center;
+                               vertical-align:middle;">
+
+                        The average equivalent cube strength of the cores
+                        is equal to at least 85 percent of the Equivalent
+                        cube strength, of the grade of concrete specified
+                        for the corresponding age and no individual core
+                        has a strength less than 75 percent as per
+                        IS 456:2000 RA-2021
+
+                    </td>
+
+                </t>
+				 </t>
+
+            </tr>
+
+        </t>
+
+    </tbody>
+
+</table>
+
+						<!-- <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<thead>
 								<tr style="text-align: center;">
 									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Sr No.</th>
@@ -232,8 +573,12 @@
 							</thead>
 							<tbody>
 								<t t-set="k" t-value="0"/>
+
 								<t t-set="total_rows" t-value="len(data.child_lines)"/>
+
+								
 								<tr t-foreach="data.child_lines" t-as="r" style="text-align: center;">
+								
 									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
 										<span t-esc="k + 1" />
 										<t t-set="k" t-value="k+1"/>
@@ -250,7 +595,7 @@
 									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
 										<span t-esc="r['equivalent_cube_strength']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
+									
 
 								 <t t-if="data.show_average_strength">
 								
@@ -263,16 +608,22 @@
 
 								   <t t-if="k == 1">
 								   <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" width="30%" colspan="2">
-										The average equivalent cube strength of the cores is equal to at least 85 percent of the cube strength, of the grade of concrete specified for the corresponding age and no individual core has a strength less than 75 percent as per IS 456:2000 RA-2021
+										The average equivalent cube strength of the cores is equal to at least 85 percent of the Equivalent cube strength, of the grade of concrete specified for the corresponding age and no individual core has a strength less than 75 percent as per IS 456:2000 RA-2021
 									</td>
-									</t>
+									
+									
 
 
 								</tr>
-								
+
+								 
+
 								
 							</tbody>
-						</table>
+						</table> -->
+
+
+					
 
 						</div>
 
