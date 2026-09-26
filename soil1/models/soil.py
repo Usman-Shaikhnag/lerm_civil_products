@@ -15392,7 +15392,7 @@ class ConsolidationLine(models.Model):
     compute="_compute_preconsolidation_pressure",
     store=True
 )
-    
+     
     @api.depends(
     'consolidation_output_ids.delta_cc',
     'consolidation_output_ids.applied_pressure',
