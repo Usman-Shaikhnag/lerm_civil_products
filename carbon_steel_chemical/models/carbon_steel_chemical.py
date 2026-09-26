@@ -29,18 +29,23 @@ class CarbonSteelChemical(models.Model):
                 'exclude_sample_id': self.eln_ref.sample_id.id,
                 },
         }
+
+    description_work = fields.Text("Work Description")
     
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
+    test_method_mech = fields.Char("Test Method")
 
     temprature_section = fields.Float("Temperature (°C)", digits=(10,2))
     humidity_section = fields.Float("Humidity (%)", digits=(10,2))
+    test_method_section = fields.Char("Test Method")
 
     temprature_chemical = fields.Float("Temperature (°C)", digits=(10,2))
     humidity_chemical = fields.Float("Humidity (%)", digits=(10,2))
+    test_method_chemical = fields.Char("Test Method")
 
-    garde = fields.Char("Grade")
-    size = fields.Char("Size")
+    # garde = fields.Char("Grade")
+    # size = fields.Char("Size")
 
     sample_submitted = fields.Char("Sample Submitted By")
 
@@ -267,6 +272,10 @@ class CarbonSteelChemical(models.Model):
                 # result.result_char = round(self.average_mpa,2)
                 result.calculated = True
 
+            if result.parameter.internal_id == '0jnbgt5e-9cc3-4779-afde-741f18e987yh':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+
            
            
 
@@ -389,6 +398,8 @@ class CarbonSteelChemicalLine(models.Model):
         string="Re-Bend Test"
     )
 
+    yield_stress = fields.Float(string="Yield Stress")
+
     @api.onchange('parent_id')
     def _onchange_parent_id(self):
         if self.parent_id:
@@ -425,11 +436,11 @@ class SectionWeightLine(models.Model):
     sample_identity = fields.Char(string="Sample  Identity")
    
     # f10 = fields.Integer(string="10")
-    weight = fields.Float(string="Weight (Kg)")
+    weight = fields.Float(string="Weight (Kg/m)")
 
     lenght = fields.Float(string="Length(mm)")
     unit_weight = fields.Float(string="Unit Weight Kg/meter")
-    standard_weight = fields.Float(string="Standard Weight  as per IS 1786-2008")
+    standard_weight = fields.Float(string="Standard Weight  as per IS 1786-2008 (Kg/m)")
     tolerance = fields.Char(string="Tolerance on the Nominal Mass, Percent Batch")
 
     @api.onchange('parent_id')

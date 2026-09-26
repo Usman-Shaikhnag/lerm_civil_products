@@ -37,7 +37,7 @@
 									</td>
 								
 							</tr>
-							<tr t-if="o.srf_id.name_work">
+							<tr >
 								<td colspan="1" >Project Name:</td>
 								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -117,17 +117,18 @@
 							<tr>
 								<td>Grade :-</td>
 								<td>
-									   <t t-if="tmt.garde">
-											<span t-field="tmt.garde"/>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
 										</t>
 									<t t-else="">--</t>
-								</td>
+									</td>
 
 								<td>Size  :-</td>
 
 								<td>
-									   <t t-if="tmt.size">
-											<span t-field="tmt.size"/>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
 										</t>
 									<t t-else="">--</t>
 								</td>
@@ -219,6 +220,17 @@
 								</td>
 							</tr>
 
+							<tr >
+								<td colspan="1" >Work Description:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="tmt.description_work">
+											<span t-field="tmt.description_work"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+							</tr>
+
 							
 							<tr t-if="o.material.test_method_adopted" >
 								
@@ -253,27 +265,20 @@
                         <table>
                        
                               <tr >
-							   <td colspan="3">
-                                MECHANICAL TEST : 	
+							   <td colspan="4">
+                               <strong> MECHANICAL TEST : 	</strong>
 								</td>
 
-								<td colspan="2">
-                                  TEST METHOD :
-								  <span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','65587529-c0b6-4054-8b2d-7efc9bfe2c85')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
+								<td colspan="2" style="white-space: nowrap;">
+									<strong>TEST METHOD :</strong>&#160;<span t-field="tmt.test_method_mech"/>
 								</td>
 
-								<td colspan="2">
-                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								<td colspan="2" style="white-space: nowrap;">
+                                  <strong>TEMPRATURE : </strong>&#160;<span t-field="tmt.temprature"/>
 								</td>
 
-								<td colspan="2">
-                                  HUMIDITY : <span t-field="tmt.humidity"/>
+								<td colspan="2" style="white-space: nowrap;">
+                                 <strong> HUMIDITY : </strong>&#160;<span t-field="tmt.humidity"/>
 								</td>
                                 
                                
@@ -288,6 +293,7 @@
                                 <td  style="text-align: center;"><b>Ratio of UTS/YS</b></td>
                                 <td   style="text-align: center;"><b>Bend Test 180°</b></td>
                                 <td   style="text-align: center;"><b>Re bend Test</b></td>
+								<td   style="text-align: center;"><b>Yield Stress</b></td>
                                
                             </tr>
 
@@ -295,7 +301,7 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per IS 2062-2011<span t-field="tmt.garde"/></b>
+									<b>Specification as per <span t-field="tmt.test_method_mech"/></b>
 								</td>
 
 							
@@ -357,14 +363,24 @@
 									</td> <!-- bend -->
 
                                     <td style="text-align: center;">
-								<span >
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','501eaf84-c8d5-4002-bf1d-61869799a5cd')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
+									<span >
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','501eaf84-c8d5-4002-bf1d-61869799a5cd')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
 											</t>
-										</t>
-										</span>
+											</span>
 									</td> <!-- bend -->
+
+									<td style="text-align: center;">
+									<span >
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0jnbgt5e-9cc3-4779-afde-741f18e987yh')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+											</span>
+									</td>
 							</tr>
                             <t t-set="f" t-value="0"/>
                             <tr t-foreach="tmt.child_lines" t-as="r">
@@ -426,6 +442,10 @@
 								<td style="text-align: center;">
 									<t t-esc="dict(r._fields['re_bend'].selection).get(r.re_bend) if r.re_bend else '--'"/>
 								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['yield_stress'] if r['yield_stress'] not in (None, 0, 0.0) else '--'"/>
+								</td>
                                
                             </tr>
 
@@ -444,26 +464,20 @@
                        
                               <tr >
 							  <td colspan="2">
-                             SECTION WEIGHT
+                             <strong>SECTION WEIGHT  </strong>
 								</td>
 
-									<td colspan="2">
-                                  TEST METHOD :
-								  <span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','99a0d77f-6237-4dc9-898f-6f3be67bcb12')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
+									<td colspan="2" style="white-space: nowrap;">
+                                 <strong> TEST METHOD : &#160;</strong><span t-field="tmt.test_method_section"/>
+							
 								</td>
 
-								<td colspan="2">
-                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								<td colspan="2" style="white-space: nowrap;">
+                                  <strong>TEMPRATURE : &#160;</strong><span t-field="tmt.temprature_section"/>
 								</td>
 
-								<td colspan="1">
-                                  HUMIDITY : <span t-field="tmt.humidity"/>
+								<td colspan="1" style="white-space: nowrap;">
+                                  <strong>HUMIDITY : &#160;</strong><span t-field="tmt.humidity_section"/>
 								</td>
                                 
                                
@@ -471,10 +485,10 @@
 							  <tr cols="12">
                                 <td  style="text-align: center;"><b>Sr No.</b></td>
                                 <td   style="text-align: center;"><b>Sample  Identity</b></td>
-                                <td   style="text-align: center;"><b>Weight (Kg)</b></td>
+                                <td   style="text-align: center;"><b>Weight (Kg/m)</b></td>
                                 <td   style="text-align: center;"><b>Length(mm)</b></td>
                                 <td   style="text-align: center;"><b>Unit Weight Kg/meter</b></td>
-                                <td   style="text-align: center;"><b>Standard Weight  as per IS 1786-2008</b></td>
+                                <td   style="text-align: center;"><b>Standard Weight  as per IS 1786-2008 (Kg/m)</b></td>
                                 <td  style="text-align: center;"><b>Tolerance on the Nominal Mass, Percent Batch</b></td>
                                
                                
@@ -529,7 +543,7 @@
 
 					
 					<div style="text-align: right; margin-top: 100px;">
-						<b>CONTINUE</b>
+						<b>TO BE CONTINUED</b>
 					</div>
 
 
@@ -541,26 +555,20 @@
                        
                               <tr >
 							  <td colspan="4">
-                               CHEMICAL TEST 
+                               <strong>CHEMICAL TEST </strong>
 								</td>
 
-								<td colspan="4">
-                                  TEST METHOD :
-								  <span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','11ab83fd-ed54-467e-b4dd-15857fc1c8bc')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
+								<td colspan="4" style="white-space: nowrap;">
+                                 <strong> TEST METHOD :  &#160;</strong><span t-field="tmt.test_method_chemical"/>
+								 
 								</td>
 
-								<td colspan="2">
-                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								<td colspan="2" style="white-space: nowrap;">
+                                  <strong>TEMPRATURE :&#160;</strong><span t-field="tmt.temprature_chemical"/>
 								</td>
 
-								<td colspan="2">
-                                  HUMIDITY : <span t-field="tmt.humidity"/>
+								<td colspan="2" style="white-space: nowrap;">
+                                  <strong>HUMIDITY : &#160;</strong><span t-field="tmt.humidity_chemical"/>
 								</td>
                                 
                                 
@@ -587,7 +595,7 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per IS 2062-2011 2011<span t-field="tmt.grade"/></b>
+									<b>Specification as per <span t-field="tmt.test_method_section"/></b>
 								</td>
 
 							
