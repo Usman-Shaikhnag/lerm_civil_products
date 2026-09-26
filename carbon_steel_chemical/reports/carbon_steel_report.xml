@@ -52,6 +52,149 @@
 									<span t-field="o.srf_id.client"/>
 									</td>
 							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+
+							
+							</tr>
+
+
+							<tr>
+								
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							
+							<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td >Samples Description :-</td>
+								<td >
+								      <t t-if="tmt.product_name">
+											<span t-field="tmt.product_name"/>
+										</t>
+								</td>
+
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Grade :-</td>
+								<td>
+									   <t t-if="tmt.garde">
+											<span t-field="tmt.garde"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td>Size  :-</td>
+
+								<td>
+									   <t t-if="tmt.size">
+											<span t-field="tmt.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+								<td>Test Start Date  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td>Test Completion Date  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td>
+									   <t t-if="tmt.sample_status">
+											<span t-field="tmt.sample_status"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+								<td>Sample Submitted By:-</td>
+								<td>
+									   <t t-if="tmt.sample_submitted">
+											<span t-field="tmt.sample_submitted"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
+							</tr>
+
+							<tr>
+
+								<td>Sub Group :-</td>
+								<td>
+								  <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+								<td>No. Of  Samples :-</td>
+								<td>
+									   <t t-if="tmt.No_of_sample">
+											<span t-field="tmt.No_of_sample"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
+							</tr>
 							
 							<tr>
 								
@@ -76,215 +219,7 @@
 								</td>
 							</tr>
 
-							<tr>
-
-							<tr>
-
-								<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
-								<td>SRF Date:-</td>
-								<td>
-
-									<t t-if="o.srf_date">
-											<span t-field="o.srf_date"/>
-										</t>
-								</td>
-
-								
-								
-							</tr>
-								
-
-								<td style="width:20%;">Temperature :-</td>
-								<td style="width:20%;">
-
-								  <t t-if="tmt.temprature">
-											<span t-field="tmt.temprature"/> (°C)
-										</t>
-									<t t-else="">--</t>
-								
-								</td>
-								<td>Humidity :-</td>
-								<td>
-									
-
-									<t t-if="tmt.humidity">
-											<span t-field="tmt.humidity"/>  (%)
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td style="width:20%;">Discipline :
-									
-								</td>
-								<td style="width:20%;">
-								<span t-field="o.discipline.discipline"/>
-								</td>
-
-								<td style="width:20%;">Group :	
-								</td>
-								<td style="width:20%;">
-									<span t-field="o.group.group"/>
-								
-								</td>
-							</tr>
-
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td colspan="1">Description Of Work :
-									
-								</td>
-
-								<td colspan="3">
-								<t t-if="tmt.description_work">
-											<span t-field="tmt.description_work"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-								
-							</tr>
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>Condition :-</td>
-										<td >
-
-											<t t-if="tmt.condition">
-											<span t-field="tmt.condition"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
-								
-							</tr>
-
-							<tr>
-								
-
-								<td colspan="1">Samples Description :-</td>
-								<td colspan="3">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
-										</t>
-								</td>
-								
-							</tr>
-							<tr>
-								
-
-								<td colspan="1">Product Name :-</td>
-								<td colspan="3">
-								      <t t-if="tmt.product_name">
-											<span t-field="tmt.product_name"/>
-										</t>
-								</td>
-								
-							</tr>
-
-							<tr>
-
-								<td>Sample Status :-</td>
-								<td></td>
-								
-								<td>Quantity:-</td>
-								<td>
-
-								<t t-if="o.sample_id.sample_qty">
-											<span t-field="o.sample_id.sample_qty"/>
-										</t>
-									<t t-else="">--</t>
-
-								<t t-if="o.sample_id.uom_id">
-											<span t-field="o.sample_id.uom_id"/>
-										</t>
-									<t t-else="">--</t>
-								
-								</td>
-
 							
-
-								
-							</tr>
-
-							
-
-							<tr>
-								
-								<td>Test Start Date  :-</td>
-								<td>
-
-									<t t-if="o.start_date">
-											<span t-field="o.start_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-								<td>Test Completion Date  :-</td>
-								<td>
-
-									<t t-if="o.end_date">
-											<span t-field="o.end_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								
-
-								<td>Week No.  :-</td>
-								<td >
-
-									<t t-if="tmt.week_no">
-									<span t-field="tmt.week_no"/>
-								</t>
-							<t t-else="">--</t>
-								</td>
-
-								<td>Other Details  :-</td>
-								<td >
-
-									<t t-if="tmt.other_details">
-									<span t-field="tmt.other_details"/>
-								</t>
-							<t t-else="">--</t>
-								</td>
-							</tr>
-
-						
 							<tr t-if="o.material.test_method_adopted" >
 								
 
@@ -318,8 +253,27 @@
                         <table>
                        
                               <tr >
-							  <td colspan="9">
-                                MECHANICAL TEST
+							   <td colspan="3">
+                                MECHANICAL TEST : 	
+								</td>
+
+								<td colspan="2">
+                                  TEST METHOD :
+								  <span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','65587529-c0b6-4054-8b2d-7efc9bfe2c85')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+								</td>
+
+								<td colspan="2">
+                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								</td>
+
+								<td colspan="2">
+                                  HUMIDITY : <span t-field="tmt.humidity"/>
 								</td>
                                 
                                
@@ -341,7 +295,7 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per IS 2062-2011<span t-field="tmt.grade"/></b>
+									<b>Specification as per IS 2062-2011<span t-field="tmt.garde"/></b>
 								</td>
 
 							
@@ -489,8 +443,27 @@
                         <table>
                        
                               <tr >
-							  <td colspan="7">
+							  <td colspan="2">
                              SECTION WEIGHT
+								</td>
+
+									<td colspan="2">
+                                  TEST METHOD :
+								  <span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','99a0d77f-6237-4dc9-898f-6f3be67bcb12')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+								</td>
+
+								<td colspan="2">
+                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								</td>
+
+								<td colspan="1">
+                                  HUMIDITY : <span t-field="tmt.humidity"/>
 								</td>
                                 
                                
@@ -554,15 +527,42 @@
                        
                     </div>
 
+					
+					<div style="text-align: right; margin-top: 100px;">
+						<b>CONTINUE</b>
+					</div>
+
+
+
 
 					<div style="margin-top:20px;page-break-before: always;"  invisible="chemical_test_visible == False">
                        
                         <table>
                        
                               <tr >
-							  <td colspan="12">
+							  <td colspan="4">
                                CHEMICAL TEST 
 								</td>
+
+								<td colspan="4">
+                                  TEST METHOD :
+								  <span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','11ab83fd-ed54-467e-b4dd-15857fc1c8bc')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+								</td>
+
+								<td colspan="2">
+                                  TEMPRATURE :<span t-field="tmt.temprature"/>
+								</td>
+
+								<td colspan="2">
+                                  HUMIDITY : <span t-field="tmt.humidity"/>
+								</td>
+                                
                                 
                                
                             </tr>

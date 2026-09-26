@@ -33,13 +33,20 @@ class CarbonSteelChemical(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    week_no = fields.Char("Week No")
+    temprature_section = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity_section = fields.Float("Humidity (%)", digits=(10,2))
 
-    other_details = fields.Char("Other Details")
+    temprature_chemical = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity_chemical = fields.Float("Humidity (%)", digits=(10,2))
 
-    condition = fields.Char("Condition")
+    garde = fields.Char("Grade")
+    size = fields.Char("Size")
 
-    description_work = fields.Text("Description Of Work")
+    sample_submitted = fields.Char("Sample Submitted By")
+
+    sample_status = fields.Char("Sample Status")
+
+    No_of_sample = fields.Integer("Number Of Samples")
     product_name = fields.Char(string="Product",compute="_compute_product_name")
 
     @api.depends('eln_ref', 'eln_ref.sub_product_id')

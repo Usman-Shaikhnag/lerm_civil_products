@@ -29,18 +29,33 @@ class TMTBAR(models.Model):
                 'exclude_sample_id': self.eln_ref.sample_id.id,
                 },
         }
-    
+
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    week_no = fields.Char("Week No")
+    temprature_section = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity_section = fields.Float("Humidity (%)", digits=(10,2))
 
-    other_details = fields.Char("Other Details")
+    temprature_chemical = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity_chemical = fields.Float("Humidity (%)", digits=(10,2))
+    
+    garde = fields.Char("Grade")
+    size = fields.Char("Size")
 
-    condition = fields.Char("Condition")
+    sample_submitted = fields.Char("Sample Submitted By")
 
-    description_work = fields.Text("Description Of Work")
-    product_name = fields.Char(string="Product")
+    sample_status = fields.Char("Sample Status")
+
+    No_of_sample = fields.Integer("Number Of Samples")
+    product_name = fields.Char(string="Product",compute="_compute_product_name")
+
+    @api.depends('eln_ref', 'eln_ref.sub_product_id')
+    def _compute_product_name(self):
+        for record in self:
+            if record.eln_ref and record.eln_ref.sub_product_id:
+                record.product_name = record.eln_ref.sub_product_id.sub_product
+            else:
+                record.product_name = False
     
    
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -378,6 +393,13 @@ class TMTBARLine(models.Model):
         string="Re-Bend Test"
     )
 
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
+
 
     @api.model
     def create(self, vals):
@@ -413,6 +435,13 @@ class SectionWeightLine(models.Model):
     unit_weight = fields.Float(string="Unit Weight Kg/meter")
     standard_weight = fields.Float(string="Standard Weight  as per IS 1786-2008")
     tolerance = fields.Char(string="Tolerance on the Nominal Mass, Percent Batch")
+
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
 
     
   
@@ -463,6 +492,13 @@ class ChemicalLine(models.Model):
     def _compute_p_s(self):
         for rec in self:
             rec.p_s = (rec.p or 0.0) + (rec.s or 0.0)
+
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
 
     
   
