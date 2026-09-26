@@ -36,11 +36,11 @@ class ParameterMaster(models.Model):
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     allowed_technicians = fields.Many2many('res.users','lerm_parameter_technician_rel','parameter_id', 'user_id',string="Allowed Technicians",)
 
-    issue_no = fields.Integer(string="Issue No",digits=(12,2))
-    issue_date = fields.Date(string="Issue Date")
+    issue_no = fields.Char(string="Issue No",digits=(12,2))
+    issue_date = fields.Char(string="Issue Date")
 
-    revision_no = fields.Integer(string="Revision No",digits=(12,2))
-    revision_date = fields.Date(string="Revision Date")
+    revision_no = fields.Char(string="Revision No",digits=(12,2))
+    revision_date = fields.Char(string="Revision Date")
 
     is_active = fields.Boolean(string="Annexure")
 

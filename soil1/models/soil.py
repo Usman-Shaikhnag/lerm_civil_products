@@ -111,7 +111,7 @@ class Soil(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'If direct shear test indicates ### it represents Consolidated Undrained (CU) test with corrected area, if ## then it represents Consolidated Drained (CD) test with corrected area, # it represents Unconsolidated Undrained (UU)  test with corrected area',
+                'notes': 'Swelling Pressure Test By Consolidometer Method',
             }),
 
             (0, 0, {
@@ -126,7 +126,7 @@ class Soil(models.Model):
 
             (0, 0, {
                 'sr_no': 'g',
-                'notes': 'If Permeability results indicate *, it represents Constant Head Test, else it is Falling Head test',
+                'notes': 'Permeability Test by Falling Head Method',
             }),
 
             (0, 0, {

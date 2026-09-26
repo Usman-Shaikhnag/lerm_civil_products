@@ -2535,7 +2535,7 @@
 
             <!-- 🔹 GRAPH -->
             <t t-if="direct.shear_graph_image_4">
-					<div style="text-align:center; margin-top:10px; width: 100%;">
+					<div style="text-align:center; margin-top:6px; width: 100%;">
 						<img t-att-src="'data:image/png;base64,%s' % direct.shear_graph_image_4.decode('utf-8')"
 							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
 					</div>
@@ -2543,7 +2543,7 @@
 				</t>
 
             <!-- 🔹 RESULT -->
-            <div style="margin-top:20px; text-align:center; font-weight:bold;">
+            <div style="margin-top:10px; text-align:center; font-weight:bold;">
 				Cohesion (c) = <span t-esc="round(direct.cohesion, 2)"/> kg/cm²
 			</div>
 
