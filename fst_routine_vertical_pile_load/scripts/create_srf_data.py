@@ -22,6 +22,7 @@ Environment overrides: ODOO_URL, ODOO_DB, ODOO_USER, ODOO_PASSWORD
 
 import argparse
 import os
+import ssl
 import xmlrpc.client
 
 MODULE_NAME = "fst_routine_vertical_pile_load"
@@ -36,16 +37,17 @@ TESTING_DAYS = 30
 
 
 class Client:
-    def __init__(self, url, db, user, password):
+    def __init__(self, url, db, user, password, insecure=False):
         self.url = url.rstrip("/")
         self.db = db
         self.user = user
         self.password = password
-        common = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/common")
+        context = ssl._create_unverified_context() if insecure else None
+        common = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/common", context=context)
         self.uid = common.authenticate(db, user, password, {})
         if not self.uid:
             raise SystemExit("Authentication failed.")
-        self.models = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/object")
+        self.models = xmlrpc.client.ServerProxy(f"{self.url}/xmlrpc/2/object", context=context)
 
     def call(self, model, method, *args, **kwargs):
         return self.models.execute_kw(
@@ -196,12 +198,14 @@ def main():
     parser.add_argument("--password", default=os.environ.get("ODOO_PASSWORD", ""))
     parser.add_argument("--install-module", action="store_true",
                         help="Install the module if it is not installed yet.")
+    parser.add_argument("--insecure", action="store_true",
+                        help="Skip TLS certificate verification (e.g. incomplete cert chain).")
     args = parser.parse_args()
 
     if not args.user or not args.password:
         parser.error("--user/--password (or ODOO_USER/ODOO_PASSWORD) are required.")
 
-    client = Client(args.url, args.db, args.user, args.password)
+    client = Client(args.url, args.db, args.user, args.password, insecure=args.insecure)
     print(f"Connected: url={args.url} db={args.db} uid={client.uid}")
 
     if args.install_module:
