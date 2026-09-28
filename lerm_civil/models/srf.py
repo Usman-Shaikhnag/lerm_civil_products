@@ -1268,7 +1268,7 @@ class CreateSampleWizard(models.TransientModel):
             'parameters':parameters,
             # 'sample_range_id':sample_range.id,
             'size_id':size_id,
-            'sub_product_id':sub_product_id.id,
+            'sub_product_id':sub_product_id,
             'sample_description':sample_description,
             'casting':casting,
             'date_casting':self.date_casting,
