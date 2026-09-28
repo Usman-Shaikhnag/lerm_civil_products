@@ -284,7 +284,7 @@
                                   TEMPRATURE :&#160;<span t-field="tmt.temprature"/>
 								</td>
 
-								<td colspan="2">
+								<td colspan="3">
                                   HUMIDITY : &#160;<span t-field="tmt.humidity"/>
 								</td>
                                 
@@ -297,7 +297,7 @@
                                 <td   style="text-align: center;"><b>0.2 % Proof Stress N/mm2</b></td>
                                 <td   style="text-align: center;"><b>% Elongation On 5.65 √Area</b></td>
                                 <td   style="text-align: center;"><b>% Total Elongation</b></td>
-                                <td  style="text-align: center;"><b>Ratio of UTS/YS</b></td>
+                                <td  style="text-align: center;"><b>Ratio of TS/YS</b></td>
                                 <td   style="text-align: center;"><b>Bend Test 180°</b></td>
                                 <td   style="text-align: center;"><b>Re bend Test</b></td>
 								<td   style="text-align: center;"><b>Yield Stress N/mm2</b></td>
@@ -378,6 +378,16 @@
                                     <td style="text-align: center;">
 								<span >
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','99977854548-4027-4d73-955e-ca7f7a22122114')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> <!-- bend -->
+
+									 <td style="text-align: center;">
+								<span >
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','o09876nh-9cc3-4779-afde-741f18e90mjhhhu')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 											</t>
