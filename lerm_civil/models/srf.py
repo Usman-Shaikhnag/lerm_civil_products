@@ -347,9 +347,8 @@ class SrfForm(models.Model):
         return {
         'name': 'Sample',
         'domain': [('srf_id', '=', self.id)],
-        'view_type': 'form',
         'res_model': 'lerm.srf.sample',
-        'view_id': False,
+        'views': [(self.env.ref('lerm_civil.lerm_srf_sample_tree').id, 'tree'), (False, 'form')],
         'view_mode': 'tree,form',
         'type': 'ir.actions.act_window'
     }
@@ -565,10 +564,65 @@ class SrfForm(models.Model):
 
 
 
+    def _lerm_validate_billing_customer_pricelist(self):
+        self.ensure_one()
+        partner = self.billing_customer
+        if not partner:
+            raise ValidationError(
+                _("Please set a Billing Customer on SRF %s before confirming.")
+                % (self.srf_id or self.id))
+        pricelist = partner.property_product_pricelist
+        if not pricelist:
+            raise ValidationError(
+                _('No Pricelist is configured for Billing Customer "%s". '
+                  'Please set a Pricelist on the customer before confirming the SRF.')
+                % partner.name)
+        explicit = self.env['ir.property'].sudo().search([
+            ('name', '=', 'property_product_pricelist'),
+            ('res_id', '=', 'res.partner,%s' % partner.id),
+        ], limit=1)
+        if not explicit:
+            raise ValidationError(
+                _('Billing Customer "%s" is using the default Pricelist. '
+                  'Please assign a customer-specific Pricelist before confirming the SRF.')
+                % partner.name)
+
+    def _lerm_validate_pricelist_products(self):
+        pricelist = self.billing_customer.property_product_pricelist
+        materials = self.samples.mapped('material_id').filtered(lambda m: m.id)
+        if not pricelist or not materials:
+            return
+
+        items = self.env['product.pricelist.item'].sudo().search([
+            ('pricelist_id', '=', pricelist.id),
+        ])
+        if any(item.applied_on == '3_global' for item in items):
+            return
+
+        covered_tmpl_ids = set()
+        for item in items:
+            if item.product_tmpl_id:
+                covered_tmpl_ids.add(item.product_tmpl_id.id)
+            if item.product_id:
+                covered_tmpl_ids.add(item.product_id.product_tmpl_id.id)
+
+        missing = materials.filtered(lambda m: m.id not in covered_tmpl_ids)
+        if missing:
+            raise ValidationError(
+                _('The following products are not present in the Pricelist "%s" '
+                  'of Billing Customer "%s": %s. Please add them to the Pricelist '
+                  'before confirming the SRF.')
+                % (pricelist.name, self.billing_customer.name,
+                   ', '.join(missing.mapped('name'))))
+
     def confirm_srf(self):
         import re
         import paramiko
         from odoo import fields
+
+        for rec in self:
+            rec._lerm_validate_billing_customer_pricelist()
+            rec._lerm_validate_pricelist_products()
 
         for rec in self:
 

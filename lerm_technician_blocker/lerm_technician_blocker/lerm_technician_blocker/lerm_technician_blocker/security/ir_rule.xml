@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="rule_technician_digest_own" model="ir.rule">
+            <field name="name">Technician: sees own digests</field>
+            <field name="model_id" ref="model_lerm_tech_digest"/>
+            <field name="domain_force">[('technician_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('lerm_civil.kes_technician_access_group'))]"/>
+        </record>
+
+        <record id="rule_technician_notification_own" model="ir.rule">
+            <field name="name">Technician: sees own notified jobs</field>
+            <field name="model_id" ref="model_lerm_technician_notification"/>
+            <field name="domain_force">[('technician_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('lerm_civil.kes_technician_access_group'))]"/>
+        </record>
+    </data>
+</odoo>

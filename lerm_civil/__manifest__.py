@@ -12,6 +12,7 @@
     'views/enviroment_register.xml',
     'views/sample_register.xml',
     'views/lerm.xml',
+    'views/res_config_settings.xml',
     'views/groups.xml',
     'views/res_company.xml',
     'views/material.xml',

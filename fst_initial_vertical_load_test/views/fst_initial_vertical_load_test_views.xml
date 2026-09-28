@@ -352,9 +352,20 @@
                         </tree>
                     </field>
 
+                    <group>
+                        <field name="graph_break_loads"
+                               placeholder="Loading: e.g. 90, 210 (leave blank to connect all points)"/>
+                        <field name="graph_break_unload_loads"
+                               placeholder="Unloading: e.g. 90, 210 (leave blank to connect all points)"/>
+                    </group>
+
                     <button name="action_generate_graph"
                             type="object"
                             string="Generate Graph"
+                            class="btn-primary"/>
+                    <button name="action_generate_log_graph"
+                            type="object"
+                            string="Generate Log Graph"
                             class="btn-primary"/>
                     <button name="action_recompute_all"
                             type="object"
@@ -368,6 +379,14 @@
                     </div>
 
                     <field name="graph_image" widget="image"/>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            LOAD vs UPLIFT GRAPH (LOG-LOG)
+                        </h3>
+                    </div>
+
+                    <field name="graph_image_log" widget="image"/>
 
                     <div style="margin-top:20px; font-weight:bold;">
                         Gross Settlement =

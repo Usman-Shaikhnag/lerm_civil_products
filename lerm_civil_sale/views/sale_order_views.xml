@@ -11,6 +11,15 @@
                     <button name="action_pricelist" type="object" string="Pricelist"
                         class="btn-primary" groups="sales_team.group_sale_salesman"
                         invisible="state != 'sale'"/>
+                    <button name="action_create_srf" type="object" string="Create SRF"
+                        class="btn-primary" groups="lerm_civil.lerm_access_create_srf"
+                        invisible="state != 'sale' or srf_id"/>
+                </xpath>
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_view_srf" type="object" class="oe_stat_button"
+                        icon="fa-file-text-o" invisible="not srf_id">
+                        <field name="srf_id" widget="statinfo" string="SRF"/>
+                    </button>
                 </xpath>
             </field>
         </record>

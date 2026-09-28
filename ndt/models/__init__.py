@@ -3,7 +3,7 @@ from .ndt import acilcrackdepth
 from .ndt import covermeter
 from .ndt import carbonation
 from .ndt import rebound_hammer
-from .ndt import concrete_core
+# from .ndt import concrete_core
 from .ndt import crackdepth
 from .ndt import acil_upv
 from .ndt import upv
