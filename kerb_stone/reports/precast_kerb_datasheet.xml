@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-<template id="precast_mech_datasheet">
+ <odoo>
+<!--<template id="precast_mech_datasheet">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
-			<!-- <t t-call="lerm_civil.data_sheet_header_generaltemplate"> -->
+			
             <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px;font-weight: bold;">
                     Precast Kerb Stone
@@ -46,11 +45,9 @@
                             </tr>
                         </table>
 
-                            <!-- Transverse Strength -->
+                            
 
-                            <!-- <div style="text-align:center;font-size:18px">
-                                Transverse Strength
-                            </div> -->
+                           
                             <div style="text-align:center;font-size:18px;margin-top:20px">
 								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
                             </div>
@@ -95,13 +92,11 @@
                             
                     </div>
 
-                    <!-- Water Absorbtion  -->
+                   
                     <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
-                        <!-- <div style="text-align:center;font-size:18px">
-                            Water Absorbtion
-                        </div> -->
+                        
                          <div style="text-align:center;font-size:18px;margin-top:20px">
-                            <!-- Water Absorbtion -->
+                           
 							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
                         </div>
                         
@@ -166,7 +161,7 @@
                                 
                             </div>
                            <div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+						
 								<t t-if="eln.tested_by_signature_datasheet">
 
 									<div t-if="eln.sample_id.filled_by.employee_id.signature">
@@ -221,5 +216,5 @@
 				
 			</t>
 		</t>
-	</template>
+	</template> -->
 </odoo>

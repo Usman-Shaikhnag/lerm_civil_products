@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-	   <template id="precast_mech_report">
+	<!--    <template id="precast_mech_report">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
+			
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
+				
 
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
@@ -27,17 +25,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+								
 								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -115,10 +103,10 @@
 						</table>
 					</div>
 					
-                    <!-- Transverse Strength -->
+                   
                     <div t-if="data.transverse_visible" style="margin-top:20px">
                             <div style="text-align:center;font-size:18px">
-                                <!-- Transverse Strength -->
+                               
 								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
 
                             </div>
@@ -132,8 +120,7 @@
                                     </td>
                                     <td colspan="2" style="text-align: center;font-weight: bold;">Observed Test Result
                                     </td>
-                                    <!-- <td colspan="4" style="text-align: center;font-weight: bold;">Protocol
-                                    </td> -->
+                                   
 									<th colspan="4" style="text-align: center;font-weight: bold;">
 										<span>
 											Protocol
@@ -169,10 +156,10 @@
                             
                     </div>
 
-                    <!-- Water Absorbtion  -->
+          
                     <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
                         <div style="text-align:center;font-size:18px">
-                            <!-- Water Absorbtion -->
+                           
 							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
                         </div>
                         
@@ -191,8 +178,7 @@
                                 </td>
                                 <td colspan="2" style="text-align: center;font-weight: bold;">Final Water Absorption, %
                                 </td>
-                                <!-- <td colspan="2">Protocol
-                                </td> -->
+                               
 								<th colspan="2" style="text-align: center;font-weight: bold;">
 									<span>
 										Protocol
@@ -317,9 +303,7 @@
 								
 							</div>
 						</div>
-						<!-- <div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div> -->
+						
 						<div style="margin-top: 50px; text-align: center;">
 							<p style="border-top: 1px dashed #000; padding-top: 10px;">
 								...... End Of Report......
@@ -330,5 +314,5 @@
 				</div>
 			</t>
 		</t>
-	</template>
-</odoo>
+	</template>-->
+</odoo> 
