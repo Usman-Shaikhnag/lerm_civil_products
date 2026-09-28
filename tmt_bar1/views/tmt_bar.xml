@@ -18,6 +18,8 @@
                         <!-- <field name="grade" readonly="1"/> -->
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
+                          <field name="grade"/>
+                         <field name="size_id"/>
                         
                     </group>
                     
@@ -52,33 +54,7 @@
                                     </h1>
                                 </div>
 
-                    <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="garde"></label></td>
-                                    <td><field name="garde" class="blue-input"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
-                            <tbody>
-                                
-                                    <tr>
-                                    <td><label for="size"></label></td>
-                                    <td><field  name="size" class="blue-input" /></td>
-                                </tr>
-                              
-                                
-                            </tbody>
-                        </table>
-                    </div>
-
-
-
-                     <div class="d-flex gap-2">
+                   <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
@@ -125,6 +101,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
 
                      <div invisible="mechanical_test_visible == False" style="text-align:center">
                         <h1>
@@ -176,6 +164,7 @@
                                 <field name="ratio_uts_ys" />
                                 <field name="bend" />
                                 <field name="re_bend" />
+                                <field name="yield_stress" />
                                 
                               
                             </tree>
