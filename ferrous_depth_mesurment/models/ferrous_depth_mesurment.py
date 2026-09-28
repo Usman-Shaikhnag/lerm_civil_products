@@ -2,12 +2,12 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
 
-class FerrousInclusion(models.Model):
-    _name = "ferrous.inclusion"
+class FerrousDepthMesurmrnt(models.Model):
+    _name = "ferrous.depth.mesurment"
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name1 = fields.Char("Name",default="Ferrous Materials Inclusion")
+    name1 = fields.Char("Name",default="Ferrous Depth Measurement")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -17,15 +17,44 @@ class FerrousInclusion(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    
-    sample_condition = fields.Char("Sample Condition")
+
+    magnification = fields.Char("MAGNIFICATION")
+
+
+    etching = fields.Char("ETCHING ECHANT")
+
+    sample_submitted = fields.Char("Sample Submitted By")
+
     sample_status = fields.Char("Sample Status")
+
+    No_of_sample = fields.Integer("Number Of Samples")
+
+    description_work = fields.Text("Work Description")
 
     product_name = fields.Char(string="Product",compute="_compute_product_name")
 
     # Image Fields
-    original_image = fields.Image(string="Original Image", attachment=True)
-    processed_image = fields.Image(string="Processed Image", attachment=True)
+    # original_image = fields.Image(string="Original Image", attachment=True)
+    # processed_image = fields.Image(string="Processed Image", attachment=True)
+
+    original_image = fields.Many2many(
+    'ir.attachment',
+    'ferrous_depth_measurement_original_image_rel',
+    'measurement_id',
+    'attachment_id',
+    string='Original Image',
+    help='Attach multiple original images to the sample',
+    )
+
+    processed_image = fields.Many2many(
+        'ir.attachment',
+        'ferrous_depth_measurement_processed_image_rel',
+        'measurement_id',
+        'attachment_id',
+        string='Processed Image',
+        help='Attach multiple processed images to the sample',
+    )
+
 
     @api.depends('eln_ref', 'eln_ref.sub_product_id')
     def _compute_product_name(self):
@@ -37,11 +66,11 @@ class FerrousInclusion(models.Model):
 
     
 
-    notes_id = fields.One2many('ferrous.inclusion.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('ferrous.depth.mesurment.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
-        res = super(FerrousInclusion, self).default_get(fields)
+        res = super(FerrousDepthMesurmrnt, self).default_get(fields)
 
         default_notes = [
             (0, 0, {
@@ -81,10 +110,41 @@ class FerrousInclusion(models.Model):
         return res
 
 
-    feroous_inclusion_name = fields.Char("Name",default="Inclusion rating A to D by microscopic method")
-    feroous_inclusion_visible = fields.Boolean("pH",compute="_compute_visible")
+    remark_id = fields.One2many(
+    'ferrous.depth.mesurment.remark',
+    'parent_id',
+    string="Remark"
+    )
 
-    feroous_inclusion_lines = fields.One2many('ferrous.inclusionl.line','parent_id',string="Parameter")
+    @api.model
+    def default_get(self, fields_list):
+        res = super(FerrousDepthMesurmrnt, self).default_get(fields_list)
+
+        default_remarks = [
+            (0, 0, {
+                'sr_no': 'a',
+                'remark': 'Above Sample was cut, polished & etched.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'remark': 'Observations found in respect of the sample tested.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'remark': 'Micro structure grain flow lines observed.',
+            }),
+            
+        ]
+
+        res['remark_id'] = default_remarks
+
+        return res
+
+
+    feroous_depth_mesurment_name = fields.Char("Name",default="1Case depth measurement by Macroscopic method")
+    feroous_depth_mesurment_visible = fields.Boolean("pH",compute="_compute_visible")
+
+    feroous_depth_mesurment_lines = fields.One2many('ferrous.depth.mesurmentl.line','parent_id',string="Parameter")
     
     
    
@@ -93,7 +153,7 @@ class FerrousInclusion(models.Model):
     @api.depends('sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.feroous_inclusion_visible = False
+            record.feroous_depth_mesurment_visible = False
            
             
             
@@ -101,8 +161,8 @@ class FerrousInclusion(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '8ujnht5-978b-483c-99dd-271530e098765':
-                    record.feroous_inclusion_visible = True
+                if sample.internal_id == 'op8765tgb-978b-483c-99dd-271509mnb6759':
+                    record.feroous_depth_mesurment_visible = True
 
                
                 
@@ -124,7 +184,7 @@ class FerrousInclusion(models.Model):
             
             
             # Water Absorbtion
-            if result.parameter.internal_id == '8ujnht5-978b-483c-99dd-271530e098765':
+            if result.parameter.internal_id == 'op8765tgb-978b-483c-99dd-271509mnb6759':
                 # result.result_char = round(self.carbon_percentage,3)
                 result.calculated = True
                 # if self.carbon_percentage_nabl == 'pass':
@@ -154,7 +214,7 @@ class FerrousInclusion(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(FerrousInclusion, self).create(vals)
+        record = super(FerrousDepthMesurmrnt, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -162,7 +222,7 @@ class FerrousInclusion(models.Model):
 
         
     def get_all_fields(self):
-        record = self.env['ferrous.inclusion'].browse(self.ids[0])
+        record = self.env['ferrous.depth.mesurment'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -210,25 +270,19 @@ class FerrousInclusion(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-class FerrousInclusionLine(models.Model):
-    _name = "ferrous.inclusionl.line"
-    parent_id = fields.Many2one('ferrous.inclusion',string="Parent Id")
+class FerrousDepthMesurmrntLine(models.Model):
+    _name = "ferrous.depth.mesurmentl.line"
+    parent_id = fields.Many2one('ferrous.depth.mesurment',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample_identity = fields.Char(string="Sample  Identity")
-
-    type_a_thin = fields.Float(string="Type-A (Sulphide) Thin")
-    type_a_thick = fields.Float(string="Type-A (Sulphide) Thick")
-
-    type_b_thin = fields.Float(string="Type-B ( Alumina) Thin")
-    type_b_thick = fields.Float(string="Type-B ( Alumina) Thick")
-
-    type_c_thin = fields.Float(string="Type-C ( Silicate) Thin")
-    type_c_thick = fields.Float(string="Type-C ( Silicate) Thick")
-
-    type_d_thin = fields.Float(string="Type-D ( Globular Oxide) Thin")
-    type_d_thick = fields.Float(string="Type-D ( Globular Oxide) Thick")
+    test_parameter = fields.Char(string="TEST PARAMETER")
    
+    # f10 = fields.Integer(string="10")
+    field = fields.Char(string="FIELD ")
+    depth = fields.Char(string="DEPTH ")
+    remarks = fields.Char(string="REMARKS ")
+
     @api.onchange('parent_id')
     def _onchange_parent_id(self):
         if self.parent_id:
@@ -247,7 +301,7 @@ class FerrousInclusionLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(FerrousInclusionLine, self).create(vals)
+        return super(FerrousDepthMesurmrntLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -262,10 +316,17 @@ class FerrousInclusionLine(models.Model):
 
 
 
-class FerrousInclusionNotes(models.Model):
-    _name = "ferrous.inclusion.notes"
+class FerrousDepthMesurmrntNotes(models.Model):
+    _name = "ferrous.depth.mesurment.notes"
 
-    parent_id = fields.Many2one('ferrous.inclusion',string="Parent Id")
+    parent_id = fields.Many2one('ferrous.depth.mesurment',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+class FerrousDepthMesurmrntRemark(models.Model):
+    _name = "ferrous.depth.mesurment.remark"
+
+    parent_id = fields.Many2one('ferrous.depth.mesurment',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    remark = fields.Char("Remark")
     
