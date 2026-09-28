@@ -564,6 +564,17 @@ class SrfForm(models.Model):
 
 
 
+    @api.model
+    def _lerm_pricelist_validation_enabled(self):
+        """Return True when the LERM pricelist validations are enabled.
+
+        Configured from Settings > LERM CIVIL > Pricelist Validation (disabled
+        by default). Kept in sync with the Sales Order flow in lerm_civil_sale.
+        """
+        value = self.env['ir.config_parameter'].sudo().get_param(
+            'lerm_civil_sale.pricelist_validation', 'False')
+        return str(value).lower() in ('1', 'true', 'yes', 'on')
+
     def _lerm_validate_billing_customer_pricelist(self):
         self.ensure_one()
         partner = self.billing_customer
@@ -621,8 +632,9 @@ class SrfForm(models.Model):
         from odoo import fields
 
         for rec in self:
-            rec._lerm_validate_billing_customer_pricelist()
-            rec._lerm_validate_pricelist_products()
+            if rec._lerm_pricelist_validation_enabled():
+                rec._lerm_validate_billing_customer_pricelist()
+                rec._lerm_validate_pricelist_products()
 
         for rec in self:
 
