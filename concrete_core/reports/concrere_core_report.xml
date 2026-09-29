@@ -278,7 +278,8 @@
                        padding:8px;
                        vertical-align:middle;"
                 colspan="2">
-                Specifications
+                <span t-esc="eln.material.specifications"/>
+                <!-- Specifications -->
             </th>
 			</t>
 
@@ -395,6 +396,8 @@
                 <t t-if="data.show_specification">
 				<t t-if="k == 1">
 
+                <t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')])"/>
+
                     <td colspan="2"
                         rowspan="6"
                         width="30%"
@@ -403,12 +406,22 @@
                                text-align:center;
                                vertical-align:middle;">
 
-                        The average equivalent cube strength of the cores
+                        
+										<span>
+											<t t-foreach="compressive.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									
+
+                        <!-- The average equivalent cube strength of the cores
                         is equal to at least 85 percent of the Equivalent
                         cube strength, of the grade of concrete specified
                         for the corresponding age and no individual core
                         has a strength less than 75 percent as per
-                        IS 456:2000 RA-2021
+                        IS 456:2000 RA-2021 -->
 
                     </td>
 
