@@ -67,7 +67,7 @@
                                
                                 <field name='length' class="blue-input" decoration-info="length != 0" width="20%"/>
                                 <field name='width' class="blue-input" decoration-info="width != 0" width="20%"/>
-                                <field name='height' class="blue-input" decoration-info="width != 0" width="20%"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="20%"/>
                                  <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="25%"/>
                             </tree>
                         </field> 
@@ -176,7 +176,7 @@
                     </div>
 
                     <div invisible = "transverse_visible == False" class="custom_table_borders">
-                        <field name="transverse_table" nolabel="1">
+                        <field name="transverse_tables" nolabel="1">
                             <tree editable="bottom">
                                 <field name='sr_no' width="10%"/>
                                
@@ -204,10 +204,10 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label class="fw-bold" for="avg_transverse_strength">Average Transverse Strength (MPa)</label>
+                                        <label class="fw-bold" for="avrg_transverse_strength">Average Transverse Strength (MPa)</label>
                                     </td>
                                     <td>
-                                        <field name="avg_transverse_strength"/>
+                                        <field name="avrg_transverse_strength"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -215,20 +215,20 @@
                         <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
                             <tbody>
                                 <tr>
-                                <td><label class="fw-bold" for="avg_transverse_strength_conformity">Conformity</label></td>
+                                <td><label class="fw-bold" for="avrg_transverse_strength_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="avg_transverse_strength_conformity"
-                                        decoration-success="avg_transverse_strength_conformity == 'pass'" 
-                                        decoration-danger="avg_transverse_strength_conformity == 'fail'" 
+                                    <field name="avrg_transverse_strength_conformity"
+                                        decoration-success="avrg_transverse_strength_conformity == 'pass'" 
+                                        decoration-danger="avrg_transverse_strength_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="avg_transverse_strength_nabl">NABL</label></td>
+                                <td><label class="fw-bold" for="avrg_transverse_strength_nabl">NABL</label></td>
                                 <td>
-                                    <field name="avg_transverse_strength_nabl"
-                                        decoration-success="avg_transverse_strength_nabl == 'pass'" 
-                                        decoration-danger="avg_transverse_strength_nabl == 'fail'"/>
+                                    <field name="avrg_transverse_strength_nabl"
+                                        decoration-success="avrg_transverse_strength_nabl == 'pass'" 
+                                        decoration-danger="avrg_transverse_strength_nabl == 'fail'"/>
                                 </td>
                             </tr>
                                
@@ -262,7 +262,7 @@
                     </div>
 
 
-                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                        <table invisible="not water_absorbtion_visible" class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
                             <tbody>
                                 
                                 <tr>

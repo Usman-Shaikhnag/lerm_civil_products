@@ -13,11 +13,13 @@ class PrecastKerbMechanical(models.Model):
 
     name = fields.Char("Name",default="Precast Kerb Stone")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
-    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
@@ -251,9 +253,9 @@ class PrecastKerbMechanical(models.Model):
 
     # Transverse Strength
     transverse_name = fields.Char(default="Transverse Strength")
-    transverse_visible = fields.Boolean(compute="_compute_visible")
+    transverse_visible = fields.Boolean("Transverse Strength Visible",compute="_compute_visible")
 
-    transverse_table = fields.One2many('mech.precast.transverse.line','parent_id')
+    transverse_tables = fields.One2many('mech.precast.transverse.line','parent_id')
 
     avg_failure_load = fields.Float(
         string='Average Failure Load (kN)',
@@ -262,87 +264,88 @@ class PrecastKerbMechanical(models.Model):
         digits=(16, 1)
     )
 
-    avg_transverse_strength = fields.Float(
+    avrg_transverse_strength = fields.Float(
         string='Average Transverse Strength (MPa)',
         compute='_compute_transverse_average',
-        store=True,
         digits=(16, 2)
     )
 
     @api.depends(
-        'transverse_table.failure_load',
-        'transverse_table.transverse_strength'
+        'transverse_tables.failure_load',
+        'transverse_tables.transverse_strength'
     )
     def _compute_transverse_average(self):
         for record in self:
-            lines = record.transverse_table
+            lines = record.transverse_tables
 
             if lines:
                 record.avg_failure_load = (
                     sum(lines.mapped('failure_load')) / len(lines)
                 )
 
-                record.avg_transverse_strength = (
+                record.avrg_transverse_strength = (
                     sum(lines.mapped('transverse_strength')) / len(lines)
                 )
             else:
                 record.avg_failure_load = 0.0
-                record.avg_transverse_strength = 0.0
+                record.avrg_transverse_strength = 0.0
 
 
-    avg_transverse_strength_conformity = fields.Selection([
+    avrg_transverse_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('--', '--')], string="Conformity", compute="_compute_avg_transverse_strength_conformity", store=True)
+            ('--', '--')], string="Conformity", compute="_compute_avrg_transverse_strength_conformity", store=True)
 
-    @api.depends('avg_transverse_strength','eln_ref','grade')
-    def _compute_avg_transverse_strength_conformity(self):
+    @api.depends('avrg_transverse_strength','eln_ref','grade')
+    def _compute_avrg_transverse_strength_conformity(self):
         
         for record in self:
-            record.avg_transverse_strength_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07A4-4345-BCC1-30ff6e4830af')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07A4-4345-BCC1-30ff6e4830af')]).parameter_table
+            record.avrg_transverse_strength_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1e56b2c9-e3fd-47e0-8908-2a813cc965e1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1e56b2c9-e3fd-47e0-8908-2a813cc965e1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
-                        record.avg_transverse_strength_conformity = '--'
+                        record.avrg_transverse_strength_conformity = '--'
                         break
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_transverse_strength - record.avg_transverse_strength*mu_value
-                    upper = record.avg_transverse_strength + record.avg_transverse_strength*mu_value
+                    lower = record.avrg_transverse_strength - record.avrg_transverse_strength*mu_value
+                    upper = record.avrg_transverse_strength + record.avrg_transverse_strength*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_transverse_strength_conformity = 'pass'
+                        record.avrg_transverse_strength_conformity = 'pass'
                         break
                     else:
-                        record.avg_transverse_strength_conformity = 'fail'
+                        record.avrg_transverse_strength_conformity = 'fail'
 
-    avg_transverse_strength_nabl = fields.Selection([
+    avrg_transverse_strength_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_transverse_strength_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avrg_transverse_strength_nabl", store=True)
     
-    @api.depends('avg_transverse_strength','eln_ref','grade')
-    def _compute_avg_transverse_strength_nabl(self):
+    @api.depends('avrg_transverse_strength','eln_ref','grade')
+    def _compute_avrg_transverse_strength_nabl(self):
         
         for record in self:
-            record.avg_transverse_strength_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07A4-4345-BCC1-30ff6e4830af')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07A4-4345-BCC1-30ff6e4830af')]).parameter_table
+            record.avrg_transverse_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1e56b2c9-e3fd-47e0-8908-2a813cc965e1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1e56b2c9-e3fd-47e0-8908-2a813cc965e1')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_transverse_strength - record.avg_transverse_strength*mu_value
-            upper = record.avg_transverse_strength + record.avg_transverse_strength*mu_value
+            lower = record.avrg_transverse_strength - record.avrg_transverse_strength*mu_value
+            upper = record.avrg_transverse_strength + record.avrg_transverse_strength*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_transverse_strength_nabl = 'pass'
+                record.avrg_transverse_strength_nabl = 'pass'
                 break
             else:
-                record.avg_transverse_strength_nabl = 'fail'
+                record.avrg_transverse_strength_nabl = 'fail'
+    
+    
     
 
     # Water Absorbtion
@@ -351,7 +354,7 @@ class PrecastKerbMechanical(models.Model):
 
     water_absorbtion_table = fields.One2many('mech.precast.water.absorbtion.line','parent_id')
 
-    avg_water_absorption = fields.Float(string='Average Water Absorption (%)',compute='_compute_water_absorption_average',store=True,digits=(16, 2))
+    avg_water_absorption = fields.Float(string='Average Water Absorption (%)',compute='_compute_water_absorption_average',digits=(16, 2))
 
     @api.depends(
         'water_absorbtion_table.water_absorption'
@@ -375,11 +378,10 @@ class PrecastKerbMechanical(models.Model):
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
-        
         for record in self:
             record.avg_water_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4E16-a7fc-75608384d9b0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4E16-a7fc-75608384d9b0')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','29fc5579-2637-420d-91e6-b433d79f3584')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','29fc5579-2637-420d-91e6-b433d79f3584')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
@@ -406,8 +408,8 @@ class PrecastKerbMechanical(models.Model):
         
         for record in self:
             record.avg_water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4E16-a7fc-75608384d9b0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4E16-a7fc-75608384d9b0')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','29fc5579-2637-420d-91e6-b433d79f3584')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','29fc5579-2637-420d-91e6-b433d79f3584')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -423,6 +425,20 @@ class PrecastKerbMechanical(models.Model):
                 record.avg_water_absorption_nabl = 'fail'
 
 
+    max_specimen_count = fields.Integer(
+    compute="_compute_max_specimen_count",
+    store=True)
+
+    @api.depends('dimension_table','transverse_tables','water_absorbtion_table')
+    def _compute_max_specimen_count(self):
+     for record in self:
+        record.max_specimen_count = max(
+            len(record.dimension_table),
+            len(record.transverse_tables),
+            len(record.water_absorbtion_table)
+        )
+
+
 
 
     @api.depends('eln_ref','sample_parameters')
@@ -430,7 +446,7 @@ class PrecastKerbMechanical(models.Model):
         for record in self:
             record.dimension_visible = False
             record.transverse_visible = False
-            record.water_absorbtion_visible  = False  
+            record.water_absorbtion_visible = False  
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
@@ -444,10 +460,10 @@ class PrecastKerbMechanical(models.Model):
                 if sample.internal_id == 'fb111d38-305A-40BF-B5AD-50c66529314c':
                     record.dimension_visible = True
 
-                if sample.internal_id == '0b48abe6-07a4-4345-bcc1-30ff6e4830af':
+                if sample.internal_id == '1e56b2c9-e3fd-47e0-8908-2a813cc965e1':
                     record.transverse_visible = True
 
-                if sample.internal_id == 'f913fc79-eeb4-4e16-a7fc-75608384d9b0':
+                if sample.internal_id == '29fc5579-2637-420d-91e6-b433d79f3584':
                     record.water_absorbtion_visible = True
 
     def open_eln_page(self):
@@ -488,17 +504,17 @@ class PrecastKerbMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '0b48abe6-07A4-4345-BCC1-30ff6e4830af':
-                result.result_char = round(self.avg_transverse_strength,2)
+            if result.parameter.internal_id == '1e56b2c9-e3fd-47e0-8908-2a813cc965e1':
+                result.result_char = round(self.avrg_transverse_strength,2)
                 result.calculated = True
-                if self.avg_transverse_strength_nabl == 'pass':
+                if self.avrg_transverse_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
 
-            if result.parameter.internal_id == 'f913fc79-eeb4-4E16-a7fc-75608384d9b0':
+            if result.parameter.internal_id == '29fc5579-2637-420d-91e6-b433d79f3584':
                 result.result_char = round(self.avg_water_absorption,2)
                 result.calculated = True
                 if self.avg_water_absorption_nabl == 'pass':
@@ -515,7 +531,7 @@ class PrecastKerbMechanical(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }   
+            }
 
     @api.model
     def create(self, vals):
@@ -525,13 +541,7 @@ class PrecastKerbMechanical(models.Model):
         record.eln_ref.write({'model_id':record.id})
         return record
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
-
+    
     def get_all_fields(self):
         record = self.env['mechanical.precast.kerb'].browse(self.ids[0])
         field_values = {}
@@ -543,7 +553,9 @@ class PrecastKerbMechanical(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        
+        # records = self.env['lerm.eln'].search([('id','=', record.eln_id.id)]).parameters_result
+        # print("records",records)
+        # self.sample_parameters = records
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
