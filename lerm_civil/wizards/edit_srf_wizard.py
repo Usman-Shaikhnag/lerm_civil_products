@@ -65,18 +65,21 @@ class SRFEditWizard(models.TransientModel):
     
     
     
-    @api.depends('contact_person')
+    @api.depends('customer', 'customer.street', 'customer.street2', 'customer.city',
+                 'customer.state_id', 'customer.zip', 'customer.country_id')
     def _compute_site_address(self):
         for record in self:
-            contact_person = record.contact_person
-            if(contact_person):
-                street1 = record.env['res.partner'].search([("id","=",record.contact_person.id)]).street
-                street2 = record.env['res.partner'].search([("id","=",record.contact_person.id)]).street2
-                city = record.env['res.partner'].search([("id","=",record.contact_person.id)]).city
-                state_id = record.env['res.partner'].search([("id","=",record.contact_person.id)]).state_id
-                zip = record.env['res.partner'].search([("id","=",record.contact_person.id)]).zip
-                address = str(street1) + ', ' + str(street2) + ", " + str(city) + ", " + str(state_id.name) + ", " + str(zip)
-                record.site_address = address
+            customer = record.customer
+            if customer:
+                parts = [
+                    customer.street,
+                    customer.street2,
+                    customer.city,
+                    customer.state_id.name,
+                    customer.zip,
+                    customer.country_id.name,
+                ]
+                record.site_address = ', '.join(str(part).strip() for part in parts if part)
             else:
                 record.site_address = ''
     
@@ -132,7 +135,7 @@ class SRFEditWizard(models.TransientModel):
 
     @api.onchange('billing_customer')
     def _onchange_billing_customer(self):
-        if self.customer and self.customer.parent_id != self.billing_customer:
+        if self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
             self.customer = False
 
     @api.onchange('customer')
