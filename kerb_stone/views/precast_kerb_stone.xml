@@ -49,44 +49,253 @@
                         </tree>
                       </field>
                     </div>
+
+
+                    <!-- Dimension  -->
+
+                    <div invisible="not dimension_visible" >
+                        <h1 class="text-center">
+                            <field name="dimension_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="dimension_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "dimension_visible == False" class="custom_table_borders">
+                        <field name="dimension_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="15%"/>
+                               
+                                <field name='length' class="blue-input" decoration-info="length != 0" width="20%"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0" width="20%"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="20%"/>
+                                 <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="25%"/>
+                            </tree>
+                        </field> 
+                    </div>
+
+
+                     <div class="d-flex gap-2" invisible="not dimension_visible">  
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avg_length">Average Length</label>
+                                    </td>
+                                    <td>
+                                        <field name="avg_length"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                <td><label class="fw-bold" for="avg_length_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_length_conformity"
+                                        decoration-success="avg_length_conformity == 'pass'" 
+                                        decoration-danger="avg_length_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_length_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_length_nabl"
+                                        decoration-success="avg_length_nabl == 'pass'" 
+                                        decoration-danger="avg_length_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                               
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avg_width">Average Width</label>
+                                    </td>
+                                    <td>
+                                        <field name="avg_width"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                <td><label class="fw-bold" for="avg_width_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_width_conformity"
+                                        decoration-success="avg_width_conformity == 'pass'" 
+                                        decoration-danger="avg_width_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_width_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_width_nabl"
+                                        decoration-success="avg_width_nabl == 'pass'" 
+                                        decoration-danger="avg_width_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avg_height">Average Height</label>
+                                    </td>
+                                    <td>
+                                        <field name="avg_height"/>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_height_conformity"
+                                        decoration-success="avg_height_conformity == 'pass'" 
+                                        decoration-danger="avg_height_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_height_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_height_nabl"
+                                        decoration-success="avg_height_nabl == 'pass'" 
+                                        decoration-danger="avg_height_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>  
                     
-                    <!-- Transverse Strength -->
-
-                    <div invisible="not transverse_visible"   >
-                        <h1>
-                            <field name="transverse_name" readonly="1" nolabel="1"/>
-                            <field name="transverse_visible" invisible="1"/>
+                   <!-- Transverse Strength -->
+                    <div invisible="not transverse_visible" >
+                        <h1 class="text-center">
+                            <field name="transverse_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="transverse_visible" invisible="1" style="margin:20px 0px"/>
                         </h1>
                     </div>
 
-                        <field name="transverse_table" nolabel="1" invisible="not transverse_visible" class="custom_table_borders">
-                        <tree editable="bottom">
-                          <field name="trial_no" class="blue-input" decoration-info="trial_no != 0"/>
-                          <field name="required_load" class="blue-input" decoration-info="required_load != 0"/>
-                          <field name="observed_test_result" class="blue-input" decoration-info="observed_test_result != 0"/>
-                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
-                          <field name="requirement" class="blue-input" decoration-info="requirement != 0"/>
-                        </tree>
-                        </field>
+                    <div invisible = "transverse_visible == False" class="custom_table_borders">
+                        <field name="transverse_tables" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="10%"/>
+                               
+                                <field name='width' class="blue-input" decoration-info="width != 0" width="15%"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="15%"/>
+                                <field name='span' class="blue-input" decoration-info="span != 0" width="20%"/>
+                                 <field name='failure_load' class="blue-input" decoration-info="failure_load != 0" width="20%"/>
+                                 <field name='transverse_strength' width="20%"/>
+                            </tree>
+                        </field> 
+                    </div>
 
 
+                     <div class="d-flex gap-2" invisible="not transverse_visible"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avg_failure_load">Average Failure Load (kN)</label>
+                                    </td>
+                                    <td>
+                                        <field name="avg_failure_load"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avrg_transverse_strength">Average Transverse Strength (MPa)</label>
+                                    </td>
+                                    <td>
+                                        <field name="avrg_transverse_strength"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                <td><label class="fw-bold" for="avrg_transverse_strength_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avrg_transverse_strength_conformity"
+                                        decoration-success="avrg_transverse_strength_conformity == 'pass'" 
+                                        decoration-danger="avrg_transverse_strength_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avrg_transverse_strength_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avrg_transverse_strength_nabl"
+                                        decoration-success="avrg_transverse_strength_nabl == 'pass'" 
+                                        decoration-danger="avrg_transverse_strength_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                               
+                            </tbody>
+                        </table> 
+                        </div>
+
+
+
+                        <!-- Water Absorbtion -->
+
+                   
                     <div invisible="not water_absorbtion_visible" >
-                        <h1>
-                            <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
-                            <field name="water_absorbtion_visible" invisible="1"/>
+                        <h1 class="text-center">
+                            <field name="water_absorbtion_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="water_absorbtion_visible" invisible="1" style="margin:20px 0px"/>
                         </h1>
                     </div>
 
-                        <field name="water_absorbtion_table" nolabel="1" invisible="not water_absorbtion_visible" class="custom_table_borders">
-                        <tree editable="bottom">
-                          <field name="dry_wt_oven" class="blue-input" decoration-info="dry_wt_oven != 0"/>
-                          <field name="wt_10_min" class="blue-input" decoration-info="wt_10_min != 0"/>
-                          <field name="wt_24_hr" class="blue-input" decoration-info="wt_24_hr != 0"/>
-                          <field name="initial_water_absorbtion" class="blue-input" decoration-info="initial_water_absorbtion != 0"/>
-                          <field name="final_water_absorbtion" class="blue-input" decoration-info="final_water_absorbtion != 0"/>
-                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
-                        </tree>
-                        </field>
+                    <div invisible = "water_absorbtion_visible == False" class="custom_table_borders">
+                        <field name="water_absorbtion_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sr_no' width="10%"/>
+                               
+                                <field name='dry_weight' class="blue-input" decoration-info="dry_weight != 0" width="20%"/>
+                                <field name='wet_weight' class="blue-input" decoration-info="wet_weight != 0" width="20%"/>
+                                 <field name='water_absorbed' width="25%"/>
+                                 <field name='water_absorption' width="25%"/>
+                            </tree>
+                        </field> 
+                    </div>
+
+
+                        <table invisible="not water_absorbtion_visible" class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="avg_water_absorption">Average  Water Absorption (%)</label>
+                                    </td>
+                                    <td>
+                                        <field name="avg_water_absorption"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_water_absorption_conformity"
+                                        decoration-success="avg_water_absorption_conformity == 'pass'" 
+                                        decoration-danger="avg_water_absorption_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_water_absorption_nabl"
+                                        decoration-success="avg_water_absorption_nabl == 'pass'" 
+                                        decoration-danger="avg_water_absorption_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                               
+                            </tbody>
+                        </table> 
+
+
+
 
 
                          <notebook>
