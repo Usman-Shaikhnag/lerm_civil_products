@@ -30,6 +30,10 @@ class Customer(models.Model):
 
 
     @api.model
+    def _commercial_fields(self):
+        return [f for f in super()._commercial_fields() if f != 'vat']
+
+    @api.model
     def _compute_res_type(self):
         selection = [
             ('contact', 'Contact'),
@@ -40,20 +44,15 @@ class Customer(models.Model):
             ]
         return selection
 
-    @api.depends('partner')
-    def name_get(self):
-        res = []
-        for partner in self:
-            print("saa" + str(self.env.context.get('hide_reference')))
-            if not self.env.context.get('hide_reference'):
-                name = partner._get_name()
-                print("name" + str(name))
-                res.append((partner.id, name))
-            else:
-                name = partner._get_name().split(",")[1].strip()
-                print("name" + str(name))
-                res.append((partner.id, name))
-        return res
+    def _get_complete_name(self):
+        self.ensure_one()
+        if not self.parent_id or self.is_company:
+            return super()._get_complete_name()
+        type_description = dict(self._fields['type']._description_selection(self.env))
+        name = self.name or ''
+        if not name and self.type in self._complete_name_displayed_types:
+            name = type_description[self.type]
+        return name.strip()
             
 
 class CustomerProject(models.Model):
