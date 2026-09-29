@@ -25,6 +25,8 @@ class SaleOrderPricelistWizard(models.TransientModel):
     company_id = fields.Many2one('res.company', string='Company', related='sale_order_id.company_id', readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency', related='sale_order_id.currency_id', readonly=True)
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', readonly=True)
+    create_new_pricelist = fields.Boolean(string='Create New Pricelist')
+    new_pricelist_name = fields.Char(string='New Pricelist Name')
     line_ids = fields.One2many('sale.order.pricelist.wizard.line', 'wizard_id', string='Prices')
 
     @api.model
@@ -36,6 +38,10 @@ class SaleOrderPricelistWizard(models.TransientModel):
         order = self.env['sale.order'].browse(sale_order_id)
         pricelist = order._lerm_get_customer_pricelist()
         res['pricelist_id'] = pricelist.id if pricelist else False
+        if not pricelist or (
+                order._lerm_pricelist_validation_enabled()
+                and order._lerm_is_default_pricelist(pricelist)):
+            res.setdefault('create_new_pricelist', True)
         data = self._build_line_data(order)
         res['line_ids'] = [(0, 0, d) for d in data]
         return res
@@ -117,11 +123,44 @@ class SaleOrderPricelistWizard(models.TransientModel):
         data = self._merge_client_prices(order)
         if not data:
             raise UserError(_('No sample products with a pricelist price on the order.'))
-        self._action_update(order, data)
+        pricelist = self._get_or_create_pricelist(order)
+        self._action_update(order, data, pricelist)
         return {'type': 'ir.actions.act_window_close'}
 
-    def _action_update(self, order, data):
-        pricelist = order._lerm_get_customer_pricelist()
+    def _get_or_create_pricelist(self, order):
+        """Return the pricelist the prices must be written to.
+
+        When *Create New Pricelist* is checked a new customer-specific
+        pricelist is created, pre-filled with the items of the pricelist the
+        customer currently uses, and attached to the customer.
+        """
+        self.ensure_one()
+        if not self.create_new_pricelist:
+            return order._lerm_get_customer_pricelist()
+        name = (self.new_pricelist_name or '').strip()
+        if not name:
+            raise UserError(_('Please enter a name for the new pricelist.'))
+        Pricelist = self.env['product.pricelist'].sudo()
+        new_pricelist = Pricelist.create({
+            'name': name,
+            'currency_id': order.currency_id.id or self.env.company.currency_id.id,
+            'company_id': order.company_id.id or self.env.company.id,
+        })
+        source = order._lerm_get_customer_pricelist()
+        if source:
+            for item in source.item_ids:
+                item.with_context(no_pricelist_audit=True).copy({
+                    'pricelist_id': new_pricelist.id,
+                    'last_sale_order_id': False,
+                })
+        order.partner_id.sudo().property_product_pricelist = new_pricelist
+        order.message_post(body=Markup(
+            _('Pricelist <b>%s</b> created from this Sales Order and attached to customer <b>%s</b>.'))
+            % (new_pricelist.name, order.partner_id.name or ''))
+        return new_pricelist
+
+    def _action_update(self, order, data, pricelist=None):
+        pricelist = pricelist or order._lerm_get_customer_pricelist()
         if order._lerm_pricelist_validation_enabled():
             if not pricelist:
                 raise ValidationError(_(

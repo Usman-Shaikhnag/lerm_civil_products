@@ -16,7 +16,9 @@
                 <form string="Pricelist">
                     <group>
                         <field name="sale_order_id"/>
-                        <field name="pricelist_id"/>
+                        <field name="pricelist_id" string="Current Pricelist"/>
+                        <field name="create_new_pricelist"/>
+                        <field name="new_pricelist_name" invisible="not create_new_pricelist" required="create_new_pricelist"/>
                         <field name="company_id"/>
                         <field name="currency_id"/>
                     </group>
