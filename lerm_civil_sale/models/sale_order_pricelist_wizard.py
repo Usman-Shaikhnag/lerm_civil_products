@@ -24,7 +24,7 @@ class SaleOrderPricelistWizard(models.TransientModel):
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', required=True, readonly=True)
     company_id = fields.Many2one('res.company', string='Company', related='sale_order_id.company_id', readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency', related='sale_order_id.currency_id', readonly=True)
-    pricelist_id = fields.Many2one('product.pricelist', string='Pricelist', readonly=True)
+    pricelist_id = fields.Many2one('product.pricelist', string='Pricelist')
     create_new_pricelist = fields.Boolean(string='Create New Pricelist')
     new_pricelist_name = fields.Char(string='New Pricelist Name')
     line_ids = fields.One2many('sale.order.pricelist.wizard.line', 'wizard_id', string='Prices')
@@ -46,7 +46,7 @@ class SaleOrderPricelistWizard(models.TransientModel):
         res['line_ids'] = [(0, 0, d) for d in data]
         return res
 
-    def _build_line_data(self, order):
+    def _build_line_data(self, order, pricelist=None):
         """Rebuild the authoritative pricelist line data from the Sales Order.
 
         Only sample products are included. Lines with parameters produce one row
@@ -61,7 +61,8 @@ class SaleOrderPricelistWizard(models.TransientModel):
         """
         data = []
         PricelistItem = self.env['product.pricelist.item'].sudo()
-        pricelist = order._lerm_get_customer_pricelist()
+        if pricelist is None:
+            pricelist = order._lerm_get_customer_pricelist()
         for line in order.order_line:
             product_tmpl = line.product_id.product_tmpl_id if line.product_id else False
             if not product_tmpl or not product_tmpl.is_sample:
@@ -104,6 +105,15 @@ class SaleOrderPricelistWizard(models.TransientModel):
                 })
         return data
 
+    @api.onchange('pricelist_id')
+    def _onchange_pricelist_id(self):
+        for rec in self:
+            order = rec.sale_order_id
+            if not order:
+                continue
+            data = rec._build_line_data(order, pricelist=rec.pricelist_id)
+            rec.line_ids = [(5, 0, 0)] + [(0, 0, d) for d in data]
+
     def _merge_client_prices(self, order):
         data = self._build_line_data(order)
         client_lines = self.line_ids
@@ -136,7 +146,13 @@ class SaleOrderPricelistWizard(models.TransientModel):
         """
         self.ensure_one()
         if not self.create_new_pricelist:
-            return order._lerm_get_customer_pricelist()
+            pricelist = self.pricelist_id or order._lerm_get_customer_pricelist()
+            if pricelist and pricelist != order._lerm_get_customer_pricelist():
+                order.partner_id.sudo().property_product_pricelist = pricelist
+                order.message_post(body=Markup(
+                    _('Pricelist <b>%s</b> attached to customer <b>%s</b>.'))
+                    % (pricelist.name, order.partner_id.name or ''))
+            return pricelist
         name = (self.new_pricelist_name or '').strip()
         if not name:
             raise UserError(_('Please enter a name for the new pricelist.'))
