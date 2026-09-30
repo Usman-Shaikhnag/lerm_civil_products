@@ -36,6 +36,16 @@ class CarbonSteelChemical(models.Model):
     humidity = fields.Float("Humidity (%)", digits=(10,2))
     test_method_mech = fields.Char("Test Method")
 
+    uts_specification = fields.Char("UTS Specification")
+    yield_specification = fields.Char("Yield Stress Specification")
+    proof02_specification = fields.Char("0.2 % Proof Stress Specification")
+    p_elongation_specification = fields.Char("% Elongation Specification")
+    t_elongation_specification = fields.Char("% Total Elongation Specification")
+    tsys_specification = fields.Char("Ratio of TS/YS Specification")
+    bend_specification = fields.Char("Bend Test Specification")
+    rebend_specification = fields.Char("Re bend Specification")
+
+
     temprature_section = fields.Float("Temperature (°C)", digits=(10,2))
     humidity_section = fields.Float("Humidity (%)", digits=(10,2))
     test_method_section = fields.Char("Test Method")
@@ -44,7 +54,18 @@ class CarbonSteelChemical(models.Model):
     humidity_chemical = fields.Float("Humidity (%)", digits=(10,2))
     test_method_chemical = fields.Char("Test Method")
 
-    # garde = fields.Char("Grade")
+    c_specification = fields.Char("C% Specification")
+    p_specification = fields.Char("P% Specification")
+    s_specification = fields.Char("S% Specification")
+    p_s_specification = fields.Char("P + S % Specification")
+    si_elongation_specification = fields.Char("Si% Specification")
+    cr_specification = fields.Char("Cr% Specification")
+    cu_specification = fields.Char("Cu% Specification")
+    mo_specification = fields.Char("Mo% Specification")
+    ni_specification = fields.Char("Ni% Specification")
+    mn_specification = fields.Char("Mn% Specification")
+
+    garde = fields.Char("Grade")
     # size = fields.Char("Size")
 
     sample_submitted = fields.Char("Sample Submitted By")
@@ -369,6 +390,7 @@ class CarbonSteelChemicalLine(models.Model):
    
     # f10 = fields.Integer(string="10")
     uts = fields.Float(string="UTS (MPa)")
+    yield_stress = fields.Float(string="Yield Stress")
 
     proof_stress = fields.Float(string="0.2 % Proof Stress N/mm2")
     elongation = fields.Float(string="% Elongation On 5.65 √Area")
@@ -382,6 +404,7 @@ class CarbonSteelChemicalLine(models.Model):
             ('ok_4', 'OK (4Ø)'),
             ('ok_5', 'OK (5Ø)'),
             ('ok_6', 'OK (6Ø)'),
+            ('ok_7', 'OK (7Ø)'),
             ('not_ok', 'NOT OK')
         ],
         string="Bend Test 180° 2t"
@@ -393,12 +416,13 @@ class CarbonSteelChemicalLine(models.Model):
             ('ok_4', 'OK (4Ø)'),
             ('ok_5', 'OK (5Ø)'),
             ('ok_6', 'OK (6Ø)'),
+            ('ok_7', 'OK (7Ø)'),
             ('not_ok', 'NOT OK')
         ],
         string="Re-Bend Test"
     )
 
-    yield_stress = fields.Float(string="Yield Stress")
+    
 
     @api.onchange('parent_id')
     def _onchange_parent_id(self):

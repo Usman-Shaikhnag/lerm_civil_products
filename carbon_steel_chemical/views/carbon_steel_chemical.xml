@@ -18,8 +18,8 @@
                         <!-- <field name="grade" readonly="1"/> -->
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
-                        <field name="grade"/>
-                         <field name="size_id"/>
+                        <!-- <field name="grade"/> -->
+                         <!-- <field name="size_id"/> -->
                         
                     </group>
                     
@@ -105,7 +105,7 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="d-flex gap-2">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders">
                             <tbody>
                                 
@@ -117,6 +117,19 @@
                                 
                             </tbody>
                         </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="garde"></label></td>
+                                    <td><field  name="garde" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
 
                   
 
@@ -164,8 +177,111 @@
                         </table>
                     </div>
 
-                
 
+                    <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="uts_specification"></label></td>
+                                    <td><field  name="uts_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="yield_specification"></label></td>
+                                    <td><field  name="yield_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+
+
+
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="proof02_specification"></label></td>
+                                    <td><field  name="proof02_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="p_elongation_specification"></label></td>
+                                    <td><field  name="p_elongation_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="t_elongation_specification"></label></td>
+                                    <td><field  name="t_elongation_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="tsys_specification"></label></td>
+                                    <td><field  name="tsys_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="bend_specification"></label></td>
+                                    <td><field  name="bend_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="rebend_specification"></label></td>
+                                    <td><field  name="rebend_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+                         
                 
 
                     <div invisible="mechanical_test_visible == False" class="mb-3">
@@ -175,13 +291,14 @@
                                 <field name="serial_no" />
                                 <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
                                 <field name="uts"  class="blue-input" decoration-info="uts != 0"/>
+                                <field name="yield_stress" class="blue-input" decoration-info="yield_stress != 0" string="Yield Stress N/mm2"/>
                                 <field name="proof_stress"  class="blue-input" decoration-info="proof_stress != 0"/>
                                 <field name="elongation"  class="blue-input" decoration-info="elongation != 0"/>
                                 <field name="total_elongation" class="blue-input" decoration-info="total_elongation != 0"/>
                                 <field name="ratio_uts_ys" class="blue-input" decoration-info="ratio_uts_ys != 0" />
                                 <field name="bend" class="blue-input" decoration-info="bend != 0"/>
                                 <field name="re_bend" class="blue-input" decoration-info="re_bend != 0"/>
-                                <field name="yield_stress" class="blue-input" decoration-info="yield_stress != 0" string="Yield Stress N/mm2"/>
+                                
                                 
                               
                             </tree>
@@ -304,6 +421,137 @@
                             </tbody>
                         </table>
                     </div>
+
+
+                    <div class="d-flex gap-2" invisible="chemical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="c_specification"></label></td>
+                                    <td><field  name="c_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="p_specification"></label></td>
+                                    <td><field  name="p_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+
+                         <div class="d-flex gap-2" invisible="chemical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="s_specification"></label></td>
+                                    <td><field  name="s_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="p_s_specification"></label></td>
+                                    <td><field  name="p_s_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+
+                         <div class="d-flex gap-2" invisible="chemical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="si_elongation_specification"></label></td>
+                                    <td><field  name="si_elongation_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="cr_specification"></label></td>
+                                    <td><field  name="cr_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+
+                         <div class="d-flex gap-2" invisible="chemical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="cu_specification"></label></td>
+                                    <td><field  name="cu_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="mo_specification"></label></td>
+                                    <td><field  name="mo_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+
+                         <div class="d-flex gap-2" invisible="chemical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="ni_specification"></label></td>
+                                    <td><field  name="ni_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="mn_specification"></label></td>
+                                    <td><field  name="mn_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
 
                 
 
