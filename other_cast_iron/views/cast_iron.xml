@@ -2,9 +2,9 @@
 <odoo>
     <data>
 
-        <record id="ferrous_complate_partial_view" model="ir.ui.view">
-        <field name="name">ferrous.complete.partial.form</field>
-        <field name="model">ferrous.complete.partial</field>
+        <record id="other_cast_iron_view" model="ir.ui.view">
+        <field name="name">other.cast.iron.form</field>
+        <field name="model">other.cast.iron</field>
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
@@ -159,30 +159,36 @@
                         </table>
 
 
-                     <div invisible="feroous_complate_partial_visible == False" style="text-align:center">
+                     <div invisible="other_cast_iron_visible == False" style="text-align:center">
                         <h1>
                           
-                          <field name="feroous_complate_partial_visible" invisible='1'/>
-                          <field name="feroous_complate_partial_name" readonly="1" nolabel="1"/>
+                          <field name="other_cast_iron_visible" invisible='1'/>
+                          <field name="other_cast_iron_name" readonly="1" nolabel="1"/>
                         </h1>
                     </div>
 
                 
-
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="other_cast_iron_visible == False">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="sample_description"></label></td>
+                                    <td><field  name="sample_description" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
                 
 
-                    <div invisible="feroous_complate_partial_visible == False" class="mb-3">
-                    <field name="feroous_complate_partial_lines"  >
+                    <div invisible="other_cast_iron_visible == False" class="mb-3">
+                    <field name="other_cast_iron_lines"  >
                             <tree editable="bottom" class="custom_table_borders">
                              
                                 <field name="serial_no" />
-                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
-                                <field name="test_parameter"  class="blue-input" decoration-info="test_parameter != 0"/>
-                                <field name="reading_1"  class="blue-input" decoration-info="reading_1 != 0"/>
-                                <field name="reading_2"  class="blue-input" decoration-info="reading_2 != 0"/>
-                                <field name="reading_3"  class="blue-input" decoration-info="reading_3 != 0"/>
-                                <field name="reading_4"  class="blue-input" decoration-info="reading_4 != 0"/>
-                                <field name="reading_5"  class="blue-input" decoration-info="reading_5 != 0"/>
+                                <field name="test_parameter" class="blue-input" decoration-info="test_parameter != 0"/>
+                                <field name="standerd_requirment"  class="blue-input" decoration-info="standerd_requirment != 0"/>
+                                <field name="result"  class="blue-input" decoration-info="result != 0"/>
                                 <field name="remarks"  class="blue-input" decoration-info="remarks != 0"/>
                                 
                               
@@ -192,7 +198,7 @@
 
                     </div>
 
-                     <div class="d-flex gap-2">
+                  <div class="d-flex gap-2">
 
             <!-- Original Images -->
             <table class="table table-sm o_form_table table-bordered custom_table_borders">
@@ -229,18 +235,31 @@
 
 
 
+
                  
 
                   
 
                     <notebook>
 
-                        <page string="Notes">
+                        <page string="Notes" invisible="1">
                             <div class="custom_table_borders" style="margin-top: 15px;">
                                 <field name="notes_id" nolabel="1">
                                     <tree editable="bottom">
                                         <field name="sr_no" width="100"/>
                                         <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                         <page string="Remark" >
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="remark_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="remark"  />
                                     </tree>
                                 </field>
                                 

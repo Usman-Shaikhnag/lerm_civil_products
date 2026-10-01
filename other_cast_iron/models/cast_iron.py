@@ -2,12 +2,12 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
 
-class FerrousComplatePartial(models.Model):
-    _name = "ferrous.complete.partial"
+class OtherCastIron(models.Model):
+    _name = "other.cast.iron"
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name1 = fields.Char("Name",default="Ferrous Estimating depth of Complete & Partial")
+    name1 = fields.Char("Name",default="OTHERS (Cast Iron & Products)")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -33,10 +33,15 @@ class FerrousComplatePartial(models.Model):
 
     product_name = fields.Char(string="Product",compute="_compute_product_name")
 
+    sample_description = fields.Char("SAMPLE DESCRIPTION")
+
     # Image Fields
+    # original_image = fields.Image(string="Original Image", attachment=True)
+    # processed_image = fields.Image(string="Processed Image", attachment=True)
+
     original_image = fields.Many2many(
     'ir.attachment',
-    'feroous_complate_original_image_rel',
+    'other_cast_iron_original_image_rel',
     'measurement_id',
     'attachment_id',
     string='Original Image',
@@ -45,12 +50,13 @@ class FerrousComplatePartial(models.Model):
 
     processed_image = fields.Many2many(
         'ir.attachment',
-        'feroous_complate_processed_image_rel',
+        'other_cast_iron_processed_image_rel',
         'measurement_id',
         'attachment_id',
         string='Processed Image',
         help='Attach multiple processed images to the sample',
     )
+
 
     @api.depends('eln_ref', 'eln_ref.sub_product_id')
     def _compute_product_name(self):
@@ -62,11 +68,11 @@ class FerrousComplatePartial(models.Model):
 
     
 
-    notes_id = fields.One2many('ferrous.complete.partial.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('other.cast.iron.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
-        res = super(FerrousComplatePartial, self).default_get(fields)
+        res = super(OtherCastIron, self).default_get(fields)
 
         default_notes = [
             (0, 0, {
@@ -106,10 +112,41 @@ class FerrousComplatePartial(models.Model):
         return res
 
 
-    feroous_complate_partial_name = fields.Char("Name",default="Estimating depth of Complete & Partial")
-    feroous_complate_partial_visible = fields.Boolean("pH",compute="_compute_visible")
+    remark_id = fields.One2many(
+    'other.cast.iron.remark',
+    'parent_id',
+    string="Remark"
+    )
 
-    feroous_complate_partial_lines = fields.One2many('ferrous.complete.partiall.line','parent_id',string="Parameter")
+    @api.model
+    def default_get(self, fields_list):
+        res = super(OtherCastIron, self).default_get(fields_list)
+
+        default_remarks = [
+            (0, 0, {
+                'sr_no': 'a',
+                'remark': 'Above Sample was cut, polished & etched.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'remark': 'Observations found in respect of the sample tested.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'remark': 'Micro structure grain flow lines observed.',
+            }),
+            
+        ]
+
+        res['remark_id'] = default_remarks
+
+        return res
+
+
+    other_cast_iron_name = fields.Char("Name",default="Cast Iron & Products")
+    other_cast_iron_visible = fields.Boolean("pH",compute="_compute_visible")
+
+    other_cast_iron_lines = fields.One2many('other.cast.iron.line','parent_id',string="Parameter")
     
     
    
@@ -118,7 +155,7 @@ class FerrousComplatePartial(models.Model):
     @api.depends('sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.feroous_complate_partial_visible = False
+            record.other_cast_iron_visible = False
            
             
             
@@ -126,8 +163,8 @@ class FerrousComplatePartial(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '98jn6543-978b-483c-99dd-271530e098uy':
-                    record.feroous_complate_partial_visible = True
+                if sample.internal_id == '0987njht5-978b-483c-99dd-27150989lo7864':
+                    record.other_cast_iron_visible = True
 
                
                 
@@ -149,7 +186,7 @@ class FerrousComplatePartial(models.Model):
             
             
             # Water Absorbtion
-            if result.parameter.internal_id == '98jn6543-978b-483c-99dd-271530e098uy':
+            if result.parameter.internal_id == '0987njht5-978b-483c-99dd-27150989lo7864':
                 # result.result_char = round(self.carbon_percentage,3)
                 result.calculated = True
                 # if self.carbon_percentage_nabl == 'pass':
@@ -179,7 +216,7 @@ class FerrousComplatePartial(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(FerrousComplatePartial, self).create(vals)
+        record = super(OtherCastIron, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -187,7 +224,7 @@ class FerrousComplatePartial(models.Model):
 
         
     def get_all_fields(self):
-        record = self.env['ferrous.complete.partial'].browse(self.ids[0])
+        record = self.env['other.cast.iron'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -235,28 +272,24 @@ class FerrousComplatePartial(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-class FerrousComplatePartialLine(models.Model):
-    _name = "ferrous.complete.partiall.line"
-    parent_id = fields.Many2one('ferrous.complete.partial',string="Parent Id")
+class OtherCastIronLine(models.Model):
+    _name = "other.cast.iron.line"
+    parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
 
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identity = fields.Char(string="Sample  Identity")
+    serial_no = fields.Integer(string="SL No.", readonly=True, copy=False, default=1)
     test_parameter = fields.Char(string="TEST PARAMETER")
+    standerd_requirment = fields.Char(string="STANDARD REQUIRMENT AS PER ")
    
     # f10 = fields.Integer(string="10")
-    reading_1 = fields.Char(string="READING 1")
-    reading_2 = fields.Char(string="READING 2")
-    reading_3 = fields.Char(string="READING 3")
-    reading_4 = fields.Char(string="READING 4")
-    reading_5 = fields.Char(string="READING 5")
-    remarks = fields.Char(string="Remarks")
+    result = fields.Char(string="RESULT")
+    remarks = fields.Char(string="REMARKS")
 
-    @api.onchange('parent_id')
-    def _onchange_parent_id(self):
-        if self.parent_id:
-            self.sample_identity = self.parent_id.product_name
-        else:
-            self.sample_identity = False
+    # @api.onchange('parent_id')
+    # def _onchange_parent_id(self):
+    #     if self.parent_id:
+    #         self.sample_identity = self.parent_id.product_name
+    #     else:
+    #         self.sample_identity = False
     
 
 
@@ -269,7 +302,7 @@ class FerrousComplatePartialLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(FerrousComplatePartialLine, self).create(vals)
+        return super(OtherCastIronLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -284,10 +317,17 @@ class FerrousComplatePartialLine(models.Model):
 
 
 
-class FerrousComplatePartialNotes(models.Model):
-    _name = "ferrous.complete.partial.notes"
+class OtherCastIronNotes(models.Model):
+    _name = "other.cast.iron.notes"
 
-    parent_id = fields.Many2one('ferrous.complete.partial',string="Parent Id")
+    parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+class OtherCastIronRemark(models.Model):
+    _name = "other.cast.iron.remark"
+
+    parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    remark = fields.Char("Remark")
     

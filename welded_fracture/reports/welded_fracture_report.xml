@@ -115,20 +115,20 @@
 							</tr>
 
 							<tr>
-								<td>Grade :-</td>
+								<td>Temperature (°C) :-</td>
 								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
+								<t t-if="data.temprature">
+											<span t-field="data.temprature"/>
 										</t>
 									<t t-else="">--</t>
 									</td>
 
-								<td>Size  :-</td>
+								<td>Humidity (%)  :-</td>
 
 								<td>
 
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
+										<t t-if="data.humidity">
+											<span t-field="data.humidity"/>
 										</t>
 									<t t-else="">--</t>
 								</td>
@@ -255,22 +255,20 @@
 							</tr>
 
 						
-							<tr t-if="o.material.test_method_adopted" >
+							<tr >
 								
 
-									<td >Test method adopted:</td>
-									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+							<td >TEST METHOD:</td>
+							<td ><span t-field="o.material.test_method_adopted"/></td>
 
-							
+							<td >Specification </td>
+							<td ><span t-field="o.material.specification_code"/></td>
 							</tr>
+
+
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<tr t-if="o.material.specification_code">
-									<td style="font-weight: bold;">Specifications</td>
-									<td colspan="3"><span t-field="o.material.specification_code"/></td>
 								</tr>
 
 						</table>

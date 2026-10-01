@@ -17,15 +17,40 @@ class FerrousInclusion(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    
-    sample_condition = fields.Char("Sample Condition")
+
+    magnification = fields.Char("MAGNIFICATION")
+
+
+    etching = fields.Char("ETCHING ECHANT")
+
+    sample_submitted = fields.Char("Sample Submitted By")
+
     sample_status = fields.Char("Sample Status")
+
+    No_of_sample = fields.Integer("Number Of Samples")
+
+    description_work = fields.Text("Work Description")
 
     product_name = fields.Char(string="Product",compute="_compute_product_name")
 
     # Image Fields
-    original_image = fields.Image(string="Original Image", attachment=True)
-    processed_image = fields.Image(string="Processed Image", attachment=True)
+    original_image = fields.Many2many(
+    'ir.attachment',
+    'feroous_inclusion_original_image_rel',
+    'measurement_id',
+    'attachment_id',
+    string='Original Image',
+    help='Attach multiple original images to the sample',
+    )
+
+    processed_image = fields.Many2many(
+        'ir.attachment',
+        'feroous_inclusion_processed_image_rel',
+        'measurement_id',
+        'attachment_id',
+        string='Processed Image',
+        help='Attach multiple processed images to the sample',
+    )
 
     @api.depends('eln_ref', 'eln_ref.sub_product_id')
     def _compute_product_name(self):

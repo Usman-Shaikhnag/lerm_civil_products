@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	
-	   <template id="welded_structure_report">
+	   <template id="cast_iron_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
@@ -271,6 +271,8 @@
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
+								
+
 						</table>
 					</div>
 
@@ -281,23 +283,27 @@
 					</div>
 
 
-					<div style="margin-top:20px;"  invisible="welded_micro_structure_visible == False">
+					<div style="margin-top:20px;"  invisible="other_cast_iron_visible == False">
                        
-            <table>
+              <table>
                        
                  <tr >
-							  <td colspan="5">
-                           <b>MACRO STRUCTURE MACRO ETCHING &amp; MACRO EXAMINATION</b>
-								</td>
-                                
-                               
+                    <td colspan="5">
+                <b>Cast Iron &amp; Products </b>   Visual Evaluation of Graphite &amp; Designation of the microstructure of Graphite
+                    </td>       
                 </tr>
+              <tr >
+                <td colspan="5" style="white-space: nowrap;">
+                    <strong>SAMPLE DESCRIPTION:&#160;</strong><span t-field="data.sample_description"/>
+                </td>
+             </tr >
+
 					<tr cols="12">
-                    <td  style="text-align: center;"><b>Sr No.</b></td>
-                    <td   style="text-align: center;"><b>Sample  Identity</b></td>
-                    <td   style="text-align: center;"><b>TEST LOCATION</b></td>
-                    <td   style="text-align: center;"><b>RESULT  </b></td>
-                    <td   style="text-align: center;"><b>REMARKS  </b></td>
+                    <td  style="text-align: center;"><b>SL No.</b></td>
+                    <td   style="text-align: center;"><b>TEST PARAMETER</b></td>
+                    <td   style="text-align: center;"><b>STANDARD REQUIRMENT AS PER </b></td>
+                    <td   style="text-align: center;"><b>RESULT</b></td>
+                    <td   style="text-align: center;"><b>REMARKS</b></td>
                     
                     
                 </tr>
@@ -307,7 +313,7 @@
                             
 						
                     <t t-set="f" t-value="0"/>
-                    <tr t-foreach="data.welded_micro_structure_lines" t-as="r">
+                    <tr t-foreach="data.other_cast_iron_lines" t-as="r">
                         <td  style="text-align: center;">
                             <div>
                                 <span t-esc="f + 1" />
@@ -315,10 +321,10 @@
                             </div>
                         </td>
                         <td  style="text-align: center;">
-                            <span t-esc="r['sample_identity']"/>
+                            <span t-esc="r['test_parameter']"/>
                         </td>
                       <td  style="text-align: center;">
-                            <span t-esc="r['test_location']"/>
+                            <span t-esc="r['standerd_requirment']"/>
                         </td>
                         <td  style="text-align: center;">
                             <span t-esc="r['result']"/>
@@ -368,7 +374,7 @@
         </tr>
 
         <!-- IMAGE PAIRS -->
-        <t t-foreach="data.original_image" t-as="image">
+        <t t-foreach="data.original_image" t-as="image" t-index="image_index">
 
             <tr>
 
@@ -402,7 +408,6 @@
                     </div>
 
                 </td>
-
 
                 <!-- PROCESSED IMAGE -->
                 <td style="
@@ -446,6 +451,7 @@
     </table>
 
 </div>
+
 
 
 					

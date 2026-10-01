@@ -14,7 +14,7 @@
 					<div class="" t-foreach="eln" t-as="o">
 						 	<table style="width:100%; border-collapse: collapse;" border="1">
 
-						   <tr style="height:10px;">
+						  <tr style="height:10px;">
 								<td colspan="1">Customer Party Name :</td>
 								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -37,7 +37,7 @@
 									</td>
 								
 							</tr>
-							<tr t-if="o.srf_id.name_work">
+							<tr >
 								<td colspan="1" >Project Name:</td>
 								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -51,6 +51,150 @@
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client"/>
 									</td>
+							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+
+							
+							</tr>
+
+
+							<tr>
+								
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							
+							<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td >Samples Description :-</td>
+								<td >
+								      <t t-if="data.product_name">
+											<span t-field="data.product_name"/>
+										</t>
+								</td>
+
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Temperature (°C) :-</td>
+								<td>
+								<t t-if="data.temprature">
+											<span t-field="data.temprature"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Humidity (%)  :-</td>
+
+								<td>
+
+										<t t-if="data.humidity">
+											<span t-field="data.humidity"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+								<td>Test Start Date  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td>Test Completion Date  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td>
+									   <t t-if="data.sample_status">
+											<span t-field="data.sample_status"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+								<td>Sample Submitted By:-</td>
+								<td>
+									   <t t-if="data.sample_submitted">
+											<span t-field="data.sample_submitted"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
+							</tr>
+
+							<tr>
+
+								<td>Sub Group :-</td>
+								<td>
+								  <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+								<td>No. Of  Samples :-</td>
+								<td>
+									   <t t-if="data.No_of_sample">
+											<span t-field="data.No_of_sample"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
 							</tr>
 							
 							<tr>
@@ -76,206 +220,55 @@
 								</td>
 							</tr>
 
-							<tr>
-
-							<tr>
-
-								<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
-								<td>SRF Date:-</td>
-								<td>
-
-									<t t-if="o.srf_date">
-											<span t-field="o.srf_date"/>
-										</t>
-								</td>
-
-								
-								
-							</tr>
-								
-
-								<td style="width:20%;">Temperature :-</td>
-								<td style="width:20%;">
-
-								  <t t-if="data.temprature">
-											<span t-field="data.temprature"/> (°C)
-										</t>
-									<t t-else="">--</t>
-								
-								</td>
-								<td>Humidity :-</td>
-								<td>
-									
-
-									<t t-if="data.humidity">
-											<span t-field="data.humidity"/>  (%)
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td style="width:20%;">Discipline :
-									
-								</td>
-								<td style="width:20%;">
-								<span t-field="o.discipline.discipline"/>
-								</td>
-
-								<td style="width:20%;">Group :	
-								</td>
-								<td style="width:20%;">
-									<span t-field="o.group.group"/>
-								
-								</td>
-							</tr>
-
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
+							<tr >
+								<td colspan="1" >Work Description:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="data.description_work">
+											<span t-field="data.description_work"/>
 										</t>
 									<t t-else="">--</t>
 									</td>
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
 							</tr>
 
 							
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>Sample Condition :-</td>
-										<td >
-
-											<t t-if="data.sample_condition">
-											<span t-field="data.sample_condition"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
+							
 								
-							</tr>
-
-							<tr>
-								
-
-								<td colspan="1">Samples Description :-</td>
-								<td colspan="3">
-
-								        <t t-if="data.product_name">
-											<span t-field="data.product_name"/>
-										</t>
-								      
-								</td>
-								
-							</tr>
-							<tr>
-								
-
-								<td colspan="1">Sub Group  :-</td>
-								<td colspan="3">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
-										</t>
-								</td>
-								
-							</tr>
-
-							<tr>
-
-								<td >Sample Status :-</td>
+                            <tr>
+								<td>MAGNIFICATION  :-</td>
 								<td >
 
-								        <t t-if="data.sample_status">
-											<span t-field="data.sample_status"/>
-										</t>
-								      
-								</td>
-								
-								<td>No. of Sample :-</td>
-								<td>
-
-								<t t-if="o.sample_id.sample_qty">
-											<span t-field="o.sample_id.sample_qty"/>
-										</t>
-									<t t-else="">--</t>
-
-								<t t-if="o.sample_id.uom_id">
-											<span t-field="o.sample_id.uom_id"/>
-										</t>
-									<t t-else="">--</t>
-								
+									<t t-if="data.magnification">
+									<span t-field="data.magnification"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
 
-							
+								<td>ETCHING ECHANT  :-</td>
+								<td >
 
-								
-							</tr>
-
-							
-
-							<tr>
-								
-								<td>Test Start Date  :-</td>
-								<td>
-
-									<t t-if="o.start_date">
-											<span t-field="o.start_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-								<td>Test Completion Date  :-</td>
-								<td>
-
-									<t t-if="o.end_date">
-											<span t-field="o.end_date"/>
-										</t>
-									<t t-else="">--</t>
+									<t t-if="data.etching">
+									<span t-field="data.etching"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
 							</tr>
 
-							
 						
-							<tr t-if="o.material.test_method_adopted" >
+							<tr >
 								
 
-									<td >Test method adopted:</td>
-									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+							<td >TEST METHOD:</td>
+							<td ><span t-field="o.material.test_method_adopted"/></td>
 
-							
+							<td >Specification </td>
+							<td ><span t-field="o.material.specification_code"/></td>
 							</tr>
+
+
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<tr t-if="o.material.specification_code">
-									<td style="font-weight: bold;">Specifications</td>
-									<td colspan="3"><span t-field="o.material.specification_code"/></td>
 								</tr>
 
 						</table>
@@ -383,33 +376,112 @@
                     </div>
 
 					 <!-- Images below table -->
-							<div style="margin-top: 10px; text-align: center;">
-						<table style="width: 100%; border-collapse: collapse;">
-							<tr>
-								<td style="width: 50%; text-align: center;">
-									<b>Original Image</b>
-								</td>
-								<td style="width: 50%; text-align: center;">
-									<b>Processed Image</b>
-								</td>
-							</tr>
-							<tr>
-								<td style="width: 50%; text-align: center; vertical-align: middle;">
-									<t t-if="data.original_image">
-										<img t-att-src="'data:image/png;base64,' + data.original_image.decode('utf-8')"
-											style="width: 150px; height: 150px; object-fit: contain;"/>
-									</t>
-								</td>
+							<div style="margin-top: 10px;">
 
-								<td style="width: 50%; text-align: center; vertical-align: middle;">
-									<t t-if="data.processed_image">
-										<img t-att-src="'data:image/png;base64,' + data.processed_image.decode('utf-8')"
-											style="width: 150px; height: 150px; object-fit: contain;"/>
-									</t>
-								</td>
-							</tr>
-						</table>
-					</div>
+    <table style="width: 100%; border-collapse: collapse;">
+
+        <!-- HEADER -->
+        <tr>
+            <td style="
+                width: 50%;
+                text-align: center;
+                font-weight: bold;
+                border: 1px solid #000;
+                padding: 8px;
+            ">
+                Original Image
+            </td>
+
+            <td style="
+                width: 50%;
+                text-align: center;
+                font-weight: bold;
+                border: 1px solid #000;
+                padding: 8px;
+            ">
+                Processed Image
+            </td>
+        </tr>
+
+        <!-- IMAGE PAIRS -->
+        <t t-foreach="data.original_image" t-as="image">
+
+            <tr>
+
+                <!-- ORIGINAL IMAGE -->
+                <td style="
+                    width: 50%;
+                    text-align: center;
+                    vertical-align: middle;
+                    border: 1px solid #000;
+                    padding: 10px;
+                ">
+
+                    <div style="
+                        width: 170px;
+                        height: 170px;
+                        border: 1px solid #000;
+                        margin: auto;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 5px;
+                    ">
+
+                        <img t-att-src="'/web/image/ir.attachment/' + str(image.id) + '/datas'"
+                             style="
+                                max-width: 160px;
+                                max-height: 160px;
+                                object-fit: contain;
+                             "/>
+
+                    </div>
+
+                </td>
+
+
+                <!-- PROCESSED IMAGE -->
+                <td style="
+                    width: 50%;
+                    text-align: center;
+                    vertical-align: middle;
+                    border: 1px solid #000;
+                    padding: 10px;
+                ">
+
+                    <t t-if="image_index &lt; len(data.processed_image)">
+
+                        <div style="
+                            width: 170px;
+                            height: 170px;
+                            border: 1px solid #000;
+                            margin: auto;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 5px;
+                        ">
+
+                            <img t-att-src="'/web/image/ir.attachment/' + str(data.processed_image[image_index].id) + '/datas'"
+                                 style="
+                                    max-width: 160px;
+                                    max-height: 160px;
+                                    object-fit: contain;
+                                 "/>
+
+                        </div>
+
+                    </t>
+
+                </td>
+
+            </tr>
+
+        </t>
+
+    </table>
+
+</div>
 
 										
 

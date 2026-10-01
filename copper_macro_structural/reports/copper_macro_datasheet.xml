@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="ferrous_partial_datasheet">
+<template id="copper_macro_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			<t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
-                Ferrous Estimating depth of Complete &amp; Partial Datasheet
+                  Copper Macro Stractural Datasheet
                 </div>
 				
                 <div class="container_eln" style="margin-top:5px">
@@ -48,37 +48,38 @@
 		
 
 
-				<div style="margin-top:20px;"  invisible="section_weight_visible == False">
+				<div style="margin-top:20px;"  invisible="copper_macro_visible == False">
                        
             <table>
                        
                  <tr >
-							  <td colspan="9">
-                           <b>Estimating depth of Complete &amp; Partial</b>
+							  <td colspan="5">
+                           <b>Macro Structural Analysis</b>
 								</td>
                                 
                                
                 </tr>
-							  <tr cols="12">
-                    <td  style="text-align: center;"><b>Sr No.</b></td>
-                    <td   style="text-align: center;"><b>Sample  Identity</b></td>
-                    <td   style="text-align: center;"><b>Test Parameter</b></td>
-                    <td   style="text-align: center;"><b>READING 1</b></td>
-                    <td   style="text-align: center;"><b>READING 2</b></td>
-                    <td   style="text-align: center;"><b>READING 3</b></td>
-                    <td   style="text-align: center;"><b>READING 4</b></td>
-                    <td   style="text-align: center;"><b>READING 5</b></td>
-                    <td   style="text-align: center;"><b>Remarks </b></td>
+					<tr cols="12">
+                    <td  style="text-align: center;" ><b>Sr No.</b></td>
+                    <td   style="text-align: center;" ><b>Sample  Identity</b></td>
+                    <td   style="text-align: center;" ><b>SAMPLE NO. </b></td>
+                    <td   style="text-align: center;" ><b>RESULT </b></td>
+
+                 
+
+                    <td   style="text-align: center;" ><b>REMARKS  </b></td>
                     
                     
                 </tr>
+
+                
 
 							
 
                             
 						
                     <t t-set="f" t-value="0"/>
-                    <tr t-foreach="data.feroous_complate_partial_lines" t-as="r">
+                    <tr t-foreach="data.copper_macro_lines" t-as="r">
                         <td  style="text-align: center;">
                             <div>
                                 <span t-esc="f + 1" />
@@ -89,23 +90,13 @@
                             <span t-esc="r['sample_identity']"/>
                         </td>
                       <td  style="text-align: center;">
-                            <span t-esc="r['test_parameter']"/>
+                            <span t-esc="r['sample_no']"/>
                         </td>
                         <td  style="text-align: center;">
-                            <span t-esc="r['reading_1']"/>
+                            <span t-esc="r['result']"/>
                         </td>
-                         <td  style="text-align: center;">
-                            <span t-esc="r['reading_2']"/>
-                        </td>
-                         <td  style="text-align: center;">
-                            <span t-esc="r['reading_3']"/>
-                        </td>
-                         <td  style="text-align: center;">
-                            <span t-esc="r['reading_4']"/>
-                        </td>
-                         <td  style="text-align: center;">
-                            <span t-esc="r['reading_5']"/>
-                        </td>
+
+                      
                         <td  style="text-align: center;">
                             <span t-esc="r['remarks']"/>
                         </td>
@@ -120,8 +111,9 @@
 							
                      </table>
 
-                      <!-- Images below table -->
-                    <div style="margin-top: 10px;">
+                    </div>
+
+                     <div style="margin-top: 10px;">
 
     <table style="width: 100%; border-collapse: collapse;">
 
@@ -299,7 +291,7 @@
 
 							
 
-				</div>
+				<!-- </div> -->
 
 				
 			</t>
