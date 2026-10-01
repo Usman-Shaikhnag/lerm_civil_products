@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="marsh_cone_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln_general"> -->
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				
+				<div class="container_eln">
+				
+					<div t-foreach="eln" t-as="o">
+
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">#Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">#Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">#Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">#Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+				
+
+
+					<div style="padding-top:5px">
+						<span t-esc="eln.material.test_parameter"/>
+					</div>
+
+
+
+						<table style="margin-top: 5px;">
+							<thead>
+								<tr>
+									<th style="font-weight: bold;text-align:center;">Sr No.</th>
+									<th style="font-weight: bold;text-align:center;">Water Cement Ratio (w/c)</th>
+									<th style="font-weight: bold;text-align:center;">Admixture Dosage (%)</th>
+									<th style="font-weight: bold;text-align:center;">Wt. of Cement (g)</th>
+									<th style="font-weight: bold;text-align:center;">Wt. of Water (g)</th>
+									<th style="font-weight: bold;text-align:center;">Wt. of Admixture (g)</th>
+									<!-- <th style="font-weight: bold;">Flow 0 Min Retention (Sec)</th>
+									<th style="font-weight: bold;">Flow at 30 Min Retention (Sec)</th> -->
+									<th style="font-weight: bold;text-align:center;">Flow at 60 Min Retention (Sec)</th>
+
+									<!-- <th style="font-weight: bold;">Flow at 30 Min (Sec)</th>
+									<th style="font-weight: bold;">Flow at 60 Min (Sec)</th> -->
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="i" t-value="0"/>
+								<t t-foreach="compatability.child_lines" t-as="line">
+									<tr>
+										<td style="text-align:center;">
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</td>
+										<td style="text-align:center;">
+											<span t-field="line.water_cement_ratio"/>
+										</td>
+										<td style="text-align:center;">
+											<span t-field="line.admixture_dosage_percent"/>
+										</td>
+										<td style="text-align:center;">
+											<span t-field="line.wt_of_cement"/>
+										</td>
+										<td style="text-align:center;">
+											<span t-field="line.wt_of_water"/>
+										</td>
+										<td style="text-align:center;">
+											<span t-field="line.wt_of_admixture"/>
+										</td>
+										<!-- <td>
+											<span t-field="line.flow_sec"/>
+										</td>
+										<td>
+											<span t-field="line.flow_30_min"/>
+										</td> -->
+										<td style="text-align:center;">
+											<span t-field="line.flow_60_min"/>
+										</td>
+									</tr>
+								</t>
+							</tbody>
+						</table>
+
+						<div t-if="compatability.chart_image" style="margin-top: 20px;text-align:center;">
+							<img t-att-src="'data:image/png;base64,' + compatability.chart_image.decode('utf-8')" style="max-width: 100%;z-index:-10;"/>
+						</div>
+						<div style="margin-top:10px">
+							<b><span t-field="compatability.comment"/></b>
+						</div>
+
+						 <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Knack. -->
+
+										<t t-if="compatability.notes_id">
+										<t t-foreach="compatability.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table  >
+						</div>
+
+
+
+					<!-- <div style="margin-top:100px; page-break-inside: avoid;" class="signatureContainer girdgird"> -->
+						<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+									Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+							<div>
+								<div>
+									<b>
+									Approved By 
+									</b>
+
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+	
+									</b>
+								</div>
+								<!-- <div>
+									<b>
+									(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+					
+					</div>
+					<t t-if="i > 7">
+						<div style="margin-top: 20px; text-align: center;">
+							<p style="border-top: 1px dashed #000; padding-top: 10px;">
+								...... End Of Report......
+							</p>
+						</div>
+					</t>
+				</div>
+
+			
+			</t>
+		</t>
+	</template>
+
+
+
+</odoo>
