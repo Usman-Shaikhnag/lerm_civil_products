@@ -1632,6 +1632,27 @@ class FineAggregate(models.Model):
         else:
             rec.organic_impurities_result = False
 
+    organic_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    organic_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_organic_nabl",
+    store=True
+)
+
+    @api.depends('organic_report_type')
+    def _compute_organic_nabl(self):
+     for rec in self:
+        rec.organic_nabl = 'pass' if rec.organic_report_type == 'nabl' else 'fail'
+
 
 
     #  Bulking of Sand

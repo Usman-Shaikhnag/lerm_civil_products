@@ -952,6 +952,55 @@
 									
 								</tr>
 
+								<t t-if="data.organic_impurities_visible and ((data.organic_report_type == 'nabl' and nabl) or (data.organic_report_type == 'non_nabl' and not nabl))">
+
+								<tr>
+									<t t-set="organic" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','0363075f-a3f2-440a-b634-76f469d220c7')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="organic.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.sample_color" />
+										</span>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="organic.unit.name"/>
+										</span>
+									</td>								
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="organic.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="organic.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								</t>
+
 								</tbody>
 								</table>
 
