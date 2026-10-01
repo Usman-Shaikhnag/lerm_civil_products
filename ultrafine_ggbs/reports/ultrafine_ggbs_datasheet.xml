@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="ultrafine_ggbs_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    ULTRAFINE GGBS
+                </div>
+
+				<div class="container_eln" style="margin-top:7px">
+
+
+				  <table style="margin-top:20px">
+                        <tr cols="12">
+				        <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+							
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                        <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+					</table>
+
+
+					<!-- Normal Consistency -->
+					
+					<div t-if="data.normal_consistency_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;">
+							Normal Consistency
+						</div>
+						
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Temperature : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_normal" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Humidity : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_normal" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+							</tr>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Wt. of Cement (g) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.wt_of_cement_trial1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Wt. of UGGBS (g) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.wt_of_ggbs_trial1" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Total Wt. of Sample (g) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.total_wt_sample" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Wt. of water required</td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.wt_water_req" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Penetration of vicat's Plunger(mm) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.penetration_vicat" />
+								</td>
+							</tr>
+							<tr>
+								<td width="100%" colspan="12" style="font-weight: bold;text-align: center; padding: 8px;">Normal Consistency %  : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.normal_consistency" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						
+						</div>
+
+
+						<!-- Setting Time -->
+					
+					<div t-if="data.setting_time_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;">
+							Setting Time
+						</div>
+						
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Temperature : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.temp_setting_time" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Humidity : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_setting_time" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+							</tr>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Wt. of Blend Sample (g) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.blend_sample_weight"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">    Normal Consistency of Blend (%)</td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.st_normal_consistency" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">TWt. of water required (g) (0.85 * P %) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.water_required" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Time When water is added to sample (t1)</td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.water_added_time" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Time when needle fails to penetrate 5±0.5mm (t2) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.initial_setting_time_input" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Time when needle fails to make an impression (t3) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.final_setting_time_input" />
+								</td>
+							</tr>
+							<tr>
+								<td width="100%" colspan="12" style="font-weight: bold;text-align: center; padding: 8px;">Initial Setting Time (Minutes) : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.initial_setting_minutes" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td width="100%" colspan="12" style="font-weight: bold;text-align: center; padding: 8px;">Final Setting Time (Minutes): <![CDATA[&nbsp;]]>
+									<span t-field="data.final_setting_minutes" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						
+						</div>
+
+
+						<!-- Specific Gravity -->
+					
+					<div t-if="data.specific_gravity_visible" style="page-break-inside: avoid;">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;page-break-inside: avoid;">
+							Specific Gravity
+						</div>
+						
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Temperature : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.temp_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+								  <td colspan="6" style="font-weight: bold;text-align: left; padding: 8px; ">Humidity : 
+								  <![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+								  </td>	
+							</tr>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Weight of UGGBS Sample (g) </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.wt_of_ggbs_sg_trial1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Initial Volume of Kerosine (ml) V1 </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.initial_volume_kerosine_trial1" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Final Volume of Kerosine + Sample (ml) V2" </td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.final_volume_kerosine_trial1" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="font-weight: bold;text-align: left; padding: 8px;">Displaced Volume of Sample (cm³)</td>
+								<td colspan="6" style="padding: 8px;text-align: center;">
+									<span t-field="data.displaced_volume_trial1" />
+								</td>
+							</tr>
+							<tr>
+								<td width="100%" colspan="12" style="font-weight: bold;text-align: center; padding: 8px;">Specific Gravity  : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.specific_gravity_trial1" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						</div>
+					
+					
+
+					
+
+                    <!-- authorizeRowDataSheet -->
+                    
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+									<span t-esc="eln.technician.employee_id.name"/> 
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.technician.employee_id.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checkby_signature_required or eln.sample_id.checkby_signature_required">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>  
+			</t>
+		</t>
+	</template>
+</odoo>

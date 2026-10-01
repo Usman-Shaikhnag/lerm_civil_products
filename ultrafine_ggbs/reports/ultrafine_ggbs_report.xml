@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	<template id="ultrafine_ggbs_report">
+		<t t-call="web.html_container">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">#Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								
+								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">#Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">#Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">#Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div style="margin-top:10px;">
+						<u>Results</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+						<!-- <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/> -->
+					</div>
+					<table style="margin-top:10px;margin-bottom:0px;">
+					<t t-set="i" t-value="0"/>
+						<thead>
+							<tr>
+								<th style="text-align: center;font-weight: bold;">
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th style="text-align: center;font-weight: bold;">
+									<span t-esc="eln.material.test_parameter"/>
+								</th>
+								<th style="text-align: center;font-weight: bold;">
+									<span t-esc="eln.material.result_remark"/>
+								</th>
+								<th style="text-align: center;font-weight: bold;">
+									<span t-esc="eln.material.unit"/>
+								</th>
+
+								<th  style="text-align: center;font-weight: bold;">
+									<span>
+										<span t-esc="eln.material.specifications"/>
+									</span>
+								</th>
+
+								<th  style="text-align: center;font-weight: bold;">
+									<span>
+										<span t-esc="eln.material.method_reference"/>
+									</span>
+								</th>
+								<th style="text-align: center;font-weight: bold;" t-if="eln.conformity">
+									<span>
+										Conformity
+									</span>
+								</th>
+
+								
+							</tr>
+						</thead>
+						<tbody>
+
+
+						<!-- Normal Consistency -->
+						<tr t-if="data.normal_consistency_visible and (data.normal_consistency_nabl == 'pass' and nabl or (data.normal_consistency_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln">
+
+
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fd51208d-6e49-4cf2-aa79-4c0afc6fce64')]).parameter_name"/>
+									</span>
+
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="data.normal_consistency" t-options='{"widget": "float", "precision": 2}'/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fd51208d-6e49-4cf2-aa79-4c0afc6fce64')]).unit.name"/>
+									</span>
+								</td> 
+
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fd51208d-6e49-4cf2-aa79-4c0afc6fce64')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fd51208d-6e49-4cf2-aa79-4c0afc6fce64')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-field="data.normal_consistency_conformity"/>
+								</td>
+
+							</tr>
+
+
+							<!-- Initial Setting Time -->
+							<tr t-if="data.setting_time_visible and (data.initial_setting_minutes_nabl == 'pass' and nabl or (data.initial_setting_minutes_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln">
+
+
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','795f0c38-2e3c-4f6b-a015-9572c07bcdf1')]).parameter_name"/>
+									</span>
+
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="data.initial_setting_minutes" t-options='{"widget": "float", "precision": 2}'/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','795f0c38-2e3c-4f6b-a015-9572c07bcdf1')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','795f0c38-2e3c-4f6b-a015-9572c07bcdf1')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','795f0c38-2e3c-4f6b-a015-9572c07bcdf1')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-field="data.initial_setting_minutes_conformity"/>
+								</td>
+
+							</tr>
+
+							<!-- Final Setting Time -->
+							<tr t-if="data.setting_time_visible and (data.final_setting_minutes_nabl == 'pass' and nabl or (data.final_setting_minutes_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln">
+
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','c5e1bbce-de81-40d7-ae57-680133cf51f0')]).parameter_name"/>
+									</span>
+
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="data.final_setting_minutes" />
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','c5e1bbce-de81-40d7-ae57-680133cf51f0')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c5e1bbce-de81-40d7-ae57-680133cf51f0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c5e1bbce-de81-40d7-ae57-680133cf51f0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-field="data.final_setting_minutes_conformity"/>
+								</td>
+							</tr>
+
+							<!-- Specific Gravity -->
+
+							<tr t-if="data.specific_gravity_visible and (data.specific_gravity_trial1_nabl == 'pass' and nabl or (data.specific_gravity_trial1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln">
+								<td style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1" />
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','962865c0-6609-4382-ac31-6286dc9b4c5a')]).parameter_name"/>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span t-field="data.specific_gravity_trial1" t-options='{"widget": "float", "precision": 2}'/>
+									</div>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','962865c0-6609-4382-ac31-6286dc9b4c5a')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="text-align: center;">
+									<div>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','962865c0-6609-4382-ac31-6286dc9b4c5a')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','962865c0-6609-4382-ac31-6286dc9b4c5a')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="data.specific_gravity_trial1_conformity"/>
+								</td>
+							</tr>
+
+
+							
+
+						
+						</tbody>
+					</table>
+
+
+
+					 <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Knack. -->
+
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table  >
+						</div>
+
+
+
+		
+						<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+									Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+							<div>
+								<div>
+									<b>
+									Approved By 
+									</b>
+
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+	
+									</b>
+								</div>
+								<!-- <div>
+									<b>
+									(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+					
+					</div>
+					<t>
+						<div style="margin-top: 20px; text-align: center;">
+							<p style="border-top: 1px dashed #000; padding-top: 10px;">
+								...... End Of Report......
+							</p>
+						</div>
+					</t>
+				
+				
+				
+			</t>
+		</t>
+	</template>
+</odoo>
