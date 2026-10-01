@@ -3,6 +3,7 @@ from odoo import models, fields ,api
 class ParameterMaster(models.Model):
     _name = 'lerm.parameter.master'
     _rec_name = 'parameter_name'
+    _order = 'sequence, id'
     
 
     internal_id = fields.Char(string="Internal ID")
@@ -36,6 +37,8 @@ class ParameterMaster(models.Model):
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     allowed_technicians = fields.Many2many('res.users','lerm_parameter_technician_rel','parameter_id', 'user_id',string="Allowed Technicians",)
 
+    sequence = fields.Integer("Sequence")
+    default_parameter = fields.Boolean(default=False)
 
     def name_get(self):
         res = []

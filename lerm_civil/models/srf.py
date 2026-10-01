@@ -1261,11 +1261,13 @@ class CreateSampleWizard(models.TransientModel):
                 record.product_name = self.pricelist.item_ids.search([('pricelist_id','=',self.pricelist.id),('product_tmpl_id.lab_name','=',self.material_id.lab_name)]).product_tmpl_id.id
                 for rec in product_records:
                     parameters_ids.append(rec.id)
-                # domain = {'parameters': [('id', 'in', parameters_ids)]}
-                # return {'domain': domain}
+                # Auto-select parameters marked as default
+                default_params = product_records.filtered(lambda p: p.default_parameter)
+                record.parameters = [(6, 0, default_params.ids)]
                 # import wdb; wdb.set_trace()
                 return {'domain': {'parameters': [('id', 'in', parameters_ids)]}}
             else:
+                record.parameters = [(5, 0, 0)]
                 domain = {'parameters': [('id', 'in', [])]}
                 return {'domain': domain}
     

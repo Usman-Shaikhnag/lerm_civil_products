@@ -73,9 +73,14 @@
                 <field name="data_sheet_format_no"/>
               </group>
             </group>
-          <field name="parameter_table1"
-                 options="{'no_create': True}"
-                 domain="[('id', 'in', parameter_master_ids)]"/>
+          <field name="parameter_table1" nolabel="1">
+                <tree editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="parameter_name" readonly="1"/>
+                  <field name="default_parameter"/>
+                  <field name="unit"/>
+                </tree>
+              </field>
         </page>
 
         <!-- Report Column Title -->
