@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="marsh_cone_datasheet">
+        <t t-call="web.html_container">
+            <!-- <t t-call="web.basic_layout"> -->
+            <!-- <t t-call="lerm_civil.data_sheet_header_generaltemplate"> -->
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Compatiblity
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <div t-foreach="eln" t-as="o">
+                        <table>
+                            <tr cols="12">
+                                <td colspan="6">Test Parameter :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7e8a78f8-c0d9-4b08-b452-012759929ca9')]).parameter_name"/>
+                                </td>
+                                <!-- <td colspan="6">Test method :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7e8a78f8-c0d9-4b08-b452-012759929ca9')]).test_method.test_method"/>
+                                </td> -->
+                                <td colspan="6">Test method :
+                                    <span>
+                                        <!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7e8a78f8-c0d9-4b08-b452-012759929ca9')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6">Job no :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.kes_no"/>
+                                </td>
+                                <td colspan="6">Test Start Date :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="o.start_date"/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6">Material :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="o.material.name"/>
+                                </td>
+                                <td colspan="6">Test End Date :
+									                                                                                                                                                <![CDATA[&nbsp;]]>
+                                    <span t-field="o.end_date"/>
+                                </td>
+                            </tr>
+                            <tr style="height:50px" cols="12">
+                                <td colspan="4">Performed By :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.technician.name"/>
+                                </td>
+                                <td colspan="4">Witness Name :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.witness_name"/>
+                                </td>
+                                <td colspan="4">Witness Signature :
+                                    <![CDATA[&nbsp;]]>
+                                    <span style='padding:20px'></span>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <div style="text-align:center;font-size:18px;margin-top:20px">
+							<!-- % Silica -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7e8a78f8-c0d9-4b08-b452-012759929ca9')]).parameter_name"/>
+						</div>
+                        <table class="table table-condensed" style="margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Water Cement Ratio (w/c)</th>
+                                    <th style="text-align:center;">Admixture Dosage (%)</th>
+                                    <th style="text-align:center;">Wt. of Cement (g)</th>
+                                    <th style="text-align:center;">Wt. of Water (g)</th>
+                                    <th style="text-align:center;">Wt. of Admixture (g)</th>
+                                    <th style="text-align:center;">Flow (Sec)</th>
+                                    <th style="text-align:center;">Flow at 30 Min (Sec)</th>
+                                    <th style="text-align:center;">Flow at 60 Min Retention (Sec)</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="data.child_lines" t-as="line">
+                                    <tr>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.water_cement_ratio"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.admixture_dosage_percent"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.wt_of_cement"/>
+                                        </td>
+                                        <td style="text-align:center;"  >
+                                            <span t-field="line.wt_of_water"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.wt_of_admixture"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.flow_sec"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.flow_30_min"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="line.flow_60_min"/>
+                                        </td>
+                                       
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div t-if="data.chart_image" style="margin-top: 20px;text-align:center;">
+                            <img t-att-src="'data:image/png;base64,' + data.chart_image.decode('utf-8')" style="max-width: 100%;"/>
+                        </div>
+                        <div style="margin-top:10px;text-align:center;">
+							<span t-field="data.comment"/>
+						</div>
+
+                    </div>
+
+                    	  <!-- authorizeRowDataSheet -->
+                    
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+									<span t-esc="eln.technician.employee_id.name"/> 
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.technician.employee_id.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checkby_signature_required or eln.sample_id.checkby_signature_required">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+
+                    
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+
+</odoo>
