@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="cs_pipe_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    CS Pipe Datasheet
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.eln_id"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							 <tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+						</table>
+					</div>
+
+
+						<table>
+						<thead>
+								<tr>
+									<th style="text-align: center;">Parameter</th>
+									<th style="text-align: center;">Unit</th>
+									<th style="text-align: center;  font-weight: bold;">Observation-1</th>
+								</tr>
+							</thead>
+
+						<tbody>
+							<tr>
+
+								 <td >
+                                    <span>Width</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>mm</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.width"/>
+								</td>
+
+							</tr>
+
+							<tr>
+
+								<td >
+                                    <span>Thickness</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>mm</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.thickness"/>
+								</td>
+
+							</tr>
+							<tr>
+
+								 <td  >
+                                    <span>Area</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>mm²</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.area"/>
+								</td>
+
+							</tr>
+
+							<tr>
+
+								 <td  >
+                                    <span>Gauge Length</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>mm</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.gauge_length1"/>
+								</td>
+
+							</tr>
+
+							<tr>
+
+								 <td  >
+                                    <span>Final Length</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>mm</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.final_length"/>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td  >
+                                    <span>0.2% Proof Load / Yield Load</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>KN</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.yeild_load"/>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td  >
+                                    <span>Ultimate Load</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>KN</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.ultimate_load"/>
+								</td>
+							</tr>
+
+							<tr>
+
+								<td  >
+                                    <span>0.2% Proof Load / Yield Stress</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>N/mm²</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.proof_yeid_stress" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+
+								<td  >
+                                    <span>Ultimate Tensile Strength</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>N/mm²</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.ult_tens_strgth" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td  >
+                                    <span>% Elongation</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span>%</span>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.elongation" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+
+							<tr>
+
+								<td  >
+                                    <span>Bend Test</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','74e2688a-13f2-4dcc-ae72-5bbb94e54f6b')]).unit.name"/>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.bend_test"/>
+								</td>
+
+							</tr>
+							<tr>
+
+								<td  >
+                                    <span>Fracture</span>
+                                </td>
+								<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','e581e1f6-5763-4716-9794-429bcdf29d9e')]).unit.name"/>
+										</span>
+
+									</td>
+								<td style="text-align: center;">
+									<span t-esc="data.fracture"/>
+								</td>
+
+							</tr>
+						</tbody>
+					</table>
+
+                    <!-- authorizeRowDataSheet -->
+
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By
+                                </b>
+
+                            </div>
+                            <div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+									<span t-esc="eln.technician.employee_id.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.technician.employee_id.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+
+                        <div style="margin-left:600px">
+
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>
