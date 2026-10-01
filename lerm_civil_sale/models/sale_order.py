@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class SaleOrderLermCivilSale(models.Model):
@@ -48,21 +48,10 @@ class SaleOrderLermCivilSale(models.Model):
 
     def action_pricelist(self):
         """Open the pricelist update wizard for the customer's attached
-        pricelist. Only updates — it never creates a pricelist, and the
-        default pricelist cannot be updated."""
+        pricelist. The wizard can create and attach a new customer-specific
+        pricelist when the customer has none (or uses the default one)."""
         self.ensure_one()
         pricelist = self._lerm_get_customer_pricelist()
-        partner = self.partner_id
-        if self._lerm_pricelist_validation_enabled():
-            if not pricelist:
-                raise ValidationError(_(
-                    'No pricelist is attached to customer %s. Please set a pricelist '
-                    'on the customer contact first.') % (partner.name or ''))
-            if self._lerm_is_default_pricelist(pricelist):
-                raise ValidationError(_(
-                    'The pricelist "%s" is the default pricelist and cannot be updated. '
-                    'Please assign a customer-specific pricelist to %s first.')
-                    % (pricelist.name, partner.name or ''))
         action = self.env['ir.actions.act_window']._for_xml_id(
             'lerm_civil_sale.action_sale_order_pricelist_wizard')
         action['context'] = {

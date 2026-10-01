@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+        <record id="view_partner_tree_lerm_name" model="ir.ui.view">
+            <field name="name">res.partner.tree.lerm.name</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='complete_name']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='display_name']" position="attributes">
+                    <attribute name="column_invisible">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_partner_inherited_form" model="ir.ui.view">
             <field name="name">view.partner.inherited.form</field>
             <field name="model">res.partner</field>
@@ -54,6 +68,18 @@
 
 
         
+
+        <record id="view_partner_form_child_gst_pan" model="ir.ui.view">
+            <field name="name">res.partner.form.child.gst.pan</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='child_ids']/form//field[@name='mobile']" position="after">
+                    <field name="vat" string="GST"/>
+                    <field name="pan_no" string="PAN No"/>
+                </xpath>
+            </field>
+        </record>
 
         <record id="account_move_inherited_form" model="ir.ui.view">
             <field name="name">account.move.inherited.form</field>
