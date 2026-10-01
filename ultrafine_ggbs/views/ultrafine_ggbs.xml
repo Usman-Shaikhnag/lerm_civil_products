@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_ultrafine_ggbs_form" model="ir.ui.view">
+        <field name="name">mechanical.ultrafine.ggbs.form</field>
+        <field name="model">mechanical.ultrafine.ggbs</field>
+        <field name="arch" type="xml">
+            <form>
+                  
+                <sheet>
+                  <div >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                    </group>
+                   
+
+                    <style>
+                      .blue-input input {
+                          background-color: #d8ecff !important;   /* हलका Blue background */
+                          border-color: #3b82f6 !important;        /* Blue border */ 
+                      }
+
+                      .o_list_view .o_data_cell.blue-input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                            }
+
+                      /* Input when the cell goes into edit mode */
+                      .o_list_view .o_data_cell.blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                          }
+                  </style>
+
+
+                  <div class="custom_table_borders">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    
+                    <!-- Normal Consistency Start -->
+
+                    <div invisible=" not normal_consistency_visible">
+                        <h1 class="text-center">
+                            <field name="normal_consistency_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="normal_consistency_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    
+                    <div class="d-flex gap-2" invisible=" not normal_consistency_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp_percent_normal"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp_percent_normal" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity_percent_normal" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity_percent_normal" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not normal_consistency_visible">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="wt_of_cement_trial1">Wt. of Cement(g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="wt_of_cement_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="wt_of_ggbs_trial1">Wt. of UGGBS (g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="wt_of_ggbs_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_wt_sample">Total Wt. of Sample (g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="total_wt_sample"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="wt_water_req">Wt. of water required</label>
+                                    </td>
+                                    <td>
+                                        <field name="wt_water_req" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="penetration_vicat">Penetration of vicat's Plunger(mm)</label>
+                                    </td>
+                                    <td>
+                                        <field name="penetration_vicat" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not normal_consistency_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="normal_consistency" >Normal Consistency (%)</label>
+                                    </td>
+                                    <td>
+                                        <field name="normal_consistency" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="normal_consistency_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="normal_consistency_conformity"
+                                        decoration-success="normal_consistency_conformity == 'pass'" 
+                                        decoration-danger="normal_consistency_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="normal_consistency_nabl">NABL</label></td>
+                                <td>
+                                    <field name="normal_consistency_nabl"
+                                        decoration-success="normal_consistency_nabl == 'pass'" 
+                                        decoration-danger="normal_consistency_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!-- Setting Time -->
+
+                    <div invisible=" not setting_time_visible">
+                        <h1 class="text-center">
+                            <field name="setting_time_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="setting_time_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    
+                    <div class="d-flex gap-2" invisible=" not setting_time_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp_setting_time"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp_setting_time" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity_setting_time" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity_setting_time" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible=" not setting_time_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not setting_time_visible">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="blend_sample_weight">Wt. of Blend Sample (g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="blend_sample_weight" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="st_normal_consistency">Normal Consistency of Blend (%)</label>
+                                    </td>
+                                    <td>
+                                        <field name="st_normal_consistency" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="water_required">Wt. of water required (g) (0.85 * P %)</label>
+                                    </td>
+                                    <td>
+                                        <field name="water_required" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                      
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not setting_time_visible">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="water_added_time">Time When water is added to sample (t1)</label>
+                                    </td>
+                                    <td>
+                                        <field name="water_added_time" class="blue-input" widget="datetime" options="{'show_date': false, 'rounding': 1}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="initial_setting_time_input">Time when needle fails to penetrate 5±0.5mm (t2)</label>
+                                    </td>
+                                    <td>
+                                        <field name="initial_setting_time_input" class="blue-input" widget="datetime" options="{'show_date': false, 'rounding': 1}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="final_setting_time_input">Time when needle fails to make an impression (t3)</label>
+                                    </td>
+                                    <td>
+                                        <field name="final_setting_time_input" class="blue-input" widget="datetime" options="{'show_date': false, 'rounding': 1}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                       </div>
+
+                      <div class="d-flex gap-2" invisible=" not setting_time_visible"> 
+                       <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not setting_time_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="initial_setting_minutes" >Initial Setting Time (Minutes)</label>
+                                    </td>
+                                    <td>
+                                        <field name="initial_setting_minutes" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_minutes_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="initial_setting_minutes_conformity"
+                                        decoration-success="initial_setting_minutes_conformity == 'pass'" 
+                                        decoration-danger="initial_setting_minutes_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_minutes_nabl">NABL</label></td>
+                                <td>
+                                    <field name="initial_setting_minutes_nabl"
+                                        decoration-success="initial_setting_minutes_nabl == 'pass'" 
+                                        decoration-danger="initial_setting_minutes_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not setting_time_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="final_setting_minutes" >Final Setting Time (Minutes)</label>
+                                    </td>
+                                    <td>
+                                        <field name="final_setting_minutes" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_minutes_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="final_setting_minutes_conformity"
+                                        decoration-success="final_setting_minutes_conformity == 'pass'" 
+                                        decoration-danger="final_setting_minutes_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_minutes_nabl">NABL</label></td>
+                                <td>
+                                    <field name="final_setting_minutes_nabl"
+                                        decoration-success="final_setting_minutes_nabl == 'pass'" 
+                                        decoration-danger="final_setting_minutes_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <!-- Specific Gravity -->
+
+                    <div invisible="not specific_gravity_visible">
+                        <h1 class="text-center">
+                            <field name="specific_gravity_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="specific_gravity_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    
+                    <div class="d-flex gap-2" invisible=" not specific_gravity_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp_specific_gravity"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp_specific_gravity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity_specific_gravity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity_specific_gravity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible=" not specific_gravity_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not specific_gravity_visible">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="wt_of_ggbs_sg_trial1">Weight of UGGBS Sample (g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="wt_of_ggbs_sg_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="initial_volume_kerosine_trial1">Initial Volume of Kerosine (ml) V1</label>
+                                    </td>
+                                    <td>
+                                        <field name="initial_volume_kerosine_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                      
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not specific_gravity_visible">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="final_volume_kerosine_trial1">Final Volume of Kerosine + Sample (ml) V2</label>
+                                    </td>
+                                    <td>
+                                        <field name="final_volume_kerosine_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="displaced_volume_trial1">Displaced Volume of Sample (cm³)</label>
+                                    </td>
+                                    <td>
+                                        <field name="displaced_volume_trial1" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                         </table>
+                       </div>
+
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not specific_gravity_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="specific_gravity_trial1" >Specific Gravity</label>
+                                    </td>
+                                    <td>
+                                        <field name="specific_gravity_trial1" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_trial1_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="specific_gravity_trial1_conformity"
+                                        decoration-success="specific_gravity_trial1_conformity == 'pass'" 
+                                        decoration-danger="specific_gravity_trial1_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_trial1_nabl">NABL</label></td>
+                                <td>
+                                    <field name="specific_gravity_trial1_nabl"
+                                        decoration-success="specific_gravity_trial1_nabl == 'pass'" 
+                                        decoration-danger="specific_gravity_trial1_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+                    
+                  
+
+
+
+                  <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
