@@ -84,18 +84,62 @@ class ChemicalGyspum(models.Model):
             ('--', '--')
             ], string="Conformity", compute="_compute_so3_conformity", store=True)
 
-    @api.depends('so3','eln_ref','grade')
+    # @api.depends('so3','eln_ref','grade')
+    # def _compute_so3_conformity(self):
+        
+    #     for record in self:
+    #         record.so3_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+
+    #                 # Check if permissible limit is '--' or empty
+    #                 if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+    #                     record.so3_conformity = '--'
+    #                     break
+
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.so3 - record.so3*mu_value
+    #                 upper = record.so3 + record.so3*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.so3_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.so3_conformity = 'fail'
+
+    @api.depends('so3', 'eln_ref', 'grade')
     def _compute_so3_conformity(self):
         
         for record in self:
             record.so3_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([
+                ('internal_id', '=', 'a58cb5bc-d2d2-4756-81d2-6571ae81a813')
+            ])
+
+            materials = self.env['lerm.parameter.master'].sudo().search([
+                ('internal_id', '=', 'a58cb5bc-d2d2-4756-81d2-6571ae81a813')
+            ]).parameter_table
+
             for material in materials:
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                    # OR req_min and req_max are both 0.0000
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.so3_conformity = '--'
                         break
 
@@ -103,13 +147,15 @@ class ChemicalGyspum(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.so3 - record.so3*mu_value
-                    upper = record.so3 + record.so3*mu_value
+                    lower = record.so3 - record.so3 * mu_value
+                    upper = record.so3 + record.so3 * mu_value
+
                     if lower >= req_min and upper <= req_max:
                         record.so3_conformity = 'pass'
                         break
                     else:
                         record.so3_conformity = 'fail'
+
 
     so3_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -188,7 +234,18 @@ class ChemicalGyspum(models.Model):
             for material in materials:
                 if material.grade.id == record.grade.id:
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                    
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.loss_conformity = '--'
                         break
 
@@ -236,10 +293,10 @@ class ChemicalGyspum(models.Model):
     cao_name = fields.Char("Name",default="CaO")
     cao_visible = fields.Boolean("CaO",compute="_compute_visible")
 
-    plaster3 = fields.Char(string="Plaster Of Paris",default="2/3 of SO3 content")
-    retarded3 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="2/3 of SO3 content")
-    anhydrous3 = fields.Char(string="Anhydrous Gypsum Plaster",default="2/3 of SO3 content")
-    keenes3 = fields.Char(string="Keene's Plaster",default="2/3 of SO3 content")
+    plaster3 = fields.Char(string="Plaster Of Paris",default="2/3 of SO3 Min")
+    retarded3 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="2/3 of SO3 Min")
+    anhydrous3 = fields.Char(string="Anhydrous Gypsum Plaster",default="2/3 of SO3 Min")
+    keenes3 = fields.Char(string="Keene's Plaster",default="2/3 of SO3 Min")
 
     wt_of_sample_cao1 = fields.Float("A) Wt of Sample (gm)",digits=(16, 4))
     burette_cao1  = fields.Float("B) Burrette reading (ml)")
@@ -273,7 +330,18 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                   
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.cao1_conformity = '--'
                         break
 
@@ -365,7 +433,18 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                  
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.mgo_conformity1 = '--'
                         break
 
@@ -411,10 +490,10 @@ class ChemicalGyspum(models.Model):
     cao_name2 = fields.Char("Name",default="CaO")
     cao_visible2 = fields.Boolean("CaO",compute="_compute_visible")
 
-    plaster5= fields.Char(string="Plaster Of Paris",default="--")
-    retarded5 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="--")
-    anhydrous5 = fields.Char(string="Anhydrous Gypsum Plaster",default="--")
-    keenes5 = fields.Char(string="Keene's Plaster",default="--")
+    plaster5= fields.Char(string="Plaster Of Paris",default="2/3 of SO3 Min")
+    retarded5 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="2/3 of SO3 Min")
+    anhydrous5 = fields.Char(string="Anhydrous Gypsum Plaster",default="2/3 of SO3 Min")
+    keenes5 = fields.Char(string="Keene's Plaster",default="2/3 of SO3 Min")
 
 
     wt_of_sample_cao2 = fields.Float("A) Wt of Sample (gm)",digits=(16, 4))
@@ -450,7 +529,18 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                    
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.cao_conformity2 = '--'
                         break
 
@@ -535,7 +625,18 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                  
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.mgo_conformity2 = '--'
                         break
 
@@ -620,7 +721,19 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                   
+
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.free_lime_conformity = '--'
                         break
 
@@ -707,7 +820,19 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                   
+
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.soluble_sodium_conformity = '--'
                         break
 
@@ -825,7 +950,19 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                    
+
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.free_water_conformity = '--'
                         break
 
@@ -916,7 +1053,19 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                   
+
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.combined_water_conformity = '--'
                         break
 
@@ -965,10 +1114,10 @@ class ChemicalGyspum(models.Model):
     calcium_oxide_name = fields.Char("Name",default="Calcium Oxide")
     calcium_oxide_visible2 = fields.Boolean("CaO",compute="_compute_visible")
 
-    plaster11= fields.Char(string="Plaster Of Paris",default="--")
-    retarded11 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="--")
-    anhydrous11 = fields.Char(string="Anhydrous Gypsum Plaster",default="--")
-    keenes11 = fields.Char(string="Keene's Plaster",default="--")
+    plaster11= fields.Char(string="Plaster Of Paris",default="2/3 of SO3 Min")
+    retarded11 = fields.Char(string="Retarded Hemihydrate Gypsum Plaster",default="2/3 of SO3 Min")
+    anhydrous11 = fields.Char(string="Anhydrous Gypsum Plaster",default="2/3 of SO3 Min")
+    keenes11 = fields.Char(string="Keene's Plaster",default="2/3 of SO3 Min")
 
 
     wt_of_sample_calcium_oxide = fields.Float("A) Wt of Sample (gm)",digits=(16, 4))
@@ -1004,7 +1153,19 @@ class ChemicalGyspum(models.Model):
                 if material.grade.id == record.grade.id:
 
                     # Check if permissible limit is '--' or empty
-                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                   
+
+                    if (
+                        hasattr(material, 'permissable_limit')
+                        and (
+                            material.permissable_limit == '--'
+                            or not material.permissable_limit
+                            or (
+                                material.req_min == 0.0
+                                and material.req_max == 0.0
+                            )
+                        )
+                    ):
                         record.calcium_oxide_conformity2 = '--'
                         break
 
