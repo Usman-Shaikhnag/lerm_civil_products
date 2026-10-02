@@ -40,6 +40,18 @@ class ParameterMaster(models.Model):
     sequence = fields.Integer("Sequence")
     default_parameter = fields.Boolean(default=False)
 
+
+    def action_open_form(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'lerm.parameter.master',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+
     def name_get(self):
         res = []
         for parameter in self:
