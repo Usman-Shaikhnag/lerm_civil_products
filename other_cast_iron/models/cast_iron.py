@@ -143,10 +143,20 @@ class OtherCastIron(models.Model):
         return res
 
 
-    other_cast_iron_name = fields.Char("Name",default="Cast Iron & Products")
+    other_cast_iron_name = fields.Char("Name",default="GRAPHITE FLAKE TYPE")
     other_cast_iron_visible = fields.Boolean("pH",compute="_compute_visible")
 
     other_cast_iron_lines = fields.One2many('other.cast.iron.line','parent_id',string="Parameter")
+
+
+
+    flake_size_name = fields.Char("Name",default="GRAPHITE FLAKE SIZE")
+
+    flake_size_lines = fields.One2many('flake.size.line','parent_id',string="Parameter")
+
+    matrix_phase_name = fields.Char("Name",default="MATRIX PHASE")
+
+    matrix_phase_lines = fields.One2many('matrix.phase.line','parent_id',string="Parameter")
     
     
    
@@ -277,11 +287,13 @@ class OtherCastIronLine(models.Model):
     parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
 
     serial_no = fields.Integer(string="SL No.", readonly=True, copy=False, default=1)
-    test_parameter = fields.Char(string="TEST PARAMETER")
-    standerd_requirment = fields.Char(string="STANDARD REQUIRMENT AS PER ")
+    sample_identity = fields.Char(string="Sample Identity")
+    typea = fields.Char(string="Type - A")
+    typeb = fields.Char(string="Type - B")
+    typec = fields.Char(string="Type - C")
+    typed = fields.Char(string="Type - D")
    
-    # f10 = fields.Integer(string="10")
-    result = fields.Char(string="RESULT")
+  
     remarks = fields.Char(string="REMARKS")
 
     # @api.onchange('parent_id')
@@ -303,6 +315,95 @@ class OtherCastIronLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(OtherCastIronLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class FlakeSizeLine(models.Model):
+    _name = "flake.size.line"
+    parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
+
+    serial_no = fields.Integer(string="SL No.", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample Identity")
+    flake1 = fields.Char(string="1")
+    flake2 = fields.Char(string="2")
+    flake3 = fields.Char(string="3")
+    flake4 = fields.Char(string="4")
+    flake5 = fields.Char(string="5")
+    flake6 = fields.Char(string="6")
+    flake7 = fields.Char(string="7")
+    flake8 = fields.Char(string="8")
+
+   
+  
+
+    # @api.onchange('parent_id')
+    # def _onchange_parent_id(self):
+    #     if self.parent_id:
+    #         self.sample_identity = self.parent_id.product_name
+    #     else:
+    #         self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(FlakeSizeLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class MatrixPhaseLine(models.Model):
+    _name = "matrix.phase.line"
+    parent_id = fields.Many2one('other.cast.iron',string="Parent Id")
+
+    serial_no = fields.Integer(string="SL No.", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample Identity")
+    pearlite = fields.Char(string="PEARLITE")
+    ferrite = fields.Char(string="FERRITE")
+    graphite = fields.Char(string="GRAPHITE %")
+    other = fields.Char(string="OTHER %")
+    
+
+   
+  
+
+    # @api.onchange('parent_id')
+    # def _onchange_parent_id(self):
+    #     if self.parent_id:
+    #         self.sample_identity = self.parent_id.product_name
+    #     else:
+    #         self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(MatrixPhaseLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

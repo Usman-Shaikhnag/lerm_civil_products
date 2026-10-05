@@ -48,26 +48,28 @@
 		
 
 
-				<div style="margin-top:20px;"  invisible="other_cast_iron_visible == False">
+				<div style="margin-top:10px;"  invisible="other_cast_iron_visible == False">
                        
             <table>
                        
                  <tr >
-                    <td colspan="5">
-                <b>Cast Iron &amp; Products </b>   Visual Evaluation of Graphite &amp; Designation of the microstructure of Graphite
+                    <td colspan="7">
+                <b>GRAPHITE FLAKE TYPE</b>
                     </td>       
                 </tr>
               <tr >
-                <td colspan="5" style="white-space: nowrap;">
+                <td colspan="7" style="white-space: nowrap;">
                     <strong>SAMPLE DESCRIPTION:&#160;</strong><span t-field="data.sample_description"/>
                 </td>
              </tr >
 
 					<tr cols="12">
                     <td  style="text-align: center;"><b>SL No.</b></td>
-                    <td   style="text-align: center;"><b>TEST PARAMETER</b></td>
-                    <td   style="text-align: center;"><b>STANDARD REQUIRMENT AS PER </b></td>
-                    <td   style="text-align: center;"><b>RESULT</b></td>
+                    <td   style="text-align: center;"><b>Sample Identity</b></td>
+                    <td   style="text-align: center;"><b>Type - A </b></td>
+                    <td   style="text-align: center;"><b>Type - B</b></td>
+                    <td   style="text-align: center;"><b>Type - C</b></td>
+                    <td   style="text-align: center;"><b>Type - D</b></td>
                     <td   style="text-align: center;"><b>REMARKS</b></td>
                     
                     
@@ -86,19 +88,173 @@
                             </div>
                         </td>
                         <td  style="text-align: center;">
-                            <span t-esc="r['test_parameter']"/>
+                            <span t-esc="r['sample_identity']"/>
                         </td>
                       <td  style="text-align: center;">
-                            <span t-esc="r['standerd_requirment']"/>
+                            <span t-esc="r['typea']"/>
                         </td>
                         <td  style="text-align: center;">
-                            <span t-esc="r['result']"/>
+                            <span t-esc="r['typeb']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['typec']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['typed']"/>
                         </td>
                       
                         <td  style="text-align: center;">
                             <span t-esc="r['remarks']"/>
                         </td>
                        
+                        
+                        
+                    </tr>
+
+
+
+
+							
+                     </table>
+
+                    </div>
+
+
+
+                    <div style="margin-top:5px;"  invisible="other_cast_iron_visible == False">
+                       
+            <table>
+                       
+                 <tr >
+                    <td colspan="10">
+                <b>GRAPHITE FLAKE SIZE</b>
+                    </td>       
+                </tr>
+            
+
+					<tr cols="12">
+                    <td  style="text-align: center;"><b>SL No.</b></td>
+                    <td   style="text-align: center;"><b>Sample Identity</b></td>
+                    <td   style="text-align: center;"><b>1 </b></td>
+                    <td   style="text-align: center;"><b>2</b></td>
+                    <td   style="text-align: center;"><b>3</b></td>
+                    <td   style="text-align: center;"><b>4</b></td>
+                    <td   style="text-align: center;"><b>5</b></td>
+                    <td   style="text-align: center;"><b>6</b></td>
+                    <td   style="text-align: center;"><b>7</b></td>
+                    <td   style="text-align: center;"><b>8</b></td>
+                    
+                    
+                </tr>
+
+							
+
+                            
+						
+                    <t t-set="f" t-value="0"/>
+                    <tr t-foreach="data.flake_size_lines" t-as="r">
+                        <td  style="text-align: center;">
+                            <div>
+                                <span t-esc="f + 1" />
+                                <t t-set="f" t-value="f + 1"/>
+                            </div>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['sample_identity']"/>
+                        </td>
+                      <td  style="text-align: center;">
+                            <span t-esc="r['flake1']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['flake2']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['flake3']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['flake4']"/>
+                        </td>
+                      
+                        <td  style="text-align: center;">
+                            <span t-esc="r['flake5']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['flake6']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['flake7']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['flake8']"/>
+                        </td>
+                       
+                        
+                        
+                    </tr>
+
+
+
+
+							
+                     </table>
+
+                    </div>
+
+
+
+
+                    <div style="margin-top:5px;"  invisible="other_cast_iron_visible == False">
+                       
+            <table>
+                       
+                 <tr >
+                    <td colspan="6">
+                <b>MATRIX PHASE</b>
+                    </td>       
+                </tr>
+            
+
+					<tr cols="12">
+                    <td  style="text-align: center;"><b>SL No.</b></td>
+                    <td   style="text-align: center;"><b>Sample Identity</b></td>
+                    <td   style="text-align: center;"><b>PEARLITE</b></td>
+                    <td   style="text-align: center;"><b>FERRITE</b></td>
+                    <td   style="text-align: center;"><b>GRAPHITE %</b></td>
+                    <td   style="text-align: center;"><b>OTHER %</b></td>
+                  
+                    
+                    
+                </tr>
+
+							
+
+                            
+						
+                    <t t-set="f" t-value="0"/>
+                    <tr t-foreach="data.matrix_phase_lines" t-as="r">
+                        <td  style="text-align: center;">
+                            <div>
+                                <span t-esc="f + 1" />
+                                <t t-set="f" t-value="f + 1"/>
+                            </div>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['sample_identity']"/>
+                        </td>
+                      <td  style="text-align: center;">
+                            <span t-esc="r['pearlite']"/>
+                        </td>
+                        <td  style="text-align: center;">
+                            <span t-esc="r['ferrite']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['graphite']"/>
+                        </td>
+                         <td  style="text-align: center;">
+                            <span t-esc="r['other']"/>
+                        </td>
+                      
+                      
                         
                         
                     </tr>

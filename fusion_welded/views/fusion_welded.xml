@@ -58,12 +58,14 @@
 
 
 
-                     <div class="d-flex gap-2">
+                    
+
+                    <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="week_no"></label></td>
-                                    <td><field name="week_no" class="blue-input"/></td>
+                                    <td><label for="sample_submitted"></label></td>
+                                    <td><field name="sample_submitted" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -73,8 +75,8 @@
                             <tbody>
                                 
                                     <tr>
-                                    <td><label for="other_details"></label></td>
-                                    <td><field  name="other_details" class="blue-input" /></td>
+                                    <td><label for="sample_status"></label></td>
+                                    <td><field  name="sample_status" class="blue-input" /></td>
                                 </tr>
                               
                                 
@@ -82,12 +84,12 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2">
+                     <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="condition"></label></td>
-                                    <td><field name="condition" class="blue-input"/></td>
+                                    <td><label for="No_of_sample"></label></td>
+                                    <td><field name="No_of_sample" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -106,7 +108,10 @@
                         </table>
                     </div>
 
-                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+
+                    
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
                             <tbody>
                                 
                                     <tr>
@@ -138,334 +143,216 @@
                     </style>
 
 
-                    <div invisible="not yield_strength_visible">
+                    <div invisible="not mechanical_test_visible">
 
                         <h1 class="text-center">
-                            <field name="yield_strength_name" readonly="1" />
-                            <field name="yield_strength_visible" invisible="1"/>
+                            <field name="mechanical_test_name" readonly="1" />
+                            <field name="mechanical_test_visible" invisible="1"/>
                         </h1>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not yield_strength_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+
+                    <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
                             <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="yield_strength"></label></td>
-                                    <td style="width:50%;"><field name="yield_strength"/></td>
+                                
+                                    <tr>
+                                    <td><label for="width_specification"></label></td>
+                                    <td><field  name="width_specification" class="blue-input" /></td>
                                 </tr>
-                               
+                              
+                                
                             </tbody>
                         </table>
-                      </div>
 
-
-                       <table invisible="yield_strength_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                          <tr>
-                                <td><label class="fw-bold" for="yield_strength_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="yield_strength_conformity"
-                                        decoration-success="yield_strength_conformity == 'pass'"
-                                        decoration-danger="yield_strength_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="yield_strength_nabl">NABL</label></td>
-                                <td><field name="yield_strength_nabl"
-                                            decoration-success="yield_strength_nabl == 'pass'"
-                                            decoration-danger="yield_strength_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="thickness_specification"></label></td>
+                                    <td><field  name="thickness_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
 
 
 
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="area_specification"></label></td>
+                                    <td><field  name="area_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
 
-                    <!-- ph at 1% -->
-                    <div invisible="not face_bend_test_visible">
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="load_specification"></label></td>
+                                    <td><field  name="load_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="uts_specification"></label></td>
+                                    <td><field  name="uts_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="yield_specification"></label></td>
+                                    <td><field  name="yield_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                         </div>
+                         <div class="d-flex gap-2" invisible="mechanical_test_visible == False">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="fracture_specification"></label></td>
+                                    <td><field  name="fracture_specification" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                        
+                         </div>
+
+                         <div invisible="mechanical_test_visible == False" class="mb-3">
+                    <field name="mechanical_test_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
+                                <field name="width"  class="blue-input" decoration-info="width != 0"/>
+                                <field name="thickness"  class="blue-input" decoration-info="thickness != 0"/>
+                                <field name="area"  class="blue-input" decoration-info="area != 0"/>
+                                <field name="maximum_load"  class="blue-input" decoration-info="maximum_load != 0"/>
+                                <field name="uts"  class="blue-input" decoration-info="uts != 0"/>
+                                <field name="yield_stress"  class="blue-input" decoration-info="yield_stress != 0"/>
+                                <field name="fracture"  class="blue-input" decoration-info="fracture != 0"/>
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
+
+
+                      <div invisible="not bend_test_visible">
 
                         <h1 class="text-center">
-                            <field name="face_bend_test_name" readonly="1" />
-                            <field name="face_bend_test_visible" invisible="1"/>
+                            <field name="bend_test_name" readonly="1" />
+                            <field name="bend_test_visible" invisible="1"/>
                         </h1>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not face_bend_test_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="face_bend_test"></label></td>
-                                    <td style="width:50%;"><field name="face_bend_test"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="face_bend_test_type"></label></td>
-                                    <td style="width:50%;"><field name="face_bend_test_type"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
+                    <div invisible="bend_test_visible == False" class="mb-3">
+                    <field name="bend_test_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
+                                <field name="width"  class="blue-input" decoration-info="width != 0"/>
+                                <field name="thickness"  class="blue-input" decoration-info="thickness != 0"/>
+                                <field name="dia"  class="blue-input" decoration-info="dia != 0"/>
+                                <field name="bend_test"  class="blue-input" decoration-info="bend_test != 0"/>
+                                
+                              
+                            </tree>
+                    </field>
+                  
 
-                      <div invisible="not root_bend_test_visible">
+                    </div>
+
+
+
+                     <div invisible="not nick_break_visible">
 
                         <h1 class="text-center">
-                            <field name="root_bend_test_name" readonly="1" />
-                            <field name="root_bend_test_visible" invisible="1"/>
+                            <field name="nick_break_name" readonly="1" />
+                            <field name="nick_break_visible" invisible="1"/>
                         </h1>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not root_bend_test_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="root_bend_test"></label></td>
-                                    <td style="width:50%;"><field name="root_bend_test"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="root_bend_test_type"></label></td>
-                                    <td style="width:50%;"><field name="root_bend_test_type"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
+                    <div invisible="nick_break_visible == False" class="mb-3">
+                    <field name="nick_break_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
+                                <field name="width"  class="blue-input" decoration-info="width != 0"/>
+                                <field name="thickness"  class="blue-input" decoration-info="thickness != 0"/>
+                                <field name="result"  class="blue-input" decoration-info="result != 0"/>
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
 
 
-                       <div invisible="not side_bend_test_visible">
+
+                    <div invisible="not impact_test_visible">
 
                         <h1 class="text-center">
-                            <field name="side_bend_test_name" readonly="1" />
-                            <field name="side_bend_test_visible" invisible="1"/>
+                            <field name="impact_test_name" readonly="1" />
+                            <field name="impact_test_visible" invisible="1"/>
                         </h1>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not side_bend_test_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="side_bend_test"></label></td>
-                                    <td style="width:50%;"><field name="side_bend_test"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="side_bend_test_type"></label></td>
-                                    <td style="width:50%;"><field name="side_bend_test_type"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
+                    <div invisible="impact_test_visible == False" class="mb-3">
+                    <field name="impact_test_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" class="blue-input" decoration-info="sample_identity != 0"/>
+                                <field name="sample_size"  class="blue-input" decoration-info="sample_size != 0"/>
+                                <field name="reading1"  class="blue-input" decoration-info="reading1 != 0"/>
+                                <field name="reading2"  class="blue-input" decoration-info="reading2 != 0"/>
+                                <field name="reading3"  class="blue-input" decoration-info="reading3 != 0"/>
+                                <field name="absorbed"  class="blue-input" decoration-info="absorbed != 0"/>
+                                
+                              
+                            </tree>
+                    </field>
+                  
 
-
-
-                      <!-- Rrrr -->
-
-                      <div invisible="not face_bend_test_visible1">
-
-                        <h1 class="text-center">
-                            <field name="face_bend_test_name1" readonly="1" />
-                            <field name="face_bend_test_visible1" invisible="1"/>
-                        </h1>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not face_bend_test_visible1">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="face_bend_test1"></label></td>
-                                    <td style="width:50%;"><field name="face_bend_test1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="face_bend_test_type1"></label></td>
-                                    <td style="width:50%;"><field name="face_bend_test_type1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-
-                      <div invisible="not root_bend_test_visible1">
-
-                        <h1 class="text-center">
-                            <field name="root_bend_test_name1" readonly="1" />
-                            <field name="root_bend_test_visible1" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not root_bend_test_visible1">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="root_bend_test1"></label></td>
-                                    <td style="width:50%;"><field name="root_bend_test1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="root_bend_test_type1"></label></td>
-                                    <td style="width:50%;"><field name="root_bend_test_type1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-
-
-                       <div invisible="not side_bend_test_visible1">
-
-                        <h1 class="text-center">
-                            <field name="side_bend_test_name1" readonly="1" />
-                            <field name="side_bend_test_visible1" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not side_bend_test_visible1">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="side_bend_test1"></label></td>
-                                    <td style="width:50%;"><field name="side_bend_test1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="side_bend_test_type1"></label></td>
-                                    <td style="width:50%;"><field name="side_bend_test_type1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-
-
-
-
-                      <div invisible="not transverse_bend_test_visible">
-
-                        <h1 class="text-center">
-                            <field name="transverse_bend_test_name" readonly="1" />
-                            <field name="transverse_bend_test_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not transverse_bend_test_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="transverse_bend_test"></label></td>
-                                    <td style="width:50%;"><field name="transverse_bend_test"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="transverse_bend_test_type"></label></td>
-                                    <td style="width:50%;"><field name="transverse_bend_test_type"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-
-
-
-                      <div invisible="not fillet_weld_visible">
-
-                        <h1 class="text-center">
-                            <field name="fillet_weld_name" readonly="1" />
-                            <field name="fillet_weld_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not fillet_weld_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="fillet_weld"></label></td>
-                                    <td style="width:50%;"><field name="fillet_weld"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="fillet_weld_type"></label></td>
-                                    <td style="width:50%;"><field name="fillet_weld_type"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-
-
-                      <div invisible="not fillet_weld_visible1">
-
-                        <h1 class="text-center">
-                            <field name="fillet_weld_name1" readonly="1" />
-                            <field name="fillet_weld_visible1" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not fillet_weld_visible1">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="fillet_weld1"></label></td>
-                                    <td style="width:50%;"><field name="fillet_weld1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="fillet_weld_type1"></label></td>
-                                    <td style="width:50%;"><field name="fillet_weld_type1"/></td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
-                      </div>
-                      
 
 
   

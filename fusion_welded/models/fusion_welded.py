@@ -24,14 +24,26 @@ class MechanicalFusionWelded(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    week_no = fields.Char("Week No")
 
-    other_details = fields.Char("Other Details")
+    
 
-    condition = fields.Char("Condition")
-    product_name = fields.Char("Product Name")
+    sample_submitted = fields.Char("Sample Submitted By")
 
-    description_work = fields.Text("Description Of Work")
+    sample_status = fields.Char("Sample Status")
+
+    No_of_sample = fields.Integer("Number Of Samples")
+
+    description_work = fields.Text("Sample Description")
+
+    product_name = fields.Char(string="Product",compute="_compute_product_name")
+
+    @api.depends('eln_ref', 'eln_ref.sub_product_id')
+    def _compute_product_name(self):
+        for record in self:
+            if record.eln_ref and record.eln_ref.sub_product_id:
+                record.product_name = record.eln_ref.sub_product_id.sub_product
+            else:
+                record.product_name = False
 
     notes_id = fields.One2many('fusion.welded.notes', 'parent_id', string="Notes")
     
@@ -76,178 +88,32 @@ class MechanicalFusionWelded(models.Model):
         return res
 
 
-    yield_strength_visible = fields.Boolean("Yield Strength Visible",compute="_compute_visible")
-    yield_strength_name = fields.Char("Name",default="Yield Strength - (ISO 6892-1 : 2019: 2019)")
-    yield_strength = fields.Float(string="Yield Strength")
+    mechanical_test_visible = fields.Boolean("MECHANICAL TEST",compute="_compute_visible")
+    mechanical_test_name = fields.Char("Name",default="MECHANICAL TEST")
+    mechanical_test_lines = fields.One2many('mechanical.fusion.welded.line','parent_id',string="Parameter")
 
-    yield_strength_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-        ('na', 'NA'),
-    ], string='Conformity',compute="_compute_yield_strength_conformity")
-
-    yield_strength_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_yield_strength_nabl")
+    width_specification = fields.Char("Width Specification")
+    thickness_specification = fields.Char("Thickness Specification")
+    area_specification = fields.Char("Area Specification")
+    load_specification = fields.Char("Maximum Load Specification")
+    uts_specification = fields.Char("UTS Specification")
+    yield_specification = fields.Char("Yield Stress Specification")
+    fracture_specification = fields.Char("Type of fracture Specification")
 
 
-    @api.depends('yield_strength','eln_ref','grade')
-    def _compute_yield_strength_conformity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.yield_strength_conformity = 'na'
-                continue
-            record.yield_strength_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567')]).parameter_table
-            mu_value = line.mu_value
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.yield_strength - record.yield_strength*mu_value
-                    upper = record.yield_strength + record.yield_strength*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.yield_strength_conformity = 'pass'
-                        break
-                    else:
-                        record.yield_strength_conformity = 'fail'
-
-    @api.depends('yield_strength','eln_ref','grade')
-    def _compute_yield_strength_nabl(self):
-        
-        for record in self:
-            
-            record.yield_strength_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.yield_strength - record.yield_strength*mu_value
-            upper = record.yield_strength + record.yield_strength*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.yield_strength_nabl = 'pass'
-                break
-            else:
-                record.yield_strength_nabl = 'fail'
+    bend_test_visible = fields.Boolean("BEND TEST",compute="_compute_visible")
+    bend_test_name = fields.Char("Name",default="BEND TEST")
+    bend_test_lines = fields.One2many('mechanical.bend.test.line','parent_id',string="Parameter")
 
 
+    nick_break_visible = fields.Boolean("Nick Break Test",compute="_compute_visible")
+    nick_break_name = fields.Char("Name",default="Nick Break Test")
+    nick_break_lines = fields.One2many('mechanical.nick.breack.line','parent_id',string="Parameter")
 
-    face_bend_test_visible = fields.Boolean("Face bend test Visible",compute="_compute_visible")
-    face_bend_test_name = fields.Char("Name",default="Face bend test - (ASME Sec IX: 2023)")
-    face_bend_test = fields.Char(string="Face bend test")
-    face_bend_test_type = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    root_bend_test_visible = fields.Boolean("Root bend test Visible",compute="_compute_visible")
-    root_bend_test_name = fields.Char("Name",default="Root bend test - (ASME Sec IX: 2023)")
-    root_bend_test = fields.Char(string="Root bend test")
-    root_bend_test_type = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    side_bend_test_visible = fields.Boolean("Side bend Test Visible",compute="_compute_visible")
-    side_bend_test_name = fields.Char("Name",default="Side bend Test - (ASME Sec IX: 2023)")
-    side_bend_test = fields.Char(string="Side bend Test")
-    side_bend_test_type = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-
-    face_bend_test_visible1 = fields.Boolean("Face bend test Visible",compute="_compute_visible")
-    face_bend_test_name1 = fields.Char("Name",default="Face bend test - (IS 3600 (Part 6): 1983: 1983)")
-    face_bend_test1 = fields.Char(string="Face bend test")
-    face_bend_test_type1 = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    root_bend_test_visible1 = fields.Boolean("Root bend test Visible",compute="_compute_visible")
-    root_bend_test_name1 = fields.Char("Name",default="Root bend test - (IS 3600 (Part 6): 1983: 1983)")
-    root_bend_test1 = fields.Char(string="Root bend test")
-    root_bend_test_type1 = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    side_bend_test_visible1 = fields.Boolean("Side bend Test Visible",compute="_compute_visible")
-    side_bend_test_name1 = fields.Char("Name",default="Side bend Test - (IS 3600 (Part 6): 1983: 1983)")
-    side_bend_test1 = fields.Char(string="Side bend Test")
-    side_bend_test_type1 = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-
-    transverse_bend_test_visible = fields.Boolean("Transverse Bend Test Visible",compute="_compute_visible")
-    transverse_bend_test_name = fields.Char("Name",default="Transverse Bend Test - (ASME Sec IX: 2023)")
-    transverse_bend_test = fields.Char(string="Transverse Bend Test")
-    transverse_bend_test_type = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    fillet_weld_visible = fields.Boolean("Fillet - Weld Visible",compute="_compute_visible")
-    fillet_weld_name = fields.Char("Name",default="Fillet - Weld - (ASME Sec IX: 2023)")
-    fillet_weld = fields.Char(string="Fillet - Weld")
-    fillet_weld_type = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
-    fillet_weld_visible1 = fields.Boolean("Fillet - Weld Visible",compute="_compute_visible")
-    fillet_weld_name1 = fields.Char("Name",default="Fillet - Weld - (IS 3600 (Part 8):2024: 2024)")
-    fillet_weld1 = fields.Char(string="Fillet - Weld")
-    fillet_weld_type1 = fields.Selection(
-        [
-            ('nabl', 'NABL'),
-            ('non_nabl', 'Non-NABL'),
-        ],
-        string="Test Type",
-        default='nabl',
-    )
-
+    impact_test_visible = fields.Boolean("IMPACT TEST",compute="_compute_visible")
+    impact_test_name = fields.Char("Name",default="IMPACT TEST")
+    impact_test_lines = fields.One2many('mechanical.impact.test.line','parent_id',string="Parameter")
+   
     
 
     
@@ -260,19 +126,12 @@ class MechanicalFusionWelded(models.Model):
         
         for record in self:
     
-            record.face_bend_test_visible = False
-            record.root_bend_test_visible = False
-            record.side_bend_test_visible = False
+            record.mechanical_test_visible = False
+            record.bend_test_visible = False
+            record.nick_break_visible = False
+            record.impact_test_visible = False
 
-            record.face_bend_test_visible1 = False
-            record.root_bend_test_visible1 = False
-            record.side_bend_test_visible1 = False
-
-            record.yield_strength_visible = False
-
-            record.transverse_bend_test_visible = False
-            record.fillet_weld_visible = False
-            record.fillet_weld_visible1 = False
+            
             
             
             
@@ -281,30 +140,15 @@ class MechanicalFusionWelded(models.Model):
                 print("Internal Ids",sample.internal_id)
                
                 if sample.internal_id == "98567ut5-107d-4e30-9d3d-2a8975yh5643j":
-                    record.face_bend_test_visible = True 
+                    record.mechanical_test_visible = True 
                 if sample.internal_id == "0956yhgrt-107d-4e30-9d3d-2a80867453456":
-                    record.root_bend_test_visible = True 
+                    record.bend_test_visible = True 
                 if sample.internal_id == "0oiuy43rfg-107d-4e30-9d3d-2a85678409876":
-                    record.side_bend_test_visible = True 
+                    record.nick_break_visible = True 
+                if sample.internal_id == "0945jt6u67-107d-4e30-9d3d-2a85678489765":
+                    record.impact_test_visible = True 
 
-                if sample.internal_id == "jmnhbgyr-107d-4e30-9d3d-2a8975yh09tyrfg":
-                    record.face_bend_test_visible1 = True 
-                if sample.internal_id == "fhfbubfhui-107d-4e30-9d3d-2a808674kjnmbh":
-                    record.root_bend_test_visible1 = True 
-                if sample.internal_id == "7889045gh-107d-4e30-9d3d-2a85678586jfnnh":
-                    record.side_bend_test_visible1 = True 
-
-                if sample.internal_id == "98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567":
-                    record.yield_strength_visible = True 
-
-                if sample.internal_id == "9898555nhgyt-107d-4e30-9d3d-2a9009r09775yhgtb":
-                    record.transverse_bend_test_visible = True 
-                if sample.internal_id == "io567455nhgyt-107d-4e30-9d3d-2a9009r8967453456":
-                    record.fillet_weld_visible = True 
-                if sample.internal_id == "kljuytre453rtg-107d-4e30-9d3d-2a9009r9897645324":
-                    record.fillet_weld_visible1 = True 
-                
-
+               
                
 
                
@@ -334,32 +178,9 @@ class MechanicalFusionWelded(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue 
             
-            if result.parameter.internal_id == 'kljuytre453rtg-107d-4e30-9d3d-2a9009r9897645324':
-                # result.result_char = round(self.reduction_in_area_percent,2)
-                result.calculated = True
-                # if self.reduction_in_area_percent_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                continue
+            
 
-            if result.parameter.internal_id == 'io567455nhgyt-107d-4e30-9d3d-2a9009r8967453456':
-                # result.result_char = round(self.reduction_in_area_percent,2)
-                result.calculated = True
-                # if self.reduction_in_area_percent_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                continue 
-
-            if result.parameter.internal_id == '9898555nhgyt-107d-4e30-9d3d-2a9009r09775yhgtb':
-                # result.result_char = round(self.reduction_in_area_percent,2)
-                result.calculated = True
-                # if self.reduction_in_area_percent_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                continue 
+           
 
             if result.parameter.internal_id == '0956yhgrt-107d-4e30-9d3d-2a80867453456':
                 # result.result_char = round(self.reduction_in_area_percent,2)
@@ -379,7 +200,7 @@ class MechanicalFusionWelded(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue 
 
-            if result.parameter.internal_id == 'jmnhbgyr-107d-4e30-9d3d-2a8975yh09tyrfg':
+            if result.parameter.internal_id == '0945jt6u67-107d-4e30-9d3d-2a85678489765':
                 # result.result_char = round(self.reduction_in_area_percent,2)
                 result.calculated = True
                 # if self.reduction_in_area_percent_nabl == 'pass':
@@ -388,32 +209,7 @@ class MechanicalFusionWelded(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue 
 
-            if result.parameter.internal_id == 'fhfbubfhui-107d-4e30-9d3d-2a808674kjnmbh':
-                # result.result_char = round(self.reduction_in_area_percent,2)
-                result.calculated = True
-                # if self.reduction_in_area_percent_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                continue 
-
-            if result.parameter.internal_id == '7889045gh-107d-4e30-9d3d-2a85678586jfnnh':
-                # result.result_char = round(self.reduction_in_area_percent,2)
-                result.calculated = True
-                # if self.reduction_in_area_percent_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                continue 
-
-            if result.parameter.internal_id == '98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567':
-                result.result_char = round(self.yield_strength,2)
-                result.calculated = True
-                if self.yield_strength_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue 
+           
             
            
             
@@ -478,6 +274,175 @@ class MechanicalFusionWelded(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+
+
+class MechanicalFusionWeldedLine(models.Model):
+    _name = "mechanical.fusion.welded.line"
+    parent_id = fields.Many2one('mechanical.fusion.welded',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample  Identity")
+    width = fields.Char(string="Width (mm)")
+   
+    # f10 = fields.Integer(string="10")
+    thickness = fields.Char(string="Thickness (mm)")
+    area = fields.Char(string="Area (mm2)")
+    maximum_load = fields.Char(string="Maximum Load (kN)")
+    uts = fields.Char(string="UTS (N/mm2)")
+    yield_stress = fields.Char(string="Yield Stress (N/mm2)")
+    fracture = fields.Char(string="Type of fracture /Location")
+
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(MechanicalFusionWeldedLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class BendTestLine(models.Model):
+    _name = "mechanical.bend.test.line"
+    parent_id = fields.Many2one('mechanical.fusion.welded',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample  Identity")
+    width = fields.Char(string="Width (mm)")
+   
+    # f10 = fields.Integer(string="10")
+    thickness = fields.Char(string="Thickness (mm)")
+    dia = fields.Char(string="Former Dia")
+    bend_test = fields.Char(string="Bend Test 1800 RESULT ")
+   
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BendTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class NickBreakLine(models.Model):
+    _name = "mechanical.nick.breack.line"
+    parent_id = fields.Many2one('mechanical.fusion.welded',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample  Identity")
+    width = fields.Char(string="Width (mm)")
+   
+    # f10 = fields.Integer(string="10")
+    thickness = fields.Char(string="Thickness (mm)")
+    result = fields.Char(string="Result")
+   
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(NickBreakLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class ImpactTestLine(models.Model):
+    _name = "mechanical.impact.test.line"
+    parent_id = fields.Many2one('mechanical.fusion.welded',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identity = fields.Char(string="Sample  Identity")
+    sample_size = fields.Char(string="Sample Size (mm)")
+   
+    # f10 = fields.Integer(string="10")
+    reading1 = fields.Char(string="Impact Value 1st Reading")
+    reading2 = fields.Char(string="Impact Value 2st Reading")
+    reading3 = fields.Char(string="Impact Value 3st Reading")
+    absorbed = fields.Char(string="Absorbed Energy- KV2 Average Value in Joules (J)")
+   
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.sample_identity = self.parent_id.product_name
+        else:
+            self.sample_identity = False
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ImpactTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
 
 
 
