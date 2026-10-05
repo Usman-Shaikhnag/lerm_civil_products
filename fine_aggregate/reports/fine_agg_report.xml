@@ -509,7 +509,7 @@
 
 
 
-								<tr t-if="data.soundness_na2so4_visible and (data.total_weighted_avg_nabl == 'pass' and nabl or (data.total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.soundness_na2so4_visible and (data.overall_corrected_soundnessn2so4_nabl == 'pass' and nabl or (data.overall_corrected_soundnessn2so4_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -542,7 +542,7 @@
 									
 									<td style="text-align: center;">
 										<span>
-											<span t-field="data.total_weighted_avg" t-options='{"widget": "float", "precision": 3}'/>
+											<span t-field="data.overall_corrected_soundnessn2so4" t-options='{"widget": "float", "precision": 2}'/>
 										</span>									
 									</td>
 									
@@ -558,14 +558,14 @@
 								
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="data.total_weighted_avg_conformity"/>
+										<span t-field="data.overall_corrected_soundnessn2so4_conformity"/>
 									</td>
 								</tr>
 
 
 
 
-								<tr t-if="data.soundness_mgso4_visible and (data.mag_total_weighted_avg_nabl == 'pass' and nabl or (data.mag_total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.soundness_mgso4_visible and (data.overall_corrected_soundness_nabl == 'pass' and nabl or (data.overall_corrected_soundness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -598,7 +598,7 @@
 									
 									<td style="text-align: center;">
 										<span>
-											<span t-field="data.mag_total_weighted_avg" t-options='{"widget": "float", "precision": 3}'/>
+											<span t-field="data.overall_corrected_soundness" t-options='{"widget": "float", "precision": 2}'/>
 										</span>									
 									</td>
 									
@@ -614,7 +614,7 @@
 								
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="data.mag_total_weighted_avg_conformity"/>
+										<span t-field="data.overall_corrected_soundness_conformity"/>
 									</td>
 								</tr>
 
@@ -654,7 +654,7 @@
 									
 									<td style="text-align: center;">
 										<span>
-											<span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 3}'/>
+											<span t-field="data.avg_loose_bulk_density" t-options='{"widget": "float", "precision": 3}'/>
 										</span>									
 									</td>
 									

@@ -515,67 +515,35 @@
                             <field name="loose_bulk_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                       <div invisible="loose_bulk_visible == False">
+                        <field name="loose_bulk_child_lines"  style="width:100%" nolabel="1">
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="weight_bucket"/>
+                                <field name="empty_bucket"/>
+                                <field name="bucket_compact"/>
+                                <field name="bucket_loos"/>
+                                 <field name="loose_bulk_density"/>
+                                  <field name="compact_bulk_density"/>
+                            </tree>
+                        </field>
+                   
+                    </div>
                    
                    
 
-                    <!-- <group invisible = "loose_bulk_visible == False" style="white-space: nowrap; width:50%;" >
-                        <field name="weight_bucket" />
-                        <field name="empty_bucket" />
-                        <field name="bucket_compact"  />
-                        <field name="bucket_loos"   />
-                        <field name="loose_bulk_density" />
-                          <field name="compact_bulk_density" />
-                    </group> -->
-                            <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label class="fw-bold" for="weight_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="weight_bucket" class="blue-input"/> 
-                                                <span> ltrs</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="empty_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="empty_bucket" class="blue-input"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_compact"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_compact" class="blue-input"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_loos"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_loos" class="blue-input"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                 
 
                             <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                                 <tbody>
                                     <tr>
-                                        <td><label class="fw-bold" for="loose_bulk_density"/></td>
-                                        <td><field name="loose_bulk_density"/> <span>kg/cu.m</span></td>
+                                        <td><label class="fw-bold" for="avg_loose_bulk_density"/></td>
+                                        <td><field name="avg_loose_bulk_density"/> </td>
                                     </tr>
                                     <tr>
-                                        <td><label class="fw-bold" for="compact_bulk_density"/></td>
-                                        <td><field name="compact_bulk_density" nolabel="1"/> <span>kg/cu.m</span></td>
+                                        <td><label class="fw-bold" for="avg_compacted_bulk_density"/></td>
+                                        <td><field name="avg_compacted_bulk_density" nolabel="1"/> </td>
                                     </tr>
                                     <tr>
                                         <td><label class="fw-bold" for="loose_bulk_density_conformity"/></td>
@@ -1122,7 +1090,6 @@
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
                                     <field name='percent_loss'/>
-                                    <field name='weighted_avg'/>
                                 </tree>
                         </field> 
                     </div>
@@ -1131,30 +1098,23 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="mag_total_grading"></label></td>
-                                <td><field name="mag_total_grading"/><span>%</span></td>
+                                <td><field name="mag_total_grading"/><span></span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="mag_total_weight_before"></label></td>
-                                <td><field name="mag_total_weight_before"/><span>gm</span></td>
+                                <td><field name="mag_total_weight_before"/><span></span></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="mag_total_weight_after"></label></td>
-                                <td><field name="mag_total_weight_after"/><span>gm</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="mag_total_percent_loss"></label></td>
-                                <td><field name="mag_total_percent_loss"/><span>%</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="mag_total_weighted_avg"></label></td>
-                                <td><field name="mag_total_weighted_avg"/><span>%</span></td>
+                                <td><label class="fw-bold" for="overall_corrected_soundness"></label></td>
+                                <td><field name="overall_corrected_soundness"/><span></span></td>
                             </tr>
 
+                           
                             
                         </tbody>
                     </table>
 
-                    <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
+                    <!-- <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders" invisible="1">
                         <field name="soundness_magtwo_line_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='passing_sieve'/>
@@ -1168,7 +1128,7 @@
                         </field> 
                     </div>
 
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_mgso4_visible" style="white-space:nowrap;">
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_mgso4_visible" style="white-space:nowrap;" invisible="1">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="mag_total1_grading"></label></td>
@@ -1193,25 +1153,25 @@
 
                             
                         </tbody>
-                    </table>
+                    </table> -->
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
                         <tbody>
 
                             <tr>
-                                <td><label class="fw-bold" for="mag_total_weighted_avg_conformity">Conformity</label></td>
+                                <td><label class="fw-bold" for="overall_corrected_soundness_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="mag_total_weighted_avg_conformity"
-                                        decoration-success="mag_total_weighted_avg_conformity == 'pass'" 
-                                        decoration-danger="mag_total_weighted_avg_conformity == 'fail'" 
+                                    <field name="overall_corrected_soundness_conformity"
+                                        decoration-success="overall_corrected_soundness_conformity == 'pass'" 
+                                        decoration-danger="overall_corrected_soundness_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="mag_total_weighted_avg_nabl">NABL</label></td>
+                               <td><label class="fw-bold" for="overall_corrected_soundness_nabl">NABL</label></td>
                                 <td>
-                                    <field name="mag_total_weighted_avg_nabl"
-                                        decoration-success="mag_total_weighted_avg_nabl == 'pass'" 
-                                        decoration-danger="mag_total_weighted_avg_nabl == 'fail'"/>
+                                    <field name="overall_corrected_soundness_nabl"
+                                        decoration-success="overall_corrected_soundness_nabl == 'pass'" 
+                                        decoration-danger="overall_corrected_soundness_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -1238,7 +1198,6 @@
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
                                     <field name='percent_loss'/>
-                                    <field name='weighted_avg'/>
                                 </tree>
                         </field> 
                     </div>
@@ -1247,31 +1206,24 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="total_grading"></label></td>
-                                <td><field name="total_grading"/><span>%</span></td>
+                                <td><field name="total_grading"/><span></span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="total_weight_before"></label></td>
-                                <td><field name="total_weight_before"/><span>gm</span></td>
+                                <td><field name="total_weight_before"/><span></span></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="total_weight_after"></label></td>
-                                <td><field name="total_weight_after"/><span>gm</span></td>
+                                <td><label class="fw-bold" for="overall_corrected_soundnessn2so4"></label></td>
+                                <td><field name="overall_corrected_soundnessn2so4"/><span></span></td>
                             </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="total_percent_loss"></label></td>
-                                <td><field name="total_percent_loss"/><span>%</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="total_weighted_avg"></label></td>
-                                <td><field name="total_weighted_avg"/><span>%</span></td>
-                            </tr>
+                           
 
                             
                         </tbody>
                     </table>
                     <group/>
 
-                    <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
+                    <!-- <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
                         <field name="soundness_sodtwo_line_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='passing_sieve'/>
@@ -1310,26 +1262,26 @@
 
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
                         <tbody>
 
                             <tr>
-                                <td><label class="fw-bold" for="total_weighted_avg_conformity">Conformity</label></td>
+                                <td><label class="fw-bold" for="overall_corrected_soundnessn2so4_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="total_weighted_avg_conformity"
-                                        decoration-success="total_weighted_avg_conformity == 'pass'" 
-                                        decoration-danger="total_weighted_avg_conformity == 'fail'" 
+                                    <field name="overall_corrected_soundnessn2so4_conformity"
+                                        decoration-success="overall_corrected_soundnessn2so4_conformity == 'pass'" 
+                                        decoration-danger="overall_corrected_soundnessn2so4_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="total_weighted_avg_nabl">NABL</label></td>
+                               <td><label class="fw-bold" for="overall_corrected_soundnessn2so4_nabl">NABL</label></td>
                                 <td>
-                                    <field name="total_weighted_avg_nabl"
-                                        decoration-success="total_weighted_avg_nabl == 'pass'" 
-                                        decoration-danger="total_weighted_avg_nabl == 'fail'"/>
+                                    <field name="overall_corrected_soundnessn2so4_nabl"
+                                        decoration-success="overall_corrected_soundnessn2so4_nabl == 'pass'" 
+                                        decoration-danger="overall_corrected_soundnessn2so4_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
