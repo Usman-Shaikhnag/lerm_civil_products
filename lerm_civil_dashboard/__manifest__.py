@@ -11,6 +11,7 @@
     "data": [
         "security/security.xml",
         "views/dashboard.xml",
+        "views/discipline.xml",
     ],
     "assets": {
         "web.assets_backend": [
