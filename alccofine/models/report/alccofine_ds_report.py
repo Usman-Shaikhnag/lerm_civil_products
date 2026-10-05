@@ -13,10 +13,10 @@ from scipy.optimize import minimize_scalar
 
 
 
-class UltrafineGgbsDataSheet(models.AbstractModel):
-    _name = 'report.ultrafine_ggbs.ultrafine_ggbs_datasheet'
-    _description = 'ULTRAFINE GGBS DataSheet '
-    
+class ALCCOFINEDataSheet(models.AbstractModel):
+    _name = 'report.alccofine.alccofine_datasheet'
+    _description = 'ALCCOFINE DataSheet '
+            
     @api.model
     def _get_report_values(self, docids, data):
 
@@ -46,9 +46,9 @@ class UltrafineGgbsDataSheet(models.AbstractModel):
 
 
 
-class UltrafineGgbsReport(models.AbstractModel):
-    _name = 'report.ultrafine_ggbs.ultrafine_ggbs_report'
-    _description = 'ULTRAFINE GGBS Report'
+class ALCCOFINEReport(models.AbstractModel):
+    _name = 'report.alccofine.alccofine_report'
+    _description = 'ALCCOFINE Report'
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -82,7 +82,7 @@ class UltrafineGgbsReport(models.AbstractModel):
             border=4,
         )
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        report_url = f"{base_url}/download_report/ultrafineggbs/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+        report_url = f"{base_url}/download_report/alccofine/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
         qr.add_data(report_url)
         qr.make(fit=True)

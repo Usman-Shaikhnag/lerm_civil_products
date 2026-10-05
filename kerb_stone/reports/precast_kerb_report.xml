@@ -119,6 +119,14 @@
 								<span t-esc="eln.material.test_parameter"/>
 								</th>
 
+								<th style="text-align: center;font-weight: bold;">
+								<span t-esc="eln.material.unit"/>
+									<!-- <span style="font-weight: bold;">
+										Unit
+									</span> -->
+								</th>
+
+
 								<t t-foreach="range(1, data.max_specimen_count + 1)" t-as="specimen_no">
 								  <th style="text-align: center; font-weight: bold;">
 								     Specimen <span t-esc="specimen_no"/>
@@ -129,15 +137,17 @@
 								<span t-esc="eln.material.result_remark"/>
 								</th>
 
+								
 								<th style="max-width: 250px;text-align: center;">
 									<span style="font-weight: bold;">
 										<span t-esc="eln.material.specifications"/>
 									</span>
 								</th>
 
+
 								<th style="text-align: center;" t-if="eln.conformity">
 									<span style="font-weight: bold;">
-										Confirmity Status
+										Conformity Status
 									</span>
 								</th>
 							</tr>
@@ -160,6 +170,12 @@
 
 								</td>
 
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1d1f881d-7D75-40E1-BC34-fe8c1aedb001')]).unit.name"/>
+									</span>
+								</td>
+
 
 								
 								<t t-foreach="range(data.max_specimen_count)" t-as="index">
@@ -175,6 +191,8 @@
 										<span t-field="data.avg_length" t-options='{"widget": "float", "precision": 2}'/>
 									</span>
 								</td>
+
+								 
 
 								<td style="text-align: center;">
 									<span>
@@ -207,6 +225,12 @@
 
 								</td>
 
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','81015601-E2DE-4D9C-8AFB-55b0c69a4582')]).unit.name"/>
+									</span>
+								</td> 
+
 								<t t-foreach="range(data.max_specimen_count)" t-as="index">
 								  <td style="text-align: center;">
 								    <t t-if="index &lt; len(data.dimension_table)">
@@ -220,6 +244,8 @@
 										<span t-field="data.avg_width" t-options='{"widget": "float", "precision": 2}'/>
 									</span>
 								</td>
+
+								
 
 								<td style="text-align: center;">
 									<span>
@@ -252,6 +278,12 @@
 
 								</td>
 
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fb111d38-305A-40BF-B5AD-50c66529314c')]).unit.name"/>
+									</span>
+								</td>
+
 
 								
 								<t t-foreach="range(data.max_specimen_count)" t-as="index">
@@ -267,6 +299,8 @@
 										<span t-field="data.avg_height" t-options='{"widget": "float", "precision": 2}'/>
 									</span>
 								</td>
+
+								 
 
 								<td style="text-align: center;">
 									<span>
@@ -299,6 +333,11 @@
 									</span>
 
 								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1e56b2c9-e3fd-47e0-8908-2a813cc965e1')]).unit.name"/>
+									</span>
+								</td>
 
 								<t t-foreach="range(data.max_specimen_count)" t-as="index">
 								  <td style="text-align: center;">
@@ -315,6 +354,8 @@
 										<span t-field="data.avrg_transverse_strength" t-options='{"widget": "float", "precision": 2}'/>
 									</span>
 								</td>
+
+								 
 
 								<td style="text-align: center;">
 									<span>
@@ -345,6 +386,11 @@
 									</span>
 
 								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','29fc5579-2637-420d-91e6-b433d79f3584')]).unit.name"/>
+									</span>
+								</td> 
 
 
 								
@@ -362,6 +408,8 @@
 										<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 									</span>
 								</td>
+
+								
 
 								<td style="text-align: center;">
 									<span>
