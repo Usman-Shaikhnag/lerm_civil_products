@@ -10,6 +10,32 @@ _logger = logging.getLogger(__name__)
 
 class LermCivilDashboard(http.Controller):
 
+    def _own_data_user(self):
+        """
+        Returns the current user when the dashboard must be limited to their own samples,
+        or None when the user is in the 'All Data' group and may see everything.
+        """
+        user = request.env.user
+        if user.has_group('lerm_civil_dashboard.group_dashboard_all_data'):
+            return None
+        return user
+
+    def _user_scope_domain(self):
+        """
+        Extra sample domain restricting technicians to samples they are assigned to
+        (on the sample, the ELN header, or any ELN parameter line).
+        """
+        user = self._own_data_user()
+        if not user:
+            return []
+        return [
+            '|', '|', '|',
+            ('technicians', '=', user.id),
+            ('eln_id.technician', '=', user.id),
+            ('eln_id.technician_ids', 'in', [user.id]),
+            ('eln_id.parameters_result.technician', '=', user.id),
+        ]
+
     @http.route(['/dashboard/getdata'], type="json", auth="user", methods=["POST"])
     def get_dashboard_data(self, **kw):
         """
@@ -50,6 +76,7 @@ class LermCivilDashboard(http.Controller):
             domain.append(('lab_location.company_id', '=', int(company_id)))
 
         # Fetch samples
+        domain += self._user_scope_domain()
         samples = Sample.search(domain)
 
         # --- Time-based grouping ---
@@ -124,6 +151,7 @@ class LermCivilDashboard(http.Controller):
         if company_id and company_id != 'ALL':
             aging_domain.append(('lab_location.company_id', '=', int(company_id)))
 
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
@@ -146,6 +174,7 @@ class LermCivilDashboard(http.Controller):
         mode: 'upcoming' or 'overdue'
         """
         today_date = datetime.now().date()
+        own_user = self._own_data_user()
         
         aging_data = {}
         B_RANGES = [
@@ -194,8 +223,9 @@ class LermCivilDashboard(http.Controller):
                 b_name = "Unknown"
                 b_id = 0
                 if breakdown_type == 'technician':
-                    tech = None
-                    if s.eln_id and s.eln_id.parameters_result:
+                    # Samples are already scoped to the user, so attribute them to that user
+                    tech = own_user
+                    if not tech and s.eln_id and s.eln_id.parameters_result:
                         for param_res in s.eln_id.parameters_result:
                             if param_res.technician:
                                 tech = param_res.technician
@@ -277,6 +307,7 @@ class LermCivilDashboard(http.Controller):
             domain.append(('lab_location.company_id', '=', int(company_id)))
 
         # 2. Fetch relevant samples
+        domain += self._user_scope_domain()
         samples = Sample.search(domain)
         _logger.info("Found %d samples for technician overview", len(samples))
 
@@ -309,6 +340,10 @@ class LermCivilDashboard(http.Controller):
 
         # 4. Fetch Employees associated with these technicians
         emp_domain = [('user_id', 'in', list(tech_to_samples.keys()))]
+        own_user = self._own_data_user()
+        if own_user:
+            # Users without 'All Data' access only get their own row
+            emp_domain.append(('user_id', '=', own_user.id))
         
         employees = Employee.search(emp_domain)
         _logger.info("Found %d employees with matching user_ids", len(employees))
@@ -444,6 +479,7 @@ class LermCivilDashboard(http.Controller):
 
 
         # 4. Find all distinct customers within the current domain
+        domain += self._user_scope_domain()
         samples_in_period = Sample.search(domain)
         
         # Using a set to ensure unique customer records, including False (No Customer)
@@ -524,6 +560,7 @@ class LermCivilDashboard(http.Controller):
             # For customer dashboard, aging samples should also be filtered by the searched customer
             aging_domain.append(('customer_id.name', 'ilike', f'%{search_query}%'))
             
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
@@ -601,6 +638,7 @@ class LermCivilDashboard(http.Controller):
                 domain += actual_search_domain
 
         # 4. Fetch samples and group by material
+        domain += self._user_scope_domain()
         samples_in_period = Sample.search(domain)
         # Using mapped and set to ensure we only get unique materials
         materials = set(samples_in_period.mapped('material_id'))
@@ -652,6 +690,7 @@ class LermCivilDashboard(http.Controller):
             if search_type in ['all', 'product']:
                 aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
 
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='overdue')
 

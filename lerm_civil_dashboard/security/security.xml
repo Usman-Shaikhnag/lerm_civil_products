@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+
+        <record model="ir.module.category" id="lerm_dashboard_access_category">
+            <field name="name">Lerm Dashboard</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Sees only the samples where the user is a technician -->
+        <record model="res.groups" id="group_dashboard_own_data">
+            <field name="name">Own Data Only</field>
+            <field name="category_id" ref="lerm_dashboard_access_category"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- Sees every sample on the dashboard -->
+        <record model="res.groups" id="group_dashboard_all_data">
+            <field name="name">All Data</field>
+            <field name="category_id" ref="lerm_dashboard_access_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_dashboard_own_data'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>

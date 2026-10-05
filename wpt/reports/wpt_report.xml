@@ -100,21 +100,16 @@
 							</tr>
 
 							<tr>
-								<td colspan="12">Material/Test Name :
+								<td colspan="6">Material/Test Name :
 																											<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
-							</tr>
-							<tr>
-								<!-- <td colspan="6">Age in Days :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.age_of_test"/>
-								</td> -->
-								<td colspan="12">Date of Casting :
+								<td colspan="6">Date of Casting :
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.date_of_casting"/>
 								</td>
 							</tr>
+							
 							
 							
 						</table>
@@ -127,9 +122,9 @@
 						<span t-esc="eln.material.test_parameter"/>
 					</div>
 
-					<div>
+					<!-- <div>
 						<h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','92a72eba-0268-46ef-ba88-9c04558006ec')]).parameter_name"/></h6>
-					</div>
+					</div> -->
 					<t t-if="len(data.child_lines) &lt;= o.sample_id.page_break">
 						<div style="margin-top:10px">
 							<table style="margin-top:10px">
