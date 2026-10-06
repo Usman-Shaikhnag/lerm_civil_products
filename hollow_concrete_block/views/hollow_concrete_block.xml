@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="hollow_concrete_block_form" model="ir.ui.view">
+        <field name="name">hollow.concrete.block.form</field>
+        <field name="model">hollow.concrete.block</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                   
+                        <!-- Compressive Strength -->
+
+                     <div invisible="not compressive_strength_visible">
+                        <h1 class="text-center">
+                            <field name="compressive_strength_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="compressive_strength_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+                       
+                    <div class="custom_table_borders" invisible="not compressive_strength_visible">
+                        <field name="compressive_strength_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+
+                          <field name="length" class="blue-input" decoration-info="length != 0" width="200"/>
+
+                          <field name="breadth" class="blue-input" decoration-info="breadth != 0" width="200"/>
+
+
+                          <field name="thickness" class="blue-input" decoration-info="thickness != 0" width="200"/> 
+                           
+                          <field name="area" width="200"/>
+
+                          <field name="load_kn" class="blue-input" decoration-info="load_kn != 0" width="200"/>
+
+                          <field name="compressive_strength" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_compressive_strength">Average Compressive Strength (N/mm²)</label></td>
+                                    <td><field name="average_compressive_strength"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="compressive_strength_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="compressive_strength_confirmity"
+                                        decoration-success="compressive_strength_confirmity == 'pass'" 
+                                        decoration-danger="compressive_strength_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="compressive_strength_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="compressive_strength_nabl"
+                                        decoration-success="compressive_strength_nabl == 'pass'" 
+                                        decoration-danger="compressive_strength_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+                        
+
+
+
+                        <!-- Water Absorption -->
+
+                     <div invisible="not water_absorbtion_visible">
+                        <h1 class="text-center">
+                            <field name="wt_absorption_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="water_absorbtion_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not water_absorbtion_visible">
+                        <field name="water_absorption_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sr_no" width="200"/>
+                          <field name="wet_mass" class="blue-input" decoration-info="wet_mass != 0" width="200"/>
+                          <field name="dry_mass" class="blue-input" decoration-info="dry_mass != 0" width="200"/>
+                          <field name="water_absorption" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not water_absorbtion_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="water_absorption">Average Water Absorption (%)</label></td>
+                                    <td><field name="water_absorption"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="water_absorption_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="water_absorption_confirmity"
+                                        decoration-success="water_absorption_confirmity == 'pass'" 
+                                        decoration-danger="water_absorption_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="water_absorption_nabl" class="text-bold">NABL</label></td>
+                            <td>
+                              <field name="water_absorption_nabl"     decoration-success="water_absorption_nabl == 'pass'"  decoration-danger="water_absorption_nabl == 'fail'" readonly="1"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+
+                         <!-- Moisture Movment -->
+
+                        <div invisible="not moisture_movment_visible">
+                        <h1 class="text-center">
+                            <field name="moisture_movment_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="moisture_movment_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not moisture_movment_visible">
+                        <field name="moisture_movment_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sr_no" width="200"/>
+                          <field name="dry_length" class="blue-input" decoration-info="dry_length != 0" width="200"/>
+                          <field name="wet_length" class="blue-input" decoration-info="wet_length != 0" width="200"/>
+                          <field name="moisture_movment" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not moisture_movment_visible">
+                            <tbody>
+                                <tr> 
+                                    <td><label class="text-bold" for="average_moisture_movment">Average Moisture Movement</label></td>
+                                    <td><field name="average_moisture_movment"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="moisture_movment_conformity" class="text-bold">Conformity</label></td>
+                             <td><field name="moisture_movment_conformity"
+                                        decoration-success="moisture_movment_conformity == 'pass'" 
+                                        decoration-danger="moisture_movment_conformity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="moisture_movment_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="moisture_movment_nabl"
+                                        decoration-success="moisture_movment_nabl == 'pass'" 
+                                        decoration-danger="moisture_movment_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+                     
+                     <!-- Drying Shrinkage -->
+
+                <div invisible="not drying_shrinkage_visible">
+                        <h1 class="text-center">
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="drying_shrinkage_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
+                        <field name="drying_shrinkage_child_lines" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sr_no" width="200"/>
+                          <field name="wet_measurment" class="blue-input" decoration-info="wet_measurment != 0" width="200"/>
+                          <field name="dry_measurment" class="blue-input" decoration-info="dry_measurment != 0" width="200"/>
+                          <field name="dry_lengths" class="blue-input" decoration-info="dry_lengths != 0" width="200"/>
+                          <field name="drying_shrinkage" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+ 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not drying_shrinkage_visible">
+                            <tbody>
+                                <tr> 
+                                    <td><label class="text-bold" for="average_drying_shrinkage">Average Drying Shrinkage</label></td>
+                                    <td><field name="average_drying_shrinkage"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="drying_shrinkage_conformity" class="text-bold">Conformity</label></td>
+                             <td><field name="drying_shrinkage_conformity"
+                                        decoration-success="drying_shrinkage_conformity == 'pass'" 
+                                        decoration-danger="drying_shrinkage_conformity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="drying_shrinkage_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="drying_shrinkage_nabl"
+                                        decoration-success="drying_shrinkage_nabl == 'pass'" 
+                                        decoration-danger="drying_shrinkage_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+                    
+                     
+
+                    
+                
+
+                    <notebook>
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes" />
+                                    </tree>
+                                </field>
+                            </div>
+                        </page>
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <record id="view_aac_block_prefill_data_form" model="ir.ui.view">
+            <field name="name">aac.block.prefill.data.form</field>
+            <field name="model">aac.block.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_aac_block_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">aac.block.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_aac_block_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+       
+    </data>
+</odoo>
