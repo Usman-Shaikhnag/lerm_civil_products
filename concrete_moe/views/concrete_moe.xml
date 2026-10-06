@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_concrete_moe_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.moe.form</field>
+        <field name="model">mechanical.concrete.moe</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                 <div>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/>
+                        <field name="eln_state" />
+                    </group>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+
+
+                        <div style="margin-top: 15px;">
+                            <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
+                                28-DAY CUBE COMPRESSIVE STRENGTH / REFERENCE STRESS
+                            </div>
+
+                            <!-- One table, four columns. A column inside this one2many
+                                 tree resolves against mechanical.concrete.moe.cube.line,
+                                 so average_strength / basic_stress (which live on the
+                                 parent mechanical.concrete.moe) cannot be used here;
+                                 average_fc_display / basic_stress_display are related
+                                 fields on the line that simply mirror the parent values.
+
+                                 `invisible="specimen != 1"` inside a list hides the cell
+                                 value for that row only - the column header stays - so
+                                 the calculated values are printed once, on the first
+                                 specimen row: never repeated per row, never on a blank
+                                 row and never in a separate summary table. -->
+                            <field name="cube_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom" create="true" delete="true">
+                                    <field name="specimen"
+                                        string="Cube Specimen"
+                                        readonly="1"/>
+
+                                    <field name="compressive_strength"
+                                        string="Compressive Strength (MPa)"
+                                        class="blue-input"
+                                        decoration-info="compressive_strength != 0"/>
+
+                                    <field name="average_fc_display"
+                                        string="Average Fc (MPa)"
+                                        readonly="1"
+                                        invisible="specimen != 1"/>
+
+                                    <field name="basic_stress_display"
+                                        string="Basic stress, σb = Fc/9 (MPa)"
+                                        readonly="1"
+                                        invisible="specimen != 1"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
+                                SPECIMEN DETAILS AND MODULUS CALCULATION
+                            </div>
+                            <field name="specimen_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom">
+                                    <field name='specimen' string="Specimen" readonly="1"/>
+                                    <field name='diameter' string="Diameter D (mm)" class="blue-input" decoration-info="diameter != 0"/>
+                                    <field name='specimen_length' string="Length L (mm)" class="blue-input" decoration-info="specimen_length != 0"/>
+                                    <field name='l_d_ratio' string="L/D" readonly="1"/>
+                                    <field name='mass' string="Mass (kg)" class="blue-input" decoration-info="mass != 0"/>
+                                    <field name='density' string="Density (kg/m³)" readonly="1"/>
+                                    <field name='stress_b' string="Stress σb (MPa)" readonly="1"/>
+                                    <field name='strain_b' string="εb (×10⁻⁶)" class="blue-input" decoration-info="strain_b != 0"/>
+                                    <field name='stress_a' string="Stress σa (MPa)" readonly="1"/>
+                                    <field name='strain_a' string="εa (×10⁻⁶)" class="blue-input" decoration-info="strain_a != 0"/>
+                                    <field name='ec_mpa' string="Ec (MPa)" readonly="1"/>
+                                    <field name='ec_gpa' string="Ec (GPa)" readonly="1"/>
+                                </tree>
+                            </field>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">Average</td>
+                                        <!-- <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td> -->
+                                        <td class="text-center"><field name="average_ec_mpa" readonly="1"/></td>
+                                        <td class="text-center"><field name="average_ec_gpa" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                <tr>
+                                    <td><label for="nabl"></label></td>
+                                    <td><field name='nabl'
+                                    decoration-success="nabl == 'pass'"
+                                    decoration-danger="nabl == 'fail'"
+                                    readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="confirmity"></label></td>
+                                    <td><field name='confirmity'
+                                    decoration-success="confirmity == 'pass'"
+                                    decoration-danger="confirmity == 'fail'"
+                                    readonly="1"/></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div invisible="poisson_visible == False" style="margin-top: 15px;">
+                            <field name="poisson_visible" invisible="1"/>
+                            <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
+                                POISSON&#39;S RATIO (OPTIONAL &#8212; IF TRANSVERSE STRAIN IS MEASURED)
+                            </div>
+                            <field name="poisson_lines" nolabel="1" class="custom_table_borders">
+                                <tree editable="bottom">
+                                    <field name='specimen' string="Specimen" readonly="1"/>
+                                    <field name='long_strain_b' string="Long. εb (×10⁻⁶)" class="blue-input" decoration-info="long_strain_b != 0"/>
+                                    <field name='long_strain_a' string="Long. εa (×10⁻⁶)" class="blue-input" decoration-info="long_strain_a != 0"/>
+                                    <field name='trans_strain_b' string="Trans. εb (×10⁻⁶)" class="blue-input" decoration-info="trans_strain_b != 0"/>
+                                    <field name='trans_strain_a' string="Trans. εa (×10⁻⁶)" class="blue-input" decoration-info="trans_strain_a != 0"/>
+                                    <field name='poisson_ratio' string="Poisson&#39;s Ratio μ" readonly="1"/>
+                                </tree>
+                            </field>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">Average</td>
+                                        <td class="text-center"><field name="average_poisson_ratio" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table invisible="poisson_visible == False" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                <tr>
+                                    <td><label for="poisson_nabl"></label></td>
+                                    <td><field name='poisson_nabl'
+                                    decoration-success="poisson_nabl == 'pass'"
+                                    decoration-danger="poisson_nabl == 'fail'"
+                                    readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="poisson_confirmity"></label></td>
+                                    <td><field name='poisson_confirmity'
+                                    decoration-success="poisson_confirmity == 'pass'"
+                                    decoration-danger="poisson_confirmity == 'fail'"
+                                    readonly="1"/></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
+                                FINAL RESULT
+                            </div>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3">Average Static Modulus of Elasticity, Ec (GPa)</td>
+                                        <td class="text-center"><field name="average_ec_gpa" readonly="1"/></td>
+                                    </tr>
+                                    <tr invisible="poisson_visible == False">
+                                        <td colspan="3">Average Poisson&#39;s Ratio, μ</td>
+                                        <td class="text-center"><field name="average_poisson_ratio" readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+<!-- 
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="nabl"></label></td>
+                            <td><field name='nabl'
+                               decoration-success="nabl == 'pass'"
+                               decoration-danger="nabl == 'fail'"
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="confirmity"></label></td>
+                            <td><field name='confirmity'
+                               decoration-success="confirmity == 'pass'"
+                               decoration-danger="confirmity == 'fail'"
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>
+                          </table> -->
+                        <!-- <table invisible="poisson_visible == False" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="poisson_nabl"></label></td>
+                            <td><field name='poisson_nabl'
+                               decoration-success="poisson_nabl == 'pass'"
+                               decoration-danger="poisson_nabl == 'fail'"
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="poisson_confirmity"></label></td>
+                            <td><field name='poisson_confirmity'
+                               decoration-success="poisson_confirmity == 'pass'"
+                               decoration-danger="poisson_confirmity == 'fail'"
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>
+                          </table> -->
+                        <!-- </div> -->
+
+                          <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+                        <button
+                            type="object"
+                            class="oe_highlight"
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mechanical_concrete_moe_line_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.moe.line.form</field>
+        <field name="model">mechanical.concrete.moe.line</field>
+        <field name="arch" type="xml">
+            <form>
+            <!-- <field name='sr_no' string="Sr. NO"/>
+                <field name='id_mark' string="ID Mark/Location"/>
+                <field name='length' string="Length (mm)"/>
+                <field name='width' string="Width (mm)"/>
+                <field name='area' string="Area (mm²)"/>
+            </group>
+            <group>
+                <field name='wt_sample' string="Weight of Sample in kg"/>
+                <field name='crushing_load' string="Crushing Load in kN"/>
+                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
+                <field name='parent_id' invisible="1"/>
+            </group>
+            </group> -->
+
+            </form>
+        </field>
+    </record>
+
+    </data>
+</odoo>

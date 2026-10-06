@@ -133,6 +133,27 @@
     <field name="binding_type">report</field>
 </record>
 
+<record id="concrete_moe_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete MOE DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_moe.concrete_moe_datasheet</field>
+    <field name="report_file">concrete_moe.concrete_moe_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_moe_report_action" model="ir.actions.report">
+    <field name="name">Concrete MOE Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_moe.concrete_moe_report</field>
+    <field name="report_file">concrete_moe.concrete_moe_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 <record id="hollow_concrete_block_datasheet_action" model="ir.actions.report">
     <field name="name">Hollow Concrete Block DataSheet</field>
     <field name="model">lerm.eln</field>
