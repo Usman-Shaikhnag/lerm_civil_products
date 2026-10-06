@@ -918,7 +918,7 @@
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
                                     <field name='percent_loss'/>
-                                    <field name='weighted_avg'/>
+                                    <!-- <field name='weighted_avg'/> -->
                                 </tree>
                         </field> 
                     </div>
@@ -933,25 +933,19 @@
                                 <td><label class="fw-bold" for="total_weight_before"></label></td>
                                 <td><field name="total_weight_before"/><span>gm</span></td>
                             </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="total_weight_after"></label></td>
-                                <td><field name="total_weight_after"/><span>gm</span></td>
-                            </tr>
+                           
                             <tr>
                                 <td><label class="fw-bold" for="total_percent_loss"></label></td>
                                 <td><field name="total_percent_loss"/><span>%</span></td>
                             </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="total_weighted_avg"></label></td>
-                                <td><field name="total_weighted_avg"/><span>%</span></td>
-                            </tr>
+                           
 
                             
                         </tbody>
                     </table>
                     <group/>
 
-                    <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
+                    <!-- <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
                         <field name="soundness_sodtwo_line_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='passing_sieve'/>
@@ -963,9 +957,9 @@
                                     <field name='weighted_avg'/>
                                 </tree>
                         </field> 
-                    </div>
+                    </div> -->
 
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                    <!-- <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="total1_grading"></label></td>
@@ -991,26 +985,26 @@
                             
                         </tbody>
                     </table>
-                    <group/>
+                    <group/> -->
 
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
                         <tbody>
 
                             <tr>
-                                <td><label class="fw-bold" for="total_weighted_avg_conformity">Conformity</label></td>
+                                <td><label class="fw-bold" for="total_percent_loss_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="total_weighted_avg_conformity"
-                                        decoration-success="total_weighted_avg_conformity == 'pass'" 
-                                        decoration-danger="total_weighted_avg_conformity == 'fail'" 
+                                    <field name="total_percent_loss_conformity"
+                                        decoration-success="total_percent_loss_conformity == 'pass'" 
+                                        decoration-danger="total_percent_loss_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="total_weighted_avg_nabl">NABL</label></td>
+                               <td><label class="fw-bold" for="total_percent_loss_nabl">NABL</label></td>
                                 <td>
-                                    <field name="total_weighted_avg_nabl"
-                                        decoration-success="total_weighted_avg_nabl == 'pass'" 
-                                        decoration-danger="total_weighted_avg_nabl == 'fail'"/>
+                                    <field name="total_percent_loss_nabl"
+                                        decoration-success="total_percent_loss_nabl == 'pass'" 
+                                        decoration-danger="total_percent_loss_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -1037,7 +1031,7 @@
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
                                     <field name='percent_loss'/>
-                                    <field name='weighted_avg'/>
+                                    <!-- <field name='weighted_avg'/> -->
                                 </tree>
                         </field> 
                     </div>
@@ -1052,25 +1046,19 @@
                                 <td><label class="fw-bold" for="mag_total_weight_before"></label></td>
                                 <td><field name="mag_total_weight_before"/><span>gm</span></td>
                             </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="mag_total_weight_after"></label></td>
-                                <td><field name="mag_total_weight_after"/><span>gm</span></td>
-                            </tr>
+                           
                             <tr>
                                 <td><label class="fw-bold" for="mag_total_percent_loss"></label></td>
                                 <td><field name="mag_total_percent_loss"/><span>%</span></td>
                             </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="mag_total_weighted_avg"></label></td>
-                                <td><field name="mag_total_weighted_avg"/><span>%</span></td>
-                            </tr>
+                           
 
                             
                         </tbody>
                     </table>
                     <group/>
 
-                    <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
+                    <!-- <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
                         <field name="soundness_magtwo_line_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='passing_sieve'/>
@@ -1110,25 +1098,25 @@
                             
                         </tbody>
                     </table>
-                    <group/>
+                    <group/> -->
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
                         <tbody>
 
                             <tr>
-                                <td><label class="fw-bold" for="mag_total_weighted_avg_conformity">Conformity</label></td>
+                                <td><label class="fw-bold" for="mag_total_percent_loss_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="mag_total_weighted_avg_conformity"
-                                        decoration-success="mag_total_weighted_avg_conformity == 'pass'" 
-                                        decoration-danger="mag_total_weighted_avg_conformity == 'fail'" 
+                                    <field name="mag_total_percent_loss_conformity"
+                                        decoration-success="mag_total_percent_loss_conformity == 'pass'" 
+                                        decoration-danger="mag_total_percent_loss_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="mag_total_weighted_avg_nabl">NABL</label></td>
+                               <td><label class="fw-bold" for="mag_total_percent_loss_nabl">NABL</label></td>
                                 <td>
-                                    <field name="mag_total_weighted_avg_nabl"
-                                        decoration-success="mag_total_weighted_avg_nabl == 'pass'" 
-                                        decoration-danger="mag_total_weighted_avg_nabl == 'fail'"/>
+                                    <field name="mag_total_percent_loss_nabl"
+                                        decoration-success="mag_total_percent_loss_nabl == 'pass'" 
+                                        decoration-danger="mag_total_percent_loss_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -1145,71 +1133,83 @@
                         </h1>
                     </div>
 
+                     <div invisible= "loose_bulk_visible == False" class="custom_table_borders">
+                        <field name="bulk_density_lines" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='volume_of_bucket_loose' class="blue-input" decoration-info="volume_of_bucket_loose != 0"/>
+                                    <field name='weight_empty_bucket_loose' class="blue-input" decoration-info="weight_empty_bucket_loose != 0"/>
+                                    <field name='sample_weight_loose' class="blue-input" decoration-info="sample_weight_loose != 0"/>
+                                    <field name='loose_bulk_density' class="blue-input" decoration-info="loose_bulk_density != 0"/>
+                                    <field name='sample_plus_bucket_loose' class="blue-input" decoration-info="sample_plus_bucket_loose != 0"/>
+                                    <field name='sample_plus_bucket_rodded' class="blue-input" decoration-info="sample_plus_bucket_rodded != 0"/>
+                                    <field name='sample_weight_rodded' class="blue-input" decoration-info="sample_weight_rodded != 0"/>
+                                    <field name='rodded_bulk_density' class="blue-input" decoration-info="rodded_bulk_density != 0"/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered mt-2 custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
+                    <tbody>
+                        <tr>
+                            <td><label class="fw-bold" for="average_loose_bulk"></label></td>
+                            <td>
+                                <field name="average_loose_bulk" />
+                            </td>
+
+                            <td><label class="fw-bold" for="average_rodded_bulk"></label></td>
+                            <td>
+                                <field name="average_rodded_bulk" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <!-- Loose Bulk Density Table -->
                 <table class="table table-sm table-bordered custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
                     <tbody>
                         <tr>
-                            <td><label class="fw-bold" for="volume_of_bucket_loose">Volume of Bucket</label></td>
-                            <td><field name="volume_of_bucket_loose" class="blue-input" /></td>
+                          
                             <td><span class="fw-bold">Loose Bulk Density Conformity</span></td>
                             <td>
-                                <field name="loose_bulk_density_conformity"
-                                    decoration-success="loose_bulk_density_conformity == 'pass'" 
-                                    decoration-danger="loose_bulk_density_conformity == 'fail'" 
+                                <field name="average_loose_bulk_conformity"
+                                    decoration-success="average_loose_bulk_conformity == 'pass'" 
+                                    decoration-danger="average_loose_bulk_conformity == 'fail'" 
                                     readonly="1"/>
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="weight_empty_bucket_loose">Weight of Empty Bucket</label></td>
-                            <td><field name="weight_empty_bucket_loose" class="blue-input" /></td>
+                           
                             <td><span class="fw-bold">Loose Bulk Density NABL Status</span></td>
                             <td>
-                                <field name="loose_bulk_density_nabl"
-                                    decoration-success="loose_bulk_density_nabl == 'pass'" 
-                                    decoration-danger="loose_bulk_density_nabl == 'fail'"/>
+                                <field name="average_loose_bulk_nabl"
+                                    decoration-success="average_loose_bulk_nabl == 'pass'" 
+                                    decoration-danger="average_loose_bulk_nabl == 'fail'"/>
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="sample_plus_bucket_rodded">Bucket + Compacted Aggregate</label></td>
-                            <td><field name="sample_plus_bucket_rodded" class="blue-input" /></td>
+                           
                             <td><span class="fw-bold">Rodded Bulk Density Conformity</span></td>
                             <td>
-                                <field name="rodded_bulk_density_conformity"
-                                    decoration-success="rodded_bulk_density_conformity == 'pass'" 
-                                    decoration-danger="rodded_bulk_density_conformity == 'fail'" 
+                                <field name="average_rodded_bulk_conformity"
+                                    decoration-success="average_rodded_bulk_conformity == 'pass'" 
+                                    decoration-danger="average_rodded_bulk_conformity == 'fail'" 
                                     readonly="1"/>
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="sample_plus_bucket_loose">Bucket + Loose Aggregate</label></td>
-                            <td><field name="sample_plus_bucket_loose" class="blue-input" /></td>
+                           
                             <td><span class="fw-bold">Rodded Bulk Density NABL Status</span></td>
                             <td>
-                                <field name="rodded_bulk_density_nabl"
-                                    decoration-success="rodded_bulk_density_nabl == 'pass'" 
-                                    decoration-danger="rodded_bulk_density_nabl == 'fail'"/>
+                                <field name="average_rodded_bulk_nabl"
+                                    decoration-success="average_rodded_bulk_nabl == 'pass'" 
+                                    decoration-danger="average_rodded_bulk_nabl == 'fail'"/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
                 <!-- Loose Bulk Density Result -->
-                <table class="table table-sm table-bordered mt-2 custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
-                    <tbody>
-                        <tr>
-                            <td><label class="fw-bold" for="loose_bulk_density">Loose Bulk Density</label></td>
-                            <td>
-                                <field name="loose_bulk_density" nolabel="1"/>
-                                <span>kg/cu.m</span>
-                            </td>
-                            <td><label class="fw-bold" for="rodded_bulk_density">Rodded Bulk Density</label></td>
-                            <td>
-                                <field name="rodded_bulk_density" nolabel="1"/>
-                                <span>kg/cu.m</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                
 
 
 

@@ -437,9 +437,9 @@
 
 
 							<!-- Bulk Density -->
-                            <t t-set="show_loose_bulk_density" t-value="data.loose_bulk_density_nabl == 'pass' and nabl or (data.loose_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_loose_bulk_density" t-value="data.average_loose_bulk_nabl == 'pass' and nabl or (data.average_loose_bulk_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
-                            <t t-set="show_rodded_bulk_density" t-value="data.rodded_bulk_density_nabl == 'pass' and nabl or (data.rodded_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_rodded_bulk_density" t-value="data.average_rodded_bulk_nabl == 'pass' and nabl or (data.average_rodded_bulk_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
 							<t t-set="show_avg_bulk_density" t-value="data.avg_compacted_nabl == 'pass' and nabl or (data.avg_compacted_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
@@ -486,7 +486,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_loose_bulk" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -532,7 +532,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.rodded_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_rodded_bulk" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -1110,7 +1110,7 @@
 								</tr>
 
 								<!-- Soundness - Na2SO4 -->
-							<tr t-if="data.soundness_na2so4_visible and (data.total_weighted_avg_nabl == 'pass' and nabl or (data.total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_na2so4_visible and (data.total_percent_loss_nabl == 'pass' and nabl or (data.total_percent_loss_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="sodium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])"/>
 									
 									<td style="text-align: center;">
@@ -1139,7 +1139,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.total_weighted_avg" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.total_percent_loss" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 
 									
@@ -1160,7 +1160,7 @@
 								</tr>
 
 								<!--  Soundness - MgSO4 -->
-							<tr t-if="data.soundness_mgso4_visible and (data.mag_total_weighted_avg_nabl == 'pass' and nabl or (data.mag_total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_mgso4_visible and (data.mag_total_percent_loss_nabl == 'pass' and nabl or (data.mag_total_percent_loss_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="magnesium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])"/>
 									
 									<td style="text-align: center;">
@@ -1189,7 +1189,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.mag_total_weighted_avg" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.mag_total_percent_loss" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 
 															

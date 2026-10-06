@@ -1456,121 +1456,86 @@
                         <div style="text-align:center;font-size:18px">
                               <span t-field="data.loose_bulk_density_name" />
                         </div>
+
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Volume of Bucket, V</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Empty Bucket,M1 in g</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sample Weight in kg</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Loose Bulk Density Kg/Litter</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Bucket + Loose Aggregate</th>
+
+
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Bucket + Compacted Aggregate</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sample Weight in kg</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Rodded Bulk Density Kg/Litter</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.bulk_density_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['volume_of_bucket_loose']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['weight_empty_bucket_loose']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['sample_weight_loose']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['loose_bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['sample_plus_bucket_loose']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+
+
+
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['sample_plus_bucket_rodded']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['sample_weight_rodded']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['rodded_bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Loose Bulk Density Kg/Litter :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.average_loose_bulk"/>
+								</td>
+							</tr>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Rodded Bulk Density Kg/Litter :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.average_rodded_bulk"/>
+								</td>
+							</tr>
+						</table>
                    
                   
-                        <table style="margin-top:20px;">
-
-                            <tbody>
-                                <tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                          Volume of Bucket, V
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.volume_of_bucket_loose" />
-                                        </span>
-                                    </td>
-
-                                </tr>
-                                <tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                         Empty weight of bucket, M1
-
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.weight_empty_bucket_loose" />
-                                        </span>
-                                    </td>
-
-                                </tr>
-
-                                <tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                        Bucket + Compacted Aggregate
-                                            
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.sample_plus_bucket_rodded"/>
-                                        </span>
-                                    </td>
-
-
-
-                                </tr>
-                                <tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                    Bucket + Loose Aggregate
-                                            
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.sample_plus_bucket_loose"/>
-                                        </span>
-                                    </td>
-
-                                </tr>
-
-                                <tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                      Loose Bulk Density
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
-                                    </td>
-                                </tr>
-
-								<tr style="font-weight: bold; background-color: #f9f9f9;">
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                      Rodded Bulk Density
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.rodded_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr t-if="data.compacted_density_visible" style="font-weight: bold; background-color: #f9f9f9;">
-									<td >
-										<span>Compacted Bulk Density</span>
-									</td>
-
-									<td style="text-align: center;">
-										<span t-field="data.avg_compacted" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								</tr>
-
-
-                            </tbody>
-
-                        </table>
+                       
 
                       <div class="signatureContainer girdgird">
 							<div>
@@ -1654,13 +1619,12 @@
 						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Passing Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Retained Sieve Size</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sieve Size – Passing</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sieve Size – Retained on</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Grading of Original Sample (%)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight Before Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight After Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percent Loss</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Test Fractions Before Test (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percentage Passing Fine Sieve After Test (Actual Per-Cent Loss)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average Corrected Per-Cent Loss (%)</th>
 									
 								</tr>
 							</thead>
@@ -1685,9 +1649,7 @@
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['percent_loss']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weighted_avg']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									
 									
 								</tr>
 							</tbody>
@@ -1706,100 +1668,17 @@
 									<span t-field="data.total_weight_before"/>
 								</td>
 							</tr>
+						
 							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight After :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total_weight_after"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total % Loss (Not Used) :</td>
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Overall Corrected Soundness Loss :</td>
 								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
 									<span t-field="data.total_percent_loss"/>
 								</td>
 							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Final Result (Weighted Avg) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total_weighted_avg"/>
-								</td>
-							</tr>
+							
 						</table>
 
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:20px;">
-							<thead>
-								<tr style="background-color: #f0f0f0; text-align: center;">
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Passing Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Retained Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Grading of Original Sample (%)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight Before Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight After Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percent Loss</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average</th>
-									
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="data.soundness_sodtwo_line_ids" t-as="r" style="text-align: center;">
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['passing_sieve']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['retained_sieve']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['grading_percent']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weight_before']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weight_after']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['percent_loss']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weighted_avg']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									
-								</tr>
-							</tbody>
-						</table>
-
-						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Grading % :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total1_grading"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight Before :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total1_weight_before"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight After :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total1_weight_after"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total % Loss (Not Used) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total1_percent_loss"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Final Result (Weighted Avg) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.total1_weighted_avg"/>
-								</td>
-							</tr>
-						</table>
+						
 
 
 						
@@ -1883,13 +1762,12 @@
 						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Passing Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Retained Sieve Size</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sieve Size – Passing</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sieve Size – Retained on</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Grading of Original Sample (%)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight Before Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight After Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percent Loss</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Test Fractions Before Test (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percentage Passing Fine Sieve After Test (Actual Per-Cent Loss)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average Corrected Per-Cent Loss (%)</th>
 									
 								</tr>
 							</thead>
@@ -1914,9 +1792,7 @@
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['percent_loss']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weighted_avg']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
+									
 									
 								</tr>
 							</tbody>
@@ -1935,100 +1811,17 @@
 									<span t-field="data.mag_total_weight_before"/>
 								</td>
 							</tr>
+							
 							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight After :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total_weight_after"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total % Loss (Not Used) :</td>
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Overall Corrected Soundness Loss :</td>
 								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
 									<span t-field="data.mag_total_percent_loss"/>
 								</td>
 							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Final Result (Weighted Avg) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total_weighted_avg"/>
-								</td>
-							</tr>
+						
 						</table>
 
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:20px;">
-							<thead>
-								<tr style="background-color: #f0f0f0; text-align: center;">
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Passing Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Retained Sieve Size</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Grading of Original Sample (%)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight Before Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight After Test (gm)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Percent Loss</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weighted Average</th>
-									
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="data.soundness_magtwo_line_ids" t-as="r" style="text-align: center;">
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['passing_sieve']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['retained_sieve']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['grading_percent']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weight_before']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weight_after']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['percent_loss']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['weighted_avg']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									
-								</tr>
-							</tbody>
-						</table>
-
-						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Grading % :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total1_grading"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight Before :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total1_weight_before"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total Weight After :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total1_weight_after"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Total % Loss (Not Used) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total1_percent_loss"/>
-								</td>
-							</tr>
-							<tr style="font-weight: bold; background-color: #f9f9f9;">
-								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Final Result (Weighted Avg) :</td>
-								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-									<span t-field="data.mag_total1_weighted_avg"/>
-								</td>
-							</tr>
-						</table>
+						
 						   <div class="signatureContainer girdgird">
 							<div>
 								<div>

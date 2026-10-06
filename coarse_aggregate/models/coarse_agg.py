@@ -853,7 +853,7 @@ class CoarseAggregateMechanical(models.Model):
 
     specific_water_line_ids = fields.One2many('specific.gravity.water.absorption.line', 'parent_id', string="Observations")
 
-    avg_specific_gravity = fields.Float("Average Specific Gravity", compute="_compute_avg_specific_water", store=True)
+    avg_specific_gravity = fields.Float("Average Specific Gravity", compute="_compute_avg_specific_water", store=True,digits=(12,3))
     avg_water_absorption = fields.Float("Average Water Absorption (%)", compute="_compute_avg_specific_water", store=True)
 
     @api.depends('specific_water_line_ids.specific_gravity', 'specific_water_line_ids.water_absorption')
@@ -1599,10 +1599,10 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def soundness_sod_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '60mm','retained_sieve': '40mm'}),
-            (0, 0, {'passing_sieve': '40mm','retained_sieve': '20mm'}),
-            (0, 0, {'passing_sieve': '20mm','retained_sieve': '10mm'}),
-            (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
+            (0, 0, {'passing_sieve': '63 mm','retained_sieve': '40 mm'}),
+            (0, 0, {'passing_sieve': '40 mm','retained_sieve': '20 mm'}),
+            (0, 0, {'passing_sieve': '20 mm','retained_sieve': '10 mm'}),
+            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
         ]
         return default_lines 
     
@@ -1610,24 +1610,18 @@ class CoarseAggregateMechanical(models.Model):
 
     total_grading = fields.Float("Total Grading %", compute="_compute_totaled")
     total_weight_before = fields.Float("Total Weight Before", compute="_compute_totaled")
-    total_weight_after = fields.Float("Total Weight After", compute="_compute_totaled")
-    total_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totaled")
-    total_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totaled")
+    total_percent_loss = fields.Float("Overall Corrected Soundness Loss", compute="_compute_totaled")
 
     @api.depends(
         'soundness_sod_line_ids.grading_percent',
         'soundness_sod_line_ids.weight_before',
-        'soundness_sod_line_ids.weight_after',
         'soundness_sod_line_ids.percent_loss',
-        'soundness_sod_line_ids.weighted_avg'
     )
     def _compute_totaled(self):
         for rec in self:
             rec.total_grading = sum(rec.soundness_sod_line_ids.mapped('grading_percent'))
             rec.total_weight_before = sum(rec.soundness_sod_line_ids.mapped('weight_before'))
-            rec.total_weight_after = sum(rec.soundness_sod_line_ids.mapped('weight_after'))
             rec.total_percent_loss = sum(rec.soundness_sod_line_ids.mapped('percent_loss'))
-            rec.total_weighted_avg = sum(rec.soundness_sod_line_ids.mapped('weighted_avg'))
 
     soundness_sodtwo_line_ids = fields.One2many(
         'sodium.sulphate.two.line',
@@ -1668,27 +1662,27 @@ class CoarseAggregateMechanical(models.Model):
             rec.total1_percent_loss = sum(rec.soundness_sodtwo_line_ids.mapped('percent_loss'))
             rec.total1_weighted_avg = sum(rec.soundness_sodtwo_line_ids.mapped('weighted_avg'))
 
-    total_weighted_avg_conformity = fields.Selection([
+    total_percent_loss_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity',compute="_compute_total_weighted_avg_conformity",store=True)
+    ], string='Conformity',compute="_compute_total_percent_loss_conformity",store=True)
 
-    total_weighted_avg_nabl = fields.Selection([
+    total_percent_loss_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_total_weighted_avg_nabl")
+    ], string='NABL', default='fail',compute="_compute_total_percent_loss_nabl")
 
 
-    @api.depends('total_weighted_avg','eln_ref','grade')
-    def _compute_total_weighted_avg_conformity(self):
+    @api.depends('total_percent_loss','eln_ref','grade')
+    def _compute_total_percent_loss_conformity(self):
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.total_weighted_avg_conformity = 'na'
+                record.total_percent_loss_conformity = 'na'
                 continue
 
-            record.total_weighted_avg_conformity = 'fail'
+            record.total_percent_loss_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
             mu_value = line.mu_value
@@ -1697,23 +1691,23 @@ class CoarseAggregateMechanical(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
-                    upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
+                    lower = record.total_percent_loss - record.total_percent_loss*mu_value
+                    upper = record.total_percent_loss + record.total_percent_loss*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.total_weighted_avg_conformity = 'pass'
+                        record.total_percent_loss_conformity = 'pass'
                         break
                     else:
-                        record.total_weighted_avg_conformity = 'fail'
+                        record.total_percent_loss_conformity = 'fail'
 
 
    
 
 
-    @api.depends('total_weighted_avg','eln_ref','grade')
-    def _compute_total_weighted_avg_nabl(self):
+    @api.depends('total_percent_loss','eln_ref','grade')
+    def _compute_total_percent_loss_nabl(self):
         
         for record in self:
-            record.total_weighted_avg_nabl = 'fail'
+            record.total_percent_loss_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
             
@@ -1721,13 +1715,13 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
-            upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
+            lower = record.total_percent_loss - record.total_percent_loss*mu_value
+            upper = record.total_percent_loss + record.total_percent_loss*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.total_weighted_avg_nabl = 'pass'
+                record.total_percent_loss_nabl = 'pass'
                 break
             else:
-                record.total_weighted_avg_nabl = 'fail'
+                record.total_percent_loss_nabl = 'fail'
 
 
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
@@ -1743,10 +1737,10 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def soundness_mag_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '60mm','retained_sieve': '40mm'}),
-            (0, 0, {'passing_sieve': '40mm','retained_sieve': '20mm'}),
-            (0, 0, {'passing_sieve': '20mm','retained_sieve': '10mm'}),
-            (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
+            (0, 0, {'passing_sieve': '63 mm','retained_sieve': '40 mm'}),
+            (0, 0, {'passing_sieve': '40 mm','retained_sieve': '20 mm'}),
+            (0, 0, {'passing_sieve': '20 mm','retained_sieve': '10 mm'}),
+            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
         ]
         return default_lines 
     
@@ -1754,24 +1748,18 @@ class CoarseAggregateMechanical(models.Model):
 
     mag_total_grading = fields.Float("Total Grading %", compute="_compute_totalled")
     mag_total_weight_before = fields.Float("Total Weight Before", compute="_compute_totalled")
-    mag_total_weight_after = fields.Float("Total Weight After", compute="_compute_totalled")
-    mag_total_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totalled")
-    mag_total_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totalled")
+    mag_total_percent_loss = fields.Float("Overall Corrected Soundness Loss:", compute="_compute_totalled")
 
     @api.depends(
         'soundness_mag_line_ids.grading_percent',
         'soundness_mag_line_ids.weight_before',
-        'soundness_mag_line_ids.weight_after',
         'soundness_mag_line_ids.percent_loss',
-        'soundness_mag_line_ids.weighted_avg'
     )
     def _compute_totalled(self):
         for rec in self:
             rec.mag_total_grading = sum(rec.soundness_mag_line_ids.mapped('grading_percent'))
             rec.mag_total_weight_before = sum(rec.soundness_mag_line_ids.mapped('weight_before'))
-            rec.mag_total_weight_after = sum(rec.soundness_mag_line_ids.mapped('weight_after'))
             rec.mag_total_percent_loss = sum(rec.soundness_mag_line_ids.mapped('percent_loss'))
-            rec.mag_total_weighted_avg = sum(rec.soundness_mag_line_ids.mapped('weighted_avg'))
 
     soundness_magtwo_line_ids = fields.One2many(
         'magnesium.sulphate.two.line',
@@ -1813,27 +1801,27 @@ class CoarseAggregateMechanical(models.Model):
             rec.mag_total1_weighted_avg = sum(rec.soundness_magtwo_line_ids.mapped('weighted_avg'))
 
 
-    mag_total_weighted_avg_conformity = fields.Selection([
+    mag_total_percent_loss_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity',compute="_compute_mag_total_weighted_avg_conformity",store=True)
+    ], string='Conformity',compute="_compute_mag_total_percent_loss_conformity",store=True)
 
-    mag_total_weighted_avg_nabl = fields.Selection([
+    mag_total_percent_loss_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_mag_total_weighted_avg_nabl")
+    ], string='NABL', default='fail',compute="_compute_mag_total_percent_loss_nabl")
 
 
-    @api.depends('mag_total_weighted_avg','eln_ref','grade')
-    def _compute_mag_total_weighted_avg_conformity(self):
+    @api.depends('mag_total_percent_loss','eln_ref','grade')
+    def _compute_mag_total_percent_loss_conformity(self):
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.mag_total_weighted_avg_conformity = 'na'
+                record.mag_total_percent_loss_conformity = 'na'
                 continue
 
-            record.mag_total_weighted_avg_conformity = 'fail'
+            record.mag_total_percent_loss_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
             mu_value = line.mu_value
@@ -1842,23 +1830,23 @@ class CoarseAggregateMechanical(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.mag_total_weighted_avg - record.mag_total_weighted_avg*mu_value
-                    upper = record.mag_total_weighted_avg + record.mag_total_weighted_avg*mu_value
+                    lower = record.mag_total_percent_loss - record.mag_total_percent_loss*mu_value
+                    upper = record.mag_total_percent_loss + record.mag_total_percent_loss*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.mag_total_weighted_avg_conformity = 'pass'
+                        record.mag_total_percent_loss_conformity = 'pass'
                         break
                     else:
-                        record.mag_total_weighted_avg_conformity = 'fail'
+                        record.mag_total_percent_loss_conformity = 'fail'
 
 
    
 
 
-    @api.depends('mag_total_weighted_avg','eln_ref','grade')
-    def _compute_mag_total_weighted_avg_nabl(self):
+    @api.depends('mag_total_percent_loss','eln_ref','grade')
+    def _compute_mag_total_percent_loss_nabl(self):
         
         for record in self:
-            record.mag_total_weighted_avg_nabl = 'fail'
+            record.mag_total_percent_loss_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
             
@@ -1866,17 +1854,29 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.mag_total_weighted_avg - record.mag_total_weighted_avg*mu_value
-            upper = record.mag_total_weighted_avg + record.mag_total_weighted_avg*mu_value
+            lower = record.mag_total_percent_loss - record.mag_total_percent_loss*mu_value
+            upper = record.mag_total_percent_loss + record.mag_total_percent_loss*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.mag_total_weighted_avg_nabl = 'pass'
+                record.mag_total_percent_loss_nabl = 'pass'
                 break
             else:
-                record.mag_total_weighted_avg_nabl = 'fail'
+                record.mag_total_percent_loss_nabl = 'fail'
 
     # Bulk Density
     loose_bulk_density_name = fields.Char("Name",default="Bulk Density")
     loose_bulk_visible = fields.Boolean("Loose Bulk Density Visible",compute="_compute_visible")
+
+
+    bulk_density_lines = fields.One2many('bulk.density.line','parent_id',string="Parameter")
+
+    average_loose_bulk = fields.Float(string="Average Loose Bulk Density Kg/Litter", compute="_compute_average_loose_bulk")
+
+
+    @api.depends('bulk_density_lines.loose_bulk_density')
+    def _compute_average_loose_bulk(self):
+        for rec in self:
+            values = rec.bulk_density_lines.mapped('loose_bulk_density')
+            rec.average_loose_bulk = sum(values) / len(values) if values else 0.0
 
     volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V")
     weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in g")
@@ -1909,27 +1909,27 @@ class CoarseAggregateMechanical(models.Model):
                 record.rodded_bulk_density = 0.0
 
 
-    loose_bulk_density_conformity = fields.Selection([
+    average_loose_bulk_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity',compute="_compute_loose_bulk_density_conformity",store=True)
+    ], string='Conformity',compute="_compute_average_loose_bulk_conformity",store=True)
 
-    loose_bulk_density_nabl = fields.Selection([
+    average_loose_bulk_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_loose_bulk_density_nabl")
+    ], string='NABL', default='fail',compute="_compute_average_loose_bulk_nabl")
 
 
-    @api.depends('loose_bulk_density','eln_ref','grade')
-    def _compute_loose_bulk_density_conformity(self):
+    @api.depends('average_loose_bulk','eln_ref','grade')
+    def _compute_average_loose_bulk_conformity(self):
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.loose_bulk_density_conformity = 'na'
+                record.average_loose_bulk_conformity = 'na'
                 continue
 
-            record.loose_bulk_density_conformity = 'fail'
+            record.average_loose_bulk_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
             mu_value = line.mu_value
@@ -1938,23 +1938,23 @@ class CoarseAggregateMechanical(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-                    upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
+                    lower = record.average_loose_bulk - record.average_loose_bulk*mu_value
+                    upper = record.average_loose_bulk + record.average_loose_bulk*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.loose_bulk_density_conformity = 'pass'
+                        record.average_loose_bulk_conformity = 'pass'
                         break
                     else:
-                        record.loose_bulk_density_conformity = 'fail'
+                        record.average_loose_bulk_conformity = 'fail'
 
 
    
 
 
-    @api.depends('loose_bulk_density','eln_ref','grade')
-    def _compute_loose_bulk_density_nabl(self):
+    @api.depends('average_loose_bulk','eln_ref','grade')
+    def _compute_average_loose_bulk_nabl(self):
         
         for record in self:
-            record.loose_bulk_density_nabl = 'fail'
+            record.average_loose_bulk_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
             
@@ -1962,13 +1962,13 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-            upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
+            lower = record.average_loose_bulk - record.average_loose_bulk*mu_value
+            upper = record.average_loose_bulk + record.average_loose_bulk*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.loose_bulk_density_nabl = 'pass'
+                record.average_loose_bulk_nabl = 'pass'
                 break
             else:
-                record.loose_bulk_density_nabl = 'fail'
+                record.average_loose_bulk_nabl = 'fail'
 
 
 
@@ -1977,29 +1977,38 @@ class CoarseAggregateMechanical(models.Model):
     rodded_bulk_density_name = fields.Char("Name",default="Rodded Bulk Density (RBD)")
     rodded_bulk_visible = fields.Boolean("Rodded Bulk Density Visible",compute="_compute_visible")
 
+    average_rodded_bulk = fields.Float(string="Average Rodded Bulk Density Kg/Litter", compute="_compute_average_rodded_bulk")
 
 
-    rodded_bulk_density_conformity = fields.Selection([
+    @api.depends('bulk_density_lines.rodded_bulk_density')
+    def _compute_average_rodded_bulk(self):
+        for rec in self:
+            values = rec.bulk_density_lines.mapped('rodded_bulk_density')
+            rec.average_rodded_bulk = sum(values) / len(values) if values else 0.0
+
+
+
+    average_rodded_bulk_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity',compute="_compute_rodded_bulk_density_conformity",store=True)
+    ], string='Conformity',compute="_compute_average_rodded_bulk_conformity",store=True)
 
-    rodded_bulk_density_nabl = fields.Selection([
+    average_rodded_bulk_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_rodded_bulk_density_nabl")
+    ], string='NABL', default='fail',compute="_compute_average_rodded_bulk_nabl")
 
 
-    @api.depends('rodded_bulk_density','eln_ref','grade')
-    def _compute_rodded_bulk_density_conformity(self):
+    @api.depends('average_rodded_bulk','eln_ref','grade')
+    def _compute_average_rodded_bulk_conformity(self):
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.rodded_bulk_density_conformity = 'na'
+                record.average_rodded_bulk_conformity = 'na'
                 continue
 
-            record.rodded_bulk_density_conformity = 'fail'
+            record.average_rodded_bulk_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')]).parameter_table
             mu_value = line.mu_value
@@ -2008,23 +2017,23 @@ class CoarseAggregateMechanical(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.rodded_bulk_density - record.rodded_bulk_density*mu_value
-                    upper = record.rodded_bulk_density + record.rodded_bulk_density*mu_value
+                    lower = record.average_rodded_bulk - record.average_rodded_bulk*mu_value
+                    upper = record.average_rodded_bulk + record.average_rodded_bulk*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.rodded_bulk_density_conformity = 'pass'
+                        record.average_rodded_bulk_conformity = 'pass'
                         break
                     else:
-                        record.rodded_bulk_density_conformity = 'fail'
+                        record.average_rodded_bulk_conformity = 'fail'
 
 
    
 
 
-    @api.depends('rodded_bulk_density','eln_ref','grade')
-    def _compute_rodded_bulk_density_nabl(self):
+    @api.depends('average_rodded_bulk','eln_ref','grade')
+    def _compute_average_rodded_bulk_nabl(self):
         
         for record in self:
-            record.rodded_bulk_density_nabl = 'fail'
+            record.average_rodded_bulk_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')]).parameter_table
             
@@ -2032,13 +2041,13 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.rodded_bulk_density - record.rodded_bulk_density*mu_value
-            upper = record.rodded_bulk_density + record.rodded_bulk_density*mu_value
+            lower = record.average_rodded_bulk - record.average_rodded_bulk*mu_value
+            upper = record.average_rodded_bulk + record.average_rodded_bulk*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.rodded_bulk_density_nabl = 'pass'
+                record.average_rodded_bulk_nabl = 'pass'
                 break
             else:
-                record.rodded_bulk_density_nabl = 'fail'
+                record.average_rodded_bulk_nabl = 'fail'
 
 
 
@@ -2312,9 +2321,9 @@ class CoarseAggregateMechanical(models.Model):
 
              # Loose bulk Density
             if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
-                result.result_char = round(self.loose_bulk_density,2)
+                result.result_char = round(self.average_loose_bulk,2)
                 result.calculated = True
-                if self.loose_bulk_density_nabl == 'pass':
+                if self.average_loose_bulk_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2323,8 +2332,8 @@ class CoarseAggregateMechanical(models.Model):
             # Rodded bulk Density
             if result.parameter.internal_id == '155935d1-24d9-4276-9e4f-453803342e8c':
                 result.calculated = True
-                result.result_char = round(self.rodded_bulk_density,2)
-                if self.rodded_bulk_density_nabl == 'pass':
+                result.result_char = round(self.average_rodded_bulk,2)
+                if self.average_rodded_bulk_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2467,8 +2476,8 @@ class CoarseAggregateMechanical(models.Model):
             # Soundness - Na2SO4
             if result.parameter.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
                 result.calculated = True
-                result.result_char = round(self.total_weighted_avg,2)
-                if self.total_weighted_avg_nabl == 'pass':
+                result.result_char = round(self.total_percent_loss,2)
+                if self.total_percent_loss_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2477,8 +2486,8 @@ class CoarseAggregateMechanical(models.Model):
             # Soundness - MgSO4
             if result.parameter.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
                 result.calculated = True
-                result.result_char = round(self.mag_total_weighted_avg,2)
-                if self.mag_total_weighted_avg_nabl == 'pass':
+                result.result_char = round(self.mag_total_percent_loss,2)
+                if self.mag_total_percent_loss_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -3188,44 +3197,37 @@ class SodiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Sieve Size – Passing")
+    retained_sieve = fields.Char("Sieve Size – Retained on")
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fractions Before Test (g)")
+    weight_after = fields.Float("Percentage Passing Fine Sieve After Test (Actual Per-Cent Loss)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
+        "Weighted Average Corrected Per-Cent Loss (%)",
         compute="_compute_loss",
         store=True
     )
 
-    weighted_avg = fields.Float(
-        "Weighted Average",
-        compute="_compute_weighted_avg",
-        store=True
-    )
-
-    @api.depends('weight_before', 'weight_after')
+    @api.depends('grading_percent', 'weight_after')
     def _compute_loss(self):
-     for rec in self:
-        if rec.weight_before > 0:
-            rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
-            ) * 100
-        else:
-            rec.percent_loss = 0
+        for record in self:
+            if record.grading_percent and record.weight_after:
+                record.percent_loss = (
+                    record.grading_percent * record.weight_after / 100
+                )
+            else:
+                record.percent_loss = 0.0
 
-    @api.depends('grading_percent', 'percent_loss')
-    def _compute_weighted_avg(self):
-     for rec in self:
-        rec.weighted_avg = (
-            rec.grading_percent * rec.percent_loss
-        ) / 100
+    # weighted_avg = fields.Float(
+    #     "Weighted Average",
+    #     compute="_compute_weighted_avg",
+    #     store=True
+    # )
 
+    
 
 class SodiumSulphateTwoLine(models.Model):
     _name = "sodium.sulphate.two.line"
@@ -3278,44 +3280,29 @@ class MagnesiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Sieve Size – Passing")
+    retained_sieve = fields.Char("Sieve Size – Retained on")
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fractions Before Test (g)")
+    weight_after = fields.Float("Percentage Passing Fine Sieve After Test (Actual Per-Cent Loss)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
+        "Weighted Average Corrected Per-Cent Loss (%)",
         compute="_compute_loss",
         store=True
     )
 
-    weighted_avg = fields.Float(
-        "Weighted Average",
-        compute="_compute_weighted_avg",
-        store=True
-    )
-
-    @api.depends('weight_before', 'weight_after')
+    @api.depends('grading_percent', 'weight_after')
     def _compute_loss(self):
-     for rec in self:
-        if rec.weight_before > 0:
-            rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
-            ) * 100
-        else:
-            rec.percent_loss = 0
-
-    @api.depends('grading_percent', 'percent_loss')
-    def _compute_weighted_avg(self):
-     for rec in self:
-        rec.weighted_avg = (
-            rec.grading_percent * rec.percent_loss
-        ) / 100
-
+        for record in self:
+            if record.grading_percent and record.weight_after:
+                record.percent_loss = (
+                    record.grading_percent * record.weight_after / 100
+                )
+            else:
+                record.percent_loss = 0.0
 
 class MagnesiumSulphateTwoLine(models.Model):
     _name = "magnesium.sulphate.two.line"
@@ -3445,6 +3432,61 @@ class MagnesiumSulphateTwoLine(models.Model):
 #             except:
 #                 record.cumulative_loss_percent = 0
 
+
+class BulkDensityLine(models.Model):
+    _name = "bulk.density.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+
+    volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V")
+    weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in g")
+
+    sample_weight_loose = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight_loose")
+    loose_bulk_density = fields.Float(string="Loose Bulk Density Kg/Litter",compute="_compute_loose_bulk_density")
+
+    sample_plus_bucket_loose = fields.Float(string="Bucket + Loose Aggregate")
+    sample_plus_bucket_rodded = fields.Float(string="Bucket + Compacted Aggregate")
+    
+    sample_weight_rodded = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight_rodded")
+    rodded_bulk_density = fields.Float(string="Rodded Bulk Density Kg/Litter",compute="_compute_loose_bulk_density")
+
+
+
+    @api.depends('volume_of_bucket_loose', 'weight_empty_bucket_loose')
+    def _compute_sample_weight_loose(self):
+        for record in self:
+            record.sample_weight_loose = record.sample_plus_bucket_loose - record.weight_empty_bucket_loose
+            record.sample_weight_rodded = record.sample_plus_bucket_rodded - record.weight_empty_bucket_rodded
+    
+    @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose')
+    def _compute_loose_bulk_density(self):
+        for record in self:
+            if record.volume_of_bucket_loose:
+                record.loose_bulk_density = round((record.sample_plus_bucket_loose-record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
+                record.rodded_bulk_density = round((record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
+            else:
+                record.loose_bulk_density = 0.0
+                record.rodded_bulk_density = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(BulkDensityLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
 
 class CoarseNotes(models.Model):
     _name = "coarse.notes1"
