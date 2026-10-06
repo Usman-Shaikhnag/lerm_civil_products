@@ -13,7 +13,7 @@
                 <div class="lerm-date-section">
                     <div class="row g-3 mb-4 align-items-end">
                         <!-- Search Bar with Mode Selector -->
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-xl col-lg-4 col-md-6">
                             <label class="lerm-field-label">Search Products</label>
                             <div class="input-group flex-nowrap" style="height: 38px; border-bottom: 1.5px solid #d1d5db;">
                                 <select class="form-select border-0 bg-light-subtle text-muted" 
@@ -38,7 +38,7 @@
                         </div>
 
                         <!-- Company Filter -->
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-xl col-lg-4 col-md-6">
                             <label class="lerm-field-label">Company</label>
                             <select class="lerm-select" t-on-change="_onCompanyFilter">
                                 <option value="ALL">All Companies</option>
@@ -51,7 +51,7 @@
                         </div>
 
                         <!-- Lab Filter -->
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-xl col-lg-4 col-md-6">
                             <label class="lerm-field-label">Lab Location</label>
                             <select class="lerm-select" t-on-change="_onLabFilter">
                                 <option value="ALL">All Labs</option>
@@ -64,18 +64,27 @@
                         </div>
 
                         <!-- Discipline Filter -->
-                        <div class="col-lg-3 col-md-6">
+                        <div class="col-xl col-lg-4 col-md-6">
                             <label class="lerm-field-label">Discipline</label>
-                            <div class="lerm-btn-group">
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background:#0066ff;color:#fff;' : ''">ALL</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mech</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
-                                        t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background:#0066ff;color:#fff;' : ''">NDT</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chem</button>
-                            </div>
+                            <select class="lerm-select" t-on-change="_onDisciplineFilter">
+                                <option value="ALL">All Disciplines</option>
+                                <t t-foreach="this.dashboard_state.disciplines" t-as="discipline" t-key="discipline.id">
+                                    <option t-att-value="discipline.id" t-att-selected="this.filter_state.activeDiscipline == discipline.id">
+                                        <t t-esc="discipline.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-xl col-lg-4 col-md-6">
+                            <label class="lerm-field-label">Department</label>
+                            <select class="lerm-select" t-on-change="_onDepartmentFilter">
+                                <option value="ALL" t-att-selected="this.filter_state.activeDepartment === 'ALL'">All Departments</option>
+                                <t t-foreach="this.filteredDepartments" t-as="department" t-key="department.id">
+                                    <option t-att-value="department.id" t-att-selected="this.filter_state.activeDepartment == department.id">
+                                        <t t-esc="department.name"/>
+                                    </option>
+                                </t>
+                            </select>
                         </div>
                     </div>
 

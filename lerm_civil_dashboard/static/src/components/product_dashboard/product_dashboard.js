@@ -14,12 +14,16 @@ class ProductDashboard extends Component {
       overdue_data: {},
       labs: [],
       companies: [],
+      scope_domain: [],
+      disciplines: [],
+      departments: [],
     });
 
     this.filter_state = useState({
       start_date: this._getDateXDaysAgo(30),
       end_date: this._today(),
       activeDiscipline: "ALL",
+      activeDepartment: "ALL",
       activeLab: "ALL",
       activeCompany: "ALL",
       activeDays: 30,
@@ -40,6 +44,9 @@ class ProductDashboard extends Component {
       const filterOptions = await jsonrpc("/dashboard/get_filter_options", {});
       this.dashboard_state.labs = filterOptions.labs || [];
       this.dashboard_state.companies = filterOptions.companies || [];
+      this.dashboard_state.scope_domain = filterOptions.scope_domain || [];
+      this.dashboard_state.disciplines = filterOptions.disciplines || [];
+      this.dashboard_state.departments = filterOptions.departments || [];
       await this.fetchData();
     });
   }
@@ -70,6 +77,7 @@ class ProductDashboard extends Component {
         start_date,
         end_date,
         discipline: activeDiscipline,
+        department: this.filter_state.activeDepartment,
         lab_id: activeLab,
         company_id: activeCompany,
         search_query: searchQuery,
@@ -131,9 +139,36 @@ class ProductDashboard extends Component {
     }
   }
 
+  // Departments under the selected discipline (all visible ones when 'ALL')
+  get filteredDepartments() {
+    const { activeDiscipline } = this.filter_state;
+    if (activeDiscipline === "ALL") {
+      return this.dashboard_state.departments;
+    }
+    const disciplineId = parseInt(activeDiscipline);
+    return this.dashboard_state.departments.filter((d) => d.discipline_ids.includes(disciplineId));
+  }
+
+  // Samples store their department as a name, so drill-downs filter on the name
+  get departmentDomain() {
+    const { activeDepartment } = this.filter_state;
+    if (activeDepartment === "ALL") {
+      return [];
+    }
+    const dept = this.dashboard_state.departments.find((d) => d.id === parseInt(activeDepartment));
+    return dept ? [["department_id", "=", dept.name]] : [];
+  }
+
+  async _onDepartmentFilter(ev) {
+    this.filter_state.activeDepartment = ev.target.value;
+    this.filter_state.currentPage = 1;
+    await this.fetchData();
+  }
+
   async _onDisciplineFilter(ev) {
-    const discipline = ev.currentTarget.dataset.discipline;
+    const discipline = ev.target.value;
     this.filter_state.activeDiscipline = discipline;
+    this.filter_state.activeDepartment = "ALL";
     this.filter_state.currentPage = 1;
     await this.fetchData();
   }
@@ -205,6 +240,8 @@ class ProductDashboard extends Component {
 
   get agingKpiData() {
     const buckets = [
+      { key: "today", label: "Due Today", color: "#2563eb", icon: "fa-bell" },
+      { key: "tomorrow", label: "Due Tomorrow", color: "#0891b2", icon: "fa-calendar-check-o" },
       { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
       { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
       { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
@@ -274,13 +311,19 @@ class ProductDashboard extends Component {
     today.setHours(0, 0, 0, 0);
 
     let minDays, maxDays;
-    if (bucketKey === "60+") {
+    if (bucketKey === "today") {
+      [minDays, maxDays] = [0, 0];
+    } else if (bucketKey === "tomorrow") {
+      [minDays, maxDays] = [1, 1];
+    } else if (bucketKey === "60+") {
       minDays = 61;
       maxDays = null;
     } else {
       [minDays, maxDays] = bucketKey.split("-").map(Number);
     }
     
+    const bucketTitle = { today: "Today", tomorrow: "Tomorrow" }[bucketKey] || `${bucketKey} Days`;
+
     const pad = (n) => n.toString().padStart(2, "0");
     const toDateStr = (d) =>
       `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -343,7 +386,7 @@ class ProductDashboard extends Component {
     }
 
     if (this.filter_state.activeDiscipline !== "ALL") {
-        domain.push(["discipline_id.discipline", "=", this.filter_state.activeDiscipline]);
+        domain.push(["discipline_id", "=", parseInt(this.filter_state.activeDiscipline)]);
     }
     
     if (this.filter_state.activeLab !== "ALL") {
@@ -368,10 +411,10 @@ class ProductDashboard extends Component {
 
     const action = {
         type: "ir.actions.act_window",
-        name: `${mode === 'upcoming' ? 'Upcoming Due' : 'Overdue'}: ${bucketKey} Days`,
+        name: `${mode === 'upcoming' ? 'Upcoming Due' : 'Overdue'}: ${bucketTitle}`,
         res_model: "lerm.srf.sample",
         views: [[false, "list"], [false, "form"]],
-        domain: domain,
+        domain: [...domain, ...this.departmentDomain, ...this.dashboard_state.scope_domain],
         context: { group_by: ["state", "sample_received_date:day"] },
     };
 
@@ -393,7 +436,7 @@ class ProductDashboard extends Component {
       ["sample_received_date", ">=", start_date],
       ["sample_received_date", "<=", end_date],
       ...(activeDiscipline !== "ALL"
-        ? [["discipline_id.discipline", "=", activeDiscipline]]
+        ? [["discipline_id", "=", parseInt(activeDiscipline)]]
         : []),
       ...(activeLab !== "ALL"
         ? [["lab_location", "=", parseInt(activeLab)]]
@@ -465,7 +508,7 @@ class ProductDashboard extends Component {
       name: actionName,
       res_model: "lerm.srf.sample",
       views: [[false, "list"], [false, "form"]],
-      domain: domain,
+      domain: [...domain, ...this.departmentDomain, ...this.dashboard_state.scope_domain],
       context: { group_by: ["state"] },
     };
 

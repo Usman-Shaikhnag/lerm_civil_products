@@ -13,11 +13,18 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
+        <!-- HOD: sees samples of disciplines they head or departments they belong to, plus their own -->
+        <record model="res.groups" id="group_dashboard_hod_data">
+            <field name="name">Department / Discipline Data</field>
+            <field name="category_id" ref="lerm_dashboard_access_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_dashboard_own_data'))]"/>
+        </record>
+
         <!-- Sees every sample on the dashboard -->
         <record model="res.groups" id="group_dashboard_all_data">
             <field name="name">All Data</field>
             <field name="category_id" ref="lerm_dashboard_access_category"/>
-            <field name="implied_ids" eval="[(4, ref('group_dashboard_own_data'))]"/>
+            <field name="implied_ids" eval="[(4, ref('group_dashboard_hod_data'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
 

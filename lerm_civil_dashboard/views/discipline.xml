@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="lerm_discipline_form_departments" model="ir.ui.view">
+            <field name="name">lerm_civil.discipline.form.departments</field>
+            <field name="model">lerm_civil.discipline</field>
+            <field name="inherit_id" ref="lerm_civil.lerm_discipline_form"/>
+            <field name="arch" type="xml">
+                <field name="hod" position="after">
+                    <field name="department_ids" widget="many2many_tags"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
