@@ -531,6 +531,119 @@
                          </field>    
                     </div>
 
+                    <!--  Surface Quality Percentage -->
+
+
+                    <div invisible="not surface_quality_visible">
+                        <h1 class="text-center">
+                            <field name="surface_quality_name" readonly="1" nolabel="1"/>
+                            <field name="surface_quality_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="surface_quality_visible == False" style="white-space:nowrap;width:70%">
+                        <tbody>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">Sr.No</td>
+                                <td class="fw-bold" style="text-align: center;">CRITERIA</td>
+                                <td class="fw-bold" style="text-align: center;">YES/NO</td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">A</td>
+                                <td style="text-align: center;"> <label class="fw-bold" for="cracks"></label></td>
+                                <td style="text-align: center;"><field name="cracks" class="blue-input" decoration-info="cracks != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">B</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="crazing"></label></td>
+                                  <td style="text-align: center;"><field name="crazing" class="blue-input" decoration-info="crazing != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">C</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="short_glazing"></label></td>
+                                  <td style="text-align: center;"><field name="short_glazing" class="blue-input" decoration-info="short_glazing != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">D</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="unevenness"></label></td>
+                                  <td style="text-align: center;"><field name="unevenness" class="blue-input" decoration-info="unevenness != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">E</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="depression"></label></td>
+                                  <td style="text-align: center;"><field name="depression" class="blue-input" decoration-info="depression != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">F</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="holes"></label></td>
+                                  <td style="text-align: center;"><field name="holes" class="blue-input" decoration-info="holes != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">G</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="glaze_devitrification"></label></td>
+                                  <td style="text-align: center;"><field name="glaze_devitrification" class="blue-input" decoration-info="glaze_devitrification != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">H</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="specks_and_spots"></label></td>
+                                  <td style="text-align: center;"><field name="specks_and_spots" class="blue-input" decoration-info="specks_and_spots != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">I</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="under_glaze_faults"></label></td>
+                                  <td style="text-align: center;"><field name="under_glaze_faults" class="blue-input" decoration-info="under_glaze_faults != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">J</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="decorating_faults"></label></td>
+                                  <td style="text-align: center;"><field name="decorating_faults" class="blue-input" decoration-info="decorating_faults != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">K</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="shading"></label></td>
+                                  <td style="text-align: center;"><field name="shading" class="blue-input" decoration-info="shading != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">L</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="nipped_edges"></label></td>
+                                  <td style="text-align: center;"><field name="nipped_edges" class="blue-input" decoration-info="nipped_edges != 0"/></td>
+                            </tr>
+                            <tr> 
+                                <td class="fw-bold" style="text-align: center;">M</td>
+                                <td style="text-align: center;"><label class="fw-bold" for="nipped_corners"></label></td>
+                                  <td style="text-align: center;"><field name="nipped_corners" class="blue-input" decoration-info="nipped_corners != 0"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="water_absorption_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="surface_quality_percentage">Average Surface Quality (%)</label></td>
+                                  <td><field name="surface_quality_percentage" class="blue-input"/><span>  (%)</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="surface_quality_percentage_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="surface_quality_percentage_confirmity"
+                                        decoration-success="surface_quality_percentage_confirmity == 'pass'" 
+                                        decoration-danger="surface_quality_percentage_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="surface_quality_percentage_nabl">NABL</label></td>
+                                <td>
+                                    <field name="surface_quality_percentage_nabl"
+                                        decoration-success="surface_quality_percentage_nabl == 'pass'" 
+                                        decoration-danger="surface_quality_percentage_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
 
 
                     

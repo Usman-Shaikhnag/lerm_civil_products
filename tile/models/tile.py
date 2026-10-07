@@ -500,6 +500,107 @@ class Tile(models.Model):
      for rec in self:
         rec.mohs_hardness_nabl = 'pass' if rec.mohs_hardness_report_type == 'nabl' else 'fail'
 
+
+    # Surface Quality 
+    surface_quality_name = fields.Char("Name",default="Surface Quality")
+    surface_quality_visible = fields.Boolean("Surface Quality Visible",compute="_compute_visible") 
+
+    cracks = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Cracks')
+    
+    crazing = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Crazing')
+    
+    short_glazing = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Short Glazing')
+
+    unevenness = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Unevenness')
+
+    depression = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Depression')
+
+    holes = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Holes')
+
+    glaze_devitrification = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Glaze Devitrification')
+
+    specks_and_spots = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Specks and Spots')
+
+    under_glaze_faults = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Under Glaze Faults')
+
+    decorating_faults = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Decorating Faults')
+
+    shading = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Shading')
+
+    nipped_edges = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Nipped Edges')
+
+    nipped_corners = fields.Selection(
+        [('yes', 'Yes'), ('no', 'No')],string='Nipped Corners')
+
+    surface_quality_percentage = fields.Float(
+        string='Surface Quality Percentage of Tiles without Defects (%)')
+
+    surface_quality_percentage_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_surface_quality_percentage_confirmity")
+    
+    @api.depends('surface_quality_percentage','eln_ref','grade')
+    def _compute_surface_quality_percentage_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.surface_quality_percentage_confirmity = 'na'
+                continue
+            record.surface_quality_percentage_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','239d3eab-e28e-49c5-8267-c3b829d2acfe')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','239d3eab-e28e-49c5-8267-c3b829d2acfe')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.surface_quality_percentage - record.surface_quality_percentage*mu_value
+                    upper = record.surface_quality_percentage + record.surface_quality_percentage*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.surface_quality_percentage_confirmity = 'pass'
+                        break
+                    else:
+                        record.surface_quality_percentage_confirmity = 'fail'
+
+    surface_quality_percentage_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_surface_quality_percentage_nabl",store=True)
+
+    @api.depends('surface_quality_percentage','eln_ref','grade')
+    def _compute_surface_quality_percentage_nabl(self):
+        
+        for record in self:
+            record.surface_quality_percentage_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','239d3eab-e28e-49c5-8267-c3b829d2acfe')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','239d3eab-e28e-49c5-8267-c3b829d2acfe')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.surface_quality_percentage - record.surface_quality_percentage*mu_value
+                    upper = record.surface_quality_percentage + record.surface_quality_percentage*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.surface_quality_percentage_nabl = 'pass'
+                        break
+                    else:
+                        record.surface_quality_percentage_nabl = 'fail'
+
+    
+
+           
     
 
 
@@ -518,7 +619,7 @@ class Tile(models.Model):
             record.edge_curvature_visible = False
             record.warpage_visible = False
             record.mohs_hardness_visible = False
-            
+            record.surface_quality_visible = False
            
             
             
@@ -552,6 +653,11 @@ class Tile(models.Model):
 
                 if sample.internal_id == "ecfb0b0b-0774-4296-af7b-6151fbf4f968":
                     record.mohs_hardness_visible = True
+
+                if sample.internal_id == "239d3eab-e28e-49c5-8267-c3b829d2acfe":
+                    record.surface_quality_visible = True
+
+                
 
                
 
@@ -660,10 +766,19 @@ class Tile(models.Model):
                 continue
 
 
-            # Warpage
+            # MOHS Hardness
             if result.parameter.internal_id == 'ecfb0b0b-0774-4296-af7b-6151fbf4f968':
                 result.calculated = True
                 if self.mohs_hardness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Surface Quality Percentage
+            if result.parameter.internal_id == '239d3eab-e28e-49c5-8267-c3b829d2acfe':
+                result.calculated = True
+                if self.surface_quality_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
