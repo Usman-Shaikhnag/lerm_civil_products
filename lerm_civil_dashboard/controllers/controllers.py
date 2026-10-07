@@ -1,6 +1,7 @@
 # controller
 from odoo import http
 from odoo.http import request
+from odoo.osv import expression
 from datetime import datetime,timedelta,time
 from collections import defaultdict, Counter
 from operator import itemgetter # Required for sorting
@@ -9,6 +10,84 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class LermCivilDashboard(http.Controller):
+
+    def _scope_mode(self):
+        """
+        Dashboard visibility of the current user: 'all', 'hod' or 'own'.
+        """
+        user = request.env.user
+        if user.has_group('lerm_civil_dashboard.group_dashboard_all_data'):
+            return 'all'
+        if user.has_group('lerm_civil_dashboard.group_dashboard_hod_data'):
+            return 'hod'
+        return 'own'
+
+    def _own_data_user(self):
+        """
+        Returns the current user when the dashboard must be limited to their own samples,
+        or None when the user may see other technicians' samples (HOD or 'All Data').
+        """
+        if self._scope_mode() == 'own':
+            return request.env.user
+        return None
+
+    def _technician_domain(self, user):
+        """
+        Samples the user is assigned to (on the sample, the ELN header, or any ELN parameter line).
+        """
+        return [
+            '|', '|', '|',
+            ('technicians', '=', user.id),
+            ('eln_id.technician', '=', user.id),
+            ('eln_id.technician_ids', 'in', [user.id]),
+            ('eln_id.parameters_result.technician', '=', user.id),
+        ]
+
+    def _hod_domain(self, user):
+        """
+        Samples of disciplines the user heads, or of departments the user belongs to,
+        plus the samples the user is a technician on.
+        """
+        domains = [[('discipline_id.hod', '=', user.id)]]
+        department_names = user.sudo().department_ids.mapped('name')
+        if department_names:
+            domains.append([('department_id', 'in', department_names)])
+        domains.append(self._technician_domain(user))
+        return expression.OR(domains)
+
+    def _user_scope_domain(self):
+        """
+        Extra sample domain limiting the dashboard to what the current user may see.
+        """
+        mode = self._scope_mode()
+        user = request.env.user
+        if mode == 'all':
+            return []
+        if mode == 'hod':
+            return self._hod_domain(user)
+        return self._technician_domain(user)
+
+    def _department_domain(self, department):
+        """
+        Sample domain for the Department filter. Samples store their department as a name (Char).
+        """
+        if not department or department == 'ALL':
+            return []
+        dept = request.env['hr.department'].sudo().browse(int(department)).exists()
+        if not dept:
+            return []
+        return [('department_id', '=', dept.name)]
+
+    def _departments_by_discipline(self, disciplines):
+        """
+        (department, disciplines it belongs to) pairs for every department under the given disciplines,
+        sorted by department name.
+        """
+        dept_map = defaultdict(lambda: request.env['lerm_civil.discipline'].sudo())
+        for discipline in disciplines:
+            for dept in discipline.department_ids:
+                dept_map[dept] |= discipline
+        return sorted(dept_map.items(), key=lambda item: item[0].name or '')
 
     @http.route(['/dashboard/getdata'], type="json", auth="user", methods=["POST"])
     def get_dashboard_data(self, **kw):
@@ -19,6 +98,7 @@ class LermCivilDashboard(http.Controller):
         start_date = kw.get('start_date')
         end_date = kw.get('end_date')
         discipline = kw.get('discipline')
+        department = kw.get('department')
         lab_id = kw.get('lab_id')
         company_id = kw.get('company_id')
         
@@ -39,7 +119,8 @@ class LermCivilDashboard(http.Controller):
 
         # 2. Discipline Filtering
         if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
+            domain.append(('discipline_id', '=', int(discipline)))
+        domain += self._department_domain(department)
             
         # 3. Lab Filtering
         if lab_id and lab_id != 'ALL':
@@ -50,6 +131,7 @@ class LermCivilDashboard(http.Controller):
             domain.append(('lab_location.company_id', '=', int(company_id)))
 
         # Fetch samples
+        domain += self._user_scope_domain()
         samples = Sample.search(domain)
 
         # --- Time-based grouping ---
@@ -118,12 +200,14 @@ class LermCivilDashboard(http.Controller):
             ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
-            aging_domain.append(('discipline_id.discipline', '=', discipline))
+            aging_domain.append(('discipline_id', '=', int(discipline)))
+        aging_domain += self._department_domain(department)
         if lab_id and lab_id != 'ALL':
             aging_domain.append(('lab_location', '=', int(lab_id)))
         if company_id and company_id != 'ALL':
             aging_domain.append(('lab_location.company_id', '=', int(company_id)))
 
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
@@ -146,6 +230,7 @@ class LermCivilDashboard(http.Controller):
         mode: 'upcoming' or 'overdue'
         """
         today_date = datetime.now().date()
+        own_user = self._own_data_user()
         
         aging_data = {}
         B_RANGES = [
@@ -156,6 +241,9 @@ class LermCivilDashboard(http.Controller):
             ("46-60", 46, 60),
             ("60+", 61, None)
         ]
+        if mode == 'upcoming':
+            # Extra single-day buckets shown as the first two cards (overlap with 0-7)
+            B_RANGES = [("today", 0, 0), ("tomorrow", 1, 1)] + B_RANGES
 
         _logger.info(f"DEBUG: mode={mode}, base_domain = {base_domain}")
         for key, min_days, max_days in B_RANGES:
@@ -194,8 +282,9 @@ class LermCivilDashboard(http.Controller):
                 b_name = "Unknown"
                 b_id = 0
                 if breakdown_type == 'technician':
-                    tech = None
-                    if s.eln_id and s.eln_id.parameters_result:
+                    # Samples are already scoped to the user, so attribute them to that user
+                    tech = own_user
+                    if not tech and s.eln_id and s.eln_id.parameters_result:
                         for param_res in s.eln_id.parameters_result:
                             if param_res.technician:
                                 tech = param_res.technician
@@ -246,6 +335,7 @@ class LermCivilDashboard(http.Controller):
         start_date = kw.get('start_date')
         end_date = kw.get('end_date')
         discipline = kw.get('discipline')
+        department = kw.get('department')
         lab_id = kw.get('lab_id')
         company_id = kw.get('company_id')
 
@@ -268,7 +358,8 @@ class LermCivilDashboard(http.Controller):
                 pass
 
         if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
+            domain.append(('discipline_id', '=', int(discipline)))
+        domain += self._department_domain(department)
             
         if lab_id and lab_id != 'ALL':
             domain.append(('lab_location', '=', int(lab_id)))
@@ -277,6 +368,7 @@ class LermCivilDashboard(http.Controller):
             domain.append(('lab_location.company_id', '=', int(company_id)))
 
         # 2. Fetch relevant samples
+        domain += self._user_scope_domain()
         samples = Sample.search(domain)
         _logger.info("Found %d samples for technician overview", len(samples))
 
@@ -309,6 +401,10 @@ class LermCivilDashboard(http.Controller):
 
         # 4. Fetch Employees associated with these technicians
         emp_domain = [('user_id', 'in', list(tech_to_samples.keys()))]
+        own_user = self._own_data_user()
+        if own_user:
+            # Users without 'All Data' access only get their own row
+            emp_domain.append(('user_id', '=', own_user.id))
         
         employees = Employee.search(emp_domain)
         _logger.info("Found %d employees with matching user_ids", len(employees))
@@ -387,10 +483,32 @@ class LermCivilDashboard(http.Controller):
         """
         Labs = request.env['lerm.lab.master'].sudo().search([])
         Companies = request.env['res.company'].sudo().search([])
-        
+
+        # Scope used by the frontend to filter drill-down lists
+        scope_domain = self._user_scope_domain()
+
+        # Disciplines for the filter dropdown, limited to the user's scope
+        Discipline = request.env['lerm_civil.discipline'].sudo()
+        mode = self._scope_mode()
+        if mode == 'all':
+            disciplines = Discipline.search([])
+        else:
+            disciplines = Discipline
+            for (discipline,) in request.env['lerm.srf.sample'].sudo()._read_group(scope_domain, ['discipline_id']):
+                disciplines |= discipline
+            if mode == 'hod':
+                disciplines |= Discipline.search([('hod', '=', request.env.uid)])
+
         return {
             "labs": [{"id": lab.id, "name": lab.lab_name, "company_id": lab.company_id.id} for lab in Labs],
-            "companies": [{"id": comp.id, "name": comp.name} for comp in Companies]
+            "companies": [{"id": comp.id, "name": comp.name} for comp in Companies],
+            "disciplines": [{"id": d.id, "name": d.discipline} for d in disciplines.sorted('discipline')],
+            # Departments under the visible disciplines; the frontend narrows them to the selected discipline
+            "departments": [
+                {"id": dept.id, "name": dept.name, "discipline_ids": dept_disciplines.ids}
+                for dept, dept_disciplines in self._departments_by_discipline(disciplines)
+            ],
+            "scope_domain": scope_domain,
         }
     
     
@@ -403,6 +521,7 @@ class LermCivilDashboard(http.Controller):
         start_date = kw.get('start_date')
         end_date = kw.get('end_date')
         discipline = kw.get('discipline')
+        department = kw.get('department')
         lab_id = kw.get('lab_id')
         company_id = kw.get('company_id')
         search_query = kw.get('search_query', '').strip() 
@@ -430,7 +549,8 @@ class LermCivilDashboard(http.Controller):
                  pass
 
         if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
+            domain.append(('discipline_id', '=', int(discipline)))
+        domain += self._department_domain(department)
             
         if lab_id and lab_id != 'ALL':
             domain.append(('lab_location', '=', int(lab_id)))
@@ -444,6 +564,7 @@ class LermCivilDashboard(http.Controller):
 
 
         # 4. Find all distinct customers within the current domain
+        domain += self._user_scope_domain()
         samples_in_period = Sample.search(domain)
         
         # Using a set to ensure unique customer records, including False (No Customer)
@@ -515,7 +636,8 @@ class LermCivilDashboard(http.Controller):
             ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
-            aging_domain.append(('discipline_id.discipline', '=', discipline))
+            aging_domain.append(('discipline_id', '=', int(discipline)))
+        aging_domain += self._department_domain(department)
         if lab_id and lab_id != 'ALL':
             aging_domain.append(('lab_location', '=', int(lab_id)))
         if company_id and company_id != 'ALL':
@@ -524,6 +646,7 @@ class LermCivilDashboard(http.Controller):
             # For customer dashboard, aging samples should also be filtered by the searched customer
             aging_domain.append(('customer_id.name', 'ilike', f'%{search_query}%'))
             
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
@@ -549,6 +672,7 @@ class LermCivilDashboard(http.Controller):
         start_date = kw.get('start_date')
         end_date = kw.get('end_date')
         discipline = kw.get('discipline')
+        department = kw.get('department')
         lab_id = kw.get('lab_id')
         company_id = kw.get('company_id')
         search_query = kw.get('search_query', '').strip()
@@ -579,7 +703,8 @@ class LermCivilDashboard(http.Controller):
 
         # 2. Discipline Filtering
         if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
+            domain.append(('discipline_id', '=', int(discipline)))
+        domain += self._department_domain(department)
 
         # 3. Search Query Filtering
         if search_query:
@@ -601,6 +726,7 @@ class LermCivilDashboard(http.Controller):
                 domain += actual_search_domain
 
         # 4. Fetch samples and group by material
+        domain += self._user_scope_domain()
         samples_in_period = Sample.search(domain)
         # Using mapped and set to ensure we only get unique materials
         materials = set(samples_in_period.mapped('material_id'))
@@ -639,7 +765,8 @@ class LermCivilDashboard(http.Controller):
         ]
         # Include current search filters if they match sample fields
         if discipline and discipline != "ALL":
-            aging_domain.append(('discipline_id.discipline', '=', discipline))
+            aging_domain.append(('discipline_id', '=', int(discipline)))
+        aging_domain += self._department_domain(department)
             
         if lab_id and lab_id != 'ALL':
             aging_domain.append(('lab_location', '=', int(lab_id)))
@@ -652,6 +779,7 @@ class LermCivilDashboard(http.Controller):
             if search_type in ['all', 'product']:
                 aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
 
+        aging_domain += self._user_scope_domain()
         aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='upcoming')
         overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='overdue')
 

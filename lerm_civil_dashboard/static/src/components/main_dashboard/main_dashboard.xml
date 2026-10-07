@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="lerm-date-section">
-                    <!-- Row 1: Company | Lab | Discipline -->
+                    <!-- Row 1: Company | Lab | Discipline | Department -->
                     <div class="row g-3 mb-4 align-items-end">
                         <div class="col-lg-3 col-md-6">
                             <label class="lerm-field-label">Company</label>
@@ -39,7 +39,7 @@
                                 </t>
                             </select>
                         </div>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="col-lg-3 col-md-6">
                             <label class="lerm-field-label">Lab</label>
                             <select class="lerm-select" t-on-change="_onLabFilter">
                                 <option value="ALL">All Labs</option>
@@ -50,18 +50,27 @@
                                 </t>
                             </select>
                         </div>
-                        <div class="col-lg-5">
+                        <div class="col-lg-3 col-md-6">
                             <label class="lerm-field-label">Discipline</label>
-                            <div class="lerm-btn-group">
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background:#0066ff;color:#fff;' : ''">ALL</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mechanical</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
-                                        t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background:#0066ff;color:#fff;' : ''">NDT</button>
-                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chemical</button>
-                            </div>
+                            <select class="lerm-select" t-on-change="_onDisciplineFilter">
+                                <option value="ALL">All Disciplines</option>
+                                <t t-foreach="this.dashboard_state.disciplines" t-as="discipline" t-key="discipline.id">
+                                    <option t-att-value="discipline.id" t-att-selected="this.filter_state.activeDiscipline == discipline.id">
+                                        <t t-esc="discipline.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="lerm-field-label">Department</label>
+                            <select class="lerm-select" t-on-change="_onDepartmentFilter">
+                                <option value="ALL" t-att-selected="this.filter_state.activeDepartment === 'ALL'">All Departments</option>
+                                <t t-foreach="this.filteredDepartments" t-as="department" t-key="department.id">
+                                    <option t-att-value="department.id" t-att-selected="this.filter_state.activeDepartment == department.id">
+                                        <t t-esc="department.name"/>
+                                    </option>
+                                </t>
+                            </select>
                         </div>
                     </div>
 

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_alccofine_form" model="ir.ui.view">
+        <field name="name">mechanical.alccofine.form</field>
+        <field name="model">mechanical.alccofine</field>
+        <field name="arch" type="xml">
+            <form>
+                  
+                <sheet>
+                  <div >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                    </group>
+                   
+
+                    <style>
+                      .blue-input input {
+                          background-color: #d8ecff !important;   /* हलका Blue background */
+                          border-color: #3b82f6 !important;        /* Blue border */ 
+                      }
+
+                      .o_list_view .o_data_cell.blue-input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                            }
+
+                      /* Input when the cell goes into edit mode */
+                      .o_list_view .o_data_cell.blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                          }
+                  </style>
+
+
+                  <div class="custom_table_borders">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+
+                    <!-- Specific Gravity -->
+
+                    <div invisible="not specific_gravity_visible">
+                        <h1 class="text-center">
+                            <field name="specific_gravity_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="specific_gravity_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    
+                    <div class="d-flex gap-2" invisible=" not specific_gravity_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp_specific_gravity"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp_specific_gravity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity_specific_gravity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity_specific_gravity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible=" not specific_gravity_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not specific_gravity_visible">
+                            <tbody>
+                            <tr>
+                                    <td></td>
+                                    <td>Trail 1</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="mass_alccofine">Mass of Alccofine (g)</label>
+                                    </td>
+                                    <td>
+                                        <field name="mass_alccofine" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="initial_volume">Initial Volume of Kerosine (ml) V1</label>
+                                    </td>
+                                    <td>
+                                        <field name="initial_volume" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="final_volume">Final Volume of kerosine and Alccofine (After immersion in constant water bath) (ml) V2</label>
+                                    </td>
+                                    <td>
+                                        <field name="final_volume" class="blue-input"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="displaced_volume">Displaced Volume of Sample (cm³)</label>
+                                    </td>
+                                    <td>
+                                        <field name="displaced_volume" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                      
+                       </div>
+
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not specific_gravity_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="specific_gravity" >Specific Gravity</label>
+                                    </td>
+                                    <td>
+                                        <field name="specific_gravity" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="specific_gravity_conformity"
+                                        decoration-success="specific_gravity_conformity == 'pass'" 
+                                        decoration-danger="specific_gravity_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_nabl">NABL</label></td>
+                                <td>
+                                    <field name="specific_gravity_nabl"
+                                        decoration-success="specific_gravity_nabl == 'pass'" 
+                                        decoration-danger="specific_gravity_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Normal Consistency Start -->
+
+                    <div invisible=" not dry_loose_bulk_density_visible">
+                        <h1 class="text-center">
+                            <field name="dry_loose_bulk_density_name" readonly="1" nolabel="1" style="margin:20px 0px"/>
+                            <field name="dry_loose_bulk_density_visible" invisible="1" style="margin:20px 0px"/>
+                        </h1>
+                    </div>
+
+                    
+                    <div class="d-flex gap-2" invisible=" not dry_loose_bulk_density_visible"> 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp_percent_normal"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp_percent_normal" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity_percent_normal" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity_percent_normal" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    </div>
+
+                    <div invisible = "dry_loose_bulk_density_visible == False" class="custom_table_borders">
+                        <field name="dry_trial_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                               
+                                <field name='weight_empty_cylinder' class="blue-input" decoration-info="weight_empty_cylinder != 0"/>
+                                
+                                <field name='weight_cylinder_microsilica' class="blue-input" decoration-info="weight_cylinder_microsilica != 0"/>
+                                <field name='weight_microsilica'/>
+                                <field name='cylinder_volume' class="blue-input" decoration-info="cylinder_volume != 0"/>
+                                <field name='dry_loose_bulk_density'/> 
+                            </tree>
+                        </field> 
+                    </div>
+
+                    
+
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;" invisible=" not dry_loose_bulk_density_visible">
+                        <tbody>
+                              <tr>
+                                    <td>
+                                        <label class="fw-bold" for="average_density" >Dry Loose Bulk Density (kg/m³)</label>
+                                    </td>
+                                    <td>
+                                        <field name="average_density" />
+                                    </td>
+                                </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="average_density_conformity"
+                                        decoration-success="average_density_conformity == 'pass'" 
+                                        decoration-danger="average_density_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="average_density_nabl"
+                                        decoration-success="average_density_nabl == 'pass'" 
+                                        decoration-danger="average_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    
+
+                    
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+                    
+                  
+
+
+
+                  <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="concrete_moe_datasheet">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+				<div style="text-align:center;font-size:18px">
+                    Modulus of Elasticity of Concrete (MOE)
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+						</table>
+					<!-- MOE tables are shown for the first (Modulus of Elasticity)
+						 parameter only; the flag comes from the existing
+						 _compute_visible, keyed on MOE_PARAMETER_INTERNAL_ID. -->
+					<div t-if="data.compressive_visible"
+						style="text-align:center;font-size:18px;margin-top:25px">
+
+						<span t-esc="parameter.parameter_name"/>
+
+						<span>
+							<t t-foreach="parameter.parameter_table" t-as="parameter_table_line">
+								<t t-if="parameter_table_line.grade.id == eln.grade_id.id">
+									<span t-field="parameter_table_line.specification"/>
+								</t>
+							</t>
+						</span>
+
+					</div>
+					<div t-if="data.compressive_visible" style="margin-top:20px;">
+						<table style="width:100%">
+							<thead>
+								<tr>
+									<th colspan="4" style="text-align:center;">
+										28-DAY CUBE COMPRESSIVE STRENGTH / REFERENCE STRESS
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align: center;">Cube Specimen</th>
+									<th style="text-align: center;">Compressive Strength (MPa)</th>
+									<th style="text-align: center;">Average Fc (MPa)</th>
+									<th style="text-align: center;">Basic stress, σb = Fc/9 (MPa)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Exactly one row per cube specimen, straight from the
+									 cube_lines one2many - never more, so there is no
+									 trailing blank row after the last specimen.
+
+									 Average Fc and Basic stress are NOT repeated on every
+									 row and are NOT left as empty <td> cells either: they
+									 are emitted exactly once, on the first specimen row,
+									 with a dynamic rowspan so the single cell vertically
+									 merges across all the specimen rows. rowspan follows
+									 len(data.cube_lines), so 3 specimens give rowspan="3",
+									 4 give rowspan="4" and so on. Values stay computed on
+									 the parent - never hard-coded. -->
+								<tr t-foreach="data.cube_lines" t-as="c">
+									<td style="text-align: center;">
+										<span t-esc="c.specimen" t-options='{"widget": "integer"}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="c.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td t-if="c.specimen == 1"
+										t-att-rowspan="len(data.cube_lines)"
+										style="text-align: center; vertical-align: middle;">
+										<span t-esc="data.average_strength"
+											t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td t-if="c.specimen == 1"
+										t-att-rowspan="len(data.cube_lines)"
+										style="text-align: center; vertical-align: middle;">
+										<span t-esc="data.basic_stress"
+											t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr t-if="not data.cube_lines">
+									<td style="text-align: center;">--</td>
+									<td style="text-align: center;">--</td>
+									<td style="text-align: center;">--</td>
+									<td style="text-align: center;">--</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div t-if="data.compressive_visible" style="margin-top:20px;">
+						<table style="width:100%">
+							<thead>
+								<tr>
+									<th colspan="12" style="text-align:center;">
+										SPECIMEN DETAILS AND MODULUS CALCULATION
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align: center;">Specimen</th>
+									<th style="text-align: center;">Diameter D (mm)</th>
+									<th style="text-align: center;">Length L (mm)</th>
+									<th style="text-align: center;">Mass (kg)</th>
+									<th style="text-align: center;">εb (×10⁻⁶)</th>
+									<th style="text-align: center;">εa (×10⁻⁶)</th>
+									<th style="text-align: center;">L/D</th>
+									<th style="text-align: center;">Density (kg/m³)</th>
+									<th style="text-align: center;">Stress σb (MPa)</th>
+									<th style="text-align: center;">Stress σa (MPa)</th>
+									<th style="text-align: center;">Ec (MPa)</th>
+									<th style="text-align: center;">Ec (GPa)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.specimen_lines" t-as="r">
+									<td style="text-align: center;">
+										<span t-esc="r.specimen"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.diameter" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.specimen_length" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.mass" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.strain_b" t-options='{"widget": "float", "precision": 0}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.strain_a" t-options='{"widget": "float", "precision": 0}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.l_d_ratio" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.density" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.stress_b" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.stress_a" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.ec_mpa" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.ec_gpa" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr t-if="not data.specimen_lines">
+									<td colspan="12" style="text-align: center;">--</td>
+								</tr>
+								<tr>
+									<td colspan="10" style="text-align: center;">Average</td>
+									<td style="text-align: center;">
+										<span t-esc="data.average_ec_mpa" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="data.average_ec_gpa" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Poisson table is shown for the second parameter only; the flag
+						 comes from the existing _compute_visible, keyed on
+						 POISSON_PARAMETER_INTERNAL_ID. -->
+					<div t-if="data.poisson_visible and poisson_parameter" style="text-align:center;font-size:18px;margin-top:25px">
+						<span t-esc="poisson_parameter.parameter_name"/>
+						<span>
+							<t t-foreach="poisson_parameter.parameter_table" t-as="parameter_table_line">
+								<t t-if="parameter_table_line.grade.id == eln.grade_id.id">
+									<span t-field="parameter_table_line.specification"/>
+								</t>
+							</t>
+						</span>
+					</div>
+					<div t-if="data.poisson_visible and poisson_parameter" style="margin-top:20px;">
+						<table style="width:100%">
+							<thead>
+								<tr>
+									<th colspan="6" style="text-align:center;">
+										POISSON&#39;S RATIO (OPTIONAL &#8212; IF TRANSVERSE STRAIN IS MEASURED)
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align: center;">Specimen</th>
+									<th style="text-align: center;">Long. εb (×10⁻⁶)</th>
+									<th style="text-align: center;">Long. εa (×10⁻⁶)</th>
+									<th style="text-align: center;">Trans. εb (×10⁻⁶)</th>
+									<th style="text-align: center;">Trans. εa (×10⁻⁶)</th>
+									<th style="text-align: center;">Poisson&#39;s Ratio μ</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.poisson_lines" t-as="r">
+									<td style="text-align: center;">
+										<span t-esc="r.specimen"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.long_strain_b" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.long_strain_a" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.trans_strain_b" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.trans_strain_a" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;">
+										<span t-esc="r.poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr t-if="not data.poisson_lines">
+									<td colspan="6" style="text-align: center;">--</td>
+								</tr>
+								<tr>
+									<td colspan="5" style="text-align: center;">Average</td>
+									<td style="text-align: center;">
+										<span t-esc="data.average_poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div style="margin-top:10px">
+						<table style="width:100%">
+							<thead>
+								<tr>
+									<th colspan="6" style="text-align:center;">
+										FINAL RESULT
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-if="data.compressive_visible">
+									<td colspan="4">Average Static Modulus of Elasticity, Ec (GPa)</td>
+									<td colspan="2" style="text-align: center;">
+										<span t-esc="data.average_ec_gpa" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr t-if="data.poisson_visible">
+									<td colspan="4">Average Poisson&#39;s Ratio, μ</td>
+									<td colspan="2" style="text-align: center;">
+										<span t-esc="data.average_poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By
+								</b>
+
+							</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+
+							</t>
+						</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.filled_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						<div style="margin-left:500px">
+
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				</div>
+			</t>
+		</t>
+	</template>
+
+</odoo>

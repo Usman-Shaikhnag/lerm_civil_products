@@ -9,7 +9,9 @@
     "category":"Lerm Civil",
     "depends": ["web","base","lerm_civil"],
     "data": [
+        "security/security.xml",
         "views/dashboard.xml",
+        "views/discipline.xml",
     ],
     "assets": {
         "web.assets_backend": [

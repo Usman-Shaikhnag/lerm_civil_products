@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="hollow_concrete_block_datasheet">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+			Hollow Concrete Block
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+				
+
+           <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_name"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+			   <!-- Compressive Strength -->
+					
+					<div t-if="data.compressive_strength_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;">
+							Compressive Strength
+						</div>
+						
+						
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 15px;margin-top: 10px;page-break-inside: avoid; break-inside: avoid;">
+							<thead>
+								<tr>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of empty Cylinder (w1) (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length (mm)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Width (mm)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Thickness (mm)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Gross Area (mm²)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Load (kN)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Compressive Strength (N/mm²)</th>
+									
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.compressive_strength_line_ids" t-as="r" style="text-align: center;">
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['length']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['breadth']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['thickness']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['area']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['load_kn']" />
+									</td>
+
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td width="100%" colspan="6" style="font-weight: bold;text-align: center; padding: 8px;">Average Compressive Strength (N/mm²) : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.average_compressive_strength" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							
+						</table>
+						
+						</div>
+
+
+			
+
+					<!--  Water Absorption -->
+
+					<div t-if="data.water_absorbtion_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;">
+							Water Absorption 
+						</div>	  
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 15px;margin-top: 10px;page-break-inside: avoid; break-inside: avoid;">
+							<thead>
+								<tr>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of empty Cylinder (w1) (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Wet Mass of Block (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Mass of Block (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%)</th>
+									
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.water_absorption_line_ids" t-as="r" style="text-align: center;">
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wet_mass']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['dry_mass']"/>
+									</td>
+
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td width="100%" colspan="6" style="font-weight: bold;text-align: center; padding: 8px;">Average Water Absorption (%) : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.water_absorption" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							
+						</table>
+						
+						</div>
+                    
+
+           
+                    
+                    
+                    <!-- Moisture Movement -->
+
+                    <div t-if="data.moisture_movment_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;"> 
+							Moisture Movement
+						</div>	  
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 15px;margin-top: 10px;page-break-inside: avoid; break-inside: avoid;">
+							<thead>
+								<tr>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of empty Cylinder (w1) (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Wet Mass of Block (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Mass of Block (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%)</th>
+									
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.moisture_movment_child_lines" t-as="r" style="text-align: center;">
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['dry_length']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wet_length']"/>
+									</td>
+
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['moisture_movment']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td width="100%" colspan="6" style="font-weight: bold;text-align: center; padding: 8px;">Average  : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.average_moisture_movment" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							
+						</table>
+						
+						</div>
+                    
+                    
+                    
+                    <!-- Drying Shrinkage -->
+
+
+                    <div t-if="data.drying_shrinkage_visible">
+						<div style="text-align:center;font-size:18px;margin-top: 20px;">
+							Drying Shrinkage
+						</div>	  
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 15px;margin-top: 10px;page-break-inside: avoid; break-inside: avoid;">
+							<thead>
+								<tr>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Wet measurement of the Block</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Measurement of the Block</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Mass of Block (kg)</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Length</th>
+									<th style="font-weight: bold;padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Drying Shrinkage %</th>
+									
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.drying_shrinkage_child_lines" t-as="r" style="text-align: center;">
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wet_measurment']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['dry_measurment']"/>
+									</td>
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['dry_lengths']"/> 
+									</td>
+
+									<td style="padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['drying_shrinkage']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 15px;page-break-inside: avoid; break-inside: avoid;">
+							<tr>
+								<td width="100%" colspan="6" style="font-weight: bold;text-align: center; padding: 8px;">Average  : 
+								<![CDATA[&nbsp;]]>
+									<span t-field="data.average_drying_shrinkage" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							
+						</table>
+						
+						</div>
+
+
+                    
+                 
+
+
+                    
+                    
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                             <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                    
+                    
+                </div>
+                
+            </t>
+        </t>
+    </template>
+
+    
+</odoo>
+
+					
