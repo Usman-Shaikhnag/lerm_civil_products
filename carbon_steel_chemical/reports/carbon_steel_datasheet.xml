@@ -59,15 +59,15 @@
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-									<strong>TEST METHOD :</strong>&#160;<span t-field="tmt.test_method_mech"/>
+									<strong>TEST METHOD :</strong>&#160;<span t-field="data.test_method_mech"/>
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-                                  <strong>TEMPRATURE : </strong>&#160;<span t-field="tmt.temprature"/>
+                                  <strong>TEMPRATURE : </strong>&#160;<span t-field="data.temprature"/>
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-                                 <strong> HUMIDITY : </strong>&#160;<span t-field="tmt.humidity"/>
+                                 <strong> HUMIDITY : </strong>&#160;<span t-field="data.humidity"/>
 								</td>
                                 
                                
@@ -91,41 +91,41 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per <span t-field="tmt.test_method_mech"/></b>
+									<b>Specification as per <span t-field="data.test_method_mech"/></b>
 								</td>
 
 							
 								<td style="text-align: center;">
-								&#160;<span t-field="tmt.uts_specification"/>
+								&#160;<span t-field="data.uts_specification"/>
 								</td> <!-- UTS -->
 
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.yield_specification"/>
+									&#160;<span t-field="data.yield_specification"/>
 								</td>
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.proof02_specification"/>
+									&#160;<span t-field="data.proof02_specification"/>
 								</td>
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.p_elongation_specification"/>
+									&#160;<span t-field="data.p_elongation_specification"/>
 								</td>
 
 								<td style="text-align: center;">	
-								&#160;<span t-field="tmt.t_elongation_specification"/>
+								&#160;<span t-field="data.t_elongation_specification"/>
 									</td> <!-- elongation -->
 								<td style="text-align: center;">
-								&#160;<span t-field="tmt.tsys_specification"/>
+								&#160;<span t-field="data.tsys_specification"/>
 									</td> <!-- bend -->
 
                                     <td style="text-align: center;">
-									&#160;<span t-field="tmt.bend_specification"/>
+									&#160;<span t-field="data.bend_specification"/>
 									</td> <!-- bend -->
 
 									<td style="text-align: center;">
-									&#160;<span t-field="tmt.rebend_specification"/>
+									&#160;<span t-field="data.rebend_specification"/>
 									</td>
 							</tr>
                             <t t-set="f" t-value="0"/>
-                            <tr t-foreach="tmt.child_lines" t-as="r">
+                            <tr t-foreach="data.child_lines" t-as="r">
                                 <td  style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
@@ -271,16 +271,16 @@
 								</td>
 
 									<td colspan="2" style="white-space: nowrap;">
-                                 <strong> TEST METHOD : &#160;</strong><span t-field="tmt.test_method_section"/>
+                                 <strong> TEST METHOD : &#160;</strong><span t-field="data.test_method_section"/>
 							
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-                                  <strong>TEMPRATURE : &#160;</strong><span t-field="tmt.temprature_section"/>
+                                  <strong>TEMPRATURE : &#160;</strong><span t-field="data.temprature_section"/>
 								</td>
 
 								<td colspan="1" style="white-space: nowrap;">
-                                  <strong>HUMIDITY : &#160;</strong><span t-field="tmt.humidity_section"/>
+                                  <strong>HUMIDITY : &#160;</strong><span t-field="data.humidity_section"/>
 								</td>
                                 
                                
@@ -302,7 +302,7 @@
                             
 						
                             <t t-set="f" t-value="0"/>
-                            <tr t-foreach="tmt.section_weight_lines" t-as="r">
+                            <tr t-foreach="data.section_weight_lines" t-as="r">
                                 <td  style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
@@ -416,16 +416,16 @@
 								</td>
 
 								<td colspan="4" style="white-space: nowrap;">
-                                 <strong> TEST METHOD :  &#160;</strong><span t-field="tmt.test_method_chemical"/>
+                                 <strong> TEST METHOD :  &#160;</strong><span t-field="data.test_method_chemical"/>
 								 
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-                                  <strong>TEMPRATURE :&#160;</strong><span t-field="tmt.temprature_chemical"/>
+                                  <strong>TEMPRATURE :&#160;</strong><span t-field="data.temprature_chemical"/>
 								</td>
 
 								<td colspan="2" style="white-space: nowrap;">
-                                  <strong>HUMIDITY : &#160;</strong><span t-field="tmt.humidity_chemical"/>
+                                  <strong>HUMIDITY : &#160;</strong><span t-field="data.humidity_chemical"/>
 								</td>
                                 
                                 
@@ -452,46 +452,46 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per <span t-field="tmt.test_method_section"/></b>
+									<b>Specification as per <span t-field="data.test_method_section"/></b>
 								</td>
 
 							
 								<td style="text-align: center;">
-								&#160;<span t-field="tmt.c_specification"/>
+								&#160;<span t-field="data.c_specification"/>
 								</td> <!-- UTS -->
 
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.p_specification"/>
+									&#160;<span t-field="data.p_specification"/>
 								</td>
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.s_specification"/>
+									&#160;<span t-field="data.s_specification"/>
 								</td>
 
 								<td style="text-align: center;">
-								&#160;<span t-field="tmt.p_s_specification"/>
+								&#160;<span t-field="data.p_s_specification"/>
 								</td>
 								<td style="text-align: center;">
-									&#160;<span t-field="tmt.si_elongation_specification"/>
+									&#160;<span t-field="data.si_elongation_specification"/>
 								</td>
 
 								<td style="text-align: center;">	
-								&#160;<span t-field="tmt.cr_specification"/>
+								&#160;<span t-field="data.cr_specification"/>
 									</td> <!-- elongation -->
 								<td style="text-align: center;">
-								&#160;<span t-field="tmt.cu_specification"/>
+								&#160;<span t-field="data.cu_specification"/>
 									</td> <!-- bend -->
 
                                     <td style="text-align: center;">
-								&#160;<span t-field="tmt.mo_specification"/>
+								&#160;<span t-field="data.mo_specification"/>
 									</td> <!-- bend -->
 
 
 									   <td style="text-align: center;">
-								&#160;<span t-field="tmt.ni_specification"/>
+								&#160;<span t-field="data.ni_specification"/>
 									</td> <!-- bend -->
 
 									   <td style="text-align: center;">
-								&#160;<span t-field="tmt.mn_specification"/>
+								&#160;<span t-field="data.mn_specification"/>
 									</td> <!-- bend -->
 
 								
@@ -500,7 +500,7 @@
 									
 							</tr>
                             <t t-set="f" t-value="0"/>
-                            <tr t-foreach="tmt.chemical_test_lines" t-as="r">
+                            <tr t-foreach="data.chemical_test_lines" t-as="r">
                                 <td  style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />

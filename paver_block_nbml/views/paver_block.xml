@@ -165,11 +165,14 @@
                     <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
                             <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
                                 <field name="serial_no"/>
+                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
+                                <field name="type_of_paver" class="blue-input" decoration-info="type_of_paver != 0"/>
                                 <field name="lenght" class="blue-input" decoration-info="lenght != 0"/>
                                 <field name="width" class="blue-input" decoration-info="width != 0"/>
-                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
-                                <field name="area" />
                                 <field name="load"  class="blue-input" decoration-info="load != 0"/>
+                                
+                                <field name="area" />
+                                
                                 <field name="apparent_com"/>
                                 <field name="correction_factor" />
                                 <field name="compressive_strenght"/>
@@ -271,6 +274,71 @@
                                 <td><field name="avg_abrasion_nabl"
                                             decoration-success="avg_abrasion_nabl == 'pass'"
                                             decoration-danger="avg_abrasion_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                     <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                  
+
+
+                            <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
+                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
+                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                                        <field name="serial_no" />
+                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
+                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
+                                        <field name="wet_w2"  class="blue-input" decoration-info="wet_w2 != 0"/>
+                                        <field name="water_absorption"/>
+                                    </tree>
+                                </field>
+                            </div>
+
+                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_water_absorption" readonly="1"/>
+                        
+                  
+                    </group> -->
+
+                    
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption">Avg. Water Absorption</label></td>
+                                <td><field name="avg_water_absorption"/> <span> %</span></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                   
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_conformity">NABL</label></td>
+                                <td><field name="avg_water_absorption_conformity"
+                                            decoration-success="avg_water_absorption_conformity == 'pass'"
+                                            decoration-danger="avg_water_absorption_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL</label></td>
+                                <td><field name="avg_water_absorption_nabl"
+                                            decoration-success="avg_water_absorption_nabl == 'pass'"
+                                            decoration-danger="avg_water_absorption_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
                         </tbody>

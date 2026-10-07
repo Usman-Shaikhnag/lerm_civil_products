@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'HT STRAND',
+    'name': 'HT STAY WIRE',
     'version': '1.2',
     'category': 'Sales/Sales',
     'summary': 'HT STRAND',

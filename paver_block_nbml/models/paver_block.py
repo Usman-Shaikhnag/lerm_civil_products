@@ -24,6 +24,12 @@ class PaverBlock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    @api.depends("eln_ref")
+    def _compute_size_id(self):
+        for record in self:
+            print("Size iD",record.eln_ref.size_id)
+            record.size_id = record.eln_ref.size_id.id
+
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
@@ -259,6 +265,87 @@ class PaverBlock(models.Model):
                 record.avg_abrasion_nabl = 'fail'
 
 
+      # 3. Water Absorption
+
+    water_absorption_name = fields.Char("Name",default="Water Absorption ")
+    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
+
+    water_absorption_child_lines = fields.One2many('paver.nbml.water.absorption.line','parent_id',string="Water Line")
+
+    avg_water_absorption = fields.Float(
+        string="Avg. Water Absorption (%)",
+        compute="_compute_avg_water_absorption", store=True
+    )
+
+    @api.depends('water_absorption_child_lines.water_absorption')
+    def _compute_avg_water_absorption(self):
+        for rec in self:
+            lines = rec.water_absorption_child_lines
+            if lines:
+                total = sum(line.water_absorption for line in lines)
+                rec.avg_water_absorption = round(total / len(lines), 2)
+            else:
+                rec.avg_water_absorption = 0.0
+
+    avg_water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_conformity(self):
+        
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
+
+            record.avg_water_absorption_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','09876yh562-eba3-4f15-b33d-6709876yhy65')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','09876yh562-eba3-4f15-b33d-6709876yhy65')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_water_absorption_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_conformity = 'fail'
+
+    avg_water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_nabl(self):
+        
+        for record in self:
+            record.avg_water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','09876yh562-eba3-4f15-b33d-6709876yhy65')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','09876yh562-eba3-4f15-b33d-6709876yhy65')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_nabl = 'fail'
+
+
     flexural_name = fields.Char("Name",default="Flexural Strength")
     flexural_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
@@ -352,6 +439,7 @@ class PaverBlock(models.Model):
             record.commpressive_visible = False
             record.abrasion_visible = False
             record.flexural_visible = False
+            record.water_absorption_visible = False
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -364,6 +452,9 @@ class PaverBlock(models.Model):
 
                 if sample.internal_id == '32104500rtt-5dc9-4a2a-8bf0-1283012457895':
                     record.flexural_visible = True
+
+                if sample.internal_id == '09876yh562-eba3-4f15-b33d-6709876yhy65':
+                    record.water_absorption_visible = True
 
 
 
@@ -422,6 +513,15 @@ class PaverBlock(models.Model):
                     result.result_char = round(self.avg_flexural,2)
                     result.calculated = True
                     if self.avg_flexural_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == '09876yh562-eba3-4f15-b33d-6709876yhy65':
+                    result.result_char = round(self.avg_water_absorption,2)
+                    result.calculated = True
+                    if self.avg_water_absorption_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
                         result.nabl_status = 'non-nabl'
@@ -510,17 +610,18 @@ class CompressiveLine(models.Model):
     parent_id = fields.Many2one('mechanical.paver.nbml.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    type_of_paver = fields.Char(string="TYPE")
     lenght = fields.Float(string="Length (mm)")
     width = fields.Float(string="Width (mm)")
     thickness = fields.Float(string="Thickness (mm)")
-    area = fields.Float(string="Area (mm2)",compute="_compute_area")
+    area = fields.Float(string="PLAN AREA mm2",compute="_compute_area")
     
-    load = fields.Float(string=" Load (kN)")
+    load = fields.Float(string=" FAILURE LOAD (KN)")
 
     apparent_com = fields.Float(string=" Apparent Compressive Strength (N/mm2)",compute="_compute_apparent")
 
     correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
-    compressive_strenght = fields.Float(string=" Corrected Compressive Strength (N/mm2)",compute="_compute_final_strength")
+    compressive_strenght = fields.Float(string="Corrected Compressive Strength (N/mm2)",compute="_compute_final_strength")
 
       # =========================
     # COMPUTE METHODS
@@ -752,6 +853,44 @@ class FlexuralTestLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(FlexuralTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class WaterAbsorptionLine(models.Model):
+    _name = "paver.nbml.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.paver.nbml.block',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identification = fields.Char(string="Sample Identification")
+    dry_wt_w1 = fields.Float(string="Dry wt (W1)")
+    wet_w2 = fields.Float(string="Wet wt (W2)")
+    water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
+
+    @api.depends('dry_wt_w1', 'wet_w2')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_wt_w1:  # avoid division by zero
+                rec.water_absorption = round(((rec.wet_w2 - rec.dry_wt_w1) / rec.dry_wt_w1) * 100, 2)
+            else:
+                rec.water_absorption = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(WaterAbsorptionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

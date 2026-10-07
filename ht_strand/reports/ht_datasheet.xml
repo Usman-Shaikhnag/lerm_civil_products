@@ -5,7 +5,7 @@
 			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
-                  Ht Strand DataSheet
+                  HT STAY WIRE DATASHEET
                 </div>
 				<div class="container_eln" style="margin-top:5px">
 					<div t-foreach="eln" t-as="o">
@@ -49,528 +49,117 @@
 					</div>
 
 
-						<table>
-						<t t-set="i" t-value="0"/>
-						<thead>
-							<tr>
-							  <th  style="text-align: center;">
-									<span>
-									Sr No
-									</span>
-								</th>
-								<th  style="text-align: center;">
-									<span>
-										Parameter
-									</span>
-								</th>
-								 <th  style="text-align: center;" >
-									<span>
-										Unit
-									</span>
-								</th>
-								
-								<th  style="text-align: center;">
-									<span>
-										Observation-1
-									</span>
-								</th>
-							
-							</tr>
-						</thead>
-						<tbody >
-							<tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Nominal Diameter (mm)
-
-                               <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_name"/> -->
-								</td>
-								<td style="text-align: center;">
-									<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).unit.name"/>
-										</span> -->
-										mm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.diameter"/>
-								</td>
-
-
-								
-							</tr>
-
-
-                            <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Gauge Length (mm)
-
-                               <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_name"/> -->
-								</td>
-								<td style="text-align: center;">
-									<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).unit.name"/>
-										</span> -->
-										mm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.gauge_length"/>
-								</td>
-
-
-								
-							</tr>
-
-                             <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Individual Diameter (mm)
-
-
-                               <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_name"/> -->
-								</td>
-								<td style="text-align: center;">
-									<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).unit.name"/>
-										</span> -->
-										mm
-								</td>
-								<td style="text-align: center;">
-                                    <t t-foreach="data.ht_strand_lines" t-as="line" t-foreach-index="idx">
-										<span t-esc="line.individual_dia1"/>
-										<t t-if="idx != len(data.ht_strand_lines) - 1">, </t>
-									</t>
-                                </td>
-
-								
-								
-								
-								
-							</tr>
-
-                            <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-						Individual Area 
-
-
-
-                               <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_name"/> -->
-								</td>
-								<td style="text-align: center;">
-									<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).unit.name"/>
-										</span> -->
-										mm2
-								</td>
-								<td style="text-align: center;">
-                                    <t t-foreach="data.ht_strand_lines" t-as="line" t-foreach-index="idx">
-										<span t-esc="line.individual_area" t-options='{"widget": "float", "precision": 2}'/>
-										<t t-if="idx != len(data.ht_strand_lines) - 1">, </t>
-									</t>
-                                </td>
-
-						
-								
-						
-							</tr>
-
-
-
-                              <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Centre Diameter (mm)
-
-
-
-                               <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_name"/> -->
-								</td>
-								<td style="text-align: center;">
-									<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).unit.name"/>
-										</span> -->
-										mm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.center_dia"/>
-								</td>
-
-							
-						
-							</tr>
-
-                             <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Weight, gm
-
-								</td>
-								<td style="text-align: center;">
-								
-										gm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.weight"/>
-								</td>
-
-	
-							</tr>
-
-                              <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Length, mm
-
-
-								</td>
-								<td style="text-align: center;">
-								
-										gm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.lenght"/>
-								</td>
-
-	
-							</tr>
-
-
-
-                            <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.crossectional_area"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-                            
-
-              
-
-						</tr>
-
-                         <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.proof_stress2per"/>
-							</td>
-                            
-
-
-						</tr>
-
-
-                        <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.breaking_load"/>
-							</td>
-                            
-
-
-						</tr>
-
-
-                         <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.tensile_strength"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-                            
-
-
-						</tr>
-
-
-                         <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.elongation"/>
-							</td>
-                            
-
-                    
-
-						</tr>
-
-
-                         <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')]).unit.name"/>
-								</span>
-							</td>
-
-							  <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.weight_per_meter"/>
-							</td>
+						<div style="margin-top:20px"  invisible="ht_strand_visible == False">
                        
-
-						</tr>
-
-                         <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.lay_length"/>
-							</td>
-
-						</tr>
-                            
-
+                        <table>
                        
-
-
-                        <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.per_diff_dia"  t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-                            
-
-
-						</tr>
-
-
-                          <tr >
-                            <td colspan="1" style="text-align: center; vertical-align: middle;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-                  			</td>
-                            <td >
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')]).parameter_name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')]).unit.name"/>
-								</span>
-							</td>
-                            <td style="text-align: center; vertical-align: middle;">
-								<span t-field="data.modulus_of_ela"/>
-							</td>
-                            
-
-                         
-
-						</tr>
-                        <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-							Individual Dia Average 
-
-
-								</td>
-								<td style="text-align: center;">
+                             
+							  <tr cols="12">
+                                <td  style="text-align: center;"><b>Sr No.</b></td>
+                                <td   style="text-align: center;"><b>TEST PARAMETER</b></td>
+                                <td   style="text-align: center;"><b>NOMINAL DIAMETER</b></td>
+								<td   style="text-align: center;"><b>CROSS SECTION  Area  mm2</b></td>
+                                <td   style="text-align: center;"><b>MASS PER METERE Kg/MTR</b></td>
+                                <td   style="text-align: center;"><b>Braking Load (N)</b></td>
+                                <td   style="text-align: center;"><b>UTS N/MM2</b></td>
+                                <td  style="text-align: center;"><b>YIELD STRESS N/MM2</b></td>
+                                <td   style="text-align: center;"><b>0.2% PROOF LOAD(N)</b></td>
+                                <td   style="text-align: center;"><b>% Elongation at maximum load</b></td>
 								
-										mm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.individual_dia" t-options='{"widget": "float", "precision": 2}'/>
+                               
+                            </tr>
+
+							
+
+                             <tr>
+								<td colspan="2" style="text-align: center;">
+									<b>Specification as per </b>
 								</td>
 
-	
+							
+								<td style="text-align: center;">
+								&#160;<span t-field="data.nominal_specification"/>
+								</td> <!-- UTS -->
+
+								<td style="text-align: center;">
+									&#160;<span t-field="data.cross_specification"/>
+								</td>
+								<td style="text-align: center;">
+									&#160;<span t-field="data.mass_specification"/>
+								</td>
+								<td style="text-align: center;">
+									&#160;<span t-field="data.braking_specification"/>
+								</td>
+
+								<td style="text-align: center;">	
+								&#160;<span t-field="data.uts_specification"/>
+									</td> <!-- elongation -->
+								<td style="text-align: center;">
+								&#160;<span t-field="data.yield_specification"/>
+									</td> <!-- bend -->
+
+                                    <td style="text-align: center;">
+									&#160;<span t-field="data.proof_specification"/>
+									</td> <!-- bend -->
+
+									<td style="text-align: center;">
+									&#160;<span t-field="data.elongation_specification"/>
+									</td>
 							</tr>
-
-                              <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-						Individual Seven Dia Max 
-
-
-
-								</td>
-								<td style="text-align: center;">
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.ht_strand_lines" t-as="r">
+                                <td  style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['test_parameter']"/>
+                                </td>
 								
-										mm
+
+								<td style="text-align: center;">
+									<span t-esc="r['nominal_dia'] if r['nominal_dia'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['cross_section'] if r['cross_section'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['mass_per'] if r['mass_per'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['breaking_load'] if r['breaking_load'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['uts'] if r['uts'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['yield_stress'] if r['yield_stress'] not in (None, 0, 0.0) else '--'"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="data.individual_dia_seven"/>
-								</td>
-
-	
-							</tr>
-                         <tr style="font-size:12px;" >
-								<td style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td  >
-						IIndividual Six Dia 
-
-
+									<span t-esc="r['proof_load'] if r['proof_load'] not in (None, 0, 0.0) else '--'"/>
 								</td>
 								<td style="text-align: center;">
+									<span t-esc="r['elongation'] if r['elongation'] not in (None, 0, 0.0) else '--'"/>
+								</td>
 								
-										mm
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="data.individual_dia_six"/>
-								</td>
 
-	
-							</tr>
+								
+                               
+                            </tr>
+
 
 
 
 							
-						</tbody>
-						</table>
-						  <!-- authorizeRowDataSheet -->
+                        </table>
+						</div>
                     
                     <div class="authorizeRowDataSheet">
 						<div>
