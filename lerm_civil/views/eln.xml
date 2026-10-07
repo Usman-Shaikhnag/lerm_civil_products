@@ -16,6 +16,8 @@
                 <button type="object" name="print_report" string="Print Report"/>
                 <button type="object" name="reupdate_result" string="Update Results"/>
                 <button type="object" name="print_datasheet" string="Print Datasheet"/>
+                <button type="object" name="confirm_ammendment" string="Confirm Amendment" invisible="state != '6-amendment'"/>
+                
             </header>
 
             <sheet>
@@ -75,6 +77,9 @@
                 <group>
                     <!-- <field name="volume"/> -->
                     <field name="quantity"/>
+                </group>
+                <group invisible="state not in ('6-amendment','7-amended')">
+                    <field name="amendment_remarks" readonly="state != '6-amendment'"/>
                 </group>
 
                 

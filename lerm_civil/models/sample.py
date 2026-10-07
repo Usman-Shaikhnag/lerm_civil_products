@@ -141,6 +141,8 @@ class LermSampleForm(models.Model):
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),
         ('6-cancelled', 'Cancelled'),
+        ('8-amendment', 'Amendment'),
+        ('9-amendment_revised', 'Amendment Revised'),
         
     ], string='State',default='1-allotment_pending')
     conformity = fields.Boolean(string="Conformity")
@@ -218,7 +220,7 @@ class LermSampleForm(models.Model):
     @api.depends('scope','state')
     def _compute_print_nabl_visible(self):
         for record in self:
-            if record.scope == 'nabl' and record.state == '4-in_report':
+            if record.scope == 'nabl' and (record.state == '4-in_report' or record.state == '9-amendment_revised'):
                 record.print_button_visible = True
             else:
                 record.print_button_visible =  False
@@ -244,6 +246,14 @@ class LermSampleForm(models.Model):
                 }
             }
 
+    def amend_sample(self):
+        for record in self:
+            record.write({
+                'state':'8-amendment',
+                'ulr_no':record.ulr_no+"A"
+                })
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', record.id)])
+            eln.write({'state': '6-amendment'})
         
 
 

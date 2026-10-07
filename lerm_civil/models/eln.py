@@ -69,7 +69,9 @@ class ELN(models.Model):
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
         ('4-rejected','Rejected'),
-        ('5-cancelled','Cancelled')
+        ('5-cancelled','Cancelled'),
+        ('6-amendment','Amendment'),
+        ('7-amended','Amended')
     ], string='State',default='1-draft')
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
@@ -115,6 +117,8 @@ class ELN(models.Model):
         string='Datasheet Upload',
         help='Attach multiple images to the sample',
     )
+
+    amendment_remarks = fields.Text(string="Amendment Remarks")
 
     
     active = fields.Boolean(string="Active",default=True)
@@ -514,6 +518,14 @@ class ELN(models.Model):
                         f"Sample has been submitted for verification/approval."
                     ),
                 })
+    def confirm_ammendment(self):
+        for rec in self:
+            rec.sample_id.write({
+                'state':'9-amendment_revised'
+                })
+            rec.write({
+                'state':'7-amended'
+            })
 
 
     def reupdate_result(self):

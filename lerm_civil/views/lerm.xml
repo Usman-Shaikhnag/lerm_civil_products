@@ -555,4 +555,32 @@
         sequence="11" />
 
 
-</odoo>
+
+    <!-- Cancel Sample: Actions menu server action -->
+    <record id="action_sample_cancel" model="ir.actions.server">
+        <field name="name">Cancel Sample</field>
+        <field name="model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.cancel_sample()
+</field>
+    </record>
+
+    <!-- Amend Sample: Actions menu server action -->
+    <record id="action_sample_amend" model="ir.actions.server">
+        <field name="name">Amend Sample</field>
+        <field name="model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_type">action</field>
+        <field name="groups_id" eval="[(4, ref('lerm_civil.lerm_sample_verification')), (4, ref('lerm_civil.lerm_sample_approval'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    records.amend_sample()
+</field>
+    </record>
+
+</odoo>

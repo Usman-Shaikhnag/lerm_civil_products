@@ -63,19 +63,18 @@
                 <page string="Calibration" name="calibration">
                         <field name="calibration_lines">
                             <tree editable="bottom">
-                                <field name="range_least_count" />
-                                <field name="name_address_calibration_lab" />
-                                <field name="calibration_method" />
-                                <field name="calibration_ulr_no" />
+                                <field name="equipment_name" optional="show"/>
+                                <field name="make" optional="show"/>
+                                <field name="equipment_id_no" optional="show"/>
+                                <field name="serial_number" optional="show"/>
+                                <field name="equipment_range" />
+                                <field name="date_of_calibration" />
+                                <field name="mpe_accuracy" />
+                                <field name="least_count" />
                                 <field name="calibration_certificate_no" />
-                                <field name="traceability_certificate_no_valid_date" />
-                                <field name="traceability_nabl_certificate" />
-                                <field name="accuracy_status_defined" />
-                                <field name="accuracy_status_reported" />
-                                <field name="last_calibration_date" />
                                 <field name="calibration_due_date" />
+                                <field name="calibrated_by" />
                                 <field name="due_in_days_int" />
-                                <field name="fit_for_use" />
                             </tree>
                         </field>
                         
@@ -92,20 +91,17 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="equipment"/>
+                <field name="make"/>
                 <field name="code"/>
+                <field name="serial_no"/>
                 <field name="group"/>
-                <field name="range_least_count"/>
-                <field name="name_address_calibration_lab"/>
-                <field name="calibration_method"/>
-                <field name="calibration_ulr_no"/>
+                <field name="equipment_range"/>
+                <field name="date_of_calibration"/>
+                <field name="mpe_accuracy"/>
+                <field name="least_count"/>
                 <field name="calibration_certificate_no"/>
-                <field name="traceability_certificate_no_valid_date"/>
-                <field name="traceability_nabl_certificate"/>
-                <field name="last_calibration_date"/>
                 <field name="calibration_due_date"/>
-                <field name="accuracy_status_defined"/>
-                <field name="accuracy_status_reported"/>
-                <field name="fit_for_use"/>
+                <field name="calibrated_by"/>
                 <field name="due_in_days_int" />
             </tree>
         </field>
