@@ -57,6 +57,19 @@
                                 
                             </tbody>
                         </table>
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="size_of_sample"></label></td>
+                                    <td><field  name="size_of_sample" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
+                        
                     </div>
 
 
@@ -65,8 +78,8 @@
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="week_no"></label></td>
-                                    <td><field name="week_no" class="blue-input"/></td>
+                                    <td><label for="sample_submitted"></label></td>
+                                    <td><field name="sample_submitted" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -76,8 +89,8 @@
                             <tbody>
                                 
                                     <tr>
-                                    <td><label for="other_details"></label></td>
-                                    <td><field  name="other_details" class="blue-input" /></td>
+                                    <td><label for="sample_status"></label></td>
+                                    <td><field  name="sample_status" class="blue-input" /></td>
                                 </tr>
                               
                                 
@@ -89,8 +102,8 @@
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="condition"></label></td>
-                                    <td><field name="condition" class="blue-input"/></td>
+                                    <td><label for="No_of_sample"></label></td>
+                                    <td><field name="No_of_sample" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -107,7 +120,21 @@
                                 
                             </tbody>
                         </table>
+
+
                     </div>
+
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="product_name"></label></td>
+                                    <td><field  name="product_name" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
                     <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
@@ -194,6 +221,27 @@
                         </tbody>
                     </table>
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_individual"></label></td>
+                                <td><field name="requirement_individual"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_average"></label></td>
+                                <td><field name="requirement_average"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
 
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
                         <tbody>
@@ -253,6 +301,28 @@
                              <tr>
                                 <td><label class="fw-bold" for="avg_abrasion"></label></td>
                                 <td><field name="avg_abrasion"/> <span> </span></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "abrasion_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="abrasion_requirement_individual"></label></td>
+                                <td><field name="abrasion_requirement_individual"/> <span> </span></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "abrasion_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="abrasion_requirement_average"></label></td>
+                                <td><field name="abrasion_requirement_average"/> <span> </span></td>
                             </tr>
                             
                         </tbody>
@@ -323,6 +393,28 @@
                         </tbody>
                     </table>
 
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="water_requirement_individual"></label></td>
+                                <td><field name="water_requirement_individual"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="water_requirement_average"></label></td>
+                                <td><field name="water_requirement_average"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
                    
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
                         <tbody>
@@ -341,6 +433,102 @@
                                             decoration-danger="avg_water_absorption_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                     <group invisible = "dimension_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                  
+
+
+                            <div class="custom_table_borders" style="width: 100%;"  invisible="dimension_visible == False">
+                                <field name="dimension_child_lines" mode="tree" nolabel="1">
+                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                                        <field name="serial_no" />
+                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
+                                        <field name="actual_length"  class="blue-input" decoration-info="actual_length != 0"/>
+                                        <field name="actual_width"  class="blue-input" decoration-info="actual_width != 0"/>
+                                        <field name="actual_thick" class="blue-input" decoration-info="actual_thick != 0"/>
+                                    </tree>
+                                </field>
+                            </div>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_width_less100"></label></td>
+                                <td><field name="requirement_width_less100"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_length_less100"></label></td>
+                                <td><field name="requirement_length_less100"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_thick_less100"></label></td>
+                                <td><field name="requirement_thick_less100"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+
+
+
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_width_greter100"></label></td>
+                                <td><field name="requirement_width_greter100"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_length_greter100"></label></td>
+                                <td><field name="requirement_length_greter100"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:10px;" invisible = "dimension_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="requirement_thick_greter100"></label></td>
+                                <td><field name="requirement_thick_greter100"/></td>
+                            </tr>
+                           
                         </tbody>
                     </table>
 

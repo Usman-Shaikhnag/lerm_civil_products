@@ -33,13 +33,25 @@ class PaverBlock(models.Model):
     temprature = fields.Float("Temperature (°C)", digits=(10,2))
     humidity = fields.Float("Humidity (%)", digits=(10,2))
 
-    week_no = fields.Char("Week No")
+    size_of_sample = fields.Char("Size Of Sample")
 
-    other_details = fields.Char("Other Details")
+    sample_submitted = fields.Char("Sample Submitted By")
 
-    condition = fields.Char("Condition")
+    sample_status = fields.Char("Sample Status")
 
-    description_work = fields.Text("Description Of Work")
+    No_of_sample = fields.Integer("Number Of Samples")
+
+    description_work = fields.Text("Work Description")
+
+    product_name = fields.Char(string="Product",compute="_compute_product_name")
+
+    @api.depends('eln_ref', 'eln_ref.sub_product_id')
+    def _compute_product_name(self):
+        for record in self:
+            if record.eln_ref and record.eln_ref.sub_product_id:
+                record.product_name = record.eln_ref.sub_product_id.sub_product
+            else:
+                record.product_name = False
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -124,6 +136,9 @@ class PaverBlock(models.Model):
     avg_commpressive = fields.Float(
         string="Average Corrected Compressive Strength  ",compute="_compute_avg_commpressive")
 
+    requirement_individual = fields.Char("Requirement Individual",default="fck – 3 ")
+    requirement_average = fields.Char("Requirement Average",default="fck + 0.825 × established standard deviation or fck + 3, whichever is greater")
+
     @api.depends('commpressive_child_lines.compressive_strenght')
     def _compute_avg_commpressive(self):
         for rec in self:
@@ -197,6 +212,9 @@ class PaverBlock(models.Model):
 
     avg_abrasion = fields.Float(
         string="Average Abrasion mm³  ",compute="_compute_avg_abrasion")
+
+    abrasion_requirement_individual = fields.Char("Requirement Individual",default="20000 maximum ")
+    abrasion_requirement_average = fields.Char("Requirement Average",default="18000 maximum")
 
     @api.depends('abrasion_child_lines.abrasion')
     def _compute_avg_abrasion(self):
@@ -277,6 +295,9 @@ class PaverBlock(models.Model):
         compute="_compute_avg_water_absorption", store=True
     )
 
+    water_requirement_individual = fields.Char("Requirement Individual",default="7 % maximum")
+    water_requirement_average = fields.Char("Requirement Average",default="6 % maximum")
+
     @api.depends('water_absorption_child_lines.water_absorption')
     def _compute_avg_water_absorption(self):
         for rec in self:
@@ -344,6 +365,21 @@ class PaverBlock(models.Model):
                         break
                     else:
                         record.avg_water_absorption_nabl = 'fail'
+
+
+    dimension_name = fields.Char("Name",default="Dimension")
+    dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible")
+
+   
+    dimension_child_lines = fields.One2many('dimension.line','parent_id',string="Compressive Line")
+
+    requirement_width_less100 = fields.Char("Thickness < 100 mm Width (W)",default="±2 mm")
+    requirement_length_less100 = fields.Char("Thickness < 100 mm Length (L)",default="±2 mm")
+    requirement_thick_less100 = fields.Char("Thickness < 100 mm Thickness (Th)",default="±3 mm")
+
+    requirement_width_greter100 = fields.Char("Thickness ≥ 100 mm mm Width (W)",default="±3 mm")
+    requirement_length_greter100 = fields.Char("Thickness ≥ 100 mm mm Length (L)",default="±3 mm")
+    requirement_thick_greter100 = fields.Char("Thickness ≥ 100 mm mm Thickness (Th)",default="±4 mm")
 
 
     flexural_name = fields.Char("Name",default="Flexural Strength")
@@ -440,6 +476,7 @@ class PaverBlock(models.Model):
             record.abrasion_visible = False
             record.flexural_visible = False
             record.water_absorption_visible = False
+            record.dimension_visible = False
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -455,6 +492,9 @@ class PaverBlock(models.Model):
 
                 if sample.internal_id == '09876yh562-eba3-4f15-b33d-6709876yhy65':
                     record.water_absorption_visible = True
+
+                if sample.internal_id == '0987654093-eba3-4f15-b33d-67678965432u':
+                    record.dimension_visible = True
 
 
 
@@ -525,6 +565,15 @@ class PaverBlock(models.Model):
                         result.nabl_status = 'nabl'
                     else:
                         result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == '0987654093-eba3-4f15-b33d-67678965432u':
+                    # result.result_char = round(self.avg_water_absorption,2)
+                    result.calculated = True
+                    # if self.avg_water_absorption_nabl == 'pass':
+                    #     result.nabl_status = 'nabl'
+                    # else:
+                    #     result.nabl_status = 'non-nabl'
                     continue
 
 
@@ -610,10 +659,10 @@ class CompressiveLine(models.Model):
     parent_id = fields.Many2one('mechanical.paver.nbml.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    type_of_paver = fields.Char(string="TYPE")
+    type_of_paver = fields.Char(string="TYPE",compute="_compute_type_of_paver")
     lenght = fields.Float(string="Length (mm)")
     width = fields.Float(string="Width (mm)")
-    thickness = fields.Float(string="Thickness (mm)")
+    thickness = fields.Char(string="Thickness (mm)",compute="_compute_thickness")
     area = fields.Float(string="PLAN AREA mm2",compute="_compute_area")
     
     load = fields.Float(string=" FAILURE LOAD (KN)")
@@ -649,6 +698,30 @@ class CompressiveLine(models.Model):
     def _compute_final_strength(self):
         for rec in self:
             rec.compressive_strenght = rec.apparent_com * rec.correction_factor
+
+
+    # @api.depends('parent_id', 'parent_id.block_type')
+    # def _compute_type_of_paver(self):
+    #     for rec in self:
+    #         rec.type_of_paver = rec.parent_id.block_type if rec.parent_id else 0.0
+
+    @api.depends('parent_id', 'parent_id.block_type')
+    def _compute_type_of_paver(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.block_type:
+                selection = dict(
+                    rec.parent_id._fields['block_type'].selection
+                )
+                rec.type_of_paver = selection.get(
+                    rec.parent_id.block_type
+                )
+            else:
+                rec.type_of_paver = False
+
+    @api.depends('parent_id', 'parent_id.size_of_sample')
+    def _compute_thickness(self):
+        for rec in self:
+            rec.thickness = rec.parent_id.size_of_sample if rec.parent_id else 0.0
 
     
 
@@ -891,6 +964,39 @@ class WaterAbsorptionLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(WaterAbsorptionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
+
+class DimensionLine(models.Model):
+    _name = "dimension.line"
+    parent_id = fields.Many2one('mechanical.paver.nbml.block',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identification = fields.Char(string="Sample ID")
+    actual_length = fields.Float(string="Actual Length (mm)")
+    actual_width = fields.Float(string="Actual Width (mm)")
+    actual_thick = fields.Float(string="Actual Thickness (mm)")
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DimensionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

@@ -582,6 +582,139 @@
 
 
 
+					<div t-if="data.dimension_visible" style="margin-top:10px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0987654093-eba3-4f15-b33d-67678965432u')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0987654093-eba3-4f15-b33d-67678965432u')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:5px">
+					<thead >
+						<tr cols="12">
+							<td >Sr no 
+							</td>
+
+							<td  style="text-align:center;">Sample ID
+
+							</td>
+
+                            <td  style="text-align:center;">Actual Length (mm)
+
+							</td>
+                          
+                            <td  style="text-align:center;">Actual Width (mm)
+							</td>
+
+                             <td  style="text-align:center;">Actual Thickness (mm)
+							</td>
+
+                        
+                           
+						
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.dimension_child_lines" t-as="r">
+							<td  style="text-align:center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td >
+							<td  style="text-align:center;">
+								<span t-esc="r['sample_identification']" />
+							</td>
+                            <td   style="text-align:center;">
+								<span t-esc="r['actual_length']" />
+							</td>
+                            <td  style="text-align:center;">
+								<span t-esc="r['actual_width']" />
+							</td>
+                              <td  style="text-align:center;">
+								<span t-esc="r['actual_thick']" />
+							</td>
+                          
+
+							
+						</tr>
+						</tbody>
+					</table>
+
+                 
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+                    
+                </div>
+
+                       
+                    </div>
+
+
+
+
 
                     <div t-if="data.flexural_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
