@@ -123,6 +123,7 @@ class ELN(models.Model):
     
     active = fields.Boolean(string="Active",default=True)
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
+    show_stamp = fields.Boolean(string="Show Stamp", default=True)
     
     quantity = fields.Integer(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
