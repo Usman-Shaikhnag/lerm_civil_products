@@ -251,7 +251,7 @@
 									<td colspan="1">  
 										<span t-esc="sieve.parameter_name"/>
 									</td>
-									<td colspan="3" >  
+									<td colspan="4" >  
 										<span style="font-size:16px;"><![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> % passing</span>
 									</td>
 									
@@ -429,9 +429,11 @@
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 						</td>
-							<td colspan="4">  
+							<td colspan="5">  
 								<span t-esc="hydrometer.parameter_name"/>
 							</td>
+
+							
 							
 									
 						</tr>
@@ -455,22 +457,24 @@
 										</span>
 									</td>
 									
-									
+									<t t-if="data.show_specification">
+									 <td rowspan="4" style="text-align: center;">
+									   <span t-field="data.hydrometer_specification"/>   
+									 </td>
+									</t>
+
+
 									<td rowspan="4" style="text-align: center;">
 										<span>
 											<t t-foreach="hydrometer.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
+													<span t-field="parameter.specification"/>
 												</t>
 											</t>
 										</span>
 									</td>
-
-									<t t-if="data.hydrometer_specification">
-									 <td style="text-align: center;">
-									   <span t-field="data.hydrometer_specification"/>   
-									 </td>
-									</t>
+     
+									
 									
 								</tr>   
 								<tr t-if="data.hydrometer_visible" >
@@ -611,7 +615,7 @@
 							<t t-set="i" t-value="i+1"/>
 						</td>
 
-						<td  colspan="4">
+						<td  colspan="5">
 						 <span t-esc="atterberg.parameter_name"/>
 						</td>	
 
