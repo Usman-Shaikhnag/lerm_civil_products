@@ -572,6 +572,99 @@ class LermSampleForm(models.Model):
             'data' : {'fromsample' : True , 'inreport' : inreport , 'nabl' : False,'fromEln':False}
         }
 
+    def _bulk_print_report(self, nabl=True):
+        """Render each selected sample's report as PDF and merge into one download."""
+        from PyPDF2 import PdfFileMerger
+        from io import BytesIO
+        import base64
+
+        if not self:
+            raise UserError("Please select at least one sample.")
+
+        merger = PdfFileMerger()
+        skipped = []
+        pdf_count = 0
+
+        for sample in self:
+            eln = self.env["lerm.eln"].sudo().search([('sample_id', '=', sample.id)], limit=1)
+            if not eln:
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            is_product_based = eln.is_product_based_calculation
+            try:
+                if is_product_based:
+                    template = eln.material.product_based_calculation[0].main_report_template
+                else:
+                    template = eln.parameters_result.parameter[0].main_report_template
+            except (IndexError, AttributeError):
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            if not template:
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            report_data = {
+                'fromsample': True,
+                'inreport': sample.state,
+                'nabl': nabl,
+                'fromEln': False,
+                'report_wizard': True,
+                'sample': sample.id,
+            }
+
+            try:
+                pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(
+                    template.report_name, [sample.id], data=report_data
+                )
+                merger.append(BytesIO(pdf_content))
+                pdf_count += 1
+            except Exception as e:
+                logging.getLogger(__name__).error("Failed to generate PDF for sample %s: %s", sample.kes_no or sample.id, str(e))
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+        if pdf_count == 0:
+            raise UserError("Could not generate any reports for the selected samples.")
+
+
+        output = BytesIO()
+        merger.write(output)
+        merger.close()
+        merged_pdf = output.getvalue()
+
+        label = "NABL" if nabl else "Non-NABL"
+        filename = "Bulk_%s_Report.pdf" % label
+
+        attachment = self.env['ir.attachment'].sudo().create({
+            'name': filename,
+            'type': 'binary',
+            'datas': base64.b64encode(merged_pdf),
+            'mimetype': 'application/pdf',
+        })
+
+        action = {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/%s?download=true' % attachment.id,
+            'target': 'new',
+        }
+
+        if skipped:
+            # Return a notification wizard-like approach isn't needed;
+            # the download will still trigger; log skipped for debugging
+            logging.getLogger(__name__).warning(
+                "Bulk %s report: skipped samples %s (no ELN/template)", label, ', '.join(skipped)
+            )
+
+        return action
+
+    def bulk_print_nabl_report(self):
+        return self._bulk_print_report(nabl=True)
+
+    def bulk_print_non_nabl_report(self):
+        return self._bulk_print_report(nabl=False)
+
     
     # def print_sample_report(self):
     #     eln = self.env["lerm.eln"].search([('sample_id','=', self.id)])

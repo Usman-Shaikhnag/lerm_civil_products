@@ -583,4 +583,31 @@ if records:
 </field>
     </record>
 
-</odoo>
+    <!-- Bulk NABL Report: Actions menu server action -->
+    <record id="action_bulk_nabl_report" model="ir.actions.server">
+        <field name="name">Bulk NABL Report</field>
+        <field name="model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.bulk_print_nabl_report()
+</field>
+    </record>
+
+    <!-- Bulk Non-NABL Report: Actions menu server action -->
+    <record id="action_bulk_non_nabl_report" model="ir.actions.server">
+        <field name="name">Bulk Non-NABL Report</field>
+        <field name="model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_model_id" ref="model_lerm_srf_sample"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.bulk_print_non_nabl_report()
+</field>
+    </record>
+
+</odoo>
+
