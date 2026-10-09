@@ -12,13 +12,16 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 from io import BytesIO
 from scipy.interpolate import make_interp_spline
-from matplotlib.ticker import LogLocator, MultipleLocator
 import re
 from matplotlib.ticker import AutoMinorLocator
+import matplotlib.pyplot as plt
+from matplotlib.ticker import LogLocator, FuncFormatter, MultipleLocator
+from scipy.interpolate import PchipInterpolator
+
+from odoo import models, fields, _
+from odoo.exceptions import UserError
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
-
-
 
 
 class Soil(models.Model):
@@ -26,7 +29,7 @@ class Soil(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name_soil"
 
-
+    
     name_soil = fields.Char("Name",default="Soil")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -35,6 +38,7 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     def prefill_data(self):
@@ -4555,6 +4559,764 @@ class Soil(models.Model):
         return True
 
 
+    # Hydrometer Analysis
+    hydrometer_name = fields.Char("Name",default="Hydrometer Analysis")
+    hydrometer_visible = fields.Boolean("Hydrometer Analysis Visible",compute="_compute_visible")
+
+    hydrometer_specification = fields.Char(string='Hydrometer Analysis Specification')
+
+    
+    percentage_passing_0075 = fields.Float(string='Percentage passing 0.075 mm sieve (%)')
+    total_sample_mass = fields.Float(string='Mass of total sample taken for analysis (g)')
+    water_content = fields.Float(string='Water content (%)')
+    specific_gravity = fields.Float(string='Specific gravity (Gs)')
+
+    hydrometer_no = fields.Integer(string='Hydrometer No.',default=2)
+    meniscus_correction = fields.Float(string='Meniscus correction (Cm)',default=0.005,digits=(16,3),)
+    water_unit_weight = fields.Float(string='Coefficient of viscosity of water (µ)',default=0.008509,digits=(16,6),)
+    dispersing_agent_correction = fields.Float(string='Dispersing agent correction (x)',default=0.001,digits=(16,3),)
+
+
+    hydrometer_line_ids = fields.One2many('soil.hydrometer.analysis.line','parent_id',string='Hydrometer Analysis',default=lambda self: self.hydrometer_line_ids_sizes())
+
+    @api.model
+    def hydrometer_line_ids_sizes(self):
+        default_lines = [
+            (0, 0, {'elapsed_time': '0.5'}),
+            (0, 0, {'elapsed_time': '1'}),
+            (0, 0, {'elapsed_time': '2'}),
+            (0, 0, {'elapsed_time': '4'}),
+            (0, 0, {'elapsed_time': '8'}),
+            (0, 0, {'elapsed_time': '15'}),
+            (0, 0, {'elapsed_time': '30'}),
+            (0, 0, {'elapsed_time': '60'}),
+            (0, 0, {'elapsed_time': '120'}),
+            (0, 0, {'elapsed_time': '240'}),
+            (0, 0, {'elapsed_time': '480'}),
+            (0, 0, {'elapsed_time': '1440'}),
+        ]
+        return default_lines
+
+    hydrometers_two_line_ids = fields.One2many('soil.hydrometer.analysis.two.line','parent_id',string='Hydrometer Analysis Two',default=lambda self: self.hydrometer_line_ids_two_sizes())
+
+    @api.model
+    def hydrometer_line_ids_two_sizes(self):
+        default_lines = [
+            (0, 0, {'sieve_size': '10'}),
+            (0, 0, {'sieve_size': '4.75'}),
+            (0, 0, {'sieve_size': '2.0'}),
+            (0, 0, {'sieve_size': '0.425'}),
+            (0, 0, {'sieve_size': '0.075'}),
+        ]
+        return default_lines
+
+
+    hydrometers_two_graph_line_ids = fields.One2many('soil.hydrometer.analysis.graph.line','parent_id',string='Hydrometer Analysis Graph',default=lambda self: self.hydrometers_two_graph_line_ids_sizes())
+
+    @api.model
+    def hydrometers_two_graph_line_ids_sizes(self):
+        default_lines = [
+            (0, 0, {'sh1': '1.5','h': '16.2','a':"28.57",'vh': '79.5','rh': '30.00',}),
+
+            (0, 0, {'sh1': '3.4','h': '16.2','a':"28.57",'vh': '79.5','rh': '25.00',}),
+
+            (0, 0, {'sh1': '5.2','h': '16.2','a':"28.57",'vh': '79.5','rh': '20.00',}),
+
+            (0, 0, {'sh1': '7.1','h': '16.2','a':"28.57",'vh': '79.5','rh': '15.00',}),
+
+            (0, 0, {'sh1': '8.95','h': '16.2','a':"28.57",'vh': '79.5','rh': '10.00',}),
+
+            (0, 0, {'sh1': '10.8','h': '16.2','a':"28.57",'vh': '79.5','rh': '5.00',}),
+
+            (0, 0, {'sh1': '12.7','h': '16.2','a':"28.57",'vh': '79.5','rh': '0.00',}),
+
+            (0, 0, {'sh1': '14.5','h': '16.2','a':"28.57",'vh': '79.5','rh': '-5.00',}),
+        ]
+        return default_lines
+    
+
+
+    def action_fetch_hydrometer_diameters(self):
+
+     for record in self:
+
+        # -------------------------------------------------
+        # Get hydrometer analysis lines
+        # -------------------------------------------------
+
+        hydrometer_lines = record.hydrometer_line_ids.filtered(
+            lambda line: line.equivalent_diameter > 0
+        )
+
+        if not hydrometer_lines:
+            continue
+
+        # -------------------------------------------------
+        # Remove previously generated hydrometer rows
+        #
+        # This prevents duplicates when button is clicked
+        # multiple times.
+        # -------------------------------------------------
+
+        old_lines = record.hydrometers_two_line_ids.filtered(
+            lambda line: line.is_hydrometer
+        )
+
+        old_lines.unlink()
+
+        # -------------------------------------------------
+        # Create new rows
+        # -------------------------------------------------
+
+        new_lines = []
+
+        for line in hydrometer_lines:
+
+            new_lines.append(
+                (
+                    0,
+                    0,
+                    {
+                        'sieve_size': line.equivalent_diameter,
+                        'precentage_passing': line.percentage_finer_total,
+                        'is_hydrometer': True,
+                    }
+                )
+            )
+
+        # -------------------------------------------------
+        # Add the calculated rows
+        # -------------------------------------------------
+
+        record.write({
+            'hydrometers_two_line_ids': new_lines
+        })
+
+     return True
+
+
+    show_hydrometer_calibration_chart = fields.Boolean(string="Show Hydrometer Calibration Chart")
+
+    hydrometer_graph_image = fields.Binary(
+        string="Hydrometer Calibration Chart",
+        readonly=True,
+        attachment=True,
+    )
+
+    hydrometer_graph_filename = fields.Char(
+        string="Graph Filename",
+        default="hydrometer_calibration_chart.png",
+    )
+
+    show_hydrometer_calibration_graph = fields.Boolean(string="Show Hydrometer Calibration Chart")
+
+    def action_generate_hydrometer_graph(self):
+        for record in self:
+            lines = record.hydrometers_two_graph_line_ids.filtered(
+                lambda line: line.rh is not False
+            )
+
+            if not lines:
+                raise UserError(
+                    _("Please add hydrometer graph readings first.")
+                )
+
+            # Sort the points by Rh for a properly ordered graph.
+            lines = lines.sorted(key=lambda line: line.rh)
+
+            rh_values = [line.rh for line in lines]
+            hr_values = [line.hr for line in lines]
+            hr_corrected_values = [
+                line.hr_corrected for line in lines
+            ]
+
+            fig, ax = plt.subplots(figsize=(10, 5))
+
+            # Line 1: HR
+            ax.plot(
+                rh_values,
+                hr_values,
+                color="#2878B5",
+                marker="D",
+                markersize=6,
+                linewidth=1.8,
+                label="HR",
+            )
+
+            # Line 2: HR Corrected
+            ax.plot(
+                rh_values,
+                hr_corrected_values,
+                color="#C74440",
+                marker="s",
+                markersize=6,
+                linewidth=1.8,
+                label="HR Corrected",
+            )
+
+            # Draw linear trendlines and their equations.
+            def add_trendline(x_values, y_values, color):
+                if len(x_values) < 2:
+                    return
+
+                slope, intercept = __import__(
+                    'numpy'
+                ).polyfit(x_values, y_values, 1)
+
+                x_min = min(x_values)
+                x_max = max(x_values)
+
+                trend_x = [x_min, x_max]
+                trend_y = [
+                    slope * x_min + intercept,
+                    slope * x_max + intercept,
+                ]
+
+                ax.plot(
+                    trend_x,
+                    trend_y,
+                    color=color,
+                    linestyle="--",
+                    linewidth=1.2,
+                    alpha=0.8,
+                )
+
+                equation = (
+                    f"y = {slope:.4f}x "
+                    f"{intercept:+.3f}"
+                )
+
+                ax.text(
+                    0.98,
+                    0.95 if color == "#C74440" else 0.05,
+                    equation,
+                    transform=ax.transAxes,
+                    ha="right",
+                    va="top",
+                    color=color,
+                    fontsize=9,
+                )
+
+            add_trendline(
+                rh_values,
+                hr_values,
+                "#2878B5",
+            )
+
+            add_trendline(
+                rh_values,
+                hr_corrected_values,
+                "#C74440",
+            )
+
+            # Chart formatting
+            ax.set_title(
+                "Hydrometer Calibration Chart",
+                fontsize=15,
+                fontweight="bold",
+                pad=15,
+            )
+
+            ax.set_xlabel(
+                "Hydrometer readings (Rh)",
+                fontsize=11,
+                fontweight="bold",
+            )
+
+            ax.set_ylabel(
+                "Effective depth HR",
+                fontsize=11,
+                fontweight="bold",
+            )
+
+            ax.grid(
+                True,
+                which="major",
+                linestyle="-",
+                linewidth=0.7,
+                color="#999999",
+                alpha=0.8,
+            )
+
+            ax.minorticks_on()
+
+            ax.grid(
+                True,
+                which="minor",
+                linestyle="-",
+                linewidth=0.4,
+                color="#CCCCCC",
+                alpha=0.8,
+            )
+
+            ax.legend(loc="best")
+            fig.tight_layout()
+
+            # Convert the chart to a PNG stored in Odoo.
+            image_buffer = io.BytesIO()
+
+            fig.savefig(
+                image_buffer,
+                format="png",
+                dpi=100,
+                bbox_inches="tight",
+            )
+
+            plt.close(fig)
+
+            record.write({
+                "hydrometer_graph_image": base64.b64encode(
+                    image_buffer.getvalue()
+                ),
+                "hydrometer_graph_filename":
+                    "hydrometer_calibration_chart.png",
+            })
+
+            image_buffer.close()
+
+        return True
+
+
+
+
+
+    particle_size_graph_image = fields.Binary(
+        string="Particle Size Distribution Graph",
+        attachment=True,
+        readonly=True,
+    )
+
+    particle_size_graph_filename = fields.Char(
+        default="particle_size_distribution.png",
+    )
+
+    show_hydrometer_graph = fields.Boolean(string="Show Hydrometer Graph")
+
+    def action_generate_particle_size_graph(self):
+        for record in self:
+
+            # -----------------------------------------
+            # 1. Fetch particle size analysis data
+            # -----------------------------------------
+            lines = record.hydrometers_two_line_ids.filtered(
+                lambda line: (
+                    line.sieve_size > 0
+                    and line.precentage_passing > 0
+                )
+            )
+
+            if not lines:
+                raise UserError(_(
+                    "Please enter particle size and percentage "
+                    "passing before generating the graph."
+                ))
+
+            # -----------------------------------------
+            # 2. Sort points by particle size
+            # -----------------------------------------
+            points = sorted(
+                [
+                    (
+                        line.sieve_size,
+                        line.precentage_passing,
+                    )
+                    for line in lines
+                ],
+                key=lambda point: point[0],
+            )
+
+            x_values = np.array(
+                [point[0] for point in points],
+                dtype=float,
+            )
+
+            y_values = np.array(
+                [point[1] for point in points],
+                dtype=float,
+            )
+
+            # -----------------------------------------
+            # 3. Validate data
+            # -----------------------------------------
+            if len(x_values) < 2:
+                raise UserError(_(
+                    "At least two valid particle-size points "
+                    "are required to generate the graph."
+                ))
+
+            if len(np.unique(x_values)) != len(x_values):
+                raise UserError(_(
+                    "Duplicate particle sizes were found. "
+                    "Please ensure each particle size is unique."
+                ))
+
+            if np.any(y_values < 0) or np.any(y_values > 100):
+                raise UserError(_(
+                    "Percentage passing must be between 0 and 100."
+                ))
+
+            # -----------------------------------------
+            # 4. Create graph
+            # -----------------------------------------
+            fig, ax = plt.subplots(figsize=(10, 5))
+
+            log_x = np.log10(x_values)
+
+            # Smooth curve in logarithmic particle-size space
+            if len(x_values) >= 3:
+                smooth_curve = PchipInterpolator(
+                    log_x,
+                    y_values,
+                )
+
+                smooth_log_x = np.linspace(
+                    log_x.min(),
+                    log_x.max(),
+                    400,
+                )
+
+                ax.plot(
+                    10 ** smooth_log_x,
+                    smooth_curve(smooth_log_x),
+                    color='steelblue',
+                    linewidth=1.6,
+                    zorder=2,
+                )
+            else:
+                ax.plot(
+                    x_values,
+                    y_values,
+                    color='steelblue',
+                    linewidth=1.6,
+                    zorder=2,
+                )
+
+            # Actual measured points
+            ax.plot(
+                x_values,
+                y_values,
+                linestyle='None',
+                marker='o',
+                color='steelblue',
+                markerfacecolor='steelblue',
+                markeredgecolor='steelblue',
+                markersize=3,
+                zorder=3,
+            )
+
+            # -----------------------------------------
+            # 5. Configure axes
+            # -----------------------------------------
+            ax.set_xscale('log')
+            ax.set_xlim(0.001, 10)
+            ax.set_ylim(0, 120)
+
+            ax.set_xlabel(
+                'Particle size (mm)',
+                fontsize=11,
+            )
+
+            ax.set_ylabel(
+                '% passing',
+                fontsize=11,
+            )
+
+            # No title, legend, or red annotations
+            ax.set_title('')
+
+            # -----------------------------------------
+            # 6. X-axis: decimal logarithmic labels
+            # -----------------------------------------
+            ax.xaxis.set_major_locator(
+                LogLocator(base=10.0)
+            )
+
+            ax.xaxis.set_major_formatter(
+                FuncFormatter(
+                    lambda value, pos: f'{value:g}'
+                )
+            )
+
+            ax.xaxis.set_minor_locator(
+                LogLocator(
+                    base=10.0,
+                    subs=tuple(range(2, 10)),
+                )
+            )
+
+            # -----------------------------------------
+            # 7. Y-axis intervals
+            # -----------------------------------------
+            ax.yaxis.set_major_locator(
+                MultipleLocator(10)
+            )
+
+            ax.yaxis.set_minor_locator(
+                MultipleLocator(2)
+            )
+
+            ax.yaxis.set_major_formatter(
+                FuncFormatter(
+                    lambda value, pos: f'{value:.2f}'
+                )
+            )
+
+            # -----------------------------------------
+            # 8. Grid styling
+            # -----------------------------------------
+            ax.grid(
+                True,
+                which='major',
+                color='black',
+                linewidth=0.6,
+                alpha=0.30,
+            )
+
+            ax.grid(
+                True,
+                which='minor',
+                color='black',
+                linewidth=0.35,
+                alpha=0.18,
+            )
+
+            ax.tick_params(
+                axis='both',
+                which='major',
+                labelsize=9,
+            )
+
+            # -----------------------------------------
+            # 9. Layout
+            # -----------------------------------------
+            fig.tight_layout()
+
+            # -----------------------------------------
+            # 10. Convert graph to PNG
+            # -----------------------------------------
+            image_buffer = io.BytesIO()
+
+            try:
+                fig.savefig(
+                    image_buffer,
+                    format='png',
+                    dpi=100,
+                    bbox_inches='tight',
+                    facecolor='white',
+                )
+
+                image_data = base64.b64encode(
+                    image_buffer.getvalue()
+                )
+            finally:
+                plt.close(fig)
+                image_buffer.close()
+
+            # -----------------------------------------
+            # 11. Save image to Odoo
+            # -----------------------------------------
+            record.write({
+                'particle_size_graph_image': image_data,
+                'particle_size_graph_filename':
+                    'particle_size_distribution.png',
+                'show_hydrometer_graph': True,
+            })
+
+        return True
+
+
+    gravel_percentage = fields.Float(string="Gravel (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+
+    sand_percentage = fields.Float(string="Sand (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+
+    silt_percentage = fields.Float(string="Silt (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+
+    clay_percentage = fields.Float(string="Clay (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+
+    total_percentage = fields.Float(string="Total (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+
+    d10 = fields.Float(string="D10 (mm)",compute="_compute_particle_diameters",store=True,digits=(16, 4),)
+
+    d30 = fields.Float(string="D30 (mm)",compute="_compute_particle_diameters",store=True,digits=(16, 4),)
+
+    d60 = fields.Float(string="D60 (mm)",compute="_compute_particle_diameters",store=True,digits=(16, 4),)
+
+
+    @api.depends('hydrometers_two_line_ids.sieve_size','hydrometers_two_line_ids.precentage_passing',)
+    def _compute_soil_percentages(self):
+     for record in self:
+        lines = record.hydrometers_two_line_ids.filtered(
+            lambda line: line.sieve_size > 0
+        )
+
+        # Sort by particle size
+        points = sorted(
+            [
+                (line.sieve_size, line.precentage_passing)
+                for line in lines
+            ],
+            key=lambda point: point[0],
+        )
+
+        # Default values
+        gravel = 0.0
+        sand = 0.0
+        silt = 0.0
+        clay = 0.0
+
+        if points:
+            passing_10 = record._get_passing_at_size(
+                points, 10.0
+            )
+            passing_475 = record._get_passing_at_size(
+                points, 4.75
+            )
+            passing_0075 = record._get_passing_at_size(
+                points, 0.075
+            )
+            passing_0002 = record._get_passing_at_size(
+                points, 0.002
+            )
+
+            # Gravel = passing at 10 mm - passing at 4.75 mm
+            if passing_10 is not None and passing_475 is not None:
+                gravel = passing_10 - passing_475
+
+            # Sand = passing at 4.75 mm - passing at 0.075 mm
+            if passing_475 is not None and passing_0075 is not None:
+                sand = passing_475 - passing_0075
+
+            # # Clay = percentage finer than 0.002 mm
+            # if passing_0002 is not None:
+            #     clay = passing_0002
+
+            # # Silt = remainder
+            # silt = 100.0 - gravel - sand - clay
+
+            # Clay percentage at particle size 0.002 mm
+            passing_0002 = record._get_passing_at_size(points, 0.002)
+
+            if passing_0002 is not None:
+               clay = round(passing_0002, 1)
+            else:
+               clay = 0.0
+
+            # Calculate silt as the remaining percentage
+            silt = 100.0 - gravel - sand - clay
+
+        record.gravel_percentage = round(max(gravel, 0.0), 2)
+        record.sand_percentage = round(max(sand, 0.0), 2)
+        record.silt_percentage = round(max(silt, 0.0), 2)
+        record.clay_percentage = round(max(clay, 0.0), 2)
+
+        record.total_percentage = round(
+            record.gravel_percentage
+            + record.sand_percentage
+            + record.silt_percentage
+            + record.clay_percentage,
+            2,
+        )
+
+
+    def _get_passing_at_size(self, points, target_size):
+      """Return percentage passing using logarithmic interpolation."""
+
+      if not points or target_size <= 0:
+        return None
+
+      points = sorted(points, key=lambda point: point[0])
+
+    # Exact match
+      for size, passing in points:
+        if abs(size - target_size) < 1e-10:
+            return passing
+
+    # Find the two surrounding points
+      for index in range(len(points) - 1):
+        d1, p1 = points[index]
+        d2, p2 = points[index + 1]
+
+        if d1 <= target_size <= d2:
+            log_d1 = math.log10(d1)
+            log_d2 = math.log10(d2)
+            log_target = math.log10(target_size)
+
+            return p1 + (
+                (p2 - p1)
+                * (log_target - log_d1)
+                / (log_d2 - log_d1)
+            )
+
+    # Do not extrapolate outside the available particle-size range
+      return None
+
+
+    @api.depends('hydrometers_two_line_ids.sieve_size','hydrometers_two_line_ids.precentage_passing',)
+    def _compute_particle_diameters(self):
+     for record in self:
+        lines = record.hydrometers_two_line_ids.filtered(
+            lambda line: line.sieve_size > 0
+        )
+
+        points = sorted(
+            [
+                (line.sieve_size, line.precentage_passing)
+                for line in lines
+            ],
+            key=lambda point: point[0],
+        )
+
+        record.d10 = record._get_particle_size_at_passing(
+            points, 10.0
+        )
+        record.d30 = record._get_particle_size_at_passing(
+            points, 30.0
+        )
+        record.d60 = record._get_particle_size_at_passing(
+            points, 60.0
+        )
+
+
+    def _get_particle_size_at_passing(self, points, target_passing):
+      """Calculate D10, D30 or D60 using logarithmic interpolation."""
+
+      if len(points) < 2:
+        return 0.0
+
+    # Sort by percentage passing
+      points = sorted(points, key=lambda point: point[1])
+
+      for index in range(len(points) - 1):
+        d1, p1 = points[index]
+        d2, p2 = points[index + 1]
+
+        if p1 <= target_passing <= p2:
+            if p1 == p2:
+                return d1
+
+            log_d1 = math.log10(d1)
+            log_d2 = math.log10(d2)
+
+            log_target_d = log_d1 + (
+                (target_passing - p1)
+                * (log_d2 - log_d1)
+                / (p2 - p1)
+            )
+
+            return 10 ** log_target_d
+
+    # Target percentage is outside the measured range
+      return 0.0
+
+        
+
+
+     
+
+
+
+
+
 
      
 
@@ -4564,6 +5326,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
+            record.hydrometer_visible = False
             record.ucs_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
@@ -4583,6 +5346,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                     record.sieve_visible = True
+
+                if sample.internal_id == 'f049637d-c4ca-4934-8362-a775bf4af164':
+                    record.hydrometer_visible = True
 
                 if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
                     record.ucs_visible = True
@@ -4637,6 +5403,10 @@ class Soil(models.Model):
         
             # Sieve Analysis
             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                result.calculated = True
+
+            # Hydrometer Analysis
+            if result.parameter.internal_id == 'f049637d-c4ca-4934-8362-a775bf4af164':
                 result.calculated = True
 
             # Moisture Content
@@ -6259,6 +7029,570 @@ class SoilUCSLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(SoilUCSLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class SoilHydrometerAnalysisLine(models.Model):
+    _name = 'soil.hydrometer.analysis.line'
+    _description = 'Hydrometer Analysis Line'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    elapsed_time = fields.Float(
+        string='Elapsed time (min)'
+    )
+
+    temperature = fields.Float(
+        string='Temperature (°C)'
+    )
+
+    hydrometer_reading = fields.Float(
+        string="Hydrometer Reading (Rh')"
+    )
+
+    # ---------------------------------------------------------
+    # CALCULATED VALUES
+    # ---------------------------------------------------------
+
+    corrected_reading = fields.Float(
+        string="Corrected Reading (Rh' + Cm)",
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    hr_value = fields.Float(
+        string='HR Value',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    equivalent_diameter = fields.Float(
+        string='Equivalent Particle Diameter D (mm)',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    rh_plus_m_x = fields.Float(
+        string='Rh + M₁ - x',
+        compute='_compute_values',
+        store=True
+    )
+
+    percentage_finer = fields.Float(
+        string='Percentage of particles finer W (%)',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    percentage_finer_total = fields.Float(
+        string='Percentage of particles finer than D w.r.t Total mass (%)',
+        compute='_compute_values',
+        store=True
+    )
+
+    @api.depends(
+    'hydrometer_reading',
+    'temperature',
+    'elapsed_time',
+
+    'parent_id.meniscus_correction',
+    'parent_id.dispersing_agent_correction',
+    'parent_id.specific_gravity',
+    'parent_id.total_sample_mass',
+    'parent_id.water_content',
+    'parent_id.percentage_passing_0075',
+    'parent_id.water_unit_weight',
+
+    # Calibration table
+    'parent_id.hydrometers_two_graph_line_ids.sh1',
+    'parent_id.hydrometers_two_graph_line_ids.h',
+    'parent_id.hydrometers_two_graph_line_ids.vh',
+    'parent_id.hydrometers_two_graph_line_ids.a',
+    'parent_id.hydrometers_two_graph_line_ids.hr',
+    'parent_id.hydrometers_two_graph_line_ids.hr_corrected',
+    'parent_id.hydrometers_two_graph_line_ids.rh',
+)
+    def _compute_values(self):
+
+     for line in self:
+
+        analysis = line.parent_id
+
+        # -------------------------------------------------
+        # RESET
+        # -------------------------------------------------
+
+        line.corrected_reading = 0.0
+        line.hr_value = 0.0
+        line.equivalent_diameter = 0.0
+        line.rh_plus_m_x = 0.0
+        line.percentage_finer = 0.0
+        line.percentage_finer_total = 0.0
+
+        if not analysis:
+            continue
+
+        # =================================================
+        # 1. CORRECTED READING
+        #
+        # Excel:
+        # =R'h + Cm
+        # =================================================
+
+        corrected = (
+            line.hydrometer_reading
+            + analysis.meniscus_correction
+        )
+
+        line.corrected_reading = corrected
+
+        # =================================================
+        # 2. HR VALUE
+        #
+        # A-Line / B-Line regression
+        # =================================================
+
+        calibration_lines = (
+            analysis.hydrometers_two_graph_line_ids
+        )
+
+        if corrected > 20.0:
+
+            # ---------------------------------------------
+            # B-LINE
+            # ---------------------------------------------
+
+            points = [
+                (
+                    cal.rh,
+                    cal.hr_corrected
+                )
+                for cal in calibration_lines
+                if cal.rh is not None
+                and cal.hr_corrected is not None
+            ]
+
+        else:
+
+            # ---------------------------------------------
+            # A-LINE
+            # ---------------------------------------------
+
+            points = [
+                (
+                    cal.rh,
+                    cal.hr
+                )
+                for cal in calibration_lines
+                if cal.rh is not None
+                and cal.hr is not None
+            ]
+
+        # -------------------------------------------------
+        # FORECAST / LINEAR REGRESSION
+        # -------------------------------------------------
+
+        if len(points) >= 2:
+
+            x_values = [
+                point[0]
+                for point in points
+            ]
+
+            y_values = [
+                point[1]
+                for point in points
+            ]
+
+            n = len(points)
+
+            sum_x = sum(x_values)
+            sum_y = sum(y_values)
+
+            sum_xy = sum(
+                x * y
+                for x, y in points
+            )
+
+            sum_x2 = sum(
+                x * x
+                for x in x_values
+            )
+
+            denominator = (
+                n * sum_x2
+                - sum_x ** 2
+            )
+
+            if denominator != 0:
+
+                slope = (
+                    n * sum_xy
+                    - sum_x * sum_y
+                ) / denominator
+
+                intercept = (
+                    sum_y
+                    - slope * sum_x
+                ) / n
+
+                line.hr_value = (
+                    intercept
+                    + slope * corrected
+                )
+
+        # =================================================
+        # 3. Rh + Mt - x
+        #
+        # Excel H16:
+        #
+        # Corrected reading
+        # + temperature correction
+        # - dispersing correction
+        # =================================================
+
+        # Temperature correction
+        #
+        # Excel uses interpolation from its temperature
+        # correction table.
+        #
+        # Formula:
+        #
+        # Ct =
+        # (
+        #   0.9982
+        #   - interpolated water density
+        #   - 0.000025 * (T - 20)
+        # ) * 1000
+        #
+
+        temperature = line.temperature
+
+        # Standard water-density values.
+        # Replace these with the exact M28:T29 values
+        # from your Excel if you need bit-for-bit matching.
+        water_density_table = {
+            10.0: 0.99970,
+            15.0: 0.99910,
+            20.0: 0.99820,
+            25.0: 0.99705,
+            30.0: 0.99565,
+            35.0: 0.99403,
+            40.0: 0.99222,
+            45.0: 0.99021,
+        }
+
+        temperatures = sorted(
+            water_density_table.keys()
+        )
+
+        interpolated_density = None
+
+        # Exact temperature
+        if temperature in water_density_table:
+
+            interpolated_density = (
+                water_density_table[temperature]
+            )
+
+        # Temperature below table
+        elif temperature <= temperatures[0]:
+
+            interpolated_density = (
+                water_density_table[temperatures[0]]
+            )
+
+        # Temperature above table
+        elif temperature >= temperatures[-1]:
+
+            interpolated_density = (
+                water_density_table[temperatures[-1]]
+            )
+
+        else:
+
+            for i in range(
+                len(temperatures) - 1
+            ):
+
+                t1 = temperatures[i]
+                t2 = temperatures[i + 1]
+
+                if t1 <= temperature <= t2:
+
+                    d1 = water_density_table[t1]
+                    d2 = water_density_table[t2]
+
+                    # Linear interpolation
+                    interpolated_density = (
+                        d1
+                        + (
+                            (temperature - t1)
+                            / (t2 - t1)
+                        )
+                        * (d2 - d1)
+                    )
+
+                    break
+
+        temperature_correction = 0.0
+
+        if interpolated_density is not None:
+
+            temperature_correction = (
+                (
+                    0.9982
+                    - interpolated_density
+                    - (
+                        0.000025
+                        * (temperature - 20)
+                    )
+                )
+                * 1000
+            )
+
+        # Final:
+        # Rh + Mt - x
+
+        line.rh_plus_m_x = (
+            corrected
+            + temperature_correction
+            - analysis.dispersing_agent_correction
+        )
+
+        # =================================================
+        # 4. PERCENTAGE FINER
+        #
+        # Excel:
+        #
+        # =(100*Gs*(Rh+Mt-x))
+        # /(Wb*(Gs-1))
+        # =================================================
+
+        if (
+            analysis.specific_gravity
+            and analysis.total_sample_mass
+        ):
+
+            denominator = (
+                analysis.total_sample_mass
+                * (
+                    analysis.specific_gravity - 1
+                )
+            )
+
+            if denominator != 0:
+
+                line.percentage_finer = (
+                    100
+                    * analysis.specific_gravity
+                    * line.rh_plus_m_x
+                    / denominator
+                )
+
+        # =================================================
+        # 5. PERCENTAGE FINER W.R.T TOTAL MASS
+        #
+        # Excel:
+        # =I16*$D$7/100
+        # =================================================
+
+        if analysis.percentage_passing_0075:
+
+            line.percentage_finer_total = (
+                line.percentage_finer
+                * analysis.percentage_passing_0075
+                / 100
+            )
+
+        # =================================================
+        # 6. EQUIVALENT PARTICLE DIAMETER
+        #
+        # Excel:
+        #
+        # =SQRT(
+        #   (30 * μ * HR)
+        #   /
+        #   (980 * (Gs - 1) * t)
+        # )
+        # =================================================
+
+        if (
+            line.elapsed_time and analysis.specific_gravity and analysis.water_unit_weight and line.hr_value
+         ):
+ 
+            try:
+
+                numerator = (30* analysis.water_unit_weight* line.hr_value)
+
+                denominator = (980* (analysis.specific_gravity - 1)* line.elapsed_time)
+
+                if denominator > 0:
+
+                  line.equivalent_diameter = math.sqrt(
+                numerator / denominator
+            )
+
+            except (
+        ValueError,
+        ZeroDivisionError
+    ):
+
+               line.equivalent_diameter = 0.0
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilHydrometerAnalysisLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SoilHydrometerAnalysisTwoLine(models.Model):
+    _name = 'soil.hydrometer.analysis.two.line'
+    _description = 'Hydrometer Analysis Two Line'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+
+    sieve_size = fields.Float(string='Seive size / Equivalent Particle size (mm)',digits=(16,4))
+    precentage_passing = fields.Float(string='Percentage Passing (%)')
+
+    is_hydrometer = fields.Boolean(
+    string='From Hydrometer',
+    default=False,
+    copy=False,)
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilHydrometerAnalysisTwoLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SoilHydrometerAnalysisGraphLine(models.Model):
+    _name = 'soil.hydrometer.analysis.graph.line'
+    _description = 'Hydrometer Analysis Graph Line'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+
+    # H1
+    sh1 = fields.Float(string='H1')
+
+    # h
+    h = fields.Float(string='h')
+
+    # Vh
+    vh = fields.Float(string='Vh')
+
+    # A
+    a = fields.Float(string='A')
+
+    # A-Line HR
+    hr = fields.Float(string='HR',compute='_compute_hr_values',store=True)
+
+    # B-Line HR
+    hr_corrected = fields.Float(string='HR',compute='_compute_hr_values',store=True)
+
+    # Rh
+    rh = fields.Float(string='Rh')
+
+    @api.depends('sh1','h','vh','a')
+    def _compute_hr_values(self):
+
+        for line in self:
+
+            # Default
+            line.hr = 0.0
+            line.hr_corrected = 0.0
+
+            # ---------------------------------------------
+            # A-LINE HR
+            #
+            # Excel:
+            # =L17+0.5*(M17-N17/O17)
+            #
+            # HR = H1 + 0.5 * (h - Vh/A)
+            # ---------------------------------------------
+
+            if line.a:
+
+                line.hr = (
+                    line.sh1
+                    + 0.5 * (
+                        line.h
+                        - (
+                            line.vh / line.a
+                        )
+                    )
+                )
+
+            # ---------------------------------------------
+            # B-LINE HR
+            #
+            # Excel:
+            # =L17+0.5*M17
+            #
+            # HR = H1 + 0.5*h
+            # ---------------------------------------------
+
+            line.hr_corrected = (
+                line.sh1
+                + 0.5 * line.h
+            )
+
+
+
+  
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilHydrometerAnalysisGraphLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

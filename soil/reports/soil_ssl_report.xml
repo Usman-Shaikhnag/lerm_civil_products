@@ -419,6 +419,174 @@
 								</tr>
 
 
+								<!-- Hydrometer Analysis -->
+
+					  <t t-set="extrass_rows" t-value="5"/>
+					  <tr t-if="data.hydrometer_visible ">
+						 <t t-set="hydrometer" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f049637d-c4ca-4934-8362-a775bf4af164')])"/>
+									
+						<td t-att-rowspan="extrass_rows" style="vertical-align:middle;text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+						</td>
+							<td colspan="4">  
+								<span t-esc="hydrometer.parameter_name"/>
+							</td>
+							
+									
+						</tr>
+
+						<tr t-if="data.hydrometer_visible" >
+									
+									<td>
+							     		<span>Gravel (%)</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.gravel_percentage" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="hydrometer.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td rowspan="4" style="text-align: center;">
+										<span>
+											<t t-foreach="hydrometer.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+									<t t-if="data.hydrometer_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.hydrometer_specification"/>   
+									 </td>
+									</t>
+									
+								</tr>   
+								<tr t-if="data.hydrometer_visible" >
+									
+									<td>
+							     		<span>Sand (%)</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.sand_percentage" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="hydrometer.unit.name"/>
+										</span>
+									</td>
+
+									
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+
+									<t t-if="data.hydrometer_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.hydrometer_specification"/>
+									 </td>
+									</t>
+									           
+								</tr>
+								<tr t-if="data.hydrometer_visible" >
+									
+									<td>
+							     		<span>Silt (%)</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.silt_percentage" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="hydrometer.unit.name"/>
+										</span>
+									</td>
+
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+
+									<t t-if="data.hydrometer_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.hydrometer_specification"/>
+									 </td>
+									</t>
+									
+								</tr>
+
+								<tr t-if="data.hydrometer_visible" >
+									
+									<td>
+							     		<span> Clay (%)</span>
+									</td>
+     
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.clay_percentage" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="hydrometer.unit.name"/>
+										</span>
+									</td>
+
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+
+									<t t-if="data.hydrometer_specification">
+									 <td style="text-align: center;">
+									   <span t-field="data.hydrometer_specification"/>
+									 </td>
+									</t>
+									
+								</tr>
+
+
+
+
 								
 						
 
@@ -1354,6 +1522,43 @@
 									</td> 
 								</tr> -->
 								
+							</table>
+							</div>
+
+                  </div>
+				</t>
+
+
+				<t t-if="graph_hydrometer">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_hydrometer" style="max-width:100%; height:auto;"/>
+
+				   <div style="margin-top:10px" t-if="data.hydrometer_visible">
+							<table style="width:100%;">
+								<tr> 
+									<td colspan="6" style="text-align:right;">Gravel (%) :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.gravel_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									<td colspan="6" style="text-align:right;">Sand (%) :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.sand_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+									<td colspan="6" style="text-align:right;">Silt (%) :   
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.silt_percentage" t-options='{"widget": "float", "precision": 2}'/>         
+									</td>
+									<td colspan="6" style="text-align:right;">Clay (%) :   
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.clay_percentage" t-options='{"widget": "float", "precision": 2}'/>         
+									</td>
+								</tr>
 							</table>
 							</div>
 

@@ -12,7 +12,18 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
-from matplotlib.ticker import LogLocator, MultipleLocator
+
+
+import matplotlib
+matplotlib.use('Agg')
+
+from matplotlib.ticker import (
+    LogLocator,
+    FuncFormatter,
+    MultipleLocator,
+)
+from scipy.interpolate import PchipInterpolator
+
 
 
 class SoilDatasheet(models.AbstractModel):
@@ -112,6 +123,10 @@ class SoilReport(models.AbstractModel):
         if getattr(general_data, 'show_sieve_graph', False):
             graph_sieve = self.generate_line_chart_slive(general_data)
 
+        graph_hydrometer = False
+        if getattr(general_data, 'show_hydrometer_graph', False):
+            graph_hydrometer = self.action_generate_particle_size_graph(general_data)
+
         graph_liquid = False
         if getattr(general_data, 'show_liquid_graph', False):
             graph_liquid = self.generate_line_chart_liquid(general_data)
@@ -164,7 +179,7 @@ class SoilReport(models.AbstractModel):
             'lightmdd' : light_mdd,
             'graphcbr' : graph_cbr,
             'graph_shear' :graph_shear,
-            
+            'graph_hydrometer' : graph_hydrometer,
             
             # 'graphLight' : graph_image1,
             
@@ -174,6 +189,209 @@ class SoilReport(models.AbstractModel):
             # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
             # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
+
+    def action_generate_particle_size_graph(self, general_data):
+      """
+      Generate particle-size distribution graph for QWeb report.
+      Returns Base64-encoded PNG data.
+      """
+
+    # -----------------------------------------
+    # 1. Fetch particle-size analysis data
+    # -----------------------------------------
+      lines = general_data.hydrometers_two_line_ids.filtered(
+        lambda line: (
+            line.sieve_size > 0
+            and line.precentage_passing >= 0
+        )
+    )
+
+      if len(lines) < 2:
+        return False
+
+    # Sort points by particle size
+      points = sorted(
+        [
+            (line.sieve_size, line.precentage_passing)
+            for line in lines
+        ],
+        key=lambda point: point[0],
+    )
+
+      x_values = np.array(
+        [point[0] for point in points],
+        dtype=float,
+    )
+      y_values = np.array(
+        [point[1] for point in points],
+        dtype=float,
+    )
+
+    # -----------------------------------------
+    # 2. Validate data
+    # -----------------------------------------
+      if len(np.unique(x_values)) != len(x_values):
+        return False
+
+      if np.any(y_values < 0) or np.any(y_values > 100):
+        return False
+
+    # -----------------------------------------
+    # 3. Create graph
+    # -----------------------------------------
+      fig, ax = plt.subplots(figsize=(10, 5))
+
+      try:
+        log_x = np.log10(x_values)
+
+        # Smooth curve in logarithmic particle-size space
+        if len(x_values) >= 3:
+            smooth_curve = PchipInterpolator(
+                log_x,
+                y_values,
+            )
+
+            smooth_log_x = np.linspace(
+                log_x.min(),
+                log_x.max(),
+                400,
+            )
+
+            ax.plot(
+                10 ** smooth_log_x,
+                smooth_curve(smooth_log_x),
+                color='steelblue',
+                linewidth=1.6,
+                zorder=2,
+            )
+        else:
+            ax.plot(
+                x_values,
+                y_values,
+                color='steelblue',
+                linewidth=1.6,
+                zorder=2,
+            )
+
+        # Actual measured points
+        ax.plot(
+            x_values,
+            y_values,
+            linestyle='None',
+            marker='o',
+            color='steelblue',
+            markersize=3,
+            zorder=3,
+        )
+
+        # -----------------------------------------
+        # 4. Configure axes
+        # -----------------------------------------
+        ax.set_xscale('log')
+        ax.set_xlim(0.001, 10)
+        ax.set_ylim(0, 120)
+
+        ax.set_xlabel(
+            'Particle size (mm)',
+            fontsize=11,
+        )
+        ax.set_ylabel(
+            '% passing',
+            fontsize=11,
+        )
+
+        # No title, legend, red lines, or annotations
+        ax.set_title('')
+
+        # -----------------------------------------
+        # 5. X-axis decimal labels
+        # -----------------------------------------
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10.0)
+        )
+
+        ax.xaxis.set_major_formatter(
+            FuncFormatter(
+                lambda value, pos: f'{value:g}'
+            )
+        )
+
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10.0,
+                subs=tuple(range(2, 10)),
+            )
+        )
+
+        # -----------------------------------------
+        # 6. Y-axis intervals
+        # -----------------------------------------
+        ax.yaxis.set_major_locator(
+            MultipleLocator(10)
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(2)
+        )
+
+        ax.yaxis.set_major_formatter(
+            FuncFormatter(
+                lambda value, pos: f'{value:.2f}'
+            )
+        )
+
+        # -----------------------------------------
+        # 7. Black/grey grid lines
+        # -----------------------------------------
+        ax.grid(
+            True,
+            which='major',
+            color='black',
+            linewidth=0.6,
+            alpha=0.30,
+        )
+
+        ax.grid(
+            True,
+            which='minor',
+            color='black',
+            linewidth=0.35,
+            alpha=0.18,
+        )
+
+        ax.tick_params(
+            axis='both',
+            which='major',
+            labelsize=9,
+        )
+
+        fig.tight_layout()
+
+        # -----------------------------------------
+        # 8. Convert graph to Base64 PNG
+        # -----------------------------------------
+        image_buffer = io.BytesIO()
+
+        fig.savefig(
+            image_buffer,
+            format='png',
+            dpi=100,
+            bbox_inches='tight',
+            facecolor='white',
+        )
+
+        # Return a string suitable for QWeb
+        image_data = base64.b64encode(
+            image_buffer.getvalue()
+        ).decode('utf-8')
+
+        image_buffer.close()
+
+        return image_data
+
+      finally:
+        plt.close(fig)
+
 
 
     def action_generate_ucs_graph(self, general_data):

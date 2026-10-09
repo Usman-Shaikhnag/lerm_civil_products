@@ -50,7 +50,8 @@
 						</table>
 						</div>
 
-						
+
+						<!-- CBR -->
 						<div style="text-align:center;margin-top: 20px;" t-if="data.soil_visible">
 								<p style="font-size:20px"><b><span t-field="data.soil_name"/></b></p>
 								<span>
@@ -467,6 +468,249 @@
 					</div>
 
 					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')], limit=1).technician"/>
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="prepared_by_obj.name or ''"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+					</div>
+
+
+					<!-- Hydrometer Analysis -->
+
+					<div t-if="data.hydrometer_visible" style="page-break-before: always;">
+						 <div style="margin-top:20px" t-if="data.hydrometer_visible">
+							<div style="text-align:center;">
+								<p style="font-size:20px"><b><span t-field="data.hydrometer_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f049637d-c4ca-4934-8362-a775bf4af164')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+						  </div>
+							
+						<table style="margin-top:30px;" t-if="data.hydrometer_visible">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Elapsed time (min)
+										</span>
+									</th>
+								
+									<th>
+										<span>
+											Temperature (°C)
+										</span>
+									</th>
+									<th>
+										<span>
+											Hydrometer Reading (Rh')
+										</span>
+									</th>
+									<th>
+										<span>
+											Corrected Reading (Rh' + Cm)
+										</span>
+									</th>
+									<th>
+										<span>
+										HR Value
+										</span>
+									</th>
+									<th>
+										<span>
+										Equivalent Particle Diameter D (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Rh + M₁ - x
+										</span>
+									</th>
+									<th>
+										<span>
+										Percentage of particles finer W (%)
+										</span>
+									</th>
+									<th>
+										<span>
+										Percentage of particles finer than D w.r.t Total mass (%)
+										</span>
+									</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.hydrometer_line_ids" t-as="r">
+									<td>
+										<span t-esc="r.serial_no"/>
+									</td>
+									<td>
+										<span t-esc="r.elapsed_time"/>
+									</td>
+									<td>
+										<span t-esc="r.temperature"/>
+									</td>
+									<td>
+										<span t-esc="r.hydrometer_reading" />
+									</td>
+									<td>
+										<span t-esc="r.corrected_reading" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.hr_value" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.equivalent_diameter" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.rh_plus_m_x" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.percentage_finer" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.percentage_finer_total" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top:30px;" t-if="data.hydrometer_visible">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Seive size / Equivalent Particle size (mm)
+										</span>
+									</th>
+								
+									<th>
+										<span>
+											Percentage Passing (%)
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.hydrometers_two_line_ids" t-as="r">
+									<td>
+										<span t-esc="r.serial_no"/>
+									</td>
+									<td>
+										<span t-esc="r.sieve_size" t-options='{"widget": "float", "precision": 4}'/>
+									</td>
+									<td>
+										<span t-esc="r.precentage_passing" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+
+						<div style="margin-top:10px" t-if="data.hydrometer_visible">
+							<table>
+
+								<tr> 
+									<td colspan="12">Gravel (%) :<![CDATA[&nbsp;]]>
+										<span t-esc="data.gravel_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+								<tr> 
+									<td colspan="12">Sand (%) :<![CDATA[&nbsp;]]>
+										<span t-esc="data.sand_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr> 
+									<td colspan="12">Silt (%) :<![CDATA[&nbsp;]]>
+										<span t-esc="data.silt_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr> 
+									<td colspan="12">Clay (%) :<![CDATA[&nbsp;]]>
+										<span t-esc="data.clay_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+					
+
+					<div t-if="data.show_hydrometer_graph" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.particle_size_graph_image.decode('utf-8')" style="max-width: 100%;"/>
+					</div>
+
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','f049637d-c4ca-4934-8362-a775bf4af164')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>

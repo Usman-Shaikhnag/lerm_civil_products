@@ -202,7 +202,7 @@
 
                     
 
-                    <button name="action_generate_graph" string="Generate Graph" type="object" class="btn-primary"/>
+                    <button invisible="sieve_visible == False" name="action_generate_graph" string="Generate Graph" type="object" class="btn-primary"/>
 
                     <div invisible="sieve_visible == False">
 
@@ -222,6 +222,213 @@
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_slive" widget="image" readonly="1"/>
                     </div>
+
+
+                    <!-- Hydrometer Analysis -->
+                    <div invisible = "hydrometer_visible == False">
+                        <h1 class="text-center">
+                            <field name="hydrometer_name" readonly="1" nolabel="1"/>
+                            <field name="hydrometer_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="hydrometer_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="hydrometer_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    
+                    <div class="d-flex gap-2">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not hydrometer_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="percentage_passing_0075"/></td>
+                                <td  class="w-25">
+                                    <field name="percentage_passing_0075" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-25"><label for="total_sample_mass"/></td>
+                                <td  class="w-25">
+                                    <field name="total_sample_mass" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-25"><label for="water_content"/></td>
+                                <td  class="w-25">
+                                    <field name="water_content" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-25"><label for="specific_gravity"/></td>
+                                <td  class="w-25">
+                                    <field name="specific_gravity" class="blue-input"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                      </table>
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not hydrometer_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="hydrometer_no"/></td>
+                                <td  class="w-25">
+                                    <field name="hydrometer_no" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-25"><label for="meniscus_correction"/></td>
+                                <td  class="w-25">
+                                    <field name="meniscus_correction" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="w-25"><label for="water_unit_weight"/></td>
+                                <td  class="w-25">
+                                    <field name="water_unit_weight" class="blue-input"/>
+                                </td>
+                            </tr>
+                            <tr>   
+                                <td class="w-25"><label for="dispersing_agent_correction"/></td>
+                                <td  class="w-25">
+                                    <field name="dispersing_agent_correction" class="blue-input"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not hydrometer_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="show_hydrometer_calibration_chart"/></td>
+                                <td  class="w-50">
+                                    <field name="show_hydrometer_calibration_chart" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <field name="hydrometers_two_graph_line_ids" invisible = "show_hydrometer_calibration_chart == False">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="serial_no"/>
+
+                            <field name="sh1" class="blue-input" decoration-info="sh1 != 0"/>
+                            <field name="h" class="blue-input" decoration-info="h != 0"/>
+                            <field name="vh" class="blue-input" decoration-info="vh != 0"/>
+                            <field name="a" class="blue-input" decoration-info="a != 0"/>
+                            <field name="hr" />
+                            <field name="hr_corrected" />
+                            <field name="rh" class="blue-input" decoration-info="rh != 0"/>
+                        </tree>
+                    </field>
+\
+
+                     <div invisible="show_hydrometer_calibration_chart == False">
+                        <button type="object" name="action_generate_hydrometer_graph" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Generate Hydrometer Calibration Chart
+                        </button>
+                    </div> 
+
+                    <div invisible = "show_hydrometer_calibration_chart == False" class="custom_table_borders text-center">
+                        <field name="hydrometer_graph_image" widget="image" readonly="1"/>
+                    </div>
+
+
+                    
+                    <field name="hydrometer_line_ids" invisible = "hydrometer_visible == False">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="serial_no"/>
+
+                            <field name="elapsed_time" />
+                            <field name="temperature" class="blue-input" decoration-info="temperature != 0"/>
+                            <field name="hydrometer_reading" class="blue-input" decoration-info="hydrometer_reading != 0"/>
+
+                            <field name="corrected_reading"/>
+                            <field name="hr_value"/>
+                            <field name="equivalent_diameter"/>
+                            <field name="rh_plus_m_x"/>
+                            <field name="percentage_finer"/>
+                            <field name="percentage_finer_total"/>
+                        </tree>
+                    </field>
+
+                    <field name="hydrometers_two_line_ids" invisible = "hydrometer_visible == False">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="serial_no"/>
+
+                            <field name="sieve_size" />
+                            <field name="precentage_passing" class="blue-input" decoration-info="precentage_passing != 0"/>
+                            
+                        </tree>
+                    </field>
+
+                    <div invisible="hydrometer_visible == False" class="d-flex gap-2">
+                    
+                        <button type="object" name="action_fetch_hydrometer_diameters" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Fetch Hydrometer Diameters
+                        </button>
+                    
+                        <button type="object" name="action_generate_particle_size_graph" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Generate Hydrometer Graph
+                        </button>
+                   
+                    </div> 
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not hydrometer_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="show_hydrometer_graph"/></td>
+                                <td  class="w-50">
+                                    <field name="show_hydrometer_graph" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible = "hydrometer_visible == False" class="custom_table_borders text-center">
+                        <field name="particle_size_graph_image" widget="image" readonly="1"/>
+                    </div>
+
+                  
+                   <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders" invisible="not hydrometer_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="gravel_percentage">% Gravels</label></td>
+                                <td><field name="gravel_percentage"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="sand_percentage">%Sand</label></td>
+                                <td><field name="sand_percentage"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="silt_percentage">%Slit </label></td>
+                                <td><field name="silt_percentage"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="clay_percentage">%Clay</label></td>
+                                <td><field name="clay_percentage"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                   
+
+                    
+
+                    
+
+
+
+                   
 
 
 
