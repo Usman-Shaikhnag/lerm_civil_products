@@ -294,7 +294,10 @@
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
+												<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+												<t t-if="parameter.grade.id == eln.grade_id.id and parameter.size.id == eln.size_id.id">
+    <!-- Your content here -->
+</t>
 													<span t-field="parameter.specification"/>
 												</t>
 											</t>
