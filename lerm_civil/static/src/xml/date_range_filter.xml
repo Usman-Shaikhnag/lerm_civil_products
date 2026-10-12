@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Extend web.ListView to inject the DateRangeFilter bar above
+        the table renderer, scoped strictly to lerm.srf.sample.
+    -->
+    <t t-inherit="web.ListView" t-inherit-mode="extension">
+        <xpath expr="//Layout/t[@t-component='props.Renderer']" position="replace">
+            <t t-if="isTargetModel">
+                <div class="o_renderer_with_searchpanel lerm-sample-list-container flex-grow-1 d-flex flex-column h-100 overflow-hidden">
+                    <div class="lerm-date-filter-bar">
+                        <!-- Toolbar Header -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="lerm-df-toggle btn btn-sm"
+                                    t-att-class="dateFilter.expanded ? 'btn-primary' : 'btn-outline-primary'"
+                                    t-on-click="onToggleDateFilter"
+                                    type="button">
+                                <i class="fa fa-calendar me-1"/>
+                                <span>Date Filters</span>
+                                <i t-att-class="dateFilter.expanded ? 'fa fa-chevron-up ms-1' : 'fa fa-chevron-down ms-1'"/>
+                            </button>
+
+                            <!-- Active Filter Badges (shown when collapsed) -->
+                            <t t-if="!dateFilter.expanded and hasActiveFilter">
+                                <span class="badge bg-primary d-inline-flex align-items-center gap-1 lerm-df-active-badge">
+                                    <t t-esc="_buildFacetLabel()"/>
+                                    <i class="fa fa-times lerm-df-badge-clear ms-1" t-on-click.stop="onClearDateFilters" title="Clear Date Filters"/>
+                                </span>
+                            </t>
+
+                            <!-- Quick Action Buttons on Bar (shown when collapsed and no filter active) -->
+                            <t t-if="!dateFilter.expanded and !hasActiveFilter">
+                                <span class="text-muted small ms-1">Quick:</span>
+                                <button class="btn btn-sm btn-outline-secondary lerm-df-quick-btn"
+                                        type="button"
+                                        t-on-click="() => this.onCreatePreset('today')">
+                                    Created Today
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary lerm-df-quick-btn"
+                                        type="button"
+                                        t-on-click="() => this.onReceivedPreset('today')">
+                                    Received Today
+                                </button>
+                            </t>
+                        </div>
+
+                        <!-- Expanded Filter Panel -->
+                        <div t-if="dateFilter.expanded" class="lerm-df-panel mt-2 pt-2 border-top">
+                            <!-- Row 1: Created Date -->
+                            <div class="lerm-df-row">
+                                <span class="lerm-df-label">
+                                    <i class="fa fa-clock-o me-1 text-primary"/>Created Date
+                                </span>
+                                <div class="lerm-df-inputs">
+                                    <input type="date" class="form-control form-control-sm lerm-df-input"
+                                           t-att-value="dateFilter.createFrom"
+                                           t-on-change="onCreateFromChange"
+                                           placeholder="From"/>
+                                    <span class="lerm-df-separator">→</span>
+                                    <input type="date" class="form-control form-control-sm lerm-df-input"
+                                           t-att-value="dateFilter.createTo"
+                                           t-on-change="onCreateToChange"
+                                           placeholder="To"/>
+                                </div>
+                                <div class="lerm-df-presets btn-group btn-group-sm">
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.createPreset === 'today' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onCreatePreset('today')">Today</button>
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.createPreset === 'week' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onCreatePreset('week')">This Week</button>
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.createPreset === 'month' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onCreatePreset('month')">This Month</button>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Received Date -->
+                            <div class="lerm-df-row mt-2">
+                                <span class="lerm-df-label">
+                                    <i class="fa fa-truck me-1 text-success"/>Received Date
+                                </span>
+                                <div class="lerm-df-inputs">
+                                    <input type="date" class="form-control form-control-sm lerm-df-input"
+                                           t-att-value="dateFilter.receivedFrom"
+                                           t-on-change="onReceivedFromChange"
+                                           placeholder="From"/>
+                                    <span class="lerm-df-separator">→</span>
+                                    <input type="date" class="form-control form-control-sm lerm-df-input"
+                                           t-att-value="dateFilter.receivedTo"
+                                           t-on-change="onReceivedToChange"
+                                           placeholder="To"/>
+                                </div>
+                                <div class="lerm-df-presets btn-group btn-group-sm">
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.receivedPreset === 'today' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onReceivedPreset('today')">Today</button>
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.receivedPreset === 'week' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onReceivedPreset('week')">This Week</button>
+                                    <button class="btn btn-sm"
+                                            type="button"
+                                            t-att-class="dateFilter.receivedPreset === 'month' ? 'btn-primary' : 'btn-outline-secondary'"
+                                            t-on-click="() => this.onReceivedPreset('month')">This Month</button>
+                                </div>
+                            </div>
+
+                            <!-- Actions Row -->
+                            <div class="lerm-df-actions d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                <button class="btn btn-sm btn-outline-danger"
+                                        type="button"
+                                        t-att-disabled="!hasActiveFilter"
+                                        t-on-click="onClearDateFilters">
+                                    <i class="fa fa-eraser me-1"/>Clear All Date Filters
+                                </button>
+                                <button class="btn btn-sm btn-secondary"
+                                        type="button"
+                                        t-on-click="onToggleDateFilter">
+                                    Close Panel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Renderer inside container -->
+                    <t t-component="props.Renderer"
+                        list="model.root"
+                        activeActions="activeActions"
+                        archInfo="archInfo"
+                        allowSelectors="props.allowSelectors"
+                        editable="editable"
+                        onOpenFormView="onOpenFormView" 
+                        openRecord.bind="openRecord"
+                        noContentHelp="props.info.noContentHelp"
+                        onAdd.bind="createRecord"
+                        onOptionalFieldsChanged.bind="onOptionalFieldsChanged"
+                        evalViewModifier.bind="evalViewModifier"
+                    />
+                </div>
+            </t>
+            <t t-else="" t-component="props.Renderer"
+                list="model.root"
+                activeActions="activeActions"
+                archInfo="archInfo"
+                allowSelectors="props.allowSelectors"
+                editable="editable"
+                onOpenFormView="onOpenFormView" 
+                openRecord.bind="openRecord"
+                noContentHelp="props.info.noContentHelp"
+                onAdd.bind="createRecord"
+                onOptionalFieldsChanged.bind="onOptionalFieldsChanged"
+                evalViewModifier.bind="evalViewModifier"
+            />
+        </xpath>
+    </t>
+
+</templates>

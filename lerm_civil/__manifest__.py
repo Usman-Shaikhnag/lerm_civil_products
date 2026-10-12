@@ -29,6 +29,7 @@
     'views/employee.xml',
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
+    'views/sample_cancellation.xml',
     'views/portal/lerm_portal.xml',
     'views/customer_sample_requests.xml',
     'views/partner_document.xml',
@@ -62,8 +63,11 @@
         'web.assets_backend': [
             'lerm_civil/static/src/css/custom_styles.css',
             'lerm_civil/static/src/css/eln_readonly.css',
+            'lerm_civil/static/src/css/date_range_filter.css',
             'lerm_civil/static/src/js/disable_right_click.js',
             'lerm_civil/static/src/js/eln_readonly_form.js',
+            'lerm_civil/static/src/js/date_range_filter.js',
+            'lerm_civil/static/src/xml/date_range_filter.xml',
         ],
         'web.assets_frontend': [
             'lerm_civil/static/src/js/disable_right_click.js',
