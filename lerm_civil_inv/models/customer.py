@@ -27,6 +27,21 @@ class Customer(models.Model):
         string='Address Type',
         default='contact',
         help="Invoice & Delivery addresses are used in sales orders. Private addresses are only visible by authorized users.")
+    parent_type = fields.Selection(related='parent_id.type', string="Parent Address Type")
+
+    @api.constrains('type', 'parent_id', 'name', 'email', 'phone')
+    def _check_reporting_customer_contact(self):
+        for partner in self:
+            if partner.type == 'reporting_customer' \
+                    and not (partner.name and partner.email and partner.phone):
+                raise ValidationError(
+                    'Contact Name, Email and Phone are mandatory for a Reporting Customer%s.'
+                    % (' of "%s"' % partner.parent_id.name if partner.parent_id else ''))
+            if partner.type == 'contact' and partner.parent_id.type == 'reporting_customer' \
+                    and not (partner.email and partner.phone):
+                raise ValidationError(
+                    'Email and Phone are mandatory for contact person "%s" of Reporting Customer "%s".'
+                    % (partner.name or '', partner.parent_id.name))
 
 
     @api.model
@@ -105,6 +120,7 @@ class AccountMoveInherited(models.Model):
     vendor_bill_date = fields.Date("Vendor Bill Date")
     place_of_supply = fields.Char("Place of Supply")
     gstr_claim_date = fields.Date("GSTR Claim Date")
+    oc_receiving_date = fields.Date("OC Receiving Date", copy=False, tracking=True)
     property_supplier_payment_term_id = fields.Many2one('account.payment.term',string="Payment Terms")
 
     @api.onchange('partner_id')

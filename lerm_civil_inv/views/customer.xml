@@ -81,6 +81,41 @@
             </field>
         </record>
 
+        <record id="view_partner_form_lerm_mandatory_fields" model="ir.ui.view">
+            <field name="name">res.partner.form.lerm.mandatory.fields</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_ids'][not(ancestor::field)]" position="after">
+                    <field name="parent_type" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@id='company']" position="attributes">
+                    <attribute name="required">type in ('contact', 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@id='individual']" position="attributes">
+                    <attribute name="required">type in ('contact', 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='phone'][not(ancestor::field)]" position="attributes">
+                    <attribute name="required">type == 'reporting_customer' or (type == 'contact' and parent_type == 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='email'][not(ancestor::field)]" position="attributes">
+                    <attribute name="required">user_ids or type == 'reporting_customer' or (type == 'contact' and parent_type == 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']/form//field[@name='name']" position="attributes">
+                    <attribute name="required">type in ('contact', 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']/form//field[@name='phone']" position="attributes">
+                    <attribute name="required">type == 'reporting_customer' or (type == 'contact' and parent.type == 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']/form//field[@name='email']" position="attributes">
+                    <attribute name="required">type == 'reporting_customer' or (type == 'contact' and parent.type == 'reporting_customer')</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']//field[@name='user_id']" position="attributes">
+                    <attribute name="required">not parent_id</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <record id="account_move_inherited_form" model="ir.ui.view">
             <field name="name">account.move.inherited.form</field>
             <field name="model">account.move</field>
@@ -154,6 +189,7 @@
                 </xpath>
                  <xpath expr="//field[@name='invoice_date']" position="after">
                     <!-- <field name="property_supplier_payment_term_id"  /> -->
+                    <field name="oc_receiving_date" invisible="move_type != 'out_invoice'" />
                     <field name="gstr_no" />
                     <field name="vendor_bill_date"  invisible="move_type not in ('in_invoice', 'in_refund', 'in_receipt')" />
                     <field name="place_of_supply"  invisible="move_type not in ('in_invoice', 'in_refund', 'in_receipt')" />
@@ -271,6 +307,9 @@
            
                 <xpath expr="//field[@name='gstr_claim_date']" position="before">
                     <field name="gstr_no"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_date_due']" position="after">
+                    <field name="oc_receiving_date" optional="show"/>
                 </xpath>
             </field>
         </record>
