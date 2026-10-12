@@ -227,24 +227,18 @@ class LermSampleForm(models.Model):
 
 
     def cancel_sample(self):
-        # import wdb;wdb.set_trace()
-        eln_id = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)],limit=1)
-        if eln_id:
-            eln_id.write({'state':'5-cancelled'})
-
-        action = self.env.ref('lerm_civil.sample_rejection_wizard')
+        view = self.env.ref('lerm_civil.sample_rejection_wizard')
         return {
             'name': "Cancel Sample",
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'sample.cancellation.wizard',
-            'view_id': action.id,
+            'view_id': view.id,
             'target': 'new',
-            'context':{
+            'context': {
                 'default_sample': self.id,
-                }
             }
+        }
 
     def amend_sample(self):
         for record in self:
