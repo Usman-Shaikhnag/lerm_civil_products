@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="curing_compound_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Concrete Curing Compound Test Data Sheet
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+				 <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+				<!-- Density Test Data -->
+                <div t-if="data.density_test_data_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Density Test Data
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5a57bf7a-5316-40a0-a702-e030cbd40479')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</div>
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="1">Specimen No
+								</td>
+								<td colspan="4">Mass of Empty Cup W0 (g)
+								</td>
+								<td colspan="4">Mass of Cup with Sample W1 (g)
+								</td>
+								<td colspan="3">Volume of Cup V (ml)
+								</td>
+								<td colspan="4">Density = (W1 - W0)/V (g/ml)
+								</td>
+								
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.density_test_data_table" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="4">
+									<span t-esc="r['Mass']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['Mass_of_Cup_with_Sample']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['volume']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['density']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average Density g/ml:
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.average_density"/>
+								</td>
+							</tr>
+                            
+							
+						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+
+				</div>
+
+				<!-- Drying Time Test Data -->
+                <div t-if="data.drying_time_test_data_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Drying Time Test Data
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b595d12d-af10-4955-9c17-0f412c260d8f')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</div>
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="1">Specimen No
+								</td>
+								<td colspan="4">Application Time
+								</td>
+								<td colspan="4">Set-to-Touch Observation Time
+								</td>
+								<td colspan="3">Drying Time (in hours)
+								</td>
+								
+								
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.drying_time_test_table" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="4">
+									<span t-esc="r['application_time']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['observation_time']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['drying_time']"/>
+								</td>
+								
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average Drying Time (in hours):
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.average_drying_time"/>
+								</td>
+							</tr>
+                            
+							
+						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+
+
+						<!--WATER RETENTION TEST DATA (Loss of Water at 72 Hours) -->
+                <div t-if="data.water_retention_test_data_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							WATER RETENTION TEST DATA (Loss of Water at 72 Hours)
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6487f7d1-9f5a-415d-adca-ce9e83d80b0e')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</div>
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="1">Specimen No
+								</td>
+								<td colspan="2">Surface Area A (m²)
+								</td>
+								<td colspan="4">Initial Wt. M1 (kg)
+								</td>
+								<td colspan="3">Final Wt. after 72h M2 (kg)
+								</td>
+								<td colspan="4">Loss of Water M1-M2 (kg)
+								</td>
+								<td colspan="4">Water Loss per Area (kg/m²)
+								</td>
+								
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.water_retention_test_table" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="4">
+									<span t-esc="r['surface_area']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['initial_wt']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['final_wt']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['loss_of_water']"/>
+								</td>
+								<td colspan="4">
+									<span t-esc="r['water_loss_per_area']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average Water Loss at 72 Hours (kg/m²):
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.average_water_loss_per_area"/>
+								</td>
+							</tr>
+                            
+							
+						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+
+				</div>
+
+
+				</div>
+
+			</div>
+		</t>
+	</t>
+	</template>
+</odoo>

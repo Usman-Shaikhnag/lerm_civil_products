@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_curing_compound_form" model="ir.ui.view">
+        <field name="name">mechanical.curing.compound.form</field>
+        <field name="model">mechanical.curing.compound</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                    
+                    <!-- Density Test Data -->
+
+                    <group invisible="not density_test_data_visible">
+                        <h1>
+                            <field name="density_test_name" readonly="1" nolabel="1" style="white-space: nowrap;"/>
+                            <field name="density_test_data_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <div class="custom_table_borders" invisible="not density_test_data_visible">
+                        <field name="density_test_data_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="Mass" class="blue-input" decoration-info="Mass != 0"/>
+                          <field name="Mass_of_Cup_with_Sample" class="blue-input" decoration-info="Mass_of_Cup_with_Sample != 0"/>
+                          <field name="volume" class="blue-input" decoration-info="volume != 0"/>
+                          <field name="density" class="blue-input" decoration-info="density != 0"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div style="display:flex;">
+                    <div style="width:33%;" invisible="not density_test_data_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_density">Average Density</label></td>
+                                    <td><field name="average_density"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    
+
+                <!--Drying Time Test Data -->
+                    <group invisible="not drying_time_test_data_visible">
+                        <h1>
+                            <field name="drying_time_test_name" readonly="1" nolabel="1" style="white-space: nowrap;"/>
+                            <field name="drying_time_test_data_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <div class="custom_table_borders" invisible="not drying_time_test_data_visible">
+                        <field name="drying_time_test_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="application_time" class="blue-input"  decoration-info="application_time != 0"/>
+                          <field name="application_time_am_pm"/>
+                          <field name="observation_time" class="blue-input"  widget="float_time" decoration-info="observation_time != 0"/>
+                          <field name="observation_time_am_pm"/>                         
+                          <field name="drying_time" class="blue-input" decoration-info="drying_time != 0"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div style="display:flex;">
+                    <div style="width:33%;" invisible="not drying_time_test_data_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_drying_time">Average Drying Time</label></td>
+                                    <td><field name="average_drying_time"/></td>
+                                </tr>
+                                <!-- <tr>
+                                    <td><label class="text-bold" for="drying_time_test_conformity">Conformity</label></td>
+                                    <td><field name="drying_time_test_conformity"
+                                            decoration-success="drying_time_test_conformity == 'pass'" 
+                                            decoration-danger="drying_time_test_conformity == 'fail'" 
+                                            readonly="1"/></td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+                    <!-- Water Retention Test Data-->
+                    <group invisible="not water_retention_test_data_visible">
+                        <h1>
+                            <field name="water_retention_test_name" readonly="1" nolabel="1" style="white-space: nowrap;"/>
+                            <field name="water_retention_test_data_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <div class="custom_table_borders" invisible="not water_retention_test_data_visible">
+                        <field name="water_retention_test_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="surface_area" class="blue-input" decoration-info="surface_area != 0"/>
+                          <field name="initial_wt" class="blue-input" decoration-info="initial_wt != 0"/>
+                          <field name="final_wt" class="blue-input" decoration-info="final_wt != 0"/>
+                          <field name="loss_of_water" class="blue-input" decoration-info="loss_of_water != 0"/>
+                          <field name="water_loss_per_area" class="blue-input" decoration-info="water_loss_per_area != 0"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div style="display:flex;">
+                    <div style="width:33%;" invisible="not water_retention_test_data_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_water_loss_per_area">Average Water Loss per Area</label></td>
+                                    <td><field name="average_water_loss_per_area"/></td>
+                                </tr>
+                                <!-- <tr>
+                                    <td><label class="text-bold" for="drying_time_test_conformity">Conformity</label></td>
+                                    <td><field name="drying_time_test_conformity"
+                                            decoration-success="drying_time_test_conformity == 'pass'" 
+                                            decoration-danger="drying_time_test_conformity == 'fail'" 
+                                            readonly="1"/></td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+
+
+
+
+                        
+
+
+
+
+                          <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+                   
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+       
+    </data>
+</odoo>
