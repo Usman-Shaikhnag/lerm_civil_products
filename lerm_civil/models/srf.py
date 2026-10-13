@@ -292,6 +292,10 @@ class SrfForm(models.Model):
 
     @api.model
     def create(self, vals):
+        # Billing customer defaults to the reporting customer when left blank
+        if not vals.get('billing_customer') and vals.get('customer'):
+            vals['billing_customer'] = vals['customer']
+
         previous_record_date = self.search([], order='srf_date desc', limit=1).srf_date
         
         # previous_record_date = datetime.strptime(previous_record_date, "%Y-%m-%d").date()
@@ -318,7 +322,14 @@ class SrfForm(models.Model):
         
         return record
 
-    
+    def write(self, vals):
+        res = super(SrfForm, self).write(vals)
+        if 'customer' in vals or 'billing_customer' in vals:
+            for record in self.filtered(lambda r: r.customer and not r.billing_customer):
+                record.billing_customer = record.customer
+        return res
+
+
         
         
     @api.model
@@ -370,11 +381,15 @@ class SrfForm(models.Model):
 
     @api.onchange('billing_customer')
     def _onchange_billing_customer(self):
-        if self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+        if self.billing_customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+            self.customer = self.billing_customer
+        elif self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
             self.customer = False
 
     @api.onchange('customer')
     def _onchange_customer(self):
+        if self.customer and not self.billing_customer:
+            self.billing_customer = self.customer
         if self.name_work and self.name_work.reporting_customer != self.customer:
             self.name_work = False
 

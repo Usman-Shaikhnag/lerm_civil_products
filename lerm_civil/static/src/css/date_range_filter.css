@@ -1,0 +1,149 @@
+/* ── LERM Civil Date Range Filter Bar ────────────────────────────── */
+
+.lerm-sample-list-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.lerm-sample-list-container > .o_renderer {
+    flex: 1 1 100%;
+    overflow: auto;
+    height: 100%;
+}
+
+.lerm-date-filter-bar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Toggle button */
+.lerm-df-toggle {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 4px 12px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease-in-out;
+}
+
+/* Quick buttons on the bar */
+.lerm-df-quick-btn {
+    font-size: 0.8rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+.lerm-df-quick-btn:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+/* Active filter badge */
+.lerm-df-active-badge {
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background-color: #0284c7 !important;
+}
+.lerm-df-badge-clear {
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    transition: opacity 0.15s ease;
+}
+.lerm-df-badge-clear:hover {
+    opacity: 1;
+}
+
+/* Expanded panel */
+.lerm-df-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: lermSlideDown 0.15s ease-out;
+}
+
+@keyframes lermSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Each date row */
+.lerm-df-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.lerm-df-label {
+    min-width: 135px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+}
+
+.lerm-df-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lerm-df-input {
+    width: 145px;
+    font-size: 0.85rem;
+    padding: 3px 8px;
+    border-radius: 5px;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+.lerm-df-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.lerm-df-separator {
+    color: #94a3b8;
+    font-weight: bold;
+    user-select: none;
+}
+
+.lerm-df-presets .btn {
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lerm-df-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .lerm-df-inputs {
+        width: 100%;
+    }
+    .lerm-df-input {
+        width: 130px;
+    }
+}

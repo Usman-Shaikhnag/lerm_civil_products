@@ -229,8 +229,8 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.max_fsi - record.max_fsi * (mu_value/100)
-                    upper = record.max_fsi + record.max_fsi * (mu_value/100)
+                    lower = record.max_fsi - (record.max_fsi * mu_value)
+                    upper = record.max_fsi + (record.max_fsi * mu_value)
 
                     if lower >= req_min and upper <= req_max:
                         record.max_fsi_conformity = 'pass'
@@ -255,8 +255,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.max_fsi - record.max_fsi*(mu_value/100)
-            upper = record.max_fsi + record.max_fsi*(mu_value/100)
+            lower = record.max_fsi - (record.max_fsi * mu_value)
+            upper = record.max_fsi + (record.max_fsi * mu_value)
             if lower >= lab_min and upper <= lab_max:
                 record.max_fsi_nabl = 'pass'
                 break
@@ -698,9 +698,11 @@ class Soil(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
+                    # import wdb;wdb.set_trace()
 
-                    lower = record.liquid_limit - record.liquid_limit * (mu_value/100)
-                    upper = record.liquid_limit + record.liquid_limit * (mu_value/100)
+
+                    lower = record.liquid_limit - (record.liquid_limit * mu_value)
+                    upper = record.liquid_limit + (record.liquid_limit * mu_value)
 
                     if lower >= req_min and upper <= req_max:
                         record.liquid_limit_conformity = 'pass'
@@ -725,8 +727,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.liquid_limit - record.liquid_limit*(mu_value/100)
-            upper = record.liquid_limit + record.liquid_limit*(mu_value/100)
+            lower = record.liquid_limit - (record.liquid_limit * mu_value)
+            upper = record.liquid_limit + (record.liquid_limit * mu_value)
             if lower >= lab_min and upper <= lab_max:
                 record.liquid_limit_nabl = 'pass'
                 break
@@ -822,8 +824,8 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.plastic_limit - record.plastic_limit * (mu_value/100)
-                    upper = record.plastic_limit + record.plastic_limit * (mu_value/100)
+                    lower = record.plastic_limit - (record.plastic_limit * mu_value)
+                    upper = record.plastic_limit + (record.plastic_limit * mu_value)
 
                     if lower >= req_min and upper <= req_max:
                         record.plasticity_index_conformity = 'pass'
@@ -843,8 +845,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.plastic_limit - record.plastic_limit*(mu_value/100)
-            upper = record.plastic_limit + record.plastic_limit*(mu_value/100)
+            lower = record.plastic_limit - (record.plastic_limit * mu_value)
+            upper = record.plastic_limit + (record.plastic_limit * mu_value)
             if lower >= lab_min and upper <= lab_max:
                 record.plastic_limit_nabl = 'pass'
                 break
@@ -868,8 +870,8 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.plastic_limit - record.plastic_limit*(mu_value/100)
-            upper = record.plastic_limit + record.plastic_limit*(mu_value/100)
+            lower = record.plastic_limit - (record.plastic_limit * mu_value)
+            upper = record.plastic_limit + (record.plastic_limit * mu_value)
             if lower >= lab_min and upper <= lab_max:
                 record.plasticity_index_nabl = 'pass'
                 break
@@ -906,8 +908,8 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
 
-                    lower = record.plastic_limit - record.plastic_limit * (mu_value/100)
-                    upper = record.plastic_limit + record.plastic_limit * (mu_value/100)
+                    lower = record.plastic_limit - (record.plastic_limit * mu_value)
+                    upper = record.plastic_limit + (record.plastic_limit * mu_value)
 
                     if lower >= req_min and upper <= req_max:
                         record.plastic_limit_conformity = 'pass'

@@ -141,6 +141,8 @@ class LermSampleForm(models.Model):
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),
         ('6-cancelled', 'Cancelled'),
+        ('8-amendment', 'Amendment'),
+        ('9-amendment_revised', 'Amendment Revised'),
         
     ], string='State',default='1-allotment_pending')
     conformity = fields.Boolean(string="Conformity")
@@ -218,32 +220,34 @@ class LermSampleForm(models.Model):
     @api.depends('scope','state')
     def _compute_print_nabl_visible(self):
         for record in self:
-            if record.scope == 'nabl' and record.state == '4-in_report':
+            if record.scope == 'nabl' and (record.state == '4-in_report' or record.state == '9-amendment_revised'):
                 record.print_button_visible = True
             else:
                 record.print_button_visible =  False
 
 
     def cancel_sample(self):
-        # import wdb;wdb.set_trace()
-        eln_id = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)],limit=1)
-        if eln_id:
-            eln_id.write({'state':'5-cancelled'})
-
-        action = self.env.ref('lerm_civil.sample_rejection_wizard')
+        view = self.env.ref('lerm_civil.sample_rejection_wizard')
         return {
             'name': "Cancel Sample",
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'sample.cancellation.wizard',
-            'view_id': action.id,
+            'view_id': view.id,
             'target': 'new',
-            'context':{
+            'context': {
                 'default_sample': self.id,
-                }
             }
+        }
 
+    def amend_sample(self):
+        for record in self:
+            record.write({
+                'state':'8-amendment',
+                'ulr_no':record.ulr_no+"A"
+                })
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', record.id)])
+            eln.write({'state': '6-amendment'})
         
 
 
@@ -561,6 +565,99 @@ class LermSampleForm(models.Model):
             'report_file': template_name,
             'data' : {'fromsample' : True , 'inreport' : inreport , 'nabl' : False,'fromEln':False}
         }
+
+    def _bulk_print_report(self, nabl=True):
+        """Render each selected sample's report as PDF and merge into one download."""
+        from PyPDF2 import PdfFileMerger
+        from io import BytesIO
+        import base64
+
+        if not self:
+            raise UserError("Please select at least one sample.")
+
+        merger = PdfFileMerger()
+        skipped = []
+        pdf_count = 0
+
+        for sample in self:
+            eln = self.env["lerm.eln"].sudo().search([('sample_id', '=', sample.id)], limit=1)
+            if not eln:
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            is_product_based = eln.is_product_based_calculation
+            try:
+                if is_product_based:
+                    template = eln.material.product_based_calculation[0].main_report_template
+                else:
+                    template = eln.parameters_result.parameter[0].main_report_template
+            except (IndexError, AttributeError):
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            if not template:
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+            report_data = {
+                'fromsample': True,
+                'inreport': sample.state,
+                'nabl': nabl,
+                'fromEln': False,
+                'report_wizard': True,
+                'sample': sample.id,
+            }
+
+            try:
+                pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(
+                    template.report_name, [sample.id], data=report_data
+                )
+                merger.append(BytesIO(pdf_content))
+                pdf_count += 1
+            except Exception as e:
+                logging.getLogger(__name__).error("Failed to generate PDF for sample %s: %s", sample.kes_no or sample.id, str(e))
+                skipped.append(sample.kes_no or str(sample.id))
+                continue
+
+        if pdf_count == 0:
+            raise UserError("Could not generate any reports for the selected samples.")
+
+
+        output = BytesIO()
+        merger.write(output)
+        merger.close()
+        merged_pdf = output.getvalue()
+
+        label = "NABL" if nabl else "Non-NABL"
+        filename = "Bulk_%s_Report.pdf" % label
+
+        attachment = self.env['ir.attachment'].sudo().create({
+            'name': filename,
+            'type': 'binary',
+            'datas': base64.b64encode(merged_pdf),
+            'mimetype': 'application/pdf',
+        })
+
+        action = {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/%s?download=true' % attachment.id,
+            'target': 'new',
+        }
+
+        if skipped:
+            # Return a notification wizard-like approach isn't needed;
+            # the download will still trigger; log skipped for debugging
+            logging.getLogger(__name__).warning(
+                "Bulk %s report: skipped samples %s (no ELN/template)", label, ', '.join(skipped)
+            )
+
+        return action
+
+    def bulk_print_nabl_report(self):
+        return self._bulk_print_report(nabl=True)
+
+    def bulk_print_non_nabl_report(self):
+        return self._bulk_print_report(nabl=False)
 
     
     # def print_sample_report(self):

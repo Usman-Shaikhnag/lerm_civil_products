@@ -8,6 +8,7 @@ class Equipment(models.Model):
     _description = 'Laboratory Equipment'
 
     code = fields.Char(string='Code')
+    make = fields.Char(string='Make')
     available_from = fields.Float(string='Available From')
     available_to = fields.Float(string='Available To')
     parameter_ids = fields.Many2many('lerm.parameter.master', 'equipment_parameters_rel', 'equipment_id', 'parameter_id', string='Parameters')
@@ -32,21 +33,17 @@ class CalibrationLines(models.Model):
     _name ="equipment.calibration.lines"
 
     parent_id = fields.Many2one('maintenance.equipment')
-    range_least_count = fields.Char('Range And Least count')
-    name_address_calibration_lab = fields.Char('Name & Address of Calibration Laboratory')
-    calibration_method = fields.Char('Calibration Method/procedure')
-    calibration_ulr_no = fields.Char('Calibration Certificate No. (ULR Number)')
-    calibration_certificate_no = fields.Char('Calibration Certificate No.')
-    traceability_certificate_no_valid_date = fields.Char('Traceability: (Certificate no /valid date)')
-    traceability_nabl_certificate = fields.Char('Traceability: (NABL logo certificate No)')
-    last_calibration_date = fields.Date('Date of Last Calibration')
-    calibration_due_date = fields.Date("Calibration Due Date")
-    accuracy_status_defined = fields.Char('Status of Accuracy Defined (+/-)')
-    accuracy_status_reported = fields.Char('Status of Accuracy Reported')
-    fit_for_use = fields.Selection([
-        ('yes', 'Yes'),
-        ('no', 'No'),
-    ],string='Fit for Use', default='yes')
+    equipment_name = fields.Char('NAME OF EQUIPMENT', related='parent_id.name', store=True)
+    make = fields.Char('MAKE', related='parent_id.make', store=True)
+    equipment_id_no = fields.Char('Equipment ID No', related='parent_id.code', store=True)
+    serial_number = fields.Char('Serial muber', related='parent_id.serial_no', store=True)
+    equipment_range = fields.Char('Range')
+    date_of_calibration = fields.Date('Date of Calibration')
+    mpe_accuracy = fields.Char('MPE/Accuracy')
+    least_count = fields.Char('Least Count')
+    calibration_certificate_no = fields.Char('Calibration Certificate Number')
+    calibration_due_date = fields.Date("Due Date of Calibration")
+    calibrated_by = fields.Char('Calibrated By')
 
     due_in_days_int  = fields.Integer(string="Due in Day(s)",compute="_compute_due_in_days",store=True)
 
@@ -88,19 +85,16 @@ class CalibrationLines(models.Model):
             register_vals = {
                 'equipment': equipment.id,
                 'code': equipment.code,
+                'make': equipment.make,
+                'serial_no': equipment.serial_no,
                 'group': equipment.group.id if equipment.group else False,
-                'range_least_count': line.range_least_count,
-                'name_address_calibration_lab': line.name_address_calibration_lab,
-                'calibration_method': line.calibration_method,
-                'calibration_ulr_no': line.calibration_ulr_no,
+                'equipment_range': line.equipment_range,
+                'date_of_calibration': line.date_of_calibration,
+                'mpe_accuracy': line.mpe_accuracy,
+                'least_count': line.least_count,
                 'calibration_certificate_no': line.calibration_certificate_no,
-                'traceability_certificate_no_valid_date': line.traceability_certificate_no_valid_date,
-                'traceability_nabl_certificate': line.traceability_nabl_certificate,
-                'last_calibration_date': line.last_calibration_date,
                 'calibration_due_date': line.calibration_due_date,
-                'accuracy_status_defined': line.accuracy_status_defined,
-                'accuracy_status_reported': line.accuracy_status_reported,
-                'fit_for_use': line.fit_for_use,
+                'calibrated_by': line.calibrated_by,
                 'due_in_days_int': line.due_in_days_int,
             }
 
@@ -151,22 +145,16 @@ class EquipmentRegister(models.Model):
     equipment = fields.Many2one('maintenance.equipment',string="Equipment")
 
     code = fields.Char(string='Code')
+    make = fields.Char(string='Make')
+    serial_no = fields.Char(string='Serial Number')
     group = fields.Many2one('lerm_civil.group',string="Group")
-    range_least_count = fields.Char('Range And Least count')
-    name_address_calibration_lab = fields.Char('Name & Address of Calibration Laboratory')
-    calibration_method = fields.Char('Calibration Method/procedure')
-    calibration_ulr_no = fields.Char('Calibration Certificate No. (ULR Number)')
-    calibration_certificate_no = fields.Char('Calibration Certificate No.')
-    traceability_certificate_no_valid_date = fields.Char('Traceability: (Certificate no /valid date)')
-    traceability_nabl_certificate = fields.Char('Traceability: (NABL logo certificate No)')
-    last_calibration_date = fields.Date('Date of Last Calibration')
-    calibration_due_date = fields.Date("Calibration Due Date")
-    accuracy_status_defined = fields.Char('Status of Accuracy Defined (+/-)')
-    accuracy_status_reported = fields.Char('Status of Accuracy Reported')
-    fit_for_use = fields.Selection([
-        ('yes', 'Yes'),
-        ('no', 'No'),
-    ],string='Fit for Use', default='yes')
+    equipment_range = fields.Char('Range')
+    date_of_calibration = fields.Date('Date of Calibration')
+    mpe_accuracy = fields.Char('MPE/Accuracy')
+    least_count = fields.Char('Least Count')
+    calibration_certificate_no = fields.Char('Calibration Certificate Number')
+    calibration_due_date = fields.Date("Due Date of Calibration")
+    calibrated_by = fields.Char('Calibrated By')
     due_in_days_int  = fields.Integer(string="Due in Day(s)")
 
     _sql_constraints = [

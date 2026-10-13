@@ -51,4 +51,12 @@
 	</template>
  
 
+<template id="lab_stamp">
+	<t t-set="stamp_lab" t-value="eln.sample_id.sudo().lab_location"/>
+	<img t-if="eln.show_stamp and stamp_lab.stamp_image"
+		t-att-src="'data:image/png;base64,' + stamp_lab.stamp_image.decode('utf-8')"
+		t-att-style="stamp_style or 'max-width:100px;max-height:100px;'"
+		alt="Stamp"/>
+</template>
+
 </odoo>

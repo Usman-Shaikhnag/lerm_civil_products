@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_saleorder_document_temp_customer" inherit_id="sale.report_saleorder_document">
+            <xpath expr="//t[@t-set='address']" position="inside">
+                <div t-if="doc.is_temp_customer and not doc.partner_id">
+                    <strong t-field="doc.temp_customer_name"/>
+                    <div t-if="doc.temp_customer_street" t-field="doc.temp_customer_street"/>
+                    <div t-if="doc.temp_customer_street2" t-field="doc.temp_customer_street2"/>
+                    <div t-if="doc.temp_customer_city or doc.temp_customer_state_id or doc.temp_customer_zip"
+                        t-out="' '.join(filter(None, [doc.temp_customer_city, doc.temp_customer_state_id.name, doc.temp_customer_zip]))"/>
+                    <div t-if="doc.temp_customer_country_id" t-out="doc.temp_customer_country_id.name"/>
+                    <div t-if="doc.temp_customer_phone">Phone: <span t-field="doc.temp_customer_phone"/></div>
+                    <div t-if="doc.temp_customer_email">Email: <span t-field="doc.temp_customer_email"/></div>
+                    <p t-if="doc.temp_customer_vat">GSTIN: <span t-field="doc.temp_customer_vat"/></p>
+                </div>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
