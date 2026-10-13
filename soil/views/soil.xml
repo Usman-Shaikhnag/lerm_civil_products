@@ -1621,6 +1621,89 @@
                     </div>
 
 
+                    <!--  Moisture Content -->
+                    <div invisible="moisture_content_visible == False">
+                        <h1 class="text-center">
+                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_content_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="moisture_content_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="moisture_content_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    
+                        <div class="d-flex gap-2">
+                          <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wet_container"></label></td>
+                                    <td><field name="wet_container" class="blue-input" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_container"></label></td>
+                                    <td><field name="dry_container" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="container_mass"></label></td>
+                                    <td><field name="container_mass" class="blue-input" /></td>
+                                </tr>
+                             </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                             <tbody>
+                                 <tr>
+                                    <td><label for="moisture_mass"></label></td>
+                                    <td><field name="moisture_mass"  /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="dry_soil_mass"></label></td>
+                                    <td><field name="dry_soil_mass" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="moisture_contents"></label></td>
+                                    <td><field name="moisture_contents" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="moisture_contents"></label></td>
+                                    <td><field name="moisture_contents"/></td>
+                                </tr>
+                                <tr>
+                                <td><label for="moisture_contents_conformity"></label></td>
+                                <td><field name="moisture_contents_conformity"
+                                            decoration-success="moisture_contents_conformity == 'pass'" 
+                                            decoration-danger="moisture_contents_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="moisture_contents_nabl"></label></td>
+                                <td><field name="moisture_contents_nabl"
+                                            decoration-success="moisture_contents_nabl == 'pass'" 
+                                            decoration-danger="moisture_contents_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                  
+
+
+
 
                     
                   

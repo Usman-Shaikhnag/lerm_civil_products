@@ -4284,72 +4284,110 @@ class Soil(models.Model):
     moisture_content_name = fields.Char("Name",default="Moisture Content")
     moisture_content_visible = fields.Boolean("Moisture Content Visible",compute="_compute_visible")
 
-    moisture_content_ids = fields.One2many("soil.moisture.content.line", "parent_id", string="Test Readings")
+    moisture_content_specification = fields.Char(string='Moisture Content Specification')
 
-    avg_moisture_content = fields.Float(
-        string="Average Moisture Content % ",
-        compute="_compute_avg_moisture_content",
+    wet_container = fields.Float(string='Wet + Container (M1)')
+    dry_container = fields.Float(string='Dry + Container (M2)')
+    container_mass = fields.Float(string='Mass of Container (M3)')
+
+    moisture_mass = fields.Float(
+        string='Mass of Moisture (M1 - M2)',
+        compute='_compute_moisture_content',
         store=True,
-        digits=(12,2))
+        digits=(16, 2),
+    )
 
-    @api.depends("moisture_content_ids.moisture_content")
-    def _compute_avg_moisture_content(self):
-        for rec in self:
-            vals = [line.moisture_content for line in rec.moisture_content_ids if line.moisture_content is not None]
-            rec.avg_moisture_content = round(sum(vals)/len(vals), 2) if vals else 0.0
+    dry_soil_mass = fields.Float(
+        string='Mass of Dry Soil (M2 - M3)',
+        compute='_compute_moisture_content',
+        store=True,
+        digits=(16, 2),
+    )
+
+    moisture_contents = fields.Float(
+        string='Moisture Content (%)',
+        compute='_compute_moisture_contents',
+        store=True,
+        digits=(16, 1),
+    )
+
+    @api.depends(
+        'wet_container',
+        'dry_container',
+        'container_mass',
+    )
+    def _compute_moisture_contents(self):
+        for record in self:
+            record.moisture_mass = (
+                record.wet_container - record.dry_container
+            )
+
+            record.dry_soil_mass = (
+                record.dry_container - record.container_mass
+            )
+
+            if record.dry_soil_mass > 0:
+                record.moisture_contents = (
+                    record.moisture_mass
+                    / record.dry_soil_mass
+                    * 100.0
+                )
+            else:
+                record.moisture_contents = 0.0
+
     
-    # avg_moisture_content_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_moisture_content_conformity", store=True)
+    moisture_contents_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_moisture_contents_conformity", store=True)
 
-    # @api.depends('avg_moisture_content','eln_ref','grade')
-    # def _compute_avg_moisture_content_conformity(self):
+    @api.depends('moisture_contents','eln_ref','grade')
+    def _compute_moisture_contents_conformity(self):
         
-    #     for record in self:
-    #         if not record.eln_ref or not record.eln_ref.conformity:
-    #             record.avg_moisture_content_conformity = 'na'
-    #             continue
-    #         record.avg_moisture_content_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_contents_conformity = 'na'
+                continue
+            record.moisture_contents_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
                     
-    #                 lower = record.avg_moisture_content - record.avg_moisture_content*mu_value
-    #                 upper = record.avg_moisture_content + record.avg_moisture_content*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.avg_moisture_content_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.avg_moisture_content_conformity = 'fail'
+                    lower = record.moisture_contents - record.moisture_contents*mu_value
+                    upper = record.moisture_contents + record.moisture_contents*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.moisture_contents_conformity = 'pass'
+                        break
+                    else:
+                        record.moisture_contents_conformity = 'fail'
 
-    # avg_moisture_content_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_moisture_content_nabl", store=True)
+    moisture_contents_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_moisture_contents_nabl", store=True)
 
-    # @api.depends('avg_moisture_content','eln_ref','grade')
-    # def _compute_avg_moisture_content_nabl(self):
+    @api.depends('moisture_contents','eln_ref','grade')
+    def _compute_moisture_contents_nabl(self):
         
-    #     for record in self:
-    #         record.avg_moisture_content_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
+        for record in self:
+            record.moisture_contents_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
             
-    #         lower = record.avg_moisture_content - record.avg_moisture_content*mu_value
-    #         upper = record.avg_moisture_content + record.avg_moisture_content*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.avg_moisture_content_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.avg_moisture_content_nabl = 'fail'
+            lower = record.moisture_contents - record.moisture_contents*mu_value
+            upper = record.moisture_contents + record.moisture_contents*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.moisture_contents_nabl = 'pass'
+                break
+            else:
+                record.moisture_contents_nabl = 'fail'
 
 
      # UCS
@@ -5412,12 +5450,12 @@ class Soil(models.Model):
             # Moisture Content
             if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                 result.calculated = True
-                result.result_char = round(self.avg_moisture_content,2)
-                # if self.avg_moisture_content_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                result.result_char = round(self.moisture_contents,2)
+                if self.moisture_contents_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
              # Atterberg Limit
             if result.parameter.internal_id == '582ac73a-3f86-4c7a-8dda-04357ade5617':
@@ -5701,62 +5739,62 @@ class Soil(models.Model):
 
 
 
-class SoilMoistureContentLine(models.Model):
-    _name = 'soil.moisture.content.line'
-    _description = 'Moisture Content Line'
+# class SoilMoistureContentLine(models.Model):
+#     _name = 'soil.moisture.content.line'
+#     _description = 'Moisture Content Line'
 
-    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+#     parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
     
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+#     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
 
-    wet_weight = fields.Float(
-        string='Weight of wet soil + container (gm)'
-    )
+#     wet_weight = fields.Float(
+#         string='Weight of wet soil + container (gm)'
+#     )
 
-    dry_weight = fields.Float(
-        string='Weight of oven dry soil + container (gm)'
-    )
+#     dry_weight = fields.Float(
+#         string='Weight of oven dry soil + container (gm)'
+#     )
 
-    container_weight = fields.Float(
-        string='Weight of container (gm)'
-    )
+#     container_weight = fields.Float(
+#         string='Weight of container (gm)'
+#     )
 
-    moisture_content = fields.Float(
-        string='Moisture Content %',
-        compute='_compute_moisture_content',
-        store=True
-    )
+#     moisture_content = fields.Float(
+#         string='Moisture Content %',
+#         compute='_compute_moisture_content',
+#         store=True
+#     )
 
-    @api.depends('wet_weight', 'dry_weight', 'container_weight')
-    def _compute_moisture_content(self):
-        for rec in self:
-            moisture_soil = rec.dry_weight - rec.container_weight
+#     @api.depends('wet_weight', 'dry_weight', 'container_weight')
+#     def _compute_moisture_content(self):
+#         for rec in self:
+#             moisture_soil = rec.dry_weight - rec.container_weight
 
-            if moisture_soil > 0:
-                rec.moisture_content = (
-                    (rec.wet_weight - rec.dry_weight)
-                    / moisture_soil
-                ) * 100
-            else:
-                rec.moisture_content = 0.0
+#             if moisture_soil > 0:
+#                 rec.moisture_content = (
+#                     (rec.wet_weight - rec.dry_weight)
+#                     / moisture_soil
+#                 ) * 100
+#             else:
+#                 rec.moisture_content = 0.0
 
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
 
-        return super(SoilMoistureContentLine, self).create(vals)
+#         return super(SoilMoistureContentLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 class SoilSieveAnalysisLine(models.Model):
@@ -7096,11 +7134,671 @@ class SoilHydrometerAnalysisLine(models.Model):
         store=True
     )
 
+#     @api.depends(
+#     'hydrometer_reading',
+#     'temperature',
+#     'elapsed_time',
+
+#     'parent_id.meniscus_correction',
+#     'parent_id.dispersing_agent_correction',
+#     'parent_id.specific_gravity',
+#     'parent_id.total_sample_mass',
+#     'parent_id.water_content',
+#     'parent_id.percentage_passing_0075',
+#     'parent_id.water_unit_weight',
+
+#     # Calibration table
+#     'parent_id.hydrometers_two_graph_line_ids.sh1',
+#     'parent_id.hydrometers_two_graph_line_ids.h',
+#     'parent_id.hydrometers_two_graph_line_ids.vh',
+#     'parent_id.hydrometers_two_graph_line_ids.a',
+#     'parent_id.hydrometers_two_graph_line_ids.hr',
+#     'parent_id.hydrometers_two_graph_line_ids.hr_corrected',
+#     'parent_id.hydrometers_two_graph_line_ids.rh',
+# )
+#     def _compute_values(self):
+
+#      for line in self:
+
+#         analysis = line.parent_id
+
+#         # -------------------------------------------------
+#         # RESET
+#         # -------------------------------------------------
+
+#         line.corrected_reading = 0.0
+#         line.hr_value = 0.0
+#         line.equivalent_diameter = 0.0
+#         line.rh_plus_m_x = 0.0
+#         line.percentage_finer = 0.0
+#         line.percentage_finer_total = 0.0
+
+#         if not analysis:
+#             continue
+
+#         # =================================================
+#         # 1. CORRECTED READING
+#         #
+#         # Excel:
+#         # =R'h + Cm
+#         # =================================================
+
+#         corrected = (
+#             line.hydrometer_reading
+#             + analysis.meniscus_correction
+#         )
+
+#         line.corrected_reading = corrected
+
+#         # =================================================
+#         # 2. HR VALUE
+#         #
+#         # A-Line / B-Line regression
+#         # =================================================
+
+#         calibration_lines = (
+#             analysis.hydrometers_two_graph_line_ids
+#         )
+
+#         if corrected > 20.0:
+
+#             # ---------------------------------------------
+#             # B-LINE
+#             # ---------------------------------------------
+
+#             points = [
+#                 (
+#                     cal.rh,
+#                     cal.hr_corrected
+#                 )
+#                 for cal in calibration_lines
+#                 if cal.rh is not None
+#                 and cal.hr_corrected is not None
+#             ]
+
+#         else:
+
+#             # ---------------------------------------------
+#             # A-LINE
+#             # ---------------------------------------------
+
+#             points = [
+#                 (
+#                     cal.rh,
+#                     cal.hr
+#                 )
+#                 for cal in calibration_lines
+#                 if cal.rh is not None
+#                 and cal.hr is not None
+#             ]
+
+#         # -------------------------------------------------
+#         # FORECAST / LINEAR REGRESSION
+#         # -------------------------------------------------
+
+#         if len(points) >= 2:
+
+#             x_values = [
+#                 point[0]
+#                 for point in points
+#             ]
+
+#             y_values = [
+#                 point[1]
+#                 for point in points
+#             ]
+
+#             n = len(points)
+
+#             sum_x = sum(x_values)
+#             sum_y = sum(y_values)
+
+#             sum_xy = sum(
+#                 x * y
+#                 for x, y in points
+#             )
+
+#             sum_x2 = sum(
+#                 x * x
+#                 for x in x_values
+#             )
+
+#             denominator = (
+#                 n * sum_x2
+#                 - sum_x ** 2
+#             )
+
+#             if denominator != 0:
+
+#                 slope = (
+#                     n * sum_xy
+#                     - sum_x * sum_y
+#                 ) / denominator
+
+#                 intercept = (
+#                     sum_y
+#                     - slope * sum_x
+#                 ) / n
+
+#                 line.hr_value = (
+#                     intercept
+#                     + slope * corrected
+#                 )
+
+#         # =================================================
+#         # 3. Rh + Mt - x
+#         #
+#         # Excel H16:
+#         #
+#         # Corrected reading
+#         # + temperature correction
+#         # - dispersing correction
+#         # =================================================
+
+#         # Temperature correction
+#         #
+#         # Excel uses interpolation from its temperature
+#         # correction table.
+#         #
+#         # Formula:
+#         #
+#         # Ct =
+#         # (
+#         #   0.9982
+#         #   - interpolated water density
+#         #   - 0.000025 * (T - 20)
+#         # ) * 1000
+#         #
+
+#         temperature = line.temperature
+
+#         # Standard water-density values.
+#         # Replace these with the exact M28:T29 values
+#         # from your Excel if you need bit-for-bit matching.
+#         water_density_table = {
+#             # 10.0: 0.99970,
+#             # 15.0: 0.99910,
+#             # 20.0: 0.99820,
+#             # 25.0: 0.99705,
+#             # 30.0: 0.99565,
+#             # 35.0: 0.99403,
+#             # 40.0: 0.99222,
+#             # 45.0: 0.99021,
+#             25: 0.99705,
+#             26: 0.99679,
+#             27: 0.99651,
+#             28: 0.99623,
+#             29: 0.99594,
+#             30: 0.99565,
+#             31: 0.99534,
+#             32: 0.99503,
+#         }
+
+#         temperatures = sorted(
+#             water_density_table.keys()
+#         )
+
+#         interpolated_density = None
+
+#         # Exact temperature
+#         if temperature in water_density_table:
+
+#             interpolated_density = (
+#                 water_density_table[temperature]
+#             )
+
+#         # Temperature below table
+#         elif temperature <= temperatures[0]:
+
+#             interpolated_density = (
+#                 water_density_table[temperatures[0]]
+#             )
+
+#         # Temperature above table
+#         elif temperature >= temperatures[-1]:
+
+#             interpolated_density = (
+#                 water_density_table[temperatures[-1]]
+#             )
+
+#         else:
+
+#             for i in range(
+#                 len(temperatures) - 1
+#             ):
+
+#                 t1 = temperatures[i]
+#                 t2 = temperatures[i + 1]
+
+#                 if t1 <= temperature <= t2:
+
+#                     d1 = water_density_table[t1]
+#                     d2 = water_density_table[t2]
+
+#                     # Linear interpolation
+#                     interpolated_density = (
+#                         d1
+#                         + (
+#                             (temperature - t1)
+#                             / (t2 - t1)
+#                         )
+#                         * (d2 - d1)
+#                     )
+
+#                     break
+
+#         temperature_correction = 0.0
+
+#         if interpolated_density is not None:
+
+#             temperature_correction = (
+#                 (
+#                     0.9982
+#                     - interpolated_density
+#                     - (
+#                         0.000025
+#                         * (temperature - 20)
+#                     )
+#                 )
+#                 * 1000
+#             )
+
+#         # Final:
+#         # Rh + Mt - x
+
+#         line.rh_plus_m_x = (
+#             corrected
+#             + temperature_correction
+#             - analysis.dispersing_agent_correction
+#         )
+
+#         # =================================================
+#         # 4. PERCENTAGE FINER
+#         #
+#         # Excel:
+#         #
+#         # =(100*Gs*(Rh+Mt-x))
+#         # /(Wb*(Gs-1))
+#         # =================================================
+
+#         if (
+#             analysis.specific_gravity
+#             and analysis.total_sample_mass
+#         ):
+
+#             denominator = (
+#                 analysis.total_sample_mass
+#                 * (
+#                     analysis.specific_gravity - 1
+#                 )
+#             )
+
+#             if denominator != 0:
+
+#                 line.percentage_finer = (
+#                     100
+#                     * analysis.specific_gravity
+#                     * line.rh_plus_m_x
+#                     / denominator
+#                 )
+
+#         # =================================================
+#         # 5. PERCENTAGE FINER W.R.T TOTAL MASS
+#         #
+#         # Excel:
+#         # =I16*$D$7/100
+#         # =================================================
+
+#         if analysis.percentage_passing_0075:
+
+#             line.percentage_finer_total = (
+#                 line.percentage_finer
+#                 * analysis.percentage_passing_0075
+#                 / 100
+#             )
+
+#         # =================================================
+#         # 6. EQUIVALENT PARTICLE DIAMETER
+#         #
+#         # Excel:
+#         #
+#         # =SQRT(
+#         #   (30 * μ * HR)
+#         #   /
+#         #   (980 * (Gs - 1) * t)
+#         # )
+#         # =================================================
+
+#         if (
+#             line.elapsed_time and analysis.specific_gravity and analysis.water_unit_weight and line.hr_value
+#          ):
+ 
+#             try:
+
+#                 numerator = (30* analysis.water_unit_weight* line.hr_value)
+
+#                 denominator = (980* (analysis.specific_gravity - 1)* line.elapsed_time)
+
+#                 if denominator > 0:
+
+#                   line.equivalent_diameter = math.sqrt(
+#                 numerator / denominator
+#             )
+
+#             except (
+#         ValueError,
+#         ZeroDivisionError
+#     ):
+
+#                line.equivalent_diameter = 0.0
+
+   
+
+
+
+#     @api.depends(
+#     'hydrometer_reading',
+#     'temperature',
+#     'elapsed_time',
+#     'parent_id.meniscus_correction',
+#     'parent_id.dispersing_agent_correction',
+#     'parent_id.specific_gravity',
+#     'parent_id.total_sample_mass',
+#     'parent_id.water_content',
+#     'parent_id.percentage_passing_0075',
+#     'parent_id.water_unit_weight',
+#     'parent_id.hydrometers_two_graph_line_ids.sh1',
+#     'parent_id.hydrometers_two_graph_line_ids.h',
+#     'parent_id.hydrometers_two_graph_line_ids.vh',
+#     'parent_id.hydrometers_two_graph_line_ids.a',
+#     'parent_id.hydrometers_two_graph_line_ids.hr',
+#     'parent_id.hydrometers_two_graph_line_ids.hr_corrected',
+#     'parent_id.hydrometers_two_graph_line_ids.rh',
+# )
+#     def _compute_values(self):
+
+#     # Water density values from the Excel screenshot.
+#       water_density_table = {
+        
+
+#             25: 0.99705,
+#             26: 0.99679,
+#             27: 0.99651,
+#             28: 0.99623,
+#             29: 0.99594,
+#             30: 0.99565,
+#             31: 0.99534,
+#             32: 0.99503,
+#     }
+
+#       def forecast_value(x, points):
+#         """
+#         Excel equivalent:
+#         =FORECAST(x, known_y_values, known_x_values)
+
+#         points = [(known_x, known_y), ...]
+#         """
+#         points = [
+#             (float(px), float(py))
+#             for px, py in points
+#             if px is not None and py is not None
+#         ]
+
+#         # Remove duplicate X values to avoid an invalid regression.
+#         unique_points = {}
+#         for px, py in points:
+#             unique_points[px] = py
+
+#         points = list(unique_points.items())
+
+#         if len(points) < 2:
+#             return 0.0
+
+#         n = len(points)
+#         sum_x = sum(px for px, _ in points)
+#         sum_y = sum(py for _, py in points)
+#         sum_xy = sum(px * py for px, py in points)
+#         sum_x2 = sum(px * px for px, _ in points)
+
+#         denominator = n * sum_x2 - sum_x ** 2
+
+#         if abs(denominator) < 1e-12:
+#             return 0.0
+
+#         slope = (
+#             n * sum_xy - sum_x * sum_y
+#         ) / denominator
+
+#         intercept = (sum_y - slope * sum_x) / n
+
+#         return intercept + slope * float(x)
+
+#       def get_water_density(temperature):
+#         points = sorted(water_density_table.items())
+
+#         # Do not silently clamp temperatures outside the table.
+#         if (
+#             temperature < points[0][0]
+#             or temperature > points[-1][0]
+#         ):
+#             return None
+
+#         for temp, density in points:
+#             if abs(temperature - temp) < 1e-9:
+#                 return density
+
+#         for i in range(len(points) - 1):
+#             t1, d1 = points[i]
+#             t2, d2 = points[i + 1]
+
+#             if t1 <= temperature <= t2:
+#                 return d1 + (
+#                     (temperature - t1) / (t2 - t1)
+#                 ) * (d2 - d1)
+
+#         return None
+
+#       for line in self:
+
+#         analysis = line.parent_id
+
+#         line.corrected_reading = 0.0
+#         line.hr_value = 0.0
+#         line.equivalent_diameter = 0.0
+#         line.rh_plus_m_x = 0.0
+#         line.percentage_finer = 0.0
+#         line.percentage_finer_total = 0.0
+
+#         if not analysis:
+#             continue
+
+#         # 1. Corrected reading = R'h + Cm.
+#         corrected = (
+#             (line.hydrometer_reading or 0.0)
+#             + (analysis.meniscus_correction or 0.0)
+#         )
+
+#         line.corrected_reading = corrected
+
+#         # 2. HR VALUE.
+#         # Corrected reading > 20: B-Line HR + Rh.
+#         # Otherwise: A-Line HR + Rh.
+
+        
+#         # 2. HR VALUE — MATCH THE TWO EXCEL FORECAST FORMULAS
+
+#         calibration_lines = analysis.hydrometers_two_graph_line_ids
+
+#         elapsed_time = line.elapsed_time or 0.0
+
+#         if elapsed_time <= 4.0:
+#          # First four readings: B-Line
+#                # Excel: =FORECAST(E16,$Q$17:$Q$24,$R$17:$R$24)
+#             points = [
+#         (cal.rh, cal.hr_corrected)
+#         for cal in calibration_lines
+#         if cal.rh is not None
+#         and cal.hr_corrected is not None
+#     ]
+#         else:
+#         # Remaining readings: A-Line
+#         # Excel: =FORECAST(E20,$P$17:$P$24,$R$17:$R$24)
+#             points = [
+#         (cal.rh, cal.hr)
+#         for cal in calibration_lines
+#         if cal.rh is not None
+#         and cal.hr is not None
+#     ]
+
+#         # Excel FORECAST equivalent: linear regression
+#         if len(points) >= 2:
+#             n = len(points)
+  
+#             sum_x = sum(x for x, y in points)
+#             sum_y = sum(y for x, y in points)
+#             sum_xy = sum(x * y for x, y in points)
+#             sum_x2 = sum(x * x for x, y in points)
+
+#             denominator = n * sum_x2 - sum_x ** 2
+
+#         if abs(denominator) > 1e-12:
+#                 slope = (
+#             n * sum_xy - sum_x * sum_y
+#         ) / denominator
+
+#                 intercept = (sum_y - slope * sum_x) / n
+
+#                 line.hr_value = (
+#             intercept + slope * line.corrected_reading
+            
+#         )
+
+        
+
+
+                
+
+#         # 3. Rh + Mt - x.
+#         # temperature = line.temperature
+
+#         # if temperature is not None and temperature is not False:
+#         #     density = get_water_density(temperature)
+
+#         #     if density is not None:
+#         #         temperature_correction = (
+#         #             0.9982
+#         #             - density
+#         #             - 0.000025 * (temperature - 20.0)
+#         #         ) * 1000.0
+
+#         #         line.rh_plus_m_x = (
+#         #             corrected
+#         #             + temperature_correction
+#         #             - (analysis.dispersing_agent_correction or 0.0)
+#         #         )
+
+        
+#         # 3. Rh + Mt - x
+#         # Matches the Excel formula in H16.
+
+#         temperature = line.temperature
+
+#         if temperature is not None and temperature is not False:
+#             temp_points = sorted(water_density_table.items())
+
+#             # Find the lower and upper temperatures, like Excel MATCH(..., 1).
+#             lower_point = None
+#             upper_point = None
+
+#             for index in range(len(temp_points) - 1):
+#                 t1, d1 = temp_points[index]
+#                 t2, d2 = temp_points[index + 1]
+
+#                 if t1 <= temperature <= t2:
+#                     lower_point = (t1, d1)
+#                     upper_point = (t2, d2)
+#                     break
+
+#             if lower_point and upper_point:
+#                 t1, d1 = lower_point
+#                 t2, d2 = upper_point
+
+#         # Excel formula:
+#         # 0.9982 - lower_density
+#         # + (temperature - lower_temperature)
+#         #   * (upper_density - lower_density)
+#         #   / (upper_temperature - lower_temperature)
+#         # - 0.000025 * (temperature - 20)
+
+#                 density_difference = (
+#             (temperature - t1)
+#             * (d2 - d1)
+#             / (t2 - t1)
+#         )
+
+#                 temperature_correction = (
+#             0.9982
+#             - d1
+#             + density_difference
+#             - 0.000025 * (temperature - 20.0)
+#         ) * 1000.0
+
+#                 line.rh_plus_m_x = (
+#             corrected
+#             + temperature_correction
+#             - (analysis.dispersing_agent_correction or 0.0)
+#         )
+
+
+      
+
+#         # 4. Percentage finer.
+#         gs = analysis.specific_gravity or 0.0
+#         sample_mass = analysis.total_sample_mass or 0.0
+
+#         denominator = sample_mass * (gs - 1.0)
+
+#         if abs(denominator) > 1e-12:
+#             line.percentage_finer = (
+#                 100.0 * gs * line.rh_plus_m_x / denominator
+#             )
+
+#         # 5. Percentage finer relative to total mass.
+#         line.percentage_finer_total = (
+#             line.percentage_finer
+#             * (analysis.percentage_passing_0075 or 0.0)
+#             / 100.0
+#         )
+
+#         # 6. Equivalent particle diameter.
+#         elapsed_time = line.elapsed_time or 0.0
+#         water_unit_weight = analysis.water_unit_weight or 0.0
+
+#         diameter_denominator = (
+#             980.0 * (gs - 1.0) * elapsed_time
+#         )
+
+#         diameter_numerator = (
+#             30.0 * water_unit_weight * line.hr_value
+#         )
+
+#         if (
+#             elapsed_time > 0.0
+#             and gs > 1.0
+#             and diameter_denominator > 0.0
+#             and diameter_numerator >= 0.0
+#         ):
+#             line.equivalent_diameter = math.sqrt(
+#                 diameter_numerator / diameter_denominator
+#             )
+
+
+
+
     @api.depends(
     'hydrometer_reading',
     'temperature',
     'elapsed_time',
-
     'parent_id.meniscus_correction',
     'parent_id.dispersing_agent_correction',
     'parent_id.specific_gravity',
@@ -7108,8 +7806,6 @@ class SoilHydrometerAnalysisLine(models.Model):
     'parent_id.water_content',
     'parent_id.percentage_passing_0075',
     'parent_id.water_unit_weight',
-
-    # Calibration table
     'parent_id.hydrometers_two_graph_line_ids.sh1',
     'parent_id.hydrometers_two_graph_line_ids.h',
     'parent_id.hydrometers_two_graph_line_ids.vh',
@@ -7120,14 +7816,106 @@ class SoilHydrometerAnalysisLine(models.Model):
 )
     def _compute_values(self):
 
+    # Exact values from the Excel temperature table.
+     water_density_table = {
+        25.0: 0.99705,
+        26.0: 0.99679,
+        27.0: 0.99651,
+        28.0: 0.99623,
+        29.0: 0.99594,
+        30.0: 0.99565,
+        31.0: 0.99534,
+        32.0: 0.99503,
+    }
+
+     def forecast_value(x, points):
+        """Equivalent to Excel FORECAST(x, known_y, known_x)."""
+        points = [
+            (float(px), float(py))
+            for px, py in points
+            if px is not None and py is not None
+        ]
+
+        # Preserve one Y value per X value.
+        unique_points = {}
+        for px, py in points:
+            unique_points[px] = py
+
+        points = list(unique_points.items())
+
+        if len(points) < 2:
+            return 0.0
+
+        n = len(points)
+        sum_x = sum(px for px, _ in points)
+        sum_y = sum(py for _, py in points)
+        sum_xy = sum(px * py for px, py in points)
+        sum_x2 = sum(px * px for px, _ in points)
+
+        denominator = n * sum_x2 - sum_x ** 2
+
+        if abs(denominator) < 1e-12:
+            return 0.0
+
+        slope = (
+            n * sum_xy - sum_x * sum_y
+        ) / denominator
+
+        intercept = (sum_y - slope * sum_x) / n
+
+        return intercept + slope * float(x)
+
+     def excel_temperature_correction(temperature):
+        """
+        Reproduce the Excel INDEX/MATCH formula.
+
+        Select the last temperature <= measured temperature,
+        just as Excel MATCH(temperature, temperature_range, 1).
+
+        The density-difference term intentionally retains the
+        sign shown in the Excel formula bar.
+        """
+        points = sorted(water_density_table.items())
+
+        if temperature < points[0][0] or temperature > points[-1][0]:
+            return None
+
+        # MATCH(..., 1): select the greatest table temperature
+        # that is less than or equal to the measured temperature.
+        lower_index = max(
+            i
+            for i, (temp, density) in enumerate(points)
+            if temp <= temperature
+        )
+
+        t1, d1 = points[lower_index]
+
+        if lower_index + 1 < len(points):
+            t2, d2 = points[lower_index + 1]
+
+            density_difference = (
+                (temperature - t1)
+                * (d2 - d1)
+                / (t2 - t1)
+            )
+        else:
+            # At the final table temperature, the difference is zero.
+            density_difference = 0.0
+
+        correction = (
+            0.9982
+            - d1
+            + density_difference
+            - 0.000025 * (temperature - 20.0)
+        ) * 1000.0
+
+        return correction
+
      for line in self:
 
         analysis = line.parent_id
 
-        # -------------------------------------------------
-        # RESET
-        # -------------------------------------------------
-
+        # Reset computed fields.
         line.corrected_reading = 0.0
         line.hr_value = 0.0
         line.equivalent_diameter = 0.0
@@ -7138,321 +7926,101 @@ class SoilHydrometerAnalysisLine(models.Model):
         if not analysis:
             continue
 
-        # =================================================
-        # 1. CORRECTED READING
-        #
-        # Excel:
-        # =R'h + Cm
-        # =================================================
-
+        # 1. Corrected reading.
         corrected = (
-            line.hydrometer_reading
-            + analysis.meniscus_correction
+            (line.hydrometer_reading or 0.0)
+            + (analysis.meniscus_correction or 0.0)
         )
 
         line.corrected_reading = corrected
 
-        # =================================================
-        # 2. HR VALUE
-        #
-        # A-Line / B-Line regression
-        # =================================================
-
+        # 2. HR value: first four readings use B-Line;
+        # subsequent readings use A-Line.
         calibration_lines = (
             analysis.hydrometers_two_graph_line_ids
         )
 
-        if corrected > 20.0:
+        elapsed_time = line.elapsed_time or 0.0
 
-            # ---------------------------------------------
-            # B-LINE
-            # ---------------------------------------------
-
+        if elapsed_time <= 4.0:
             points = [
-                (
-                    cal.rh,
-                    cal.hr_corrected
-                )
+                (cal.rh, cal.hr_corrected)
                 for cal in calibration_lines
                 if cal.rh is not None
                 and cal.hr_corrected is not None
             ]
-
         else:
-
-            # ---------------------------------------------
-            # A-LINE
-            # ---------------------------------------------
-
             points = [
-                (
-                    cal.rh,
-                    cal.hr
-                )
+                (cal.rh, cal.hr)
                 for cal in calibration_lines
                 if cal.rh is not None
                 and cal.hr is not None
             ]
 
-        # -------------------------------------------------
-        # FORECAST / LINEAR REGRESSION
-        # -------------------------------------------------
+        line.hr_value = forecast_value(corrected, points)
 
-        if len(points) >= 2:
-
-            x_values = [
-                point[0]
-                for point in points
-            ]
-
-            y_values = [
-                point[1]
-                for point in points
-            ]
-
-            n = len(points)
-
-            sum_x = sum(x_values)
-            sum_y = sum(y_values)
-
-            sum_xy = sum(
-                x * y
-                for x, y in points
-            )
-
-            sum_x2 = sum(
-                x * x
-                for x in x_values
-            )
-
-            denominator = (
-                n * sum_x2
-                - sum_x ** 2
-            )
-
-            if denominator != 0:
-
-                slope = (
-                    n * sum_xy
-                    - sum_x * sum_y
-                ) / denominator
-
-                intercept = (
-                    sum_y
-                    - slope * sum_x
-                ) / n
-
-                line.hr_value = (
-                    intercept
-                    + slope * corrected
-                )
-
-        # =================================================
-        # 3. Rh + Mt - x
-        #
-        # Excel H16:
-        #
-        # Corrected reading
-        # + temperature correction
-        # - dispersing correction
-        # =================================================
-
-        # Temperature correction
-        #
-        # Excel uses interpolation from its temperature
-        # correction table.
-        #
-        # Formula:
-        #
-        # Ct =
-        # (
-        #   0.9982
-        #   - interpolated water density
-        #   - 0.000025 * (T - 20)
-        # ) * 1000
-        #
-
+        # 3. Rh + Mt - x.
         temperature = line.temperature
 
-        # Standard water-density values.
-        # Replace these with the exact M28:T29 values
-        # from your Excel if you need bit-for-bit matching.
-        water_density_table = {
-            # 10.0: 0.99970,
-            # 15.0: 0.99910,
-            # 20.0: 0.99820,
-            # 25.0: 0.99705,
-            # 30.0: 0.99565,
-            # 35.0: 0.99403,
-            # 40.0: 0.99222,
-            # 45.0: 0.99021,
-            25: 0.99705,
-            26: 0.99679,
-            27: 0.99651,
-            28: 0.99623,
-            29: 0.99594,
-            30: 0.99565,
-            31: 0.99534,
-            32: 0.99503,
-        }
-
-        temperatures = sorted(
-            water_density_table.keys()
-        )
-
-        interpolated_density = None
-
-        # Exact temperature
-        if temperature in water_density_table:
-
-            interpolated_density = (
-                water_density_table[temperature]
-            )
-
-        # Temperature below table
-        elif temperature <= temperatures[0]:
-
-            interpolated_density = (
-                water_density_table[temperatures[0]]
-            )
-
-        # Temperature above table
-        elif temperature >= temperatures[-1]:
-
-            interpolated_density = (
-                water_density_table[temperatures[-1]]
-            )
-
-        else:
-
-            for i in range(
-                len(temperatures) - 1
-            ):
-
-                t1 = temperatures[i]
-                t2 = temperatures[i + 1]
-
-                if t1 <= temperature <= t2:
-
-                    d1 = water_density_table[t1]
-                    d2 = water_density_table[t2]
-
-                    # Linear interpolation
-                    interpolated_density = (
-                        d1
-                        + (
-                            (temperature - t1)
-                            / (t2 - t1)
-                        )
-                        * (d2 - d1)
-                    )
-
-                    break
-
-        temperature_correction = 0.0
-
-        if interpolated_density is not None:
-
+        if temperature is not None and temperature is not False:
             temperature_correction = (
-                (
-                    0.9982
-                    - interpolated_density
+                excel_temperature_correction(temperature)
+            )
+
+            if temperature_correction is not None:
+                line.rh_plus_m_x = (
+                    corrected
+                    + temperature_correction
                     - (
-                        0.000025
-                        * (temperature - 20)
+                        analysis.dispersing_agent_correction
+                        or 0.0
                     )
                 )
-                * 1000
+
+        # 4. Percentage finer.
+        gs = analysis.specific_gravity or 0.0
+        sample_mass = analysis.total_sample_mass or 0.0
+
+        percentage_denominator = sample_mass * (gs - 1.0)
+
+        if abs(percentage_denominator) > 1e-12:
+            line.percentage_finer = (
+                100.0
+                * gs
+                * line.rh_plus_m_x
+                / percentage_denominator
             )
 
-        # Final:
-        # Rh + Mt - x
-
-        line.rh_plus_m_x = (
-            corrected
-            + temperature_correction
-            - analysis.dispersing_agent_correction
+        # 5. Percentage finer with respect to total mass.
+        line.percentage_finer_total = (
+            line.percentage_finer
+            * (analysis.percentage_passing_0075 or 0.0)
+            / 100.0
         )
 
-        # =================================================
-        # 4. PERCENTAGE FINER
-        #
-        # Excel:
-        #
-        # =(100*Gs*(Rh+Mt-x))
-        # /(Wb*(Gs-1))
-        # =================================================
+        # 6. Equivalent particle diameter.
+        water_unit_weight = analysis.water_unit_weight or 0.0
+
+        diameter_denominator = (
+            980.0 * (gs - 1.0) * elapsed_time
+        )
+
+        diameter_numerator = (
+            30.0 * water_unit_weight * line.hr_value
+        )
 
         if (
-            analysis.specific_gravity
-            and analysis.total_sample_mass
+            elapsed_time > 0.0
+            and gs > 1.0
+            and diameter_denominator > 0.0
+            and diameter_numerator >= 0.0
         ):
-
-            denominator = (
-                analysis.total_sample_mass
-                * (
-                    analysis.specific_gravity - 1
-                )
+            line.equivalent_diameter = math.sqrt(
+                diameter_numerator / diameter_denominator
             )
 
-            if denominator != 0:
 
-                line.percentage_finer = (
-                    100
-                    * analysis.specific_gravity
-                    * line.rh_plus_m_x
-                    / denominator
-                )
 
-        # =================================================
-        # 5. PERCENTAGE FINER W.R.T TOTAL MASS
-        #
-        # Excel:
-        # =I16*$D$7/100
-        # =================================================
-
-        if analysis.percentage_passing_0075:
-
-            line.percentage_finer_total = (
-                line.percentage_finer
-                * analysis.percentage_passing_0075
-                / 100
-            )
-
-        # =================================================
-        # 6. EQUIVALENT PARTICLE DIAMETER
-        #
-        # Excel:
-        #
-        # =SQRT(
-        #   (30 * μ * HR)
-        #   /
-        #   (980 * (Gs - 1) * t)
-        # )
-        # =================================================
-
-        if (
-            line.elapsed_time and analysis.specific_gravity and analysis.water_unit_weight and line.hr_value
-         ):
- 
-            try:
-
-                numerator = (30* analysis.water_unit_weight* line.hr_value)
-
-                denominator = (980* (analysis.specific_gravity - 1)* line.elapsed_time)
-
-                if denominator > 0:
-
-                  line.equivalent_diameter = math.sqrt(
-                numerator / denominator
-            )
-
-            except (
-        ValueError,
-        ZeroDivisionError
-    ):
-
-               line.equivalent_diameter = 0.0
 
 
 
