@@ -26,6 +26,34 @@ class MechanicalCoupler(models.Model):
  
     # fracture = fields.Char("Fracture (Within Gauge Length)",default="W.G.L")
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
+
+    notes_id = fields.One2many('coupler.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalCoupler, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
   
     requirement_ult_tens_strgth = fields.Float(string="Requirement",compute="_compute_requirement_utl",store=True)
     requirement_total_elongation = fields.Float(string="Requirement",compute="_compute_requirement_yield",store=True)
@@ -84,7 +112,9 @@ class MechanicalCoupler(models.Model):
 
     ult_tens_strgth_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="compute_ult_tens_strgth_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="compute_ult_tens_strgth_conformity", store=True)
 
     @api.depends('ult_tens_strgth','eln_ref','grade')
     def compute_ult_tens_strgth_conformity(self):
@@ -95,6 +125,11 @@ class MechanicalCoupler(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78a837cc-25e3-460d-802f-7dd858984087')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.ult_tens_strgth_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -135,7 +170,9 @@ class MechanicalCoupler(models.Model):
 
     total_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="compute_total_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="compute_total_elongation_conformity", store=True)
 
     @api.depends('total_elongation','eln_ref','grade')
     def compute_total_elongation_conformity(self):
@@ -146,6 +183,12 @@ class MechanicalCoupler(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','73e5f596-972c-46f8-8d2c-3149b00c57df')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.total_elongation_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -269,4 +312,13 @@ class MechanicalCoupler(models.Model):
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
             print("Records",records)
+
+
+
+class CouplerNotes(models.Model):
+    _name = "coupler.notes"
+
+    parent_id = fields.Many2one('mechanical.coupler',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 

@@ -81,7 +81,9 @@ class GypsumPlaster(models.Model):
 
     average_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_density_conformity", store=True)
 
 
 
@@ -94,6 +96,11 @@ class GypsumPlaster(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','75454b28-7a9c-4616-bad5-88eb1b260747')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_density_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -163,7 +170,9 @@ class GypsumPlaster(models.Model):
 
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
 
 
 
@@ -176,6 +185,11 @@ class GypsumPlaster(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7ebc1578-f555-4f7c-beae-9547435d852a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_water_absorption_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -244,7 +258,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_tranverse_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
 
 
 
@@ -257,6 +273,11 @@ class GypsumPlaster(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','891abc35-b6bb-4100-bf91-24e750389f25')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_flexural_tranverse_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -325,7 +346,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_longitudinal_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
 
 
 
@@ -338,6 +361,11 @@ class GypsumPlaster(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a8876025-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_flexural_longitudinal_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

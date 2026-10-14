@@ -149,7 +149,9 @@ class CrusherRunMacadamMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
 
     @api.depends('abrasion_value_percentage','eln_ref','grade')
     def _compute_abrasion_value_percentager_conformity(self):
@@ -160,6 +162,11 @@ class CrusherRunMacadamMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.abrasion_value_percentage_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -245,7 +252,9 @@ class CrusherRunMacadamMechanical(models.Model):
 
     water_absorp_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorp_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_water_absorp_conformity", store=True)
 
     @api.depends('water_absorption','eln_ref','grade')
     def _compute_water_absorp_conformity(self):
@@ -256,6 +265,11 @@ class CrusherRunMacadamMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2113f38a-d129-4efe-bac4-ff5826dface8')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorp_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -335,7 +349,9 @@ class CrusherRunMacadamMechanical(models.Model):
 
     aggregate_combine_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
 
     @api.depends('aggregate_combine','eln_ref','grade')
     def _compute_aggregate_combine_conformity(self):
@@ -346,6 +362,11 @@ class CrusherRunMacadamMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70ef993d-d2f8-424c-9729-4e081d647bb1')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.aggregate_combine_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -682,7 +703,9 @@ class CrusherRunMacadamMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
     @api.depends('average_impact_value','eln_ref','grade')
     def _compute_average_impact_value_conformity(self):
@@ -693,6 +716,11 @@ class CrusherRunMacadamMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fbf04a49-ea53-4b14-acd4-1797e06669ae')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_impact_value_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

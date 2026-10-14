@@ -28,6 +28,34 @@ class StructuralSteelRound(models.Model):
     elongation1 = fields.Float(string="% Elongation", compute="_compute_elongation", store=True,digits=(12,2))
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    notes_id = fields.One2many('ss.round.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(StructuralSteelRound, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     @api.depends('dia1')
     def _compute_area(self):
         for record in self:
@@ -289,6 +317,7 @@ class StructuralSteelRound(models.Model):
     proof_yeid_stress1_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_proof_yeid_stress1_confirmity")
 
   
@@ -299,7 +328,11 @@ class StructuralSteelRound(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','afa815b6-a7ce-4272-b062-ca6b2fe55b01')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','afa815b6-a7ce-4272-b062-ca6b2fe55b01')]).parameter_table
             for material in materials:
-                
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.proof_yeid_stress1_confirmity = '--'
+                        break
+ 
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -344,6 +377,7 @@ class StructuralSteelRound(models.Model):
     ult_tens_strgth1_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_ult_tens_strgth1_confirmity")
 
   
@@ -354,7 +388,11 @@ class StructuralSteelRound(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bd4a58b3-d439-4d80-aadb-0a33f1d3bec2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bd4a58b3-d439-4d80-aadb-0a33f1d3bec2')]).parameter_table
             for material in materials:
-                
+                    
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.ult_tens_strgth1_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -400,6 +438,7 @@ class StructuralSteelRound(models.Model):
     elongation1_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_elongation1_confirmity")
 
   
@@ -410,7 +449,11 @@ class StructuralSteelRound(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70fecea5-c9de-4ede-a7f9-fd2a8ad9697d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70fecea5-c9de-4ede-a7f9-fd2a8ad9697d')]).parameter_table
             for material in materials:
-                
+                   
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.elongation1_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -510,3 +553,11 @@ class StructuralSteelRound(models.Model):
 #     _name = "mechanical.tmt.test"
 #     _rec_name = "name"
 #     name = fields.Char("Name")
+
+
+class SSRoundNotes(models.Model):
+    _name = "ss.round.notes"
+
+    parent_id = fields.Many2one('structural.steel.round',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

@@ -258,26 +258,25 @@
 				</table>
 
 
-				<table style="margin-top:10px; width:100%; border-collapse:collapse;">
-
-    					<tbody>
-
-        					<tr style="height:30px;">
-
-            					<td style="width:100%; padding:5px;">
-
-               					 <strong>Remarks:</strong>
-									The concrete curing compound sample meets the
-									parameter requirements of ASTM C309:2019 for the
-									tested parameters.
-
-            					</td>
-
-        					</tr>
-
-    					</tbody>
-
-				</table>					
+				 <div style="page-break-inside: avoid;">
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+									<ul>
+										<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+							</div>			
 
 					<div class="signatureContainer girdgird">
 						<div>

@@ -16,10 +16,40 @@ class ConcreteCore(models.Model):
     average = fields.Float(string="Average Compressive Strength in Mpa",compute="_compute_average")
     structure = fields.Char("Structure")
 
-    notes = fields.One2many('mechanical.concrete.core.notes','parent_id',string="Notes")
+    # notes = fields.One2many('mechanical.concrete.core.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+
+    notes = fields.One2many('mechanical.concrete.core.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ConcreteCore, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
     @api.model
     def create(self, vals):

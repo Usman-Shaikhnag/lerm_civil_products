@@ -20,6 +20,35 @@ class GgbsMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
+    notes_id = fields.One2many('ggbs.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(GgbsMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
@@ -151,7 +180,7 @@ class GgbsMechanical(models.Model):
     specific_gravity_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
     specific_gravity_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -167,6 +196,11 @@ class GgbsMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -403,7 +437,7 @@ class GgbsMechanical(models.Model):
     slag_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_slag_7days_conformity")
 
     slag_7days_nabl = fields.Selection([
@@ -420,6 +454,11 @@ class GgbsMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.slag_7days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -457,7 +496,7 @@ class GgbsMechanical(models.Model):
     slag_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_slag_28days_conformity")
 
     slag_28days_nabl = fields.Selection([
@@ -473,6 +512,11 @@ class GgbsMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.slag_28days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -582,7 +626,7 @@ class GgbsMechanical(models.Model):
     fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -598,6 +642,11 @@ class GgbsMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.fineness_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -918,3 +967,12 @@ class GgbsSlagOpc28DaysLine(models.Model):
                 record.compressive_strength = round(compressive_strength,3)
             else:
                 record.compressive_strength = 0
+
+
+
+class GgbsNotes(models.Model):
+    _name = "ggbs.notes"
+
+    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
