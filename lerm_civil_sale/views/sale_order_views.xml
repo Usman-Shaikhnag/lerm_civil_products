@@ -21,6 +21,100 @@
                         <field name="srf_id" widget="statinfo" string="SRF"/>
                     </button>
                 </xpath>
+
+                <!-- Temporary customer: no contact to email until confirmed -->
+                <xpath expr="//button[@id='send_by_email_primary']" position="attributes">
+                    <attribute name="invisible">state != 'draft' or (is_temp_customer and not partner_id)</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_proforma_primary']" position="attributes">
+                    <attribute name="invisible">state != 'draft' or invoice_count &gt;= 1 or (is_temp_customer and not partner_id)</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_proforma']" position="attributes">
+                    <attribute name="invisible">state == 'draft' or invoice_count &gt;= 1 or (is_temp_customer and not partner_id)</attribute>
+                </xpath>
+                <xpath expr="//button[@id='send_by_email']" position="attributes">
+                    <attribute name="invisible">state not in ('sent', 'sale') or (is_temp_customer and not partner_id)</attribute>
+                </xpath>
+
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_id']" position="before">
+                    <field name="is_temp_customer" readonly="state in ['cancel', 'sale']"/>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_id']" position="attributes">
+                    <attribute name="invisible">is_temp_customer and not partner_id</attribute>
+                    <attribute name="required">not is_temp_customer</attribute>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_id']" position="after">
+                    <field name="temp_customer_name" string="Customer"
+                        placeholder="Customer name (no contact is created until confirmed)"
+                        invisible="not is_temp_customer or partner_id"
+                        required="is_temp_customer and not partner_id"
+                        readonly="state in ['cancel', 'sale']"/>
+                    <field name="temp_customer_company_type" widget="radio" options="{'horizontal': true}"
+                        invisible="not is_temp_customer or partner_id"
+                        readonly="state in ['cancel', 'sale']"/>
+                    <label for="temp_customer_street" string="Address"
+                        invisible="not is_temp_customer or partner_id"/>
+                    <div class="o_address_format" invisible="not is_temp_customer or partner_id">
+                        <field name="temp_customer_street" placeholder="Street..." class="o_address_street"
+                            readonly="state in ['cancel', 'sale']"/>
+                        <field name="temp_customer_street2" placeholder="Street 2..." class="o_address_street"
+                            readonly="state in ['cancel', 'sale']"/>
+                        <field name="temp_customer_city" placeholder="City" class="o_address_city"
+                            readonly="state in ['cancel', 'sale']"/>
+                        <field name="temp_customer_state_id" placeholder="State" class="o_address_state"
+                            options="{'no_open': True, 'no_create': True}"
+                            readonly="state in ['cancel', 'sale']"/>
+                        <field name="temp_customer_zip" placeholder="ZIP" class="o_address_zip"
+                            readonly="state in ['cancel', 'sale']"/>
+                        <field name="temp_customer_country_id" placeholder="Country" class="o_address_country"
+                            options="{'no_open': True, 'no_create': True}"
+                            readonly="state in ['cancel', 'sale']"/>
+                    </div>
+                    <field name="temp_customer_vat" string="GSTIN"
+                        invisible="not is_temp_customer or partner_id"
+                        readonly="state in ['cancel', 'sale']"/>
+                    <field name="temp_customer_email" string="Email" widget="email"
+                        invisible="not is_temp_customer or partner_id"
+                        readonly="state in ['cancel', 'sale']"/>
+                    <field name="temp_customer_phone" string="Phone" widget="phone"
+                        invisible="not is_temp_customer or partner_id"
+                        readonly="state in ['cancel', 'sale']"/>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="invisible">is_temp_customer and not partner_id</attribute>
+                    <attribute name="required">partner_id</attribute>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']/field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="invisible">is_temp_customer and not partner_id</attribute>
+                    <attribute name="required">partner_id</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="lerm_civil_sale_quotation_tree" model="ir.ui.view">
+            <field name="name">sale.order.quotation.tree.lerm.civil.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="temp_customer_name" string="Temporary Customer" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="lerm_civil_sale_order_search" model="ir.ui.view">
+            <field name="name">sale.order.search.lerm.civil.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="temp_customer_name"/>
+                </xpath>
+                <xpath expr="//search" position="inside">
+                    <separator/>
+                    <filter name="temp_customer" string="Temporary Customer"
+                        domain="[('is_temp_customer', '=', True), ('partner_id', '=', False)]"/>
+                </xpath>
             </field>
         </record>
 

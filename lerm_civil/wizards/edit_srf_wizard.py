@@ -36,14 +36,15 @@ class SRFEditWizard(models.TransientModel):
     
     
     def update_sample_header(self):
-        
+        billing_customer = self.billing_customer or self.customer
+
         self.srf_id.write({
             'customer': self.customer.id,
             'srf_date': self.srf_date,
             'client': self.client,
             'contact_person': self.contact_person.id,
             'contractor': self.contractor.id,
-            'billing_customer': self.billing_customer.id,
+            'billing_customer': billing_customer.id,
             'client_refrence': self.client_refrence,
             'name_work': self.name_work.id,
             'attachment':self.attachment,
@@ -52,7 +53,7 @@ class SRFEditWizard(models.TransientModel):
         samples = self.env['lerm.civil.srf'].search([("id","=",self.srf_id.id)]).samples
         for sample in samples:
             sample.write({
-                'customer_id': self.billing_customer.id
+                'customer_id': billing_customer.id
                 # 'sample_received_date':self.srf_date
             })
         
@@ -135,10 +136,14 @@ class SRFEditWizard(models.TransientModel):
 
     @api.onchange('billing_customer')
     def _onchange_billing_customer(self):
-        if self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+        if self.billing_customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+            self.customer = self.billing_customer
+        elif self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
             self.customer = False
 
     @api.onchange('customer')
     def _onchange_customer(self):
+        if self.customer and not self.billing_customer:
+            self.billing_customer = self.customer
         if self.name_work and self.name_work.reporting_customer != self.customer:
             self.name_work = False

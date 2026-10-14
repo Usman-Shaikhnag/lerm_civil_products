@@ -10,10 +10,12 @@
         'sale',
         'lerm_civil',
         'ftp_storage',
+        'l10n_in_sale',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
+        'views/report_saleorder_templates.xml',
         'views/srf_views.xml',
         'views/pricelist_wizard_views.xml',
         'views/pricelist_item_views.xml',
