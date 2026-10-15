@@ -182,7 +182,16 @@
 								</th>
 								<th style="max-width: 200px; text-align: center;">
 									<span>
-										<span t-esc="eln.material.specifications"/>
+										<t t-if="eln.material.grade_based_title">
+											<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+												<t t-if="eln.grade_id.id == grade_table.grade.id">
+													<span t-esc="grade_table.specifications"/>
+												</t>
+											</t>
+										</t>
+										<t t-else="">
+											<span t-esc="eln.material.specifications"/>
+										</t>
 
 									</span>
 								</th>
@@ -626,7 +635,16 @@
 								</th>
 								<th style="text-align: center;width: 15%;">
 									<span>
-										<span t-esc="eln.material.specifications"/>
+										<t t-if="eln.material.grade_based_title">
+											<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+												<t t-if="eln.grade_id.id == grade_table.grade.id">
+													<span t-esc="grade_table.specifications"/>
+												</t>
+											</t>
+										</t>
+										<t t-else="">
+											<span t-esc="eln.material.specifications"/>
+										</t>
 
 									</span>
 								</th>
