@@ -27,6 +27,35 @@ class BitumenConcrete(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
+    notes_id = fields.One2many('bitumen.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(BitumenConcrete, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
     # 1. Bitumen Content
 
     location = fields.Char(string="Location:")
@@ -1240,3 +1269,11 @@ class PenetrationLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class BitumenNotes(models.Model):
+    _name = "bitumen.notes"
+
+    parent_id = fields.Many2one('mechanical.bitumen.concrete',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

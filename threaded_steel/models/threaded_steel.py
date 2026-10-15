@@ -16,6 +16,35 @@ class ThreadedSteel(models.Model):
     size = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
+
+    notes_id = fields.One2many('threaded.steel.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ThreadedSteel, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     
     
     diameter = fields.Float(string="Gauge Dia, mm")
@@ -203,4 +232,13 @@ class ThreadedSteel(models.Model):
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
             print("Records",records)
+
+
+
+class ThreadedSteelNotes(models.Model):
+    _name = "threaded.steel.notes"
+
+    parent_id = fields.Many2one('mech.threaded.steel',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
             

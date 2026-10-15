@@ -29,6 +29,36 @@ class Soil(models.Model):
 
     # tests = fields.Many2many("mechanical.soil.test",string="Tests")
 
+
+    notes_id = fields.One2many('soil.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(Soil, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
     # CBR
 
     soil_name = fields.Char("Name",default="California Bearing Ratio")
@@ -2305,3 +2335,12 @@ class SoilFieldCBRLine(models.Model):
             factor = record.parent_id.division_factor or 0.0
 
             record.load1 = avg * factor
+
+
+
+class SoilNotes(models.Model):
+    _name = "soil.notes"
+
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

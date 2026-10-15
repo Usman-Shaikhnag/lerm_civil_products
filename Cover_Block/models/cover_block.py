@@ -92,7 +92,9 @@ class CoverblockMechanical(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
@@ -103,6 +105,11 @@ class CoverblockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.avg_water_absorption_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -151,7 +158,9 @@ class CoverblockMechanical(models.Model):
     average_crushing = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing")
     average_crushing_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
 
     @api.depends('average_crushing','eln_ref','grade')
     def _compute_average_crushing_conformity(self):
@@ -162,6 +171,11 @@ class CoverblockMechanical(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_crushing_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
