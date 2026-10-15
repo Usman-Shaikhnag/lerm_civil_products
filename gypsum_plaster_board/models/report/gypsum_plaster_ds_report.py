@@ -122,6 +122,5 @@ class GypsumPlasterReport1(models.AbstractModel):
             'qrcode': qr_code,
             'nabl' : nabl,
             "qrcode_static": qrcode_static,
-            # 'stamp' : inreport_value,
-            'nabl' : nabl
+           
         }
