@@ -13,3 +13,17 @@ AGENTS.md (imported above) is the primary guide: repo layout, commands, gotchas,
 - So a new material model only becomes reachable after it is linked to a product/grade record (or a parameter master) through `ir_model`. That link is master data in the DB, not code.
 - Material models (e.g. `mechanical.cement.normalconsistency` in `cement_opc/models/opc.py`) set `_inherit = "lerm.eln"` and keep an `eln_ref` back-pointer. Conformity and NABL computes look up limits with `lerm.parameter.master` searched by a **hardcoded `internal_id` UUID** and read `parameter_table` for the current grade. Those UUIDs must exist in the target DB's parameter master records, so copying a module between databases can silently break the computes.
 - `lerm.parameter.master` also points to the report actions (`main_report_template`, `datasheet_report_template`). That is how an ELN picks which QWeb report a module prints.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), recorded as a `Status:` line in each issue file. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root (created lazily). See `docs/agents/domain.md`.

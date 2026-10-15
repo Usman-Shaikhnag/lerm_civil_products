@@ -1935,6 +1935,11 @@ class AllotSampleWizard(models.TransientModel):
                 # else:
                 #     eln.write({'state': '1-draft'})
                 sample_vals = {'state': new_state, 'eln_id': eln.id}
+                # filled_by is a single user: the Sample-mode technician, else the first allotted technician
+                if self.allocation_type == 'sample' and self.technicians:
+                    sample_vals['filled_by'] = self.technicians.id
+                elif eln_tech_ids:
+                    sample_vals['filled_by'] = eln_tech_ids[0]
                 sample.write(sample_vals)
 
                 # Create Tasks for assigned technicians
