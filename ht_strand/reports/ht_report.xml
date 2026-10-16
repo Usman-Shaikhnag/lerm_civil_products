@@ -736,70 +736,74 @@
 						</div>
 
 
-						<div style="margin-top:2px; page-break-inside: avoid;" class="signatureContainer girdgird">
-
+						<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-									Checked By
+										Reviewed By
 									</b>
 								</div>
-								<div style="height: 30px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px; z-index: -10;"/>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.checkby_signature_required">
+												<div t-if="eln.sample_id.check_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
 										</div>
-										
-									</t>
-								</div>
-
 								<div>
 									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
+										<span t-esc="eln.technician.name"/>
 									</b>
 								</div>
-
 								<div>
 									<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+								<div>
+									<t t-call="lerm_civil.lab_stamp"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
 									</b>
 								</div>
 								
-							</div>
-							<div>
-								<div>
-									<t t-call="lerm_civil.lab_stamp"><t t-set="stamp_style" t-value="'width:100px;height:100px;'"/></t>
-								</div>
-								<div style="padding-top:2px">
-								Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							<div>
-								<div>
+								<!-- <div>
 									<b>
-									Approved By 
+										(Authorized Signatory)
 									</b>
-
-								</div>
-								<div style="height: 30px;">
-									<t t-if="eln.sample_id.approveby_signature_required">
-										<div t-if="eln.sample_id.approved_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px;margin-bottom:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
+								</div> -->
 							</div>
 						</div>
 					
