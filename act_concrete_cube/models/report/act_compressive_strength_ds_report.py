@@ -63,7 +63,7 @@ class ActReport(models.AbstractModel):
             border=4,
         )
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        report_url = f"{base_url}/download_report/aac/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+        report_url = f"{base_url}/download_report/act/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
         qr.add_data(report_url)
         qr.make(fit=True)
