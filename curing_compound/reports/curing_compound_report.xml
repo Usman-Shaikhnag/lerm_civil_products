@@ -278,81 +278,76 @@
 								</div>
 							</div>			
 
-					<div class="signatureContainer girdgird">
-						<div>
+								<div class="signatureContainer girdgird">
 							<div>
-								<b>
-									Tested By
-								</b>
+								<div>
+									<b>
+										Reviewed By
+									</b>
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.checkby_signature_required">
+												<div t-if="eln.sample_id.check_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
 							</div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.testedby_signature_required">
-									<div t-if="eln.sample_id.filled_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-								</t>
-							</div>
+
 							<div>
-								<b>
-									<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
+								<div>
+									<t t-call="lerm_civil.lab_stamp"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
 							</div>
+							
 							<div>
-								<b>   
-									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
-								</b>
-							</div>
-						<!-- </div> -->
-						</div>
-						<div style="margin-left:400px">
-							<div>
-								<b>
-									Reviewed By
-								</b>
-							</div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checkby_signature_required">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-								</t>
-							</div>
-							<div>
-								<b>
-									<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
-						</div>
-						<div style="margin-left:400px">
-							<div>
-								<b>
-									Approved By
-								</b>
-							</div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.approveby_signature_required">
-									<div t-if="eln.sample_id.approved_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-								</t>
-							</div>
-							<div>
-								<b>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<div>
+									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
-								</b>
-							</div>
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-								</b>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
 							</div>
 						</div>
-					</div>
 
 					<div style="text-align:center;margin-top:25px">
 						......End of Report......
