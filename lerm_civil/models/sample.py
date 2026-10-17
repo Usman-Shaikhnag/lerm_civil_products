@@ -837,7 +837,7 @@ class RejectSampleWizard(models.Model):
                     if tech_id not in technician_parameters:
                         technician_parameters[tech_id] = []
                     technician_parameters[tech_id].append(
-                        result.parameter.parameter_name or result.parameter.name or 'Unknown'
+                        result.parameter.parameter_name or 'Unknown'
                     )
 
             for tech_id, params in technician_parameters.items():
