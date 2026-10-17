@@ -826,7 +826,7 @@ class RejectSampleWizard(models.Model):
             sample = self.env['lerm.srf.sample'].search([('id','=',sample_id)])
             sample.write({'state': '2-alloted'})
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',sample_id)])
-            eln.write({'state':'4-rejected'})
+            eln.write({'state':'4-rejected', 'reject_reason': self.reject_reason})
             eln.message_post(body="<b>Sample Rejected :<b> " + self.reject_reason)
 
             # Create rejection tasks for each technician assigned in the ELN

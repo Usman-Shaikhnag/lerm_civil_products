@@ -63,6 +63,7 @@ class ELN(models.Model):
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades", compute="compute_grade")
 
     update_result = fields.Integer("Update Result")
+    reject_reason = fields.Char(string="Reject Reason", readonly=True)
     state = fields.Selection([
         ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
