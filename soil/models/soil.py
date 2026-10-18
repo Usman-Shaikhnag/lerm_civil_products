@@ -4280,12 +4280,12 @@ class Soil(models.Model):
     
 
 
-     # Moisture Content
-    moisture_content_name = fields.Char("Name",default="Moisture Content")
-    moisture_content_visible = fields.Boolean("Moisture Content Visible",compute="_compute_visible")
+     # Water Content   
+    moisture_content_name = fields.Char("Name",default="Water Content")
+    moisture_content_visible = fields.Boolean("Water Content Visible",compute="_compute_visible")
 
-    moisture_content_specification = fields.Char(string='Moisture Content Specification')
-
+    moisture_content_specification = fields.Char(string='Water Content Specification')
+  
     wet_container = fields.Float(string='Wet + Container (M1)')
     dry_container = fields.Float(string='Dry + Container (M2)')
     container_mass = fields.Float(string='Mass of Container (M3)')
@@ -4673,64 +4673,113 @@ class Soil(models.Model):
         return default_lines
     
 
-
+    
+    
+    
     def action_fetch_hydrometer_diameters(self):
-
      for record in self:
+        Line = self.env['soil.hydrometer.analysis.two.line']
 
-        # -------------------------------------------------
-        # Get hydrometer analysis lines
-        # -------------------------------------------------
+        # Remove only previously fetched hydrometer rows.
+        record.hydrometers_two_line_ids.filtered(
+            lambda row: row.is_hydrometer
+        ).unlink()
 
+        # Restore the standard 0.075 mm sieve row if missing.
+        sieve_row = record.hydrometers_two_line_ids.filtered(
+            lambda row: (
+                not row.is_hydrometer
+                and abs(row.sieve_size - 0.075) < 0.00001
+            )
+        )
+
+        if not sieve_row:
+            Line.create({
+                'parent_id': record.id,
+                'sieve_size': 0.075,
+                'precentage_passing': 0.0,  # Replace with actual sieve result.
+                'is_hydrometer': False,
+            })
+
+        # Fetch hydrometer results.
         hydrometer_lines = record.hydrometer_line_ids.filtered(
             lambda line: line.equivalent_diameter > 0
         )
 
-        if not hydrometer_lines:
-            continue
+        vals_list = [
+            {
+                'parent_id': record.id,
+                'sieve_size': line.equivalent_diameter,
+                'precentage_passing': line.percentage_finer_total,
+                'is_hydrometer': True,
+            }
+            for line in hydrometer_lines
+        ]
 
-        # -------------------------------------------------
-        # Remove previously generated hydrometer rows
-        #
-        # This prevents duplicates when button is clicked
-        # multiple times.
-        # -------------------------------------------------
-
-        old_lines = record.hydrometers_two_line_ids.filtered(
-            lambda line: line.is_hydrometer
-        )
-
-        old_lines.unlink()
-
-        # -------------------------------------------------
-        # Create new rows
-        # -------------------------------------------------
-
-        new_lines = []
-
-        for line in hydrometer_lines:
-
-            new_lines.append(
-                (
-                    0,
-                    0,
-                    {
-                        'sieve_size': line.equivalent_diameter,
-                        'precentage_passing': line.percentage_finer_total,
-                        'is_hydrometer': True,
-                    }
-                )
-            )
-
-        # -------------------------------------------------
-        # Add the calculated rows
-        # -------------------------------------------------
-
-        record.write({
-            'hydrometers_two_line_ids': new_lines
-        })
+        if vals_list:
+            Line.create(vals_list)
 
      return True
+
+
+
+    # def action_fetch_hydrometer_diameters(self):
+
+    #  for record in self:
+
+    #     # -------------------------------------------------
+    #     # Get hydrometer analysis lines
+    #     # -------------------------------------------------
+
+    #     hydrometer_lines = record.hydrometer_line_ids.filtered(
+    #         lambda line: line.equivalent_diameter > 0
+    #     )
+
+    #     if not hydrometer_lines:
+    #         continue
+
+    #     # -------------------------------------------------
+    #     # Remove previously generated hydrometer rows
+    #     #
+    #     # This prevents duplicates when button is clicked
+    #     # multiple times.
+    #     # -------------------------------------------------
+
+    #     old_lines = record.hydrometers_two_line_ids.filtered(
+    #         lambda line: line.is_hydrometer
+    #     )
+
+    #     old_lines.unlink()
+
+    #     # -------------------------------------------------
+    #     # Create new rows
+    #     # -------------------------------------------------
+
+    #     new_lines = []
+
+    #     for line in hydrometer_lines:
+
+    #         new_lines.append(
+    #             (
+    #                 0,
+    #                 0,
+    #                 {
+    #                     'sieve_size': line.equivalent_diameter,
+    #                     'precentage_passing': line.percentage_finer_total,
+    #                     'is_hydrometer': True,
+    #                 }
+    #             )
+    #         )
+
+    #     # -------------------------------------------------
+    #     # Add the calculated rows
+    #     # -------------------------------------------------
+
+    #     record.write({
+    #         'hydrometers_two_line_ids': new_lines
+    #     })
+
+    #  return True
 
 
     show_hydrometer_calibration_chart = fields.Boolean(string="Show Hydrometer Calibration Chart")
@@ -5167,9 +5216,9 @@ class Soil(models.Model):
 
     sand_percentage = fields.Float(string="Sand (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
 
-    silt_percentage = fields.Float(string="Silt (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+    silt_percentage = fields.Float(string="Silt (%)",compute="_compute_soil_percentages",store=True,digits=(16, 1),)
 
-    clay_percentage = fields.Float(string="Clay (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
+    clay_percentage = fields.Float(string="Clay (%)",compute="_compute_soil_percentages",store=True,digits=(16, 1),)
 
     total_percentage = fields.Float(string="Total (%)",compute="_compute_soil_percentages",store=True,digits=(16, 2),)
 
@@ -5180,68 +5229,57 @@ class Soil(models.Model):
     d60 = fields.Float(string="D60 (mm)",compute="_compute_particle_diameters",store=True,digits=(16, 4),)
 
 
-    @api.depends('hydrometers_two_line_ids.sieve_size','hydrometers_two_line_ids.precentage_passing',)
+    @api.depends(
+    'hydrometers_two_line_ids.sieve_size',
+    'hydrometers_two_line_ids.precentage_passing',
+)
     def _compute_soil_percentages(self):
      for record in self:
         lines = record.hydrometers_two_line_ids.filtered(
-            lambda line: line.sieve_size > 0
+            lambda line: (
+                line.sieve_size is not False
+                and line.sieve_size > 0
+                and line.precentage_passing is not False
+            )
         )
 
-        # Sort by particle size
         points = sorted(
             [
-                (line.sieve_size, line.precentage_passing)
+                (float(line.sieve_size),
+                 float(line.precentage_passing))
                 for line in lines
             ],
             key=lambda point: point[0],
         )
 
-        # Default values
         gravel = 0.0
         sand = 0.0
         silt = 0.0
         clay = 0.0
 
         if points:
-            passing_10 = record._get_passing_at_size(
-                points, 10.0
-            )
-            passing_475 = record._get_passing_at_size(
-                points, 4.75
-            )
-            passing_0075 = record._get_passing_at_size(
-                points, 0.075
-            )
-            passing_0002 = record._get_passing_at_size(
-                points, 0.002
-            )
+            passing_10 = record._get_passing_at_size(points, 10.0)
+            passing_475 = record._get_passing_at_size(points, 4.75)
+            passing_0075 = record._get_passing_at_size(points, 0.075)
+            passing_0002 = record._get_passing_at_size(points, 0.002)
 
-            # Gravel = passing at 10 mm - passing at 4.75 mm
+            # Gravel: 10 mm to 4.75 mm
             if passing_10 is not None and passing_475 is not None:
                 gravel = passing_10 - passing_475
 
-            # Sand = passing at 4.75 mm - passing at 0.075 mm
+            # Sand: 4.75 mm to 0.075 mm
             if passing_475 is not None and passing_0075 is not None:
                 sand = passing_475 - passing_0075
 
-            # # Clay = percentage finer than 0.002 mm
-            # if passing_0002 is not None:
-            #     clay = passing_0002
+            # Silt: 0.075 mm to 0.002 mm
+            if passing_0075 is not None and passing_0002 is not None:
+                silt = passing_0075 - passing_0002
 
-            # # Silt = remainder
-            # silt = 100.0 - gravel - sand - clay
-
-            # Clay percentage at particle size 0.002 mm
-            passing_0002 = record._get_passing_at_size(points, 0.002)
-
+            # Clay: finer than 0.002 mm
             if passing_0002 is not None:
-               clay = round(passing_0002, 1)
-            else:
-               clay = 0.0
+                clay = passing_0002
 
-            # Calculate silt as the remaining percentage
-            silt = 100.0 - gravel - sand - clay
-
+        # Round only the final percentages.
         record.gravel_percentage = round(max(gravel, 0.0), 2)
         record.sand_percentage = round(max(sand, 0.0), 2)
         record.silt_percentage = round(max(silt, 0.0), 2)
@@ -5257,24 +5295,29 @@ class Soil(models.Model):
 
 
     def _get_passing_at_size(self, points, target_size):
-      """Return percentage passing using logarithmic interpolation."""
+     """Logarithmic interpolation of percentage passing."""
 
-      if not points or target_size <= 0:
+     if not points or target_size <= 0:
         return None
 
-      points = sorted(points, key=lambda point: point[0])
+     points = sorted(points, key=lambda point: point[0])
 
-    # Exact match
-      for size, passing in points:
-        if abs(size - target_size) < 1e-10:
+     # Return the exact value if the particle size exists.
+     for size, passing in points:
+        if math.isclose(
+            size, target_size, rel_tol=1e-10, abs_tol=1e-12
+        ):
             return passing
 
-    # Find the two surrounding points
-      for index in range(len(points) - 1):
+     # Interpolate between surrounding particle sizes.
+     for index in range(len(points) - 1):
         d1, p1 = points[index]
         d2, p2 = points[index + 1]
 
         if d1 <= target_size <= d2:
+            if d1 <= 0 or d2 <= 0 or d1 == d2:
+                return None
+
             log_d1 = math.log10(d1)
             log_d2 = math.log10(d2)
             log_target = math.log10(target_size)
@@ -5285,8 +5328,11 @@ class Soil(models.Model):
                 / (log_d2 - log_d1)
             )
 
-    # Do not extrapolate outside the available particle-size range
-      return None
+     # Never extrapolate outside the available data.
+     return None
+
+
+ 
 
 
     @api.depends('hydrometers_two_line_ids.sieve_size','hydrometers_two_line_ids.precentage_passing',)
@@ -5343,8 +5389,233 @@ class Soil(models.Model):
 
             return 10 ** log_target_d
 
-    # Target percentage is outside the measured range
+      # Target percentage is outside the measured range
       return 0.0
+    
+
+
+     # Core Cutter   
+    core_cutter_name = fields.Char("Name",default="Core Cutter ")
+    core_cutter_visible = fields.Boolean("Core Cutter  Visible",compute="_compute_visible")
+
+
+    core_cutter_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+    
+    core_cutter_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_core_cutter_nabl",
+    store=True
+)
+
+    @api.depends('core_cutter_report_type')
+    def _compute_core_cutter_nabl(self):
+     for rec in self:
+        rec.core_cutter_nabl = 'pass' if rec.core_cutter_report_type == 'nabl' else 'fail'
+
+    core_cutter_specification = fields.Char(string='Core Cutter  Specification')
+
+    core_cutter_mdd = fields.Float(string='mdd maximum dry density (g/cc)',digit=(16,3))
+
+    core_cutter_omc = fields.Float(string='omc optimum moisture content (%)')
+
+    core_cutter_line_ids = fields.One2many('soil.core.cutter.test.line','parent_id',string='Trials',) 
+
+    avg_compaction_percentage = fields.Float(string="Average ",compute="_compute_avg_compaction_percentage")
+   
+    @api.depends('core_cutter_line_ids.compaction_percentage')
+    def _compute_avg_compaction_percentage(self):
+
+     for record in self:
+
+        total_compaction_percentage = sum(
+            record.core_cutter_line_ids.mapped('compaction_percentage')
+        )
+
+        average = (
+            total_compaction_percentage / len(record.core_cutter_line_ids)
+            if record.core_cutter_line_ids
+            else 0.0
+        )
+
+        record.avg_compaction_percentage = round(average,2)
+  
+   
+    
+    # avg_compaction_percentage_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_compaction_percentage_conformity", store=True)
+
+    # @api.depends('avg_compaction_percentage','eln_ref','grade')
+    # def _compute_avg_compaction_percentage_conformity(self):
+        
+    #     for record in self:
+    #         if not record.eln_ref or not record.eln_ref.conformity:
+    #             record.avg_compaction_percentage_conformity = 'na'
+    #             continue
+    #         record.avg_compaction_percentage_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e421838-ed5b-43e5-957c-f21c38d17d5c')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e421838-ed5b-43e5-957c-f21c38d17d5c')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.avg_compaction_percentage - record.avg_compaction_percentage*mu_value
+    #                 upper = record.avg_compaction_percentage + record.avg_compaction_percentage*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.avg_compaction_percentage_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.avg_compaction_percentage_conformity = 'fail'
+
+    # avg_compaction_percentage_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_compaction_percentage_nabl", store=True)
+
+    # @api.depends('avg_compaction_percentage','eln_ref','grade')
+    # def _compute_avg_compaction_percentage_nabl(self):
+        
+    #     for record in self:
+    #         record.avg_compaction_percentage_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e421838-ed5b-43e5-957c-f21c38d17d5c')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e421838-ed5b-43e5-957c-f21c38d17d5c')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
+            
+    #         lower = record.avg_compaction_percentage - record.avg_compaction_percentage*mu_value
+    #         upper = record.avg_compaction_percentage + record.avg_compaction_percentage*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.avg_compaction_percentage_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.avg_compaction_percentage_nabl = 'fail'
+
+
+
+     # Sand Replacement Method   
+    sand_replace_name = fields.Char("Name",default="Sand Replacement Method")
+    sand_replace_visible = fields.Boolean("Sand Replacement Method Visible",compute="_compute_visible")
+
+    sand_replace_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+    
+    sand_replace_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sand_replace_nabl",
+    store=True
+)
+
+    @api.depends('sand_replace_report_type')
+    def _compute_sand_replace_nabl(self):
+     for rec in self:
+        rec.sand_replace_nabl = 'pass' if rec.sand_replace_report_type == 'nabl' else 'fail'
+
+    sand_replace_specification = fields.Char(string='Sand Replacement Method Specification')
+    
+    sand_maximum_dry_density = fields.Float(string='Maximum Dry Density (g/cc)',digits=(16, 3),)
+
+    sand_optimum_moisture_content = fields.Float(string='Optimum Moisture Content (%)',digits=(16, 2),)
+
+    sand_cone_sand_weight = fields.Float(string='Mass of Sand in Cone W2 (g)',digits=(16, 2),)
+
+    sand_density = fields.Float(string='Density of Sand Ys (g/cc)',digits=(16, 3),)
+
+    sand_line_ids = fields.One2many('soil.sand.replacement.line','parent_id',string='Trials',) 
+
+    avged_compaction_percentage = fields.Float(string="Average ",compute="_compute_avged_compaction_percentage")
+   
+    @api.depends('sand_line_ids.compaction_percentage')
+    def _compute_avged_compaction_percentage(self):
+
+     for record in self:
+
+        total_compaction_percentage = sum(
+            record.sand_line_ids.mapped('compaction_percentage')
+        )
+
+        average = (
+            total_compaction_percentage / len(record.sand_line_ids)
+            if record.sand_line_ids
+            else 0.0
+        )
+
+        record.avged_compaction_percentage = round(average,2)
+
+
+    # avged_compaction_percentage_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avged_compaction_percentage_conformity", store=True)
+
+    # @api.depends('avged_compaction_percentage','eln_ref','grade')
+    # def _compute_avged_compaction_percentage_conformity(self):
+        
+    #     for record in self:
+    #         if not record.eln_ref or not record.eln_ref.conformity:
+    #             record.avged_compaction_percentage_conformity = 'na'
+    #             continue
+    #         record.avged_compaction_percentage_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ed654ec-87d1-4cc0-adf0-6af4abd36393')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ed654ec-87d1-4cc0-adf0-6af4abd36393')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.avged_compaction_percentage - record.avged_compaction_percentage*mu_value
+    #                 upper = record.avged_compaction_percentage + record.avged_compaction_percentage*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.avged_compaction_percentage_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.avged_compaction_percentage_conformity = 'fail'
+
+    # avged_compaction_percentage_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avged_compaction_percentage_nabl", store=True)
+
+    # @api.depends('avged_compaction_percentage','eln_ref','grade')
+    # def _compute_avged_compaction_percentage_nabl(self):
+        
+    #     for record in self:
+    #         record.avged_compaction_percentage_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ed654ec-87d1-4cc0-adf0-6af4abd36393')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ed654ec-87d1-4cc0-adf0-6af4abd36393')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
+            
+    #         lower = record.avged_compaction_percentage - record.avged_compaction_percentage*mu_value
+    #         upper = record.avged_compaction_percentage + record.avged_compaction_percentage*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.avged_compaction_percentage_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.avged_compaction_percentage_nabl = 'fail'
+  
+
+
 
         
 
@@ -5376,6 +5647,8 @@ class Soil(models.Model):
             record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False  
             record.moisture_content_visible = False
+            record.core_cutter_visible = False
+            record.sand_replace_visible = False
 
 
 
@@ -5425,6 +5698,12 @@ class Soil(models.Model):
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                     record.direct_shear_visible = True
 
+                if sample.internal_id == '8e421838-ed5b-43e5-957c-f21c38d17d5c':
+                    record.core_cutter_visible = True
+
+                if sample.internal_id == '4ed654ec-87d1-4cc0-adf0-6af4abd36393':
+                    record.sand_replace_visible = True
+
 
     
     def open_eln_page(self):
@@ -5447,7 +5726,27 @@ class Soil(models.Model):
             if result.parameter.internal_id == 'f049637d-c4ca-4934-8362-a775bf4af164':
                 result.calculated = True
 
-            # Moisture Content
+            # Core Cutter
+            if result.parameter.internal_id == '8e421838-ed5b-43e5-957c-f21c38d17d5c':
+                result.calculated = True
+                result.result_char = round(self.avg_compaction_percentage,2)
+                # if self.avg_compaction_percentage_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Sand Replacement Method
+            if result.parameter.internal_id == '4ed654ec-87d1-4cc0-adf0-6af4abd36393':
+                result.calculated = True
+                result.result_char = round(self.avged_compaction_percentage,2)
+                # if self.avged_compaction_percentage_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Water Content
             if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                 result.calculated = True
                 result.result_char = round(self.moisture_contents,2)
@@ -7112,7 +7411,7 @@ class SoilHydrometerAnalysisLine(models.Model):
 
     equivalent_diameter = fields.Float(
         string='Equivalent Particle Diameter D (mm)',
-        compute='_compute_values',digits=(16,3),
+        compute='_compute_values',digits=(16,4),
         store=True
     )
 
@@ -7133,664 +7432,6 @@ class SoilHydrometerAnalysisLine(models.Model):
         compute='_compute_values',
         store=True
     )
-
-#     @api.depends(
-#     'hydrometer_reading',
-#     'temperature',
-#     'elapsed_time',
-
-#     'parent_id.meniscus_correction',
-#     'parent_id.dispersing_agent_correction',
-#     'parent_id.specific_gravity',
-#     'parent_id.total_sample_mass',
-#     'parent_id.water_content',
-#     'parent_id.percentage_passing_0075',
-#     'parent_id.water_unit_weight',
-
-#     # Calibration table
-#     'parent_id.hydrometers_two_graph_line_ids.sh1',
-#     'parent_id.hydrometers_two_graph_line_ids.h',
-#     'parent_id.hydrometers_two_graph_line_ids.vh',
-#     'parent_id.hydrometers_two_graph_line_ids.a',
-#     'parent_id.hydrometers_two_graph_line_ids.hr',
-#     'parent_id.hydrometers_two_graph_line_ids.hr_corrected',
-#     'parent_id.hydrometers_two_graph_line_ids.rh',
-# )
-#     def _compute_values(self):
-
-#      for line in self:
-
-#         analysis = line.parent_id
-
-#         # -------------------------------------------------
-#         # RESET
-#         # -------------------------------------------------
-
-#         line.corrected_reading = 0.0
-#         line.hr_value = 0.0
-#         line.equivalent_diameter = 0.0
-#         line.rh_plus_m_x = 0.0
-#         line.percentage_finer = 0.0
-#         line.percentage_finer_total = 0.0
-
-#         if not analysis:
-#             continue
-
-#         # =================================================
-#         # 1. CORRECTED READING
-#         #
-#         # Excel:
-#         # =R'h + Cm
-#         # =================================================
-
-#         corrected = (
-#             line.hydrometer_reading
-#             + analysis.meniscus_correction
-#         )
-
-#         line.corrected_reading = corrected
-
-#         # =================================================
-#         # 2. HR VALUE
-#         #
-#         # A-Line / B-Line regression
-#         # =================================================
-
-#         calibration_lines = (
-#             analysis.hydrometers_two_graph_line_ids
-#         )
-
-#         if corrected > 20.0:
-
-#             # ---------------------------------------------
-#             # B-LINE
-#             # ---------------------------------------------
-
-#             points = [
-#                 (
-#                     cal.rh,
-#                     cal.hr_corrected
-#                 )
-#                 for cal in calibration_lines
-#                 if cal.rh is not None
-#                 and cal.hr_corrected is not None
-#             ]
-
-#         else:
-
-#             # ---------------------------------------------
-#             # A-LINE
-#             # ---------------------------------------------
-
-#             points = [
-#                 (
-#                     cal.rh,
-#                     cal.hr
-#                 )
-#                 for cal in calibration_lines
-#                 if cal.rh is not None
-#                 and cal.hr is not None
-#             ]
-
-#         # -------------------------------------------------
-#         # FORECAST / LINEAR REGRESSION
-#         # -------------------------------------------------
-
-#         if len(points) >= 2:
-
-#             x_values = [
-#                 point[0]
-#                 for point in points
-#             ]
-
-#             y_values = [
-#                 point[1]
-#                 for point in points
-#             ]
-
-#             n = len(points)
-
-#             sum_x = sum(x_values)
-#             sum_y = sum(y_values)
-
-#             sum_xy = sum(
-#                 x * y
-#                 for x, y in points
-#             )
-
-#             sum_x2 = sum(
-#                 x * x
-#                 for x in x_values
-#             )
-
-#             denominator = (
-#                 n * sum_x2
-#                 - sum_x ** 2
-#             )
-
-#             if denominator != 0:
-
-#                 slope = (
-#                     n * sum_xy
-#                     - sum_x * sum_y
-#                 ) / denominator
-
-#                 intercept = (
-#                     sum_y
-#                     - slope * sum_x
-#                 ) / n
-
-#                 line.hr_value = (
-#                     intercept
-#                     + slope * corrected
-#                 )
-
-#         # =================================================
-#         # 3. Rh + Mt - x
-#         #
-#         # Excel H16:
-#         #
-#         # Corrected reading
-#         # + temperature correction
-#         # - dispersing correction
-#         # =================================================
-
-#         # Temperature correction
-#         #
-#         # Excel uses interpolation from its temperature
-#         # correction table.
-#         #
-#         # Formula:
-#         #
-#         # Ct =
-#         # (
-#         #   0.9982
-#         #   - interpolated water density
-#         #   - 0.000025 * (T - 20)
-#         # ) * 1000
-#         #
-
-#         temperature = line.temperature
-
-#         # Standard water-density values.
-#         # Replace these with the exact M28:T29 values
-#         # from your Excel if you need bit-for-bit matching.
-#         water_density_table = {
-#             # 10.0: 0.99970,
-#             # 15.0: 0.99910,
-#             # 20.0: 0.99820,
-#             # 25.0: 0.99705,
-#             # 30.0: 0.99565,
-#             # 35.0: 0.99403,
-#             # 40.0: 0.99222,
-#             # 45.0: 0.99021,
-#             25: 0.99705,
-#             26: 0.99679,
-#             27: 0.99651,
-#             28: 0.99623,
-#             29: 0.99594,
-#             30: 0.99565,
-#             31: 0.99534,
-#             32: 0.99503,
-#         }
-
-#         temperatures = sorted(
-#             water_density_table.keys()
-#         )
-
-#         interpolated_density = None
-
-#         # Exact temperature
-#         if temperature in water_density_table:
-
-#             interpolated_density = (
-#                 water_density_table[temperature]
-#             )
-
-#         # Temperature below table
-#         elif temperature <= temperatures[0]:
-
-#             interpolated_density = (
-#                 water_density_table[temperatures[0]]
-#             )
-
-#         # Temperature above table
-#         elif temperature >= temperatures[-1]:
-
-#             interpolated_density = (
-#                 water_density_table[temperatures[-1]]
-#             )
-
-#         else:
-
-#             for i in range(
-#                 len(temperatures) - 1
-#             ):
-
-#                 t1 = temperatures[i]
-#                 t2 = temperatures[i + 1]
-
-#                 if t1 <= temperature <= t2:
-
-#                     d1 = water_density_table[t1]
-#                     d2 = water_density_table[t2]
-
-#                     # Linear interpolation
-#                     interpolated_density = (
-#                         d1
-#                         + (
-#                             (temperature - t1)
-#                             / (t2 - t1)
-#                         )
-#                         * (d2 - d1)
-#                     )
-
-#                     break
-
-#         temperature_correction = 0.0
-
-#         if interpolated_density is not None:
-
-#             temperature_correction = (
-#                 (
-#                     0.9982
-#                     - interpolated_density
-#                     - (
-#                         0.000025
-#                         * (temperature - 20)
-#                     )
-#                 )
-#                 * 1000
-#             )
-
-#         # Final:
-#         # Rh + Mt - x
-
-#         line.rh_plus_m_x = (
-#             corrected
-#             + temperature_correction
-#             - analysis.dispersing_agent_correction
-#         )
-
-#         # =================================================
-#         # 4. PERCENTAGE FINER
-#         #
-#         # Excel:
-#         #
-#         # =(100*Gs*(Rh+Mt-x))
-#         # /(Wb*(Gs-1))
-#         # =================================================
-
-#         if (
-#             analysis.specific_gravity
-#             and analysis.total_sample_mass
-#         ):
-
-#             denominator = (
-#                 analysis.total_sample_mass
-#                 * (
-#                     analysis.specific_gravity - 1
-#                 )
-#             )
-
-#             if denominator != 0:
-
-#                 line.percentage_finer = (
-#                     100
-#                     * analysis.specific_gravity
-#                     * line.rh_plus_m_x
-#                     / denominator
-#                 )
-
-#         # =================================================
-#         # 5. PERCENTAGE FINER W.R.T TOTAL MASS
-#         #
-#         # Excel:
-#         # =I16*$D$7/100
-#         # =================================================
-
-#         if analysis.percentage_passing_0075:
-
-#             line.percentage_finer_total = (
-#                 line.percentage_finer
-#                 * analysis.percentage_passing_0075
-#                 / 100
-#             )
-
-#         # =================================================
-#         # 6. EQUIVALENT PARTICLE DIAMETER
-#         #
-#         # Excel:
-#         #
-#         # =SQRT(
-#         #   (30 * μ * HR)
-#         #   /
-#         #   (980 * (Gs - 1) * t)
-#         # )
-#         # =================================================
-
-#         if (
-#             line.elapsed_time and analysis.specific_gravity and analysis.water_unit_weight and line.hr_value
-#          ):
- 
-#             try:
-
-#                 numerator = (30* analysis.water_unit_weight* line.hr_value)
-
-#                 denominator = (980* (analysis.specific_gravity - 1)* line.elapsed_time)
-
-#                 if denominator > 0:
-
-#                   line.equivalent_diameter = math.sqrt(
-#                 numerator / denominator
-#             )
-
-#             except (
-#         ValueError,
-#         ZeroDivisionError
-#     ):
-
-#                line.equivalent_diameter = 0.0
-
-   
-
-
-
-#     @api.depends(
-#     'hydrometer_reading',
-#     'temperature',
-#     'elapsed_time',
-#     'parent_id.meniscus_correction',
-#     'parent_id.dispersing_agent_correction',
-#     'parent_id.specific_gravity',
-#     'parent_id.total_sample_mass',
-#     'parent_id.water_content',
-#     'parent_id.percentage_passing_0075',
-#     'parent_id.water_unit_weight',
-#     'parent_id.hydrometers_two_graph_line_ids.sh1',
-#     'parent_id.hydrometers_two_graph_line_ids.h',
-#     'parent_id.hydrometers_two_graph_line_ids.vh',
-#     'parent_id.hydrometers_two_graph_line_ids.a',
-#     'parent_id.hydrometers_two_graph_line_ids.hr',
-#     'parent_id.hydrometers_two_graph_line_ids.hr_corrected',
-#     'parent_id.hydrometers_two_graph_line_ids.rh',
-# )
-#     def _compute_values(self):
-
-#     # Water density values from the Excel screenshot.
-#       water_density_table = {
-        
-
-#             25: 0.99705,
-#             26: 0.99679,
-#             27: 0.99651,
-#             28: 0.99623,
-#             29: 0.99594,
-#             30: 0.99565,
-#             31: 0.99534,
-#             32: 0.99503,
-#     }
-
-#       def forecast_value(x, points):
-#         """
-#         Excel equivalent:
-#         =FORECAST(x, known_y_values, known_x_values)
-
-#         points = [(known_x, known_y), ...]
-#         """
-#         points = [
-#             (float(px), float(py))
-#             for px, py in points
-#             if px is not None and py is not None
-#         ]
-
-#         # Remove duplicate X values to avoid an invalid regression.
-#         unique_points = {}
-#         for px, py in points:
-#             unique_points[px] = py
-
-#         points = list(unique_points.items())
-
-#         if len(points) < 2:
-#             return 0.0
-
-#         n = len(points)
-#         sum_x = sum(px for px, _ in points)
-#         sum_y = sum(py for _, py in points)
-#         sum_xy = sum(px * py for px, py in points)
-#         sum_x2 = sum(px * px for px, _ in points)
-
-#         denominator = n * sum_x2 - sum_x ** 2
-
-#         if abs(denominator) < 1e-12:
-#             return 0.0
-
-#         slope = (
-#             n * sum_xy - sum_x * sum_y
-#         ) / denominator
-
-#         intercept = (sum_y - slope * sum_x) / n
-
-#         return intercept + slope * float(x)
-
-#       def get_water_density(temperature):
-#         points = sorted(water_density_table.items())
-
-#         # Do not silently clamp temperatures outside the table.
-#         if (
-#             temperature < points[0][0]
-#             or temperature > points[-1][0]
-#         ):
-#             return None
-
-#         for temp, density in points:
-#             if abs(temperature - temp) < 1e-9:
-#                 return density
-
-#         for i in range(len(points) - 1):
-#             t1, d1 = points[i]
-#             t2, d2 = points[i + 1]
-
-#             if t1 <= temperature <= t2:
-#                 return d1 + (
-#                     (temperature - t1) / (t2 - t1)
-#                 ) * (d2 - d1)
-
-#         return None
-
-#       for line in self:
-
-#         analysis = line.parent_id
-
-#         line.corrected_reading = 0.0
-#         line.hr_value = 0.0
-#         line.equivalent_diameter = 0.0
-#         line.rh_plus_m_x = 0.0
-#         line.percentage_finer = 0.0
-#         line.percentage_finer_total = 0.0
-
-#         if not analysis:
-#             continue
-
-#         # 1. Corrected reading = R'h + Cm.
-#         corrected = (
-#             (line.hydrometer_reading or 0.0)
-#             + (analysis.meniscus_correction or 0.0)
-#         )
-
-#         line.corrected_reading = corrected
-
-#         # 2. HR VALUE.
-#         # Corrected reading > 20: B-Line HR + Rh.
-#         # Otherwise: A-Line HR + Rh.
-
-        
-#         # 2. HR VALUE — MATCH THE TWO EXCEL FORECAST FORMULAS
-
-#         calibration_lines = analysis.hydrometers_two_graph_line_ids
-
-#         elapsed_time = line.elapsed_time or 0.0
-
-#         if elapsed_time <= 4.0:
-#          # First four readings: B-Line
-#                # Excel: =FORECAST(E16,$Q$17:$Q$24,$R$17:$R$24)
-#             points = [
-#         (cal.rh, cal.hr_corrected)
-#         for cal in calibration_lines
-#         if cal.rh is not None
-#         and cal.hr_corrected is not None
-#     ]
-#         else:
-#         # Remaining readings: A-Line
-#         # Excel: =FORECAST(E20,$P$17:$P$24,$R$17:$R$24)
-#             points = [
-#         (cal.rh, cal.hr)
-#         for cal in calibration_lines
-#         if cal.rh is not None
-#         and cal.hr is not None
-#     ]
-
-#         # Excel FORECAST equivalent: linear regression
-#         if len(points) >= 2:
-#             n = len(points)
-  
-#             sum_x = sum(x for x, y in points)
-#             sum_y = sum(y for x, y in points)
-#             sum_xy = sum(x * y for x, y in points)
-#             sum_x2 = sum(x * x for x, y in points)
-
-#             denominator = n * sum_x2 - sum_x ** 2
-
-#         if abs(denominator) > 1e-12:
-#                 slope = (
-#             n * sum_xy - sum_x * sum_y
-#         ) / denominator
-
-#                 intercept = (sum_y - slope * sum_x) / n
-
-#                 line.hr_value = (
-#             intercept + slope * line.corrected_reading
-            
-#         )
-
-        
-
-
-                
-
-#         # 3. Rh + Mt - x.
-#         # temperature = line.temperature
-
-#         # if temperature is not None and temperature is not False:
-#         #     density = get_water_density(temperature)
-
-#         #     if density is not None:
-#         #         temperature_correction = (
-#         #             0.9982
-#         #             - density
-#         #             - 0.000025 * (temperature - 20.0)
-#         #         ) * 1000.0
-
-#         #         line.rh_plus_m_x = (
-#         #             corrected
-#         #             + temperature_correction
-#         #             - (analysis.dispersing_agent_correction or 0.0)
-#         #         )
-
-        
-#         # 3. Rh + Mt - x
-#         # Matches the Excel formula in H16.
-
-#         temperature = line.temperature
-
-#         if temperature is not None and temperature is not False:
-#             temp_points = sorted(water_density_table.items())
-
-#             # Find the lower and upper temperatures, like Excel MATCH(..., 1).
-#             lower_point = None
-#             upper_point = None
-
-#             for index in range(len(temp_points) - 1):
-#                 t1, d1 = temp_points[index]
-#                 t2, d2 = temp_points[index + 1]
-
-#                 if t1 <= temperature <= t2:
-#                     lower_point = (t1, d1)
-#                     upper_point = (t2, d2)
-#                     break
-
-#             if lower_point and upper_point:
-#                 t1, d1 = lower_point
-#                 t2, d2 = upper_point
-
-#         # Excel formula:
-#         # 0.9982 - lower_density
-#         # + (temperature - lower_temperature)
-#         #   * (upper_density - lower_density)
-#         #   / (upper_temperature - lower_temperature)
-#         # - 0.000025 * (temperature - 20)
-
-#                 density_difference = (
-#             (temperature - t1)
-#             * (d2 - d1)
-#             / (t2 - t1)
-#         )
-
-#                 temperature_correction = (
-#             0.9982
-#             - d1
-#             + density_difference
-#             - 0.000025 * (temperature - 20.0)
-#         ) * 1000.0
-
-#                 line.rh_plus_m_x = (
-#             corrected
-#             + temperature_correction
-#             - (analysis.dispersing_agent_correction or 0.0)
-#         )
-
-
-      
-
-#         # 4. Percentage finer.
-#         gs = analysis.specific_gravity or 0.0
-#         sample_mass = analysis.total_sample_mass or 0.0
-
-#         denominator = sample_mass * (gs - 1.0)
-
-#         if abs(denominator) > 1e-12:
-#             line.percentage_finer = (
-#                 100.0 * gs * line.rh_plus_m_x / denominator
-#             )
-
-#         # 5. Percentage finer relative to total mass.
-#         line.percentage_finer_total = (
-#             line.percentage_finer
-#             * (analysis.percentage_passing_0075 or 0.0)
-#             / 100.0
-#         )
-
-#         # 6. Equivalent particle diameter.
-#         elapsed_time = line.elapsed_time or 0.0
-#         water_unit_weight = analysis.water_unit_weight or 0.0
-
-#         diameter_denominator = (
-#             980.0 * (gs - 1.0) * elapsed_time
-#         )
-
-#         diameter_numerator = (
-#             30.0 * water_unit_weight * line.hr_value
-#         )
-
-#         if (
-#             elapsed_time > 0.0
-#             and gs > 1.0
-#             and diameter_denominator > 0.0
-#             and diameter_numerator >= 0.0
-#         ):
-#             line.equivalent_diameter = math.sqrt(
-#                 diameter_numerator / diameter_denominator
-#             )
 
 
 
@@ -8018,6 +7659,8 @@ class SoilHydrometerAnalysisLine(models.Model):
             line.equivalent_diameter = math.sqrt(
                 diameter_numerator / diameter_denominator
             )
+        else:
+           line.equivalent_diameter = 0.0
 
 
 
@@ -8176,6 +7819,256 @@ class SoilHydrometerAnalysisGraphLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+
+
+
+class SoilCoreCutterTestLine(models.Model):
+    _name = 'soil.core.cutter.test.line'
+    _description = 'Soil Core Cutter Trial'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    determination_no = fields.Char(string="Location")
+
+    mould_volume = fields.Float(string='Volume of Mould (cc)',)
+
+    # Input fields
+    core_cutter_weight = fields.Float(string='Weight of Core cutter(wc)ing')
+
+    cutter_wet_soil_weight = fields.Float(string='Core Cutter + Wet Soil (g)')
+
+    container_no = fields.Float(string='Container No.')
+
+    container_wet_soil = fields.Float(string='Container + Wet Soil (g)')
+
+    container_dry_soil = fields.Float(string='Container + Dry Soil (g)')
+
+    container_weight = fields.Float(string='Weight of Container (g)')
+
+    # Computed fields
+    wet_soil_weight = fields.Float(string='Weight of Wet Soil (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    wet_density = fields.Float(string='Wet Density (g/cc)',compute='_compute_results',store=True,digits=(16, 3),)
+
+    water_weight = fields.Float(string='Weight of Water (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    dry_soil_weight = fields.Float(string='Weight of Dry Soil (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    moisture_content = fields.Float(string='Moisture Content (%)',compute='_compute_results',store=True,digits=(16, 1),)
+
+    dry_density = fields.Float(string='Dry Density of Soil (g/cc)',compute='_compute_results',store=True,digits=(16, 3),)
+
+    compaction_percentage = fields.Float(string='% of Compaction',compute='_compute_results',store=True,digits=(16, 1),)
+
+    
+    @api.depends('core_cutter_weight','cutter_wet_soil_weight','container_wet_soil','container_dry_soil','container_weight','mould_volume','parent_id.core_cutter_mdd',)
+    def _compute_results(self):
+     for line in self:
+        # 1. Weight of wet soil
+        wet_weight = (
+            (line.cutter_wet_soil_weight or 0.0)
+            - (line.core_cutter_weight or 0.0)
+        )
+        line.wet_soil_weight = wet_weight
+
+        # 2. Wet density
+        volume = line.mould_volume or 0.0
+        wet_density = wet_weight / volume if volume > 0 else 0.0
+        line.wet_density = wet_density
+
+        # 3. Weight of water
+        water = (
+            (line.container_wet_soil or 0.0)
+            - (line.container_dry_soil or 0.0)
+        )
+        line.water_weight = water
+
+        # 4. Weight of dry soil
+        dry_weight = (
+            (line.container_dry_soil or 0.0)
+            - (line.container_weight or 0.0)
+        )
+        line.dry_soil_weight = dry_weight
+
+        # 5. Moisture content (%)
+        moisture = (
+            water / dry_weight * 100.0
+            if dry_weight > 0
+            else 0.0
+        )
+        line.moisture_content = moisture
+
+        # 6. Dry density (g/cc)
+        dry_density = (
+            wet_density / (1.0 + moisture / 100.0)
+            if moisture > -100.0
+            else 0.0
+        )
+        line.dry_density = dry_density
+
+        # 7. Compaction percentage
+        mdd = line.parent_id.core_cutter_mdd or 0.0
+
+        line.compaction_percentage = (
+            dry_density / mdd * 100.0
+            if mdd > 0
+            else 0.0
+        )
+
+       
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilCoreCutterTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SoilSandReplacementLine(models.Model):
+    _name = 'soil.sand.replacement.line'
+    _description = 'Soil Sand Replacement Trial'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    determination_no = fields.Char(string="Determination. No")
+
+    # Field inputs
+    wet_soil_from_hole = fields.Float(string='Weight of Wet Soil from Hole (Ww) (g)',digits=(16, 2),)
+
+    sand_before = fields.Float(string='Weight of Sand Before Pouring (W1) (g)',digits=(16, 2),)
+
+    sand_after = fields.Float(string='Weight of Sand After Pouring (W4) (g)',digits=(16, 2),)
+
+    container_no = fields.Float(string='Container No.')
+
+    container_wet_soil = fields.Float(string='Container + Wet Soil (g)',digits=(16, 2),)
+
+    container_dry_soil = fields.Float(string='Container + Dry Soil (g)',digits=(16, 2),)
+
+    container_weight = fields.Float(string='Weight of Container (g)',digits=(16, 2),)
+
+    # Calculated fields
+    sand_in_hole = fields.Float(string='Weight of Sand in Hole (Wb) (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    wet_density = fields.Float(string='Wet Density (g/cc)',compute='_compute_results',store=True,digits=(16, 3),)
+
+    water_weight = fields.Float(string='Weight of Water (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    dry_soil_weight = fields.Float(string='Weight of Dry Soil (g)',compute='_compute_results',store=True,digits=(16, 2),)
+
+    moisture_content = fields.Float(string='Moisture Content (%)',compute='_compute_results',store=True,digits=(16, 1),)
+
+    dry_density = fields.Float(string='Dry Density (g/cc)',compute='_compute_results',store=True,digits=(16, 3),)
+
+    compaction_percentage = fields.Float(string='% of Compaction',compute='_compute_results',store=True,digits=(16, 1),)
+
+    @api.depends('wet_soil_from_hole','sand_before','sand_after','container_wet_soil','container_dry_soil','container_weight','parent_id.sand_cone_sand_weight','parent_id.sand_density','parent_id.sand_maximum_dry_density',)
+    def _compute_results(self):
+        for line in self:
+            parent = line.parent_id
+
+            # 1. Weight of sand in the hole
+            # Wb = W1 - W4 - W2
+            sand_hole = (
+                (line.sand_before or 0.0)
+                - (line.sand_after or 0.0)
+                - (parent.sand_cone_sand_weight or 0.0)
+            )
+            line.sand_in_hole = sand_hole
+
+            # 2. Wet density
+            # Wet density = Ww / (Wb / Ys)
+            sand_density = parent.sand_density or 0.0
+
+            hole_volume = (
+                sand_hole / sand_density
+                if sand_hole > 0 and sand_density > 0
+                else 0.0
+            )
+
+            wet_density = (
+                (line.wet_soil_from_hole or 0.0) / hole_volume
+                if hole_volume > 0
+                else 0.0
+            )
+            line.wet_density = wet_density
+
+            # 3. Weight of water
+            water = (
+                (line.container_wet_soil or 0.0)
+                - (line.container_dry_soil or 0.0)
+            )
+            line.water_weight = water
+
+            # 4. Weight of dry soil
+            dry_weight = (
+                (line.container_dry_soil or 0.0)
+                - (line.container_weight or 0.0)
+            )
+            line.dry_soil_weight = dry_weight
+
+            # 5. Moisture content (%)
+            moisture = (
+                water / dry_weight * 100.0
+                if dry_weight > 0
+                else 0.0
+            )
+            line.moisture_content = moisture
+
+            # 6. Dry density
+            dry_density = (
+                wet_density / (1.0 + moisture / 100.0)
+                if moisture > -100.0
+                else 0.0
+            )
+            line.dry_density = dry_density
+
+            # 7. Compaction percentage
+            mdd = parent.sand_maximum_dry_density or 0.0
+
+            line.compaction_percentage = (
+                dry_density / mdd * 100.0
+                if mdd > 0
+                else 0.0
+            )
+
+
+     
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilSandReplacementLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class SoilNotes(models.Model):

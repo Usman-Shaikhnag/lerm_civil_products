@@ -80,7 +80,7 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders"  invisible="not show_specification or not sieve_visible">
                         <tbody>
                             <tr>
                                 <td><label for="sieve_specification"/></td>
@@ -1700,6 +1700,198 @@
                                 </tr>
                             </tbody>
                         </table>
+
+
+                    <!--  Core Cutter -->
+                    <div invisible="core_cutter_visible == False">
+                        <h1 class="text-center">
+                            <field name="core_cutter_name" readonly="1" nolabel="1"/>
+                            <field name="core_cutter_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not core_cutter_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="core_cutter_report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="core_cutter_report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="core_cutter_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="core_cutter_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not core_cutter_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="core_cutter_mdd"/></td>
+                                <td>
+                                    <field name="core_cutter_mdd" class="blue-input" digits="[16,3]"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not core_cutter_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="core_cutter_omc"/></td>
+                                <td >
+                                    <field name="core_cutter_omc" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <div invisible = "core_cutter_visible == False">
+                        <field name="core_cutter_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='determination_no'  class="blue-input" decoration-info="determination_no != 0"/>
+                                <field name='mould_volume'  class="blue-input" decoration-info="mould_volume != 0"/>
+
+                                <field name='core_cutter_weight' class="blue-input" decoration-info="core_cutter_weight != 0" />
+
+                                <field name='cutter_wet_soil_weight' class="blue-input" decoration-info="cutter_wet_soil_weight != 0" />
+
+                                <field name='wet_soil_weight' />
+                                <field name='wet_density' />
+
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                <field name='container_wet_soil' class="blue-input" decoration-info="container_wet_soil != 0"/>
+                                <field name='container_dry_soil' class="blue-input" decoration-info="container_dry_soil != 0"/>
+
+                                <field name='water_weight'/>
+                                <field name='container_weight' class="blue-input" decoration-info="container_weight != 0"/>
+
+                                <field name='dry_soil_weight'/>
+                                <field name='moisture_content'/>
+                                <field name='dry_density'/>
+                                <field name='compaction_percentage'/>
+
+                            </tree>
+                        </field>
+                    </div>
+
+
+
+                    <!--  Sand Replacement -->
+                    <div invisible="sand_replace_visible == False">
+                        <h1 class="text-center">
+                            <field name="sand_replace_name" readonly="1" nolabel="1"/>
+                            <field name="sand_replace_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sand_replace_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="sand_replace_report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="sand_replace_report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not show_specification">
+                        <tbody>
+                            <tr>
+                                <td><label for="sand_replace_specification"/></td>
+                                <td  class="w-50">
+                                    <field name="sand_replace_specification" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sand_replace_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="sand_maximum_dry_density"/></td>
+                                <td>
+                                    <field name="sand_maximum_dry_density" class="blue-input" digits="[16,3]"/>
+                                </td>
+                              
+                            </tr>
+                            <tr>
+                                <td><label for="sand_optimum_moisture_content"/></td>
+                                <td >
+                                    <field name="sand_optimum_moisture_content" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sand_replace_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="sand_cone_sand_weight"/></td>
+                                <td >
+                                    <field name="sand_cone_sand_weight" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                            <tr>
+                                <td><label for="sand_density"/></td>
+                                <td >
+                                    <field name="sand_density" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <div invisible = "sand_replace_visible == False">
+                        <field name="sand_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='determination_no'  class="blue-input" decoration-info="determination_no != 0"/>
+                                <field name='wet_soil_from_hole'  class="blue-input" decoration-info="wet_soil_from_hole != 0"/>
+
+                                <field name='sand_before' class="blue-input" decoration-info="sand_before != 0" />
+
+                                <field name='sand_after' class="blue-input" decoration-info="sand_after != 0" />
+
+                                <field name='sand_in_hole' />
+                                <field name='wet_density' />
+
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                <field name='container_wet_soil' class="blue-input" decoration-info="container_wet_soil != 0"/>
+                                <field name='container_dry_soil' class="blue-input" decoration-info="container_dry_soil != 0"/>
+
+                                <field name='water_weight'/>
+                                <field name='container_weight' class="blue-input" decoration-info="container_weight != 0"/>
+
+                                <field name='dry_soil_weight'/>
+                                <field name='moisture_content'/>
+                                <field name='dry_density'/>
+                                <field name='compaction_percentage'/>
+
+                            </tree>
+                        </field>
+                    </div>
                   
 
 

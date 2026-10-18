@@ -2630,6 +2630,511 @@
 					</div>
 
 
+					<!-- Core Cutter -->
+						 <div t-if="data.core_cutter_visible" style="page-break-before: always;">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:20px"><b><span t-field="data.core_cutter_name"/></b></p>
+								
+							</div>
+
+							<div style="margin-top:20px" t-if="data.core_cutter_visible">
+							<table>
+								
+								<tr cols="12">
+									<td colspan="6">mdd maximum dry density (g/cc) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.core_cutter_mdd"/>
+									</td>
+									<td colspan="6">omc optimum moisture content (%) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.core_cutter_omc"/>
+									</td>
+								</tr>
+								
+								
+							</table>
+						</div>
+						
+							
+						<table style="margin-top:20px;" t-if="data.core_cutter_visible">
+							<thead>
+								<tr>
+									<th >
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th >
+										<span>
+											Location
+										</span>
+									</th>
+									<th >
+										<span>
+										Volume of Mould (cc)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Core cutter(wc)ing
+										</span>
+									</th>
+									<th >
+										<span>
+									Core Cutter + Wet Soil (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Wet Soil
+										</span>
+									</th>
+									<th >
+										<span>
+									Wet Density (g/cc)
+										</span>
+									</th>
+									<th >
+										<span>
+									Container No
+										</span>
+									</th>
+									<th >
+										<span>
+									Container + Wet Soil (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Container + Dry Soil (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Water (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Container (g)
+										</span>
+									</th>
+									<th>
+										<span>
+									Weight of  Dry soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+									Moisture content (%)
+										</span>
+									</th>
+									<th>
+										<span>
+									Dry density  (g/cc)
+										</span>
+									</th>
+									<th>
+										<span>
+									% of compaction
+										</span>
+									</th>
+
+									</tr>
+
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.core_cutter_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.determination_no" />
+									</td>
+									<td>
+										<span t-esc="r.mould_volume"/>
+									</td>
+									
+									<td>
+										<span t-esc="r.core_cutter_weight" />
+									</td>
+									<td>
+										<span t-esc="r.cutter_wet_soil_weight" />
+									</td>
+									<td>
+										<span t-esc="r.wet_soil_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_density" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.container_no" />
+									</td>
+									<td>
+										<span t-esc="r.container_wet_soil" />
+									</td>
+									<td>
+										<span t-esc="r.container_dry_soil" />
+									</td>
+									<td>
+										<span t-esc="r.water_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.container_weight" />
+									</td>
+									<td>
+										<span t-esc="r.dry_soil_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_density" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.compaction_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- <div style="margin-top:20px" t-if="data.ucs_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Compressive Stress kpa (qu) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.ucs_compressive"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div> -->
+
+
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','8e421838-ed5b-43e5-957c-f21c38d17d5c')], limit=1).technician"/>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="prepared_by_obj.name or ''"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+						
+					</div>
+
+
+					<!-- Sand Replacement Method  -->
+						 <div t-if="data.sand_replace_visible" style="page-break-before: always;">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:20px"><b><span t-field="data.sand_replace_name"/></b></p>
+								
+							</div>
+
+							<div style="margin-top:20px" t-if="data.sand_replace_visible">
+							<table>
+								
+								<tr cols="12">
+									<td colspan="6"> Maximum Dry Density (g/cc) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.sand_maximum_dry_density"/>
+									</td>
+									<td colspan="6">Optimum Moisture Content (%) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.sand_optimum_moisture_content"/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Mass of Sand in Cone W2 (g) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.sand_cone_sand_weight"/>
+									</td>
+									<td colspan="6">Density of Sand Ys (g/cc) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.sand_density"/>
+									</td>
+								</tr>
+								
+								
+							</table>
+						</div>
+						
+							
+						<table style="margin-top:20px;" t-if="data.sand_replace_visible">
+							<thead>
+								<tr>
+									<th >
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th >
+										<span>
+											Determination No
+										</span>
+									</th>
+									<th >
+										<span>
+										weight of wet soil from hole,(Ww)in gm
+										</span>
+									</th>
+									<th >
+										<span>
+									weight of sand before pouring,(W1) in gm
+										</span>
+									</th>
+									<th >
+										<span>
+									weight of sand after pouring,(W4) in gm
+										</span>
+									</th>
+									<th >
+										<span>
+									weight of sand in hole(Wb=W1-W4-W2)
+										</span>
+									</th>
+									<th >
+										<span>
+									Wet Density (g/cc)
+										</span>
+									</th>
+									<th >
+										<span>
+									Container No
+										</span>
+									</th>
+									<th >
+										<span>
+									Container + Wet Soil (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Container + Dry Soil (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Water (g)
+										</span>
+									</th>
+									<th >
+										<span>
+									Weight of Container (g)
+										</span>
+									</th>
+									<th>
+										<span>
+									Weight of  Dry soil (g)
+										</span>
+									</th>
+									<th>
+										<span>
+									Moisture content (%)
+										</span>
+									</th>
+									<th>
+										<span>
+									Dry density  (g/cc)
+										</span>
+									</th>
+									<th>
+										<span>
+									% of compaction
+										</span>
+									</th>
+
+									</tr>
+
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.sand_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.determination_no" />
+									</td>
+									<td>
+										<span t-esc="r.wet_soil_from_hole"/>
+									</td>
+									<td>
+										<span t-esc="r.sand_before" />
+									</td>
+									<td>
+										<span t-esc="r.sand_after" />
+									</td>
+									<td>
+										<span t-esc="r.sand_in_hole" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_density" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.container_no" />
+									</td>
+									<td>
+										<span t-esc="r.container_wet_soil" />
+									</td>
+									<td>
+										<span t-esc="r.container_dry_soil" />
+									</td>
+									<td>
+										<span t-esc="r.water_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.container_weight" />
+									</td>
+									<td>
+										<span t-esc="r.dry_soil_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_density" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.compaction_percentage" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- <div style="margin-top:20px" t-if="data.ucs_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Compressive Stress kpa (qu) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.ucs_compressive"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div> -->
+
+
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','4ed654ec-87d1-4cc0-adf0-6af4abd36393')], limit=1).technician"/>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="prepared_by_obj.name or ''"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+						
+					</div>
+
+
 
 
 
