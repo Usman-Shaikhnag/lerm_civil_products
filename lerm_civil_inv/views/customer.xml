@@ -110,9 +110,6 @@
                 <xpath expr="//field[@name='child_ids']/form//field[@name='email']" position="attributes">
                     <attribute name="required">type == 'reporting_customer' or (type == 'contact' and parent.type == 'reporting_customer')</attribute>
                 </xpath>
-                <xpath expr="//page[@name='sales_purchases']//field[@name='user_id']" position="attributes">
-                    <attribute name="required">not parent_id</attribute>
-                </xpath>
             </field>
         </record>
 
