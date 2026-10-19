@@ -8,6 +8,12 @@
 				<div class="container_eln" style="padding-top:20px;">
 					
 					<div class="" t-foreach="eln" t-as="o">
+
+					<style>
+    table th, table td {
+        font-size: 16px !important;
+    }
+</style>
 						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
@@ -634,85 +640,81 @@
 
 				
 						<div style="margin-top:50px" class="noteContainer">
-							<table >
+							<table class="table table-bordered">
 								<tr>
-									<td style="padding: 5px; font-style: italic; ">
+									<td style="padding: 5px; font-style: italic; font-size: 12px;">
+										<t t-if="data.notes_id">
+											<b>Notes:-</b>
 
-										<b>Notes:-</b>
-											<t t-if="data.notes_id">
 											<t t-foreach="data.notes_id" t-as="n">
-												<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+												<span>
+													(<t t-esc="n.sr_no"/>) 
+													<t t-esc="n.notes"/>
+													&#160;&#160;
+												</span><br/>
 											</t>
 										</t>
 									</td>
 								</tr>
 							</table>
 						</div>
-						<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-								<div style="height:20px">
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
+                            <div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        Reviewed By
+                                    </b>
+                                </div>
+                                <div style="height: 50px;font-size:16px;">
+                                    <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+                                        <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+                                            style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+                                    </t>
+                                </div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        <span t-esc="eln.sample_id.check_by.name"/>
+                                    </b>
+                                </div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                    </b>
+                                </div>
+                            </div>
 
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.technician.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
+                            <div>
+                            </div>
 
-							<div>
-						<!-- <div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div> -->
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
-							
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-									
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div>
-
-				</div>
+                            <div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        Per pro GEONYMS INDIA PRIVATE LIMITED.
+                                    </b>
+                                </div>
+                                <div style="height: 50px;font-size:16px;">
+                                    <t t-if="eln.sample_id.approveby_signature_required">
+                                        <div t-if="eln.sample_id.approved_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div style="font-size:16px;">
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 5px; text-align: center;font-size:16px;">
+                            <p style="font-weight:800;">...... End Of Report......</p>
+                        </div>
+                    </div>
 			</t>
 		</t>
 	</template>
