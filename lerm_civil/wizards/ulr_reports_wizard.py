@@ -1,26 +1,24 @@
-from odoo import api, fields, models,_
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-import logging
-
 
 
 class UlrReportsWizard(models.TransientModel):
     _name = "ulr.reports.wizard"
+    _description = "ULR Reports Wizard"
 
     ulr = fields.Char("ULR")
 
-
     def print_ulr_reports(self):
-
-        template_name = self.env['ir.actions.report'].search([('report_name','=','	lerm_civil.ulr_wizard_report_template')]).report_name
-        
+        self.ensure_one()
+        if not self.ulr or not self.ulr.strip():
+            raise UserError(_("Please enter a ULR number."))
+        report_name = 'lerm_civil.ulr_wizard_report_template'
         return {
             'type': 'ir.actions.report',
             'report_type': 'qweb-html',
-            'report_name': 'lerm_civil.ulr_wizard_report_template',
-            # 'report_name': template_name,
-            'report_file': template_name,
-            'data' : {'ulr': self.ulr}
+            'report_name': report_name,
+            'report_file': report_name,
+            'data': {'ulr': self.ulr.strip()},
         }
 
     def discard_print(self):
