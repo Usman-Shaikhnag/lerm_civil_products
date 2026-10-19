@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_fst_uplift_load_test" model="ir.actions.act_window">
+        <field name="name">Uplift Load Tests</field>
+        <field name="res_model">fst.uplift.load.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="inject_uplift_card_into_fst_dashboard" model="ir.ui.view">
+        <field name="name">lerm.ert.dashboard.inherit.uplift.load</field>
+        <field name="model">lerm.ert.dashboard</field>
+        <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('card-box')][last()]" position="after">
+                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                    <h3 class="title">Uplift Load Test</h3>
+                    <a type="action"
+                    name="%(action_fst_uplift_load_test)d"
+                    class="btn btn-lg"
+                    role="button"
+                    style="background:#00bcd4; color:#000;">
+                        Records
+                    </a>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_fst_uplift_load_test_tree" model="ir.ui.view">
+        <field name="name">fst.uplift.load.test.tree</field>
+        <field name="model">fst.uplift.load.test</field>
+        <field name="arch" type="xml">
+            <tree string="Uplift Load Test Reports">
+                <field name="name"/>
+                <field name="pile_no"/>
+                <field name="report_no"/>
+                <field name="rec_date"/>
+                <button
+                    name="action_duplicate_parent"
+                    type="object"
+                    string="Duplicate"
+                    icon="fa-copy"
+                    class="btn-secondary"
+                />
+                <button
+                    name="action_delete_line"
+                    string="Delete"
+                    type="object"
+                    icon="fa-trash"
+                    class="btn-danger"
+                    confirm="Are you sure you want to delete this line?"
+                />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_fst_uplift_load_test_form" model="ir.ui.view">
+        <field name="name">fst.uplift.load.test.form</field>
+        <field name="model">fst.uplift.load.test</field>
+        <field name="arch" type="xml">
+            <form string="Uplift Pile Load Test Report">
+                <header>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                    <button name="action_prefill_contents" string="Prefill Contents" type="object" class="btn-secondary"/>
+                    <button name="action_generate_test_data" string="Generate Test Data" type="object" class="btn-success"
+                            confirm="This replaces the readings, contents and report text with the sample data of the Welspun uplift test sheet. Continue?"/>
+                </header>
+
+                <sheet>
+
+                    <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
+                        <h1 style="font-size:26px;">
+                            <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
+                        </h1>
+                        <h2>UPLIFT PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
+                    </div>
+
+                    <group col="2" style="margin-bottom:30px;">
+                        <field name="sample_id" invisible="1"/>
+                        <field name="eln_ref" invisible="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="work_name"/>
+                        <field name="client"/>
+                        <field name="contractor"/>
+                        <field name="lab_id"/>
+                        <field name="srf_id" string="SRF" readonly="1"/>
+                        <field name="discipline" readonly="1"/>
+                        <field name="group" readonly="1"/>
+                        <field name="ulr"/>
+                        <field name="report_no"/>
+                        <field name="rec_date"/>
+                        <field name="test_standard"/>
+                        <field name="site_location" colspan="2"/>
+                        <field name="grade"/>
+                        <field name="consultant"/>
+                        <field name="main_client"/>
+                        <field name="pile_coordinates"/>
+                        <field name="test_name"/>
+                    </group>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TEST PARAMETERS
+                        </h3>
+                    </div>
+
+                    <group col="4" style="margin-bottom:30px;">
+                        <field name="pile_diameter"/>
+                        <field name="max_test_load"/>
+                        <field name="design_load" readonly="1"/>
+                        <field name="effective_area_jack"/>
+                        <field name="dial_gauge_least_count"/>
+                        <field name="test_start_date"/>
+                        <field name="test_end_date"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Readings &amp; Results">
+
+                            <div style="margin-top:10px;">
+                                <h3 style="border-bottom:2px solid #000;">
+                                    TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                                </h3>
+                                <p class="text-muted">
+                                    Start each load stage with a reading interval of 0 and the pressure gauge reading;
+                                    its dial values carry the previous reading. Later readings of the stage keep the
+                                    pressure blank. Use 1440 min for the 24 hour reading at test load.
+                                </p>
+                            </div>
+
+                            <field name="last_reading_datetime" invisible="1"/>
+                            <field name="loading_reading_ids"
+                                    nolabel="1"
+                                    context="{'default_parent_id': id}">
+                                <tree editable="bottom" limit="200" default_order="reading_datetime">
+                                    <field name="reading_datetime"
+                                            widget="datetime"
+                                            options="{'format': 'dd/MM/yy HH:mm'}"/>
+                                    <field name="reading_interval"/>
+                                    <field name="pressure_gauge"/>
+                                    <field name="load_tonne"/>
+                                    <field name="dial_a"/>
+                                    <field name="dial_b"/>
+                                    <field name="cumulative_dial" readonly="1"/>
+                                </tree>
+                            </field>
+
+                            <div style="margin-top:35px;">
+                                <h3 style="border-bottom:2px solid #000;">
+                                    TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                                </h3>
+                            </div>
+
+                            <field name="unloading_reading_ids"
+                                    nolabel="1"
+                                    context="{'default_parent_id': id}">
+                                <tree editable="bottom" limit="200" default_order="reading_datetime">
+                                    <field name="reading_datetime"
+                                            widget="datetime"
+                                            options="{'format': 'dd/MM/yy HH:mm'}"/>
+                                    <field name="reading_interval"/>
+                                    <field name="pressure_gauge"/>
+                                    <field name="load_tonne"/>
+                                    <field name="dial_a"/>
+                                    <field name="dial_b"/>
+                                    <field name="cumulative_dial" readonly="1"/>
+                                </tree>
+                            </field>
+
+                            <div style="margin-top:35px;">
+                                <h3 style="border-bottom:2px solid #000;">
+                                    TABLE 2C : APPLIED LOAD vs AVERAGE UPLIFT vs CUMULATIVE UPLIFT
+                                </h3>
+                                <p class="text-muted">
+                                    Average uplift = (last - first cumulative dial reading of the stage) / 2.
+                                    Cumulative uplift is the running total; unloading continues from loading.
+                                </p>
+                            </div>
+
+                            <field name="summary_ids" nolabel="1">
+                                <tree editable="false" limit="50" default_order="sequence">
+                                    <field name="sequence" string="Sr No"/>
+                                    <field name="load_type"/>
+                                    <field name="load_tonne" string="Applied Load (MT)"/>
+                                    <field name="avg_uplift"/>
+                                    <field name="cumulative_uplift"/>
+                                </tree>
+                            </field>
+
+                            <group col="4" style="margin-top:20px;">
+                                <field name="total_uplift" readonly="1"/>
+                                <field name="net_uplift" readonly="1"/>
+                                <field name="rebound" readonly="1"/>
+                            </group>
+
+                            <group>
+                                <field name="graph_break_loads"
+                                       placeholder="Loading: e.g. 80, 120 (leave blank to connect all points)"/>
+                                <field name="graph_break_unload_loads"
+                                       placeholder="Unloading: e.g. 80 (leave blank to connect all points)"/>
+                            </group>
+
+                            <button name="action_generate_graph"
+                                    type="object"
+                                    string="Generate Graph"
+                                    class="btn-primary"/>
+                            <button name="action_generate_log_graph"
+                                    type="object"
+                                    string="Generate Log Graph"
+                                    class="btn-primary"
+                                    style="margin-left:6px;"/>
+                            <button name="action_recompute_all"
+                                    type="object"
+                                    string="Recompute All"
+                                    class="btn-secondary"
+                                    style="margin-left:6px;"/>
+
+                            <div style="margin-top:35px;">
+                                <h3 style="border-bottom:2px solid #000;">
+                                    LOAD Vs SETTLEMENT CURVE
+                                </h3>
+                            </div>
+
+                            <field name="graph_image" widget="image"/>
+
+                            <div style="margin-top:35px;">
+                                <h3 style="border-bottom:2px solid #000;">
+                                    LOAD vs UPLIFT GRAPH (LOG-LOG)
+                                </h3>
+                            </div>
+
+                            <field name="graph_image_log" widget="image"/>
+
+                        </page>
+
+                        <page string="Report Text">
+
+                            <div style="margin-top:10px;">
+                                <h3 style="border-bottom:2px solid #000;">TABLE OF CONTENTS</h3>
+                            </div>
+                            <field name="content_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="section_number"/>
+                                    <field name="description"/>
+                                    <field name="page_no"/>
+                                </tree>
+                            </field>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">1. General Philosophy</h3>
+                            </div>
+                            <field name="general_philosophy" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">2. Scope of Works</h3>
+                            </div>
+                            <field name="scope_of_works" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">3. References</h3>
+                            </div>
+                            <field name="reference" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">4. Pile Details</h3>
+                            </div>
+                            <field name="pile_details" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">5. Setting up of Testing Apparatus</h3>
+                            </div>
+                            <field name="setup_apparatus" nolabel="1"/>
+                            <group>
+                                <field name="arrangement_drawing" widget="image" options="{'size': [0, 260]}"/>
+                            </group>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">6. Measuring System</h3>
+                            </div>
+                            <field name="measuring_system" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">7. Method of Conducting Test</h3>
+                            </div>
+                            <field name="test_procedure" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">8. Test Report &amp; Observations</h3>
+                            </div>
+                            <field name="pile_test_observations" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">9. Conclusions</h3>
+                            </div>
+                            <field name="conclusion" nolabel="1"/>
+
+                            <div style="margin-top:30px;">
+                                <h3 style="border-bottom:2px solid #000;">Signatures</h3>
+                                <p class="text-muted">Used when the sample has no Checked By / Approved By user.</p>
+                            </div>
+                            <group col="4">
+                                <field name="checked_by_name"/>
+                                <field name="checked_by_designation"/>
+                                <field name="signatory_name"/>
+                                <field name="signatory_designation"/>
+                            </group>
+
+                        </page>
+
+                        <page string="Field Data Sheets">
+                            <p class="text-muted">Scanned site reading sheets, printed in Annexure I after the readings.</p>
+                            <field name="datasheet_image_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                                    <field name="caption"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Site Photographs">
+                            <field name="site_image_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                                    <field name="caption"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
