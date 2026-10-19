@@ -21,6 +21,35 @@ class CouplerSlipTest(models.Model):
     ultimate_load = fields.Float(string="Ultimate Tensile Load, KN")
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
+
+
+    notes_id = fields.One2many('coupler.split.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CouplerSlipTest, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
   
 
     result_test = fields.Selection([
@@ -54,7 +83,9 @@ class CouplerSlipTest(models.Model):
 
     slip_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="compute_slip_strength_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="compute_slip_strength_conformity", store=True)
 
     @api.depends('slip_strength','eln_ref','grade')
     def compute_slip_strength_conformity(self):
@@ -65,6 +96,11 @@ class CouplerSlipTest(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4e7f2a1-8c3d-4e5f-9a6b-d1c2e3f4a5b6')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.slip_strength_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -174,4 +210,13 @@ class CouplerSlipTest(models.Model):
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
             print("Records",records)
+
+
+
+class CouplerSplitNotes(models.Model):
+    _name = "coupler.split.notes"
+
+    parent_id = fields.Many2one('coupler.slip.test',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 

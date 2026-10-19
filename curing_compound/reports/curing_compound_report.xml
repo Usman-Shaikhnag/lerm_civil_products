@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="curing_compound_report">
+		<t t-call="web.html_container">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+							<tr t-if="o.material.source_sample">
+								<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.source_sample"/>
+								</td>
+							</tr>
+							<tr t-if="o.material.test_method_adopted">
+								<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<table style="margin-top:15px; width:100%; border-collapse:collapse;">
+					
+						
+        					<tr style="height:20px;">
+
+            					<td rowspan="2" style="text-align:center;">Sr. No.</td>
+
+            					<td rowspan="2" style="text-align:center;">Parameter Tested</td>
+
+            					<td rowspan="2" style="text-align:center;">Specimen 1</td>
+
+            					<td rowspan="2" style="text-align:center;">Specimen 2</td>
+
+            					<td rowspan="2" style="text-align:center;">Specimen 3</td>
+
+            					<td rowspan="2" style="text-align:center;">Average Value</td>
+
+            					<td rowspan="2" style="text-align:center;">ASTM C309 Limit Requirement</td>
+
+							</tr>
+
+					
+							
+				
+				
+						
+
+					<!-- ==================== DENSITY ==================== -->
+							
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.density_test_data_table" t-as="r">
+								<td rowspan="2">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+						<!-- Specimen 1 -->
+								<td style="text-align:center;">
+									<span t-esc="data.density_test_data_table[0]['density'] if len(data.density_test_data_table) > 0 else ''"/>
+								</td>
+
+						<!-- Specimen 2 -->
+								<td style="text-align:center;">
+									<span t-esc="data.density_test_data_table[1]['density'] if len(data.density_test_data_table) > 1 else ''"/>
+								</td>
+
+						<!-- Specimen 3 -->
+								<td style="text-align:center;">
+									<span t-esc="data.density_test_data_table[2]['density'] if len(data.density_test_data_table) > 2 else ''"/>
+								</td>
+
+							<!-- Average -->
+									<td style="text-align:center;">
+										<span t-esc="data.average_density"/>
+									</td>
+
+							<!-- ASTM Requirement -->
+									<td style="text-align:center;">
+										To be reported by Manufacturer
+									</td>
+
+								</tr>
+
+					<!-- ==================== DRYING TIME ==================== -->
+						<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.drying_time_test_table" t-as="r">
+								<td rowspan="2">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+
+							<td>Drying Time (hours)</td>
+
+						<!-- Specimen 1 -->
+						<td style="text-align:center;">
+							<span t-esc="data.drying_time_test_table[0]['drying_time'] if len(data.drying_time_test_table) > 0 else ''"/>
+						</td>
+
+						<!-- Specimen 2 -->
+						<td style="text-align:center;">
+							<span t-esc="data.drying_time_test_table[1]['drying_time'] if len(data.drying_time_test_table) > 1 else ''"/>
+						</td>
+
+						<!-- Specimen 3 -->
+						<td style="text-align:center;">
+							<span t-esc="data.drying_time_test_table[2]['drying_time'] if len(data.drying_time_test_table) > 2 else ''"/>
+						</td>
+
+							<!-- Average -->
+							<td style="text-align:center;">
+								<span t-esc="data.average_drying_time"/>
+							</td>
+
+							<!-- ASTM Requirement -->
+							<td style="text-align:center;">
+								Max 4.0 Hours
+							</td>
+
+						</tr>
+
+					<!-- ==================== WATER RETENTION ==================== -->
+					<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.water_retention_test_table" t-as="r">
+								<td rowspan="2">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+
+							<td>Water Retention Loss at 72h (kg/m²)</td>
+
+						<!-- Specimen 1 -->
+						<td style="text-align:center;">
+							<span t-esc="data.water_retention_test_table[0]['water_loss_per_area'] if len(data.water_retention_test_table) > 0 else ''"/>
+						</td>
+
+						<!-- Specimen 2 -->
+						<td style="text-align:center;">
+							<span t-esc="data.water_retention_test_table[1]['water_loss_per_area'] if len(data.water_retention_test_table) > 1 else ''"/>
+						</td>
+
+						<!-- Specimen 3 -->
+						<td style="text-align:center;">
+							<span t-esc="data.water_retention_test_table[2]['water_loss_per_area'] if len(data.water_retention_test_table) > 2 else ''"/>
+						</td>
+
+							<!-- Average -->
+							<td style="text-align:center;">
+								<span t-esc="data.average_water_loss_per_area"/>
+							</td>
+
+							<!-- ASTM Requirement -->
+							<td style="text-align:center;">
+								Max 0.55 kg/m²
+							</td>
+						</tr>
+
+			
+			
+				
+				
+				</table>
+
+
+				 <div style="page-break-inside: avoid;">
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+									<ul>
+										<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+										<li t-if="eln.amendment_remarks">
+											<span t-esc="eln.amendment_remarks"/>
+										</li>
+									</ul>
+								</div>
+							</div>			
+
+								<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Reviewed By
+									</b>
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.checkby_signature_required">
+												<div t-if="eln.sample_id.check_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+								<div>
+									<t t-call="lerm_civil.lab_stamp"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+
+					<div style="text-align:center;margin-top:25px">
+						......End of Report......
+					</div>
+				</div>
+
+			</t>
+		</t>
+	</template>
+</odoo>

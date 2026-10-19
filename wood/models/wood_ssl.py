@@ -20,6 +20,35 @@ class WOOD(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    notes_id = fields.One2many('wood.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(WOOD, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
      # Moisture Content
 
     moisture_content_name = fields.Char("Name",default="Moisture Content")
@@ -37,7 +66,8 @@ class WOOD(models.Model):
 
     moisture_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
 
     @api.depends('average_moisture','eln_ref','grade')
     def _compute_moisture_content_conformity(self):
@@ -48,6 +78,11 @@ class WOOD(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a90cdbd7-3fa3-4b83-ae31-9d28120458tyu32')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.moisture_content_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -104,7 +139,9 @@ class WOOD(models.Model):
 
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
     @api.depends('average_specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
@@ -115,6 +152,11 @@ class WOOD(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','769b7052-d658-4d14-a5cc-c21dbe1487gbhjt')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -347,3 +389,12 @@ class MechanicalSpecificLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+class WoodNotes(models.Model):
+    _name = "wood.notes"
+
+    parent_id = fields.Many2one('mechanical.wood',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

@@ -58,6 +58,34 @@ class CsPipe(models.Model):
     proof_yeid_stress2 = fields.Float(string="0.2% Proof Stress / Yield Stress N/mm2",compute="_compute_proof_yeid_stress2",store=True,digits=(12,2))
     ult_tens_strgth2 = fields.Float(string="Ultimate Tensile Strength, N/mm2",compute="_compute_ult_tens_strgth2",store=True,digits=(12,2))
     elongation2 = fields.Float(string="% Elongation",compute="_compute_elongation_percent2",store=True,digits=(12,2))
+
+    notes_id = fields.One2many('cs.pipe.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CsPipe, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Knack.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
      
     bend_test2 = fields.Selection([
         ('satisfactory', 'Satisfactory'),
@@ -128,23 +156,33 @@ class CsPipe(models.Model):
 
     uts_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_uts_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_uts_conformity",store=True)
 
     yield_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_yield_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_yield_conformity",store=True)
 
     elongation_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_elongation_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_elongation_conformity",store=True)
 
     ts_ys_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
 
     weight_per_meter_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
+        ('fail', 'Fail'),
+        ('--', '--')
+        ],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
 
     fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
     bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
@@ -288,6 +326,11 @@ class CsPipe(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f0451fe5-56e1-4500-bd62-656a9c1570e1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.uts_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -357,6 +400,11 @@ class CsPipe(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25a098f7-694e-4223-8cb1-576005b21cf1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.elongation_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -405,6 +453,11 @@ class CsPipe(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22d553e9-f714-4310-8934-58c1daa6545a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.yield_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -453,6 +506,11 @@ class CsPipe(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de4bb55e-9318-4725-ac44-fd1850d9e2eb')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.ts_ys_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -475,6 +533,11 @@ class CsPipe(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de4bb55e-9318-4725-ac44-fd1850d9e2eb')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.ts_ys_conformity = '--'
+                        break
+
                     lab_min = line.lab_min_value
                     req_max = line.lab_max_value
                     mu_value = line.mu_value
@@ -609,3 +672,11 @@ class MechanicalTmtTest(models.Model):
     _name = "mechanical.tmt.test"
     _rec_name = "name"
     name = fields.Char("Name")
+
+
+class CsPipeNotes(models.Model):
+    _name = "cs.pipe.notes"
+
+    parent_id = fields.Many2one('cs.pipe',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

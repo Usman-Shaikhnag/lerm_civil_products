@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ss_pipe_view" model="ir.ui.view">
+        <field name="name">ss.pipe.form</field>
+        <field name="model">ss.pipe</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <sheet>
+                   <group>
+                       
+                       
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
+                    </group>
+                         
+                            <group>
+                                
+                               
+                                
+                            </group>
+
+                             <div class="d-flex gap-2" >
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="grade"></label></td>
+                                        <td><field name="grade" /></td>
+                                        <field name="eln_state" />
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="size"></label></td>
+                                        <td><field name="size" /></td>
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            </div>
+                             <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                           <div class="custom_table_borders">
+                                <field name="sample_parameters">
+                                    <tree>
+                                        <field name="parameter_name"/>
+                                        <field name="test_method"/>
+                                    </tree>
+                                </field>
+                            </div>
+                            
+                            
+                             <field name="width_visible" invisible="1"/>
+                             <field name="thickness_visible" invisible="1"/>
+                             <field name="area_visible" invisible="1"/>
+                             <field name="gauge_length_visible" invisible="1"/>
+                             <field name="final_length_visible" invisible="1"/>
+                             <field name="yeild_load_visible" invisible="1"/>
+                             <field name="ultimate_load_visible" invisible="1"/>
+                             <field name="proof_yeid_stress_visible" invisible="1"/>
+                             <field name="ult_tens_strgth_visible" invisible="1"/>
+                             <field name="elongation_visible" invisible="1"/>
+                             <field name="flattening_test_visible" invisible="1"/>
+                             <field name="fracture_visible" invisible="1"/>
+                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                 <tbody>
+                                     <tr>
+                                         <td><span>Parameters</span></td>
+                                         <td><span>Observation 1</span></td>
+                                         
+                                     </tr>
+                                     <tr invisible="not width_visible">
+                                         <td><span>Width</span></td>
+                                         <td><field name="width"/></td>
+                                     </tr>
+                                     <tr invisible="not thickness_visible">
+                                         <td><span>Thickness</span></td>
+                                         <td><field name="thickness"/></td>
+                                     </tr>
+                                     <tr invisible="not area_visible">
+                                         <td><span>Area</span></td>
+                                         <td><field name="area" readonly="1"/></td>
+                                     </tr>
+                                     <tr invisible="not gauge_length_visible">
+                                         <td><span>Gauge Length</span></td>
+                                         <td><field name="gauge_length1" readonly="1"/></td>
+                                     </tr>
+                                     <tr invisible="not final_length_visible">
+                                         <td><span>Final Length</span></td>
+                                         <td><field name="final_length"/></td>
+                                     </tr>
+                                     <tr invisible="not yeild_load_visible">
+                                         <td><span>0.2% Proof Load / Yield Load</span></td>
+                                         <td><field name="yeild_load"/></td>
+                                     </tr>
+                                     <tr invisible="not ultimate_load_visible">
+                                         <td><span>Ultimate Load</span></td>
+                                         <td><field name="ultimate_load"/></td>
+                                     </tr>
+                                     <tr invisible="not proof_yeid_stress_visible">
+                                         <td><span>0.2% Proof Stress / Yield Stress</span></td>
+                                         <td><field name="proof_yeid_stress"/></td>
+                                     </tr>
+                                     <tr invisible="not ult_tens_strgth_visible">
+                                         <td><span>Ultimate Tensile Strength</span></td>
+                                         <td><field name="ult_tens_strgth"/></td>
+                                     </tr>
+                                     <tr invisible="not elongation_visible">
+                                         <td><span>Elongation</span></td>
+                                         <td><field name="elongation"/></td>
+                                     </tr>
+                                     <tr invisible="not flattening_test_visible">
+                                         <td><span>FLATTENING</span></td>
+                                         <td><field name="flattening_test"/></td>
+                                     </tr>
+
+                                     <tr invisible="not fracture_visible">
+                                         <td><span>Fracture</span></td>
+                                         <td><field name="fracture"/></td>
+                                     </tr>
+                                     
+
+                                 </tbody>
+                             </table>
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    <tr>
+                                        <!--td><label for="requirement_yield"></label></td>
+                                        <td><field name="requirement_yield" string="Proof Yield Stress Requirement" readonly="1"/></td!-->
+                                        <td><label for="yield_nabl"></label></td>
+                                        <td><field name="yield_nabl" string="Proof Yield Stress NABL"
+                                            decoration-success="yield_nabl == 'pass'"
+                                            decoration-danger="yield_nabl == 'fail'"
+                                            readonly="1"/></td>
+                                        <td><label for="yield_conformity"></label></td>
+                                        <td><field name="yield_conformity" string="Proof Yield Stress Confirmity"
+                                                decoration-success="yield_conformity == 'pass'"
+                                                decoration-danger="yield_conformity == 'fail'"
+                                                readonly="1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <!--td><label for="requirement_utl"></label></td>
+                                        <td><field name="requirement_utl" string="UTS Requirement" readonly="1"/></td!-->
+                                        <td><label for="uts_nabl"></label></td>
+                                        <td>
+                                            <field name="uts_nabl" string="UTS NABL"
+                                                decoration-success="uts_nabl == 'pass'"
+                                                decoration-danger="uts_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="uts_conformity"></label></td>
+                                        <td>
+                                            <field name="uts_conformity" string="UTS Confirmity"
+                                                decoration-success="uts_conformity == 'pass'"
+                                                decoration-danger="uts_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <!--td><label for="requirement_elongation"></label></td>
+                                        <td><field name="requirement_elongation" string="Elongation Requirement" readonly="1"/></td!-->
+                                        <td><label for="elongation_nabl"></label></td>
+                                        <td>
+                                            <field name="elongation_nabl" string="Elongation NABL"
+                                                decoration-success="elongation_nabl == 'pass'"
+                                                decoration-danger="elongation_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="elongation_conformity"></label></td>
+                                        <td>
+                                            <field name="elongation_conformity" string="Elongation Confirmity"
+                                                decoration-success="elongation_conformity == 'pass'"
+                                                decoration-danger="elongation_conformity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                          
+
+                        
+
+                    
+
+                            <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+              
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>

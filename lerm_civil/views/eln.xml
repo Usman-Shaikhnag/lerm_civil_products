@@ -79,6 +79,9 @@
                     <!-- <field name="volume"/> -->
                     <field name="quantity"/>
                 </group>
+                <group invisible="state != '4-rejected'">
+                    <field name="reject_reason"/>
+                </group>
                 <group invisible="state not in ('6-amendment','7-amended')">
                     <field name="amendment_remarks" readonly="state != '6-amendment'"/>
                 </group>
