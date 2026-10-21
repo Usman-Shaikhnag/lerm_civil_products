@@ -43,6 +43,7 @@ class LermSampleForm(models.Model):
     sample_qty = fields.Integer(string="Sample Quantity")
     received_by_id = fields.Many2one('res.partner',string="Received By")
     sample_received_date = fields.Date(string="Sample Received Date")
+    date_of_report = fields.Date(string="Date Of Report")
     sample_condition = fields.Selection([
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
@@ -563,6 +564,7 @@ class LermSampleForm(models.Model):
         # if not self.datasheet_path:
         #     raise ValidationError("Please attach datasheet before submitting.")
         # import wdb ; wdb.set_trace()
+        self.date_of_report = fields.Date.today()
         
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
         try:
