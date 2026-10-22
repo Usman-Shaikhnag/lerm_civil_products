@@ -1,4 +1,4 @@
-from odoo import models, fields ,api
+from odoo import models, fields ,api, Command
 import base64
 from datetime import datetime , date
 import logging
@@ -28,6 +28,28 @@ class Customer(models.Model):
         default='contact',
         help="Invoice & Delivery addresses are used in sales orders. Private addresses are only visible by authorized users.")
     parent_type = fields.Selection(related='parent_id.type', string="Parent Address Type")
+    # Base clears company_name whenever parent_id is set, so child contacts keep their own
+    contact_company_name = fields.Char(string="Company Name")
+    # Reporting Customers shared with this billing customer besides its own children (parent_id)
+    shared_reporting_customer_ids = fields.Many2many(
+        'res.partner', 'res_partner_shared_reporting_rel',
+        'billing_customer_id', 'reporting_customer_id',
+        string="Shared Reporting Customers", copy=False,
+        domain=[('type', '=', 'reporting_customer')])
+    billing_customer_ids = fields.Many2many(
+        'res.partner', 'res_partner_shared_reporting_rel',
+        'reporting_customer_id', 'billing_customer_id',
+        string="Shared With Billing Customers", copy=False)
+    # Contact people shared with this company besides its own children (parent_id)
+    shared_contact_ids = fields.Many2many(
+        'res.partner', 'res_partner_shared_contact_rel',
+        'company_partner_id', 'contact_id',
+        string="Shared Contacts", copy=False,
+        domain=[('type', '=', 'contact'), ('is_company', '=', False)])
+    shared_company_ids = fields.Many2many(
+        'res.partner', 'res_partner_shared_contact_rel',
+        'contact_id', 'company_partner_id',
+        string="Also Contact Of", copy=False)
 
     @api.constrains('type', 'parent_id', 'name', 'email', 'phone')
     def _check_reporting_customer_contact(self):
@@ -68,7 +90,42 @@ class Customer(models.Model):
         if not name and self.type in self._complete_name_displayed_types:
             name = type_description[self.type]
         return name.strip()
-            
+
+    # Picking an existing person/Reporting Customer in "Contacts & Addresses" that already
+    # belongs to another company shares it with this one instead of moving it
+    def _split_shared_children(self, commands):
+        kept, shared = [], {'shared_contact_ids': [], 'shared_reporting_customer_ids': []}
+        for command in commands or []:
+            if command[0] in (Command.LINK, Command.UNLINK):
+                partner = self.browse(command[1])
+                if partner.parent_id and partner.parent_id != self:
+                    field = 'shared_reporting_customer_ids' if partner.type == 'reporting_customer' else 'shared_contact_ids'
+                    shared[field].append((command[0], partner.id))
+                    continue
+            kept.append(command)
+        return kept, {field: cmds for field, cmds in shared.items() if cmds}
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        shared_list = []
+        for vals in vals_list:
+            shared = {}
+            if vals.get('child_ids'):
+                vals['child_ids'], shared = self._split_shared_children(vals['child_ids'])
+            shared_list.append(shared)
+        partners = super().create(vals_list)
+        for partner, shared in zip(partners, shared_list):
+            if shared:
+                partner.write(shared)
+        return partners
+
+    def write(self, vals):
+        if vals.get('child_ids') and len(self) == 1:
+            vals = dict(vals)
+            vals['child_ids'], shared = self._split_shared_children(vals['child_ids'])
+            vals.update(shared)
+        return super().write(vals)
+
 
 class CustomerProject(models.Model):
     _name = 'res.partner.project'
@@ -314,7 +371,7 @@ class AccountMoveInherited(models.Model):
          for rec in self:
             if rec.partner_id:
                 contact_person_ids = self.env['res.partner'].search([('parent_id', '=', rec.partner_id.id),('type','=','contact')])
-                rec.contact_person_ids = contact_person_ids
+                rec.contact_person_ids = contact_person_ids | rec.partner_id.shared_contact_ids
                 site_address_ids = self.env['res.partner'].search([('parent_id', '=', rec.partner_id.id),('type','=','delivery')])
                 rec.site_address_ids = site_address_ids
             else:

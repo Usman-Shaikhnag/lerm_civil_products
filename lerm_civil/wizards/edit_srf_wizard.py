@@ -118,7 +118,7 @@ class SRFEditWizard(models.TransientModel):
     def compute_contact_ids(self):
         for record in self:
             contact_ids = self.env['res.partner'].search([('parent_id', '=', record.billing_customer.id),('type','=','contact')])
-            record.contact_contact_ids = contact_ids
+            record.contact_contact_ids = contact_ids | record.billing_customer.shared_contact_ids
 
     @api.depends('billing_customer')
     def compute_site_ids(self):
@@ -136,9 +136,9 @@ class SRFEditWizard(models.TransientModel):
 
     @api.onchange('billing_customer')
     def _onchange_billing_customer(self):
-        if self.billing_customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+        if self.billing_customer and self.customer != self.billing_customer and self.billing_customer not in (self.customer.parent_id | self.customer.billing_customer_ids):
             self.customer = self.billing_customer
-        elif self.customer and self.customer != self.billing_customer and self.customer.parent_id != self.billing_customer:
+        elif self.customer and self.customer != self.billing_customer and self.billing_customer not in (self.customer.parent_id | self.customer.billing_customer_ids):
             self.customer = False
 
     @api.onchange('customer')

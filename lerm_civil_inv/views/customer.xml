@@ -29,7 +29,7 @@
                         <field name="projects" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="project_name" />
-                                <field name="reporting_customer" domain="[('parent_id', '=', parent.id), ('type', '=', 'reporting_customer')]" />
+                                <field name="reporting_customer" domain="[('type', '=', 'reporting_customer'), '|', ('parent_id', '=', parent.id), ('billing_customer_ids', '=', parent.id)]" />
                                 <field name="client_name" />
                                 <field name="consultant_name" />
                                 <field name="closed_boolean" />
@@ -49,6 +49,36 @@
                             </tree>
                         </field>
                     </page>
+                </xpath>
+                <!-- "Add" opens a dialog to pick existing people/Reporting Customers ("New" still creates any type);
+                     ones that already belong to another company are shared (see _split_shared_children), not moved -->
+                <xpath expr="//field[@name='child_ids']" position="attributes">
+                    <attribute name="widget">many2many</attribute>
+                    <attribute name="domain">[('id', '!=', id), ('is_company', '=', False), ('type', 'in', ('contact', 'reporting_customer'))]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']" position="after">
+                    <separator string="Shared Contacts" invisible="not shared_contact_ids" />
+                    <field name="shared_contact_ids" nolabel="1" options="{'create': false}" invisible="not shared_contact_ids">
+                        <tree>
+                            <field name="name" />
+                            <field name="parent_id" string="Main Company" />
+                            <field name="function" />
+                            <field name="email" />
+                            <field name="phone" />
+                        </tree>
+                    </field>
+                    <separator string="Shared Reporting Customers" invisible="not shared_reporting_customer_ids" />
+                    <field name="shared_reporting_customer_ids" nolabel="1" options="{'create': false}" invisible="not shared_reporting_customer_ids">
+                        <tree>
+                            <field name="name" />
+                            <field name="parent_id" string="Main Billing Customer" />
+                            <field name="email" />
+                            <field name="phone" />
+                        </tree>
+                    </field>
+                </xpath>
+                <xpath expr="//field[@name='function'][not(ancestor::field)]" position="after">
+                    <field name="shared_company_ids" widget="many2many_tags" invisible="is_company or type != 'contact'" />
                 </xpath>
                 <xpath expr="//page[@name='internal_notes']" position="after">
                     <page string="Bank Details">
@@ -77,6 +107,15 @@
                 <xpath expr="//field[@name='child_ids']/form//field[@name='mobile']" position="after">
                     <field name="vat" string="GST"/>
                     <field name="pan_no" string="PAN No"/>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']/form//field[@name='type']" position="after">
+                    <field name="is_company" invisible="1"/>
+                    <div class="mt-2">
+                        <field name="company_type" widget="radio" options="{'horizontal': true}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']/form//field[@name='name']" position="after">
+                    <field name="contact_company_name"/>
                 </xpath>
             </field>
         </record>
