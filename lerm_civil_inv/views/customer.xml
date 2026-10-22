@@ -29,7 +29,7 @@
                         <field name="projects" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="project_name" />
-                                <field name="reporting_customer" domain="[('type', '=', 'reporting_customer'), '|', ('parent_id', '=', parent.id), ('billing_customer_ids', '=', parent.id)]" />
+                                <field name="reporting_customer" context="{'show_contact_company': True}" domain="[('type', '=', 'reporting_customer'), '|', ('parent_id', '=', parent.id), ('billing_customer_ids', '=', parent.id)]" />
                                 <field name="client_name" />
                                 <field name="consultant_name" />
                                 <field name="closed_boolean" />
