@@ -91,6 +91,14 @@ class Customer(models.Model):
             name = type_description[self.type]
         return name.strip()
 
+    # SRF shows the Reporting Customer as "Company Name, Contact Person"
+    @api.depends_context('show_contact_company')
+    def _compute_display_name(self):
+        super()._compute_display_name()
+        if self.env.context.get('show_contact_company'):
+            for partner in self.filtered(lambda p: p.contact_company_name and p.name):
+                partner.display_name = '%s, %s' % (partner.contact_company_name.strip(), partner.name.strip())
+
     # Picking an existing person/Reporting Customer in "Contacts & Addresses" that already
     # belongs to another company shares it with this one instead of moving it
     def _split_shared_children(self, commands):
