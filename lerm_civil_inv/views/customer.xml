@@ -50,11 +50,11 @@
                         </field>
                     </page>
                 </xpath>
-                <!-- "Add" opens a dialog to pick existing people/Reporting Customers ("New" still creates any type);
+                <!-- "Add" opens a dialog to pick from all existing contacts ("New" still creates any type);
                      ones that already belong to another company are shared (see _split_shared_children), not moved -->
                 <xpath expr="//field[@name='child_ids']" position="attributes">
                     <attribute name="widget">many2many</attribute>
-                    <attribute name="domain">[('id', '!=', id), ('is_company', '=', False), ('type', 'in', ('contact', 'reporting_customer'))]</attribute>
+                    <attribute name="domain">[('id', '!=', id)]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='child_ids']" position="after">
                     <separator string="Shared Contacts" invisible="not shared_contact_ids" />
