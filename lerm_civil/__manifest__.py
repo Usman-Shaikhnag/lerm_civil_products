@@ -11,6 +11,8 @@
     # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
     'views/sample_register.xml',
+    'views/sample.xml',
+    'views/report_wizards.xml',
     'views/lerm.xml',
     'views/res_config_settings.xml',
     'views/groups.xml',
@@ -20,7 +22,6 @@
     'views/edit_srf_header_wizard.xml',
     'views/parameter_master.xml',
     'views/datasheet_master.xml',
-    'views/sample.xml',
     'views/sample_range.xml',
     'views/eln.xml',
     'views/contractor.xml',
@@ -43,6 +44,9 @@
     'reports/general_report_template.xml',
     'reports/general_template.xml',
     'reports/mechanical_general_template.xml',
+    'reports/wizard_reports/sample_report.xml',
+    'reports/wizard_reports/ulr_report.xml',
+    'reports/wizard_reports/wizard_report_action.xml',
     'security/ir.model.access.csv'
    
 

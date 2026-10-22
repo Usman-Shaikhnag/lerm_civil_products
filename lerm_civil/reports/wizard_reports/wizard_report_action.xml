@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sample_wizard_report_action" model="ir.actions.report">
+        <field name="name">Customer Sample Report</field>
+        <field name="model">sample.reports.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">lerm_civil.sample_wizard_report_template</field>
+        <field name="report_file">lerm_civil.sample_wizard_report_template</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <record id="ulr_wizard_report_action" model="ir.actions.report">
+        <field name="name">ULR Report</field>
+        <field name="model">ulr.reports.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">lerm_civil.ulr_wizard_report_template</field>
+        <field name="report_file">lerm_civil.ulr_wizard_report_template</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>
