@@ -5453,10 +5453,10 @@ class SoilGSALINE(models.Model):
         self.ensure_one()
         
         # Boolean True save
-        # self.write({
-        #     'is_checked': True,
-        #     'end_date': fields.Date.context_today(self),  # current date auto fill
-        # })
+        self.write({
+            'is_checked': True,
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
         
         # Close inline editor → Save-like back
         return {'type': 'ir.actions.act_window_close'}
