@@ -43,7 +43,7 @@
                         <group style="width:50%">
                             <field name="srf_id" readonly="1"/>
                             <field name="billing_customer" domain="[('parent_id', '=', False)]" readonly="state == '2-confirm'"/>
-                            <field name="customer" required="1" options="{'no_create': True, 'no_open': True}" domain="['|', ('id', '=', billing_customer), '&amp;', ('parent_id', '=', billing_customer), ('type', '=', 'reporting_customer')] if billing_customer else [('parent_id', '=', False)]" readonly="state == '2-confirm'" />
+                            <field name="customer" required="1" options="{'no_create': True, 'no_open': True}" context="{'show_contact_company': True}" domain="['|', ('id', '=', billing_customer), '&amp;', ('type', '=', 'reporting_customer'), '|', ('parent_id', '=', billing_customer), ('billing_customer_ids', '=', billing_customer)] if billing_customer else [('parent_id', '=', False)]" readonly="state == '2-confirm'" />
                             <field name="site_address"/>
                             <field name="client_refrence" readonly="state == '2-confirm'"/>
                             <field name="letter_date"/>
@@ -130,7 +130,7 @@
             <tree default_order='create_date desc' >
                 <field name="srf_id"/>
                 <field name="srf_date" optional="show"/>
-                <field name="customer" optional="show"/>
+                <field name="customer" optional="show" context="{'show_contact_company': True}"/>
                 <field name="contact_person" optional="show"/>
                 <field name="billing_customer" optional="show"/>
                 <!-- <field name="name_work" optional="show"/> -->

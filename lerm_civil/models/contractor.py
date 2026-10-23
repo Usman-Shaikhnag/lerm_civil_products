@@ -21,7 +21,7 @@ class ContactsInherited(models.Model):
         ('employee', 'Employee'),
         ('supplier', 'Supplier'),
         ('customer', 'Customer'),
-    ], string='User Type', default='supplier')
+    ], string='User Type', default='customer')
 
 class ContractorLine(models.Model):
     _name = 'lerm.contractor.line'
