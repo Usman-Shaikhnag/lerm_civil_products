@@ -644,6 +644,12 @@ class SrfForm(models.Model):
                 % (pricelist.name, self.billing_customer.name,
                    ', '.join(missing.mapped('name'))))
 
+    def unlink(self):
+        if not self.env.su and not self.env.user.has_group('lerm_civil.kes_admin_access_group'):
+            if self.filtered(lambda r: r.state != '1-draft'):
+                raise ValidationError(_("Only a LERM Admin can delete a confirmed SRF."))
+        return super().unlink()
+
     def confirm_srf(self):
         import re
         import paramiko
@@ -657,49 +663,44 @@ class SrfForm(models.Model):
         for rec in self:
 
             # -----------------------
-            # SRF SEQUENCE (DATE RANGE BASED)
+            # SRF SEQUENCE (DAILY COUNT OF CONFIRMED SAMPLES)
             # -----------------------
+            seq_date = rec.srf_date or fields.Date.context_today(rec)
+
+            # serialise numbering per date so concurrent confirms don't clash
+            self.env.cr.execute(
+                "SELECT pg_advisory_xact_lock(%s)",
+                (int(seq_date.strftime('%Y%m%d')),)
+            )
+            self.env['lerm.srf.sample'].flush_model()
+
+            confirmed_count = self.env['lerm.srf.sample'].search_count([
+                ('status', '=', '2-confirmed'),
+                ('srf_id.srf_date', '=', seq_date),
+            ])
+
             srf_seq = self.env['ir.sequence'].search([
                 ('code', '=', 'lerm.srf.main.seq')
             ], limit=1)
+            kes_seq = self.env['ir.sequence'].search([
+                ('code', '=', 'lerm.kes.main.seq')
+            ], limit=1)
 
-            srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
-
-            srf_parts = srf_first.split('/')
-
-            base_prefix = srf_parts[0]
-            full_part = srf_parts[1]
-
-            date_part = full_part[:6]
-            first_number = int(full_part[-3:])
+            srf_prefix = srf_seq._get_prefix_suffix(date=seq_date)[0]
+            kes_prefix = kes_seq._get_prefix_suffix(date=seq_date)[0]
 
             total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
-            last_number = first_number + total_samples - 1
+            first_number = confirmed_count + 1
+            last_number = confirmed_count + total_samples
+            next_kes_number = first_number
 
-            # -----------------------
-            # UPDATE DATE RANGE (SRF)
-            # -----------------------
-            if srf_seq and srf_seq.use_date_range:
+            date_part = srf_prefix.split('/', 1)[-1]
 
-                today = fields.Date.today()
-
-                date_range = self.env['ir.sequence.date_range'].search([
-                    ('sequence_id', '=', srf_seq.id),
-                    ('date_from', '<=', today),
-                    ('date_to', '>=', today)
-                ], limit=1)
-
-                if date_range:
-                    date_range.sudo().write({
-                        'number_next_actual': last_number + 1
-                    })
-
-            modified_srf_id = "%s/%s%s-%s%s" % (
-                base_prefix,
+            modified_srf_id = "%s%s-%s%s" % (
+                srf_prefix,
+                str(first_number).zfill(srf_seq.padding),
                 date_part,
-                str(first_number).zfill(3),
-                date_part,
-                str(last_number).zfill(3)
+                str(last_number).zfill(srf_seq.padding)
             )
 
             # -----------------------
@@ -740,8 +741,12 @@ class SrfForm(models.Model):
 
                     sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
 
-                    # KES (already date_range based)
-                    kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    # KES (daily count)
+                    kes_no = "%s%s" % (
+                        kes_prefix,
+                        str(next_kes_number).zfill(kes_seq.padding)
+                    )
+                    next_kes_number += 1
                     last_kes_no = kes_no
 
                     # ULR
