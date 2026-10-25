@@ -368,51 +368,7 @@
                         </table>
 
 
-                    <!-- Drying Shrinkage -->
-
-                    <div invisible="not drying_shrinkage_visible">
-                        <h1 class="text-center">
-                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
-                            <field name="drying_shrinkage_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
-                        <field name="drying_shrinkage_ids" nolabel="1" >
-                        <tree editable="bottom">
-                        <field name="sample_no" width="200"/>
-                        <field name="sample_length" class="blue-input" decoration-info="sample_length != 0" width="200"/>
-                          <field name="length_l1" class="blue-input" decoration-info="length_l1 != 0" width="200"/>
-                          <field name="length_l2" class="blue-input" decoration-info="length_l2 != 0" width="200"/>
-                          <field name="drying_shrinkage" width="200" digits="[16,5]"/>
-                        </tree>
-                        </field>
-                    </div>
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not drying_shrinkage_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label class="text-bold" for="avg_drying_shrinkage">Avg. Drying Shrinkage</label></td>
-                                    <td><field name="avg_drying_shrinkage"/>
-                                    <span>  %</span></td>
-                                </tr>
-                                <tr>
-                            <td><label for="avg_drying_shrinkage_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="avg_drying_shrinkage_confirmity"
-                                        decoration-success="avg_drying_shrinkage_confirmity == 'pass'" 
-                                        decoration-danger="avg_drying_shrinkage_confirmity == 'fail'" 
-                                        readonly="1"/></td>
-                           </tr>
-                           <tr>
-                           <td><label for="avg_drying_shrinkage_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="avg_drying_shrinkage_nabl"
-                                        decoration-success="avg_drying_shrinkage_nabl == 'pass'" 
-                                        decoration-danger="avg_drying_shrinkage_nabl == 'fail'" 
-                                        readonly="1"/></td>
-                          </tr>
-                            </tbody>
-                        </table>
-
-
+                   
                     <!-- Moisture Movement -->
 
                     <div invisible="not moisture_movement_visible">
