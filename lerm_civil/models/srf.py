@@ -251,8 +251,10 @@ class SrfForm(models.Model):
     def _compute_name_work(self):
         for record in self:
             if record.customer:
+                # Only open projects assigned to this Reporting Customer in the Contacts project master
                 record.name_works = self.env['res.partner.project'].search([
-                    ('reporting_customer', '=', record.customer.id)
+                    ('reporting_customer', '=', record.customer.id),
+                    ('closed_boolean', '=', False)
                 ])
             else:
                 record.name_works = None
@@ -392,6 +394,9 @@ class SrfForm(models.Model):
             self.billing_customer = self.customer
         if self.name_work and self.name_work.reporting_customer != self.customer:
             self.name_work = False
+        # Pre-fill the project when the Reporting Customer has exactly one open project
+        if self.customer and not self.name_work and len(self.name_works) == 1:
+            self.name_work = self.name_works
 
 
 
