@@ -40,6 +40,10 @@ class SsPipe(models.Model):
     weight = fields.Float(string="Weight, in kg",digits=(10, 2))
     weight_per_meter = fields.Float(string="Weight per meter, kg/m",compute="_compute_weight_per_meter",store=True)
     area = fields.Float(string="AREA mm²",compute="_compute_area",store=True)
+    test_method = fields.Selection([
+        ('is_1608', 'IS 1608 PART 1 - 2022'),
+        ('astm_a370', 'ASTM A370 - 2024'),
+    ], string="Test Method", default='is_1608', store=True)
     gauge_length1 = fields.Integer(string="Gauge Length mm",compute="_compute_gauge_length",store=True)
     final_length = fields.Float(string="FINAL LENGTH mm")
     # proof_2_percent = fields.Float(string="0.2% proof Load / Yield Load, KN")
@@ -54,11 +58,15 @@ class SsPipe(models.Model):
     weight_per_meter = fields.Float(string="Weight per meter",compute="_compute_weight_per_meter",store=True)
     variation = fields.Float(string="Variation")
 
-    requirement_utl = fields.Float(string="Requirement",compute="_compute_requirement_utl",store=True)
-    requirement_yield = fields.Float(string="Requirement",compute="_compute_requirement_yield",store=True)
+    requirement_utl = fields.Float(string="Requirement",compute="_compute_requirement_utl",inverse="_inverse_requirement_utl",store=True)
+    requirement_yield = fields.Float(string="Requirement",compute="_compute_requirement_yield",inverse="_inverse_requirement_yield",store=True)
     requirement_ts_ys = fields.Float(string="Requirement",compute="_compute_requirement_ts_ys",store=True)
-    requirement_elongation = fields.Float(string="Requirement",compute="_compute_requirement_elongation",store=True)
+    requirement_elongation = fields.Float(string="Requirement",compute="_compute_requirement_elongation",inverse="_inverse_requirement_elongation",store=True)
     requirement_weight_per_meter = fields.Float(string="Requirement",compute="_compute_requirement_weight_per_meter",digits=(16, 4),store=True)
+
+    spec_yield = fields.Char(string="Specification", compute="_compute_spec_yield")
+    spec_utl = fields.Char(string="Specification", compute="_compute_spec_utl")
+    spec_elongation = fields.Char(string="Specification", compute="_compute_spec_elongation")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     tests = fields.Many2many("mechanical.tmt.test",string="Tests")
@@ -385,27 +393,41 @@ class SsPipe(models.Model):
 
     def _parameter_line(self, internal_id):
         self.ensure_one()
-        lines = self.env['lerm.parameter.master.table']
+        empty = self.env['lerm.parameter.master.table']
         parameter = self.env['lerm.parameter.master'].sudo().search([('internal_id','=',internal_id)], limit=1)
         if not parameter:
-            return lines
-        if parameter.fetch_by_grade and not self.grade:
-            return lines
-        if parameter.fetch_by_size and not self.size:
-            return lines
-        domain = [('parameter_id','=',parameter.id)]
-        if parameter.fetch_by_grade:
-            domain += [('grade','=',self.grade.id)]
-        if parameter.fetch_by_size:
-            domain += [('size','=',self.size.id)]
-        lines = self.env['lerm.parameter.master.table'].sudo().search(domain)
-        if self.eln_ref.material:
-            lines = lines.filtered(lambda line: not line.material or line.material.id == self.eln_ref.material.id)
-        return lines[:1]
+            return empty
+        base_domain = [('parameter_id','=',parameter.id)]
+        material = self.eln_ref.material
 
-    @api.depends('eln_ref','grade','size')
+        # Try most-specific match first, progressively relax grade/size constraints
+        for use_grade, use_size in [
+            (parameter.fetch_by_grade, parameter.fetch_by_size),
+            (False, parameter.fetch_by_size),
+            (parameter.fetch_by_grade, False),
+            (False, False),
+        ]:
+            domain = list(base_domain)
+            if use_grade:
+                if not self.grade:
+                    continue
+                domain += [('grade','=',self.grade.id)]
+            if use_size:
+                if not self.size:
+                    continue
+                domain += [('size','=',self.size.id)]
+            lines = self.env['lerm.parameter.master.table'].sudo().search(domain)
+            if material:
+                lines = lines.filtered(lambda l: not l.material or l.material.id == material.id)
+            if lines:
+                return lines[:1]
+        return empty
+
+    @api.depends('eln_ref','grade','size','test_method')
     def _compute_requirement_utl(self):
         for record in self:
+            if record.test_method == 'astm_a370':
+                continue
             record.requirement_utl = record._parameter_line('4088c109-b222-45b9-b558-e912766e8c9b').req_min or 0.0
 
 
@@ -457,9 +479,11 @@ class SsPipe(models.Model):
             else:
                 record.elongation_nabl = 'fail'
 
-    @api.depends('eln_ref','grade','size')
+    @api.depends('eln_ref','grade','size','test_method')
     def _compute_requirement_elongation(self):
         for record in self:
+            if record.test_method == 'astm_a370':
+                continue
             record.requirement_elongation = record._parameter_line('4ffc84fb-37c0-472d-9b10-ca48b6a3406c').req_min or 0.0
 
 
@@ -511,10 +535,54 @@ class SsPipe(models.Model):
                 record.yield_nabl = 'fail'
 
 
-    @api.depends('eln_ref','grade','size')
+    @api.depends('eln_ref','grade','size','test_method')
     def _compute_requirement_yield(self):
         for record in self:
+            if record.test_method == 'astm_a370':
+                continue
             record.requirement_yield = record._parameter_line('1c309c9f-dfb7-4c91-b54c-12ce5db48d74').req_min or 0.0
+
+    def _inverse_requirement_yield(self):
+        pass  # value already written to the store column by the ORM
+
+    def _inverse_requirement_utl(self):
+        pass  # value already written to the store column by the ORM
+
+    def _inverse_requirement_elongation(self):
+        pass  # value already written to the store column by the ORM
+
+    def _spec_str(self, internal_id):
+        """Return permissable_limit string, or req_min-req_max range, for IS 1608 display."""
+        self.ensure_one()
+        if self.test_method == 'astm_a370':
+            return ''
+        line = self._parameter_line(internal_id)
+        if not line:
+            return ''
+        limit = (line.permissable_limit or '').strip()
+        if limit and limit != '--':
+            return limit
+        parts = []
+        if line.req_min:
+            parts.append('{:.4f}'.format(line.req_min).rstrip('0').rstrip('.'))
+        if line.req_max:
+            parts.append('{:.4f}'.format(line.req_max).rstrip('0').rstrip('.'))
+        return ' - '.join(parts)
+
+    @api.depends('eln_ref', 'grade', 'size', 'test_method')
+    def _compute_spec_yield(self):
+        for record in self:
+            record.spec_yield = record._spec_str('1c309c9f-dfb7-4c91-b54c-12ce5db48d74')
+
+    @api.depends('eln_ref', 'grade', 'size', 'test_method')
+    def _compute_spec_utl(self):
+        for record in self:
+            record.spec_utl = record._spec_str('4088c109-b222-45b9-b558-e912766e8c9b')
+
+    @api.depends('eln_ref', 'grade', 'size', 'test_method')
+    def _compute_spec_elongation(self):
+        for record in self:
+            record.spec_elongation = record._spec_str('4ffc84fb-37c0-472d-9b10-ca48b6a3406c')
         
     @api.depends('ts_ys_ratio','eln_ref','grade')
     def _compute_ts_ys_conformity(self):
@@ -606,22 +674,41 @@ class SsPipe(models.Model):
         self.area = (self.width or 0.0) * (self.thickness or 0.0)
 
       
-    @api.depends('area')
+    @api.depends('area', 'test_method')
     def _compute_gauge_length(self):
         for record in self:
-            if not record.area or record.area <= 0:
-                record.gauge_length1 = 0
-                continue
-            gauge_length1 = math.sqrt(record.area) * 5.65
-            if gauge_length1 - int(gauge_length1) >= 0.5:
-                rounded_gauge_length1 = math.ceil(gauge_length1)
+            if record.test_method == 'astm_a370':
+                record.gauge_length1 = 50
             else:
-                rounded_gauge_length1 = math.floor(gauge_length1)
-            record.gauge_length1 = int(rounded_gauge_length1)
+                if not record.area or record.area <= 0:
+                    record.gauge_length1 = 0
+                    continue
+                gauge_length1 = math.sqrt(record.area) * 5.65
+                if gauge_length1 - int(gauge_length1) >= 0.5:
+                    rounded_gauge_length1 = math.ceil(gauge_length1)
+                else:
+                    rounded_gauge_length1 = math.floor(gauge_length1)
+                record.gauge_length1 = int(rounded_gauge_length1)
 
     @api.onchange('area', 'width', 'thickness')
     def _onchange_area_computation(self):
         self.area = (self.width or 0.0) * (self.thickness or 0.0)
+
+    @api.onchange('test_method')
+    def _onchange_test_method(self):
+        if self.test_method == 'astm_a370':
+            self.gauge_length1 = 50
+        else:
+            area = (self.width or 0.0) * (self.thickness or 0.0)
+            if area > 0:
+                gl = math.sqrt(area) * 5.65
+                self.gauge_length1 = math.ceil(gl) if gl - int(gl) >= 0.5 else math.floor(gl)
+            else:
+                self.gauge_length1 = 0
+            # Switching back to IS 1608: recompute requirements from parameter master
+            self.requirement_yield = self._parameter_line('1c309c9f-dfb7-4c91-b54c-12ce5db48d74').req_min or 0.0
+            self.requirement_utl = self._parameter_line('4088c109-b222-45b9-b558-e912766e8c9b').req_min or 0.0
+            self.requirement_elongation = self._parameter_line('4ffc84fb-37c0-472d-9b10-ca48b6a3406c').req_min or 0.0
 
 
             
