@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import logging
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
@@ -331,6 +331,12 @@ class LermSampleForm(models.Model):
                         record.product_or_form_based = False
             else:
                 record.product_or_form_based = False
+
+    def unlink(self):
+        if not self.env.su and not self.env.user.has_group('lerm_civil.kes_admin_access_group'):
+            if self.filtered(lambda r: r.status == '2-confirmed'):
+                raise ValidationError(_("Only a LERM Admin can delete a confirmed sample."))
+        return super().unlink()
 
     @api.depends('material_id')
     def compute_material_id_lab_name(self):
