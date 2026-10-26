@@ -252,65 +252,64 @@ class LermSampleForm(models.Model):
 
 
     def edit_sample(self):
-        
-
-        # samples = self.env["lerm.srf.sample"].search([("srf_id","=",self.id)])
+        self.ensure_one()
         action = self.env.ref('lerm_civil.srf_sample_wizard_form')
+        # Create the wizard record up front and open it by res_id so the wizard's
+        # onchange methods (material -> parameters/casting, parameters -> due date,
+        # ...) do not run and overwrite the sample's existing values.
+        material = self.material_id
+        wizard = self.env['create.srf.sample.wizard'].create({
+            'edit_mode': True,
+            'is_update': True,
+            'sample': self.id,
+            'srf_id': self.srf_id.id,
+            'parameters': [(6, 0, self.parameters.ids)],
+            'discipline_id': self.discipline_id.id,
+            'lab_no_value': self.lab_no_value,
+            'group_id': self.group_id.id,
+            'material_id': self.material_id.id,
+            'brand': self.brand,
+            'size_id': self.size_id.id,
+            'grade_id': self.grade_id.id,
+            'sample_qty': self.sample_qty,
+            'received_by_id': self.received_by_id.id,
+            'sample_received_date': self.sample_received_date,
+            'sample_condition': self.sample_condition,
+            'sample_reject_reason': self.sample_reject_reason,
+            'location_name': self.location_name.id,
+            'lab_location': self.lab_location.id,
+            'department_id': self.department_id,
+            'has_witness': self.has_witness,
+            'witness': self.witness,
+            'scope': self.scope,
+            'sample_description': self.sample_description,
+            'client_sample_id': self.client_sample_id,
+            'days_casting': self.days_casting,
+            'casting': self.casting,
+            'date_casting': self.date_casting,
+            'customer': self.customer_id.id,
+            'product_alias': self.product_alias.id,
+            'conformity': self.conformity,
+            'product_name': self.product_name.id,
+            'volume': self.volume,
+            'report_due_date': self.report_due_date,
+            # helper fields that are otherwise only filled by onchange (domains)
+            'group_ids': [(6, 0, self.env['lerm_civil.group'].search([('discipline', '=', self.discipline_id.id)]).ids)],
+            'material_ids': [(6, 0, self.env['product.template'].search([('discipline', '=', self.discipline_id.id), ('group', '=', self.group_id.id)]).ids)],
+            'grade_ids': [(6, 0, material.grade_table.ids)],
+            'size_ids': [(6, 0, material.size_table.ids)],
+        })
         return {
             'name': "Edit Sample",
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'create.srf.sample.wizard',
+            'res_id': wizard.id,
             'view_id': action.id,
             'target': 'new',
-            'context':{
-                'default_edit_mode': True, 
-                'default_sample': self.id,
-                'default_is_update':True,
-                'default_parameters':self.parameters.ids,
-                'default_discipline_id': self.discipline_id.id,
-                'default_group_id': self.group_id.id,
-                'default_material_id': self.material_id.id,
-                'default_brand': self.brand,
-                'default_size_id': self.size_id.id,
-                'default_grade_id': self.grade_id.id,
-                'default_sample_qty': self.sample_qty,
-                'default_received_by_id': self.received_by_id.id,
-                'default_sample_received_date':self.sample_received_date,
-                'default_sample_condition':self.sample_condition,
-
-                'default_sample_reject_reason': self.sample_reject_reason,
-                'default_location': self.location,
-                'default_received_by_id': self.received_by_id.id,
-                'default_sample_received_date':self.sample_received_date,
-
-                'default_witness':self.witness,
-                'default_scope':self.scope,
-                'default_sample_description':self.sample_description,
-                'default_client_sample_id':self.client_sample_id,
-                'default_days_casting':self.days_casting,
-                'default_casting':self.casting,
-
-
-                'default_date_casting':self.date_casting,
-                'default_customer_id':self.customer_id.id,
-                # 'default_product_aliases':self.product_aliases.ids,
-
-                'default_product_alias':self.product_alias.id,
-                'default_conformity':self.conformity,
-                'default_product_name':self.product_name.id,
-                # 'default_pricelist':self.pricelist.id,
-                'default_main_name':self.main_name,
-                'default_price':self.price,
-                'default_report_due_date': self.report_due_date,
-                'default_lab_location': self.lab_location.id,
-                'default_location_name': self.location_name.id,
-                }
-            }
-
-    
-
+            'context': dict(self.env.context, active_id=self.id, active_model=self._name),
+        }
 
     @api.depends('state')
     def compute_form_product_based(self):
