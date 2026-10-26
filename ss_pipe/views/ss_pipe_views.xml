@@ -84,6 +84,15 @@
                              <field name="elongation_visible" invisible="1"/>
                              <field name="flattening_test_visible" invisible="1"/>
                              <field name="fracture_visible" invisible="1"/>
+                             
+                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-bottom:0">
+                                 <tbody>
+                                     <tr>
+                                         <td><span>Test Method</span></td>
+                                         <td><field name="test_method"/></td>
+                                     </tr>
+                                 </tbody>
+                             </table>
                              <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                  <tbody>
                                      <tr>
@@ -144,61 +153,94 @@
 
                                  </tbody>
                              </table>
-                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <thead>
+                                    <tr>
+                                        <th><span>Requirement Parameter</span></th>
+                                        <th><span>Requirement Value</span></th>
+                                        <th><span>NABL</span></th>
+                                        <th><span>Conformity</span></th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     <tr>
-                                        <!--td><label for="requirement_yield"></label></td>
-                                        <td><field name="requirement_yield" string="Proof Yield Stress Requirement" readonly="1"/></td!-->
-                                        <td><label for="yield_nabl"></label></td>
+                                        <td><span>0.2% Proof Load / Yield Stress (N/mm²)</span></td>
+                                        <td>
+                                            <field name="spec_yield"
+                                                string="Yield Stress Specification"
+                                                invisible="test_method == 'astm_a370'"
+                                                readonly="1"/>
+                                            <field name="requirement_yield"
+                                                string="Yield Stress Requirement (ASTM)"
+                                                invisible="test_method != 'astm_a370'"/>
+                                        </td>
                                         <td><field name="yield_nabl" string="Proof Yield Stress NABL"
                                             decoration-success="yield_nabl == 'pass'"
                                             decoration-danger="yield_nabl == 'fail'"
                                             readonly="1"/></td>
-                                        <td><label for="yield_conformity"></label></td>
-                                        <td><field name="yield_conformity" string="Proof Yield Stress Confirmity"
-                                                decoration-success="yield_conformity == 'pass'"
-                                                decoration-danger="yield_conformity == 'fail'"
-                                                readonly="1"/></td>
+                                        <td><field name="yield_conformity" string="Proof Yield Stress Conformity"
+                                            decoration-success="yield_conformity == 'pass'"
+                                            decoration-danger="yield_conformity == 'fail'"
+                                            readonly="1"/></td>
                                     </tr>
                                     <tr>
-                                        <!--td><label for="requirement_utl"></label></td>
-                                        <td><field name="requirement_utl" string="UTS Requirement" readonly="1"/></td!-->
-                                        <td><label for="uts_nabl"></label></td>
+                                        <td><span>Ultimate Tensile Strength (N/mm²)</span></td>
                                         <td>
-                                            <field name="uts_nabl" string="UTS NABL"
-                                                decoration-success="uts_nabl == 'pass'"
-                                                decoration-danger="uts_nabl == 'fail'"
+                                            <field name="spec_utl"
+                                                string="UTS Specification"
+                                                invisible="test_method == 'astm_a370'"
                                                 readonly="1"/>
+                                            <field name="requirement_utl"
+                                                string="UTS Requirement (ASTM)"
+                                                invisible="test_method != 'astm_a370'"/>
                                         </td>
-                                        <td><label for="uts_conformity"></label></td>
-                                        <td>
-                                            <field name="uts_conformity" string="UTS Confirmity"
-                                                decoration-success="uts_conformity == 'pass'"
-                                                decoration-danger="uts_conformity == 'fail'"
-                                                readonly="1"/>
-                                        </td>
+                                        <td><field name="uts_nabl" string="UTS NABL"
+                                            decoration-success="uts_nabl == 'pass'"
+                                            decoration-danger="uts_nabl == 'fail'"
+                                            readonly="1"/></td>
+                                        <td><field name="uts_conformity" string="UTS Conformity"
+                                            decoration-success="uts_conformity == 'pass'"
+                                            decoration-danger="uts_conformity == 'fail'"
+                                            readonly="1"/></td>
                                     </tr>
-
                                     <tr>
-                                        <!--td><label for="requirement_elongation"></label></td>
-                                        <td><field name="requirement_elongation" string="Elongation Requirement" readonly="1"/></td!-->
-                                        <td><label for="elongation_nabl"></label></td>
+                                        <td><span>Elongation (%)</span></td>
                                         <td>
-                                            <field name="elongation_nabl" string="Elongation NABL"
-                                                decoration-success="elongation_nabl == 'pass'"
-                                                decoration-danger="elongation_nabl == 'fail'"
+                                            <field name="spec_elongation"
+                                                string="Elongation Specification"
+                                                invisible="test_method == 'astm_a370'"
                                                 readonly="1"/>
+                                            <field name="requirement_elongation"
+                                                string="Elongation Requirement (ASTM)"
+                                                invisible="test_method != 'astm_a370'"/>
                                         </td>
-                                        <td><label for="elongation_conformity"></label></td>
-                                        <td>
-                                            <field name="elongation_conformity" string="Elongation Confirmity"
-                                                decoration-success="elongation_conformity == 'pass'"
-                                                decoration-danger="elongation_conformity == 'fail'"
-                                                readonly="1"/>
-                                        </td>
+                                        <td><field name="elongation_nabl" string="Elongation NABL"
+                                            decoration-success="elongation_nabl == 'pass'"
+                                            decoration-danger="elongation_nabl == 'fail'"
+                                            readonly="1"/></td>
+                                        <td><field name="elongation_conformity" string="Elongation Conformity"
+                                            decoration-success="elongation_conformity == 'pass'"
+                                            decoration-danger="elongation_conformity == 'fail'"
+                                            readonly="1"/></td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
                           
 
                         
