@@ -475,6 +475,7 @@ class ELN(models.Model):
                 'parameter': result.parameter.id,
                 'result': result.result,
                 'unit':result.unit.id,
+                'specification_permissible_limit':result.specification_permissible_limit,
                 'specification':result.specification,
                 'test_method':result.test_method.id
             })
@@ -548,6 +549,7 @@ class ELN(models.Model):
                 'parameter': result.parameter.id,
                 'result': result.result,
                 'unit':result.unit.id,
+                'specification_permissible_limit':result.specification_permissible_limit,
                 'specification':result.specification,
                 'test_method':result.test_method.id 
             })
