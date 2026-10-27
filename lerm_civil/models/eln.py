@@ -475,6 +475,7 @@ class ELN(models.Model):
                 'parameter': result.parameter.id,
                 'result': result.result,
                 'unit':result.unit.id,
+                'specification_permissible_limit':result.specification_permissible_limit,
                 'specification':result.specification,
                 'test_method':result.test_method.id
             })
@@ -548,6 +549,7 @@ class ELN(models.Model):
                 'parameter': result.parameter.id,
                 'result': result.result,
                 'unit':result.unit.id,
+                'specification_permissible_limit':result.specification_permissible_limit,
                 'specification':result.specification,
                 'test_method':result.test_method.id 
             })
@@ -1076,7 +1078,7 @@ class ELNParametersResult(models.Model):
     context_data = fields.Text("Context Data")
     calculated = fields.Boolean("Calculated")
     calculation_type = fields.Selection([('parameter_based', 'Parameter Based'), ('form_based', 'Form Based')],compute='_compute_calculation_type',string='Calculation Type')
-    test_method = fields.Many2one('lerm_civil.test_method',string="Specification")
+    test_method = fields.Many2one('lerm_civil.test_method',string="Test Method")
     specification_permissible_limit = fields.Text(string="Specification",compute='_compute_specification')
     specification = fields.Text(string="Test Method", compute='_compute_specification')
     technician = fields.Many2one('res.users', string='Technician', index=True, ondelete='set null')
