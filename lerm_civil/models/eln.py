@@ -1079,8 +1079,8 @@ class ELNParametersResult(models.Model):
     calculated = fields.Boolean("Calculated")
     calculation_type = fields.Selection([('parameter_based', 'Parameter Based'), ('form_based', 'Form Based')],compute='_compute_calculation_type',string='Calculation Type')
     test_method = fields.Many2one('lerm_civil.test_method',string="Test Method")
-    specification_permissible_limit = fields.Text(string="Permissible Limit",compute='_compute_specification')
-    specification = fields.Text(string="Specification", compute='_compute_specification')
+    specification_permissible_limit = fields.Text(string="Specification",compute='_compute_specification')
+    specification = fields.Text(string="Test Method", compute='_compute_specification')
     technician = fields.Many2one('res.users', string='Technician', index=True, ondelete='set null')
 
     nabl_status = fields.Selection([

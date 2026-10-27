@@ -876,8 +876,8 @@ class SampleParametersResult(models.Model):
     parameter = fields.Many2one('lerm.parameter.master',string="Parameter")
     unit = fields.Many2one('uom.uom',string="Unit")
     test_method = fields.Many2one('lerm_civil.test_method',string="Test Method")
-    specification_permissible_limit = fields.Text(string="Permissible Limit")
-    specification = fields.Text(string="Specification")
+    specification_permissible_limit = fields.Text(string="Specification")
+    specification = fields.Text(string="Test Method")
     verified = fields.Boolean("Verified")
     result = fields.Float(string="Result",digits=(12, 5))
 
