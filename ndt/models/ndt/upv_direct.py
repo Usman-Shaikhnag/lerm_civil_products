@@ -29,6 +29,14 @@ class UpvDirct(models.Model):
     # notes = fields.One2many('ndt.upv.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    surface_condition = fields.Char("Surface Condition")
+    make = fields.Char("Make")
+    model = fields.Char("Model")
+
+    description_work = fields.Char("Description Of Work")
+    no_points = fields.Char("No.Of. Points")
+    sample_satus = fields.Char("Sample Status")
+
     notes_id = fields.One2many('ndt.upv.direct.notes', 'parent_id', string="Notes")
     
     @api.model
@@ -175,7 +183,7 @@ class UpvDirectLine(models.Model):
                 
                 # 2. ACTUAL VELOCITY [Km/s] -> 415,647.92 / 100000 = 4.16
                 # Tumchya accurate formatsathi ithe 100000 ne divide kele ahe
-                v_km_s = v_m_s / 10000
+                v_km_s = v_m_s / 1000
                 record.actual_velocity = v_km_s
                 
                 # 3. CORRECTED VELOCITY [Km/s] -> 4.16 + 0.5 = 4.66

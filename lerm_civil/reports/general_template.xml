@@ -331,4 +331,265 @@
 			</t>
 		</t>
 	</template>
+
+
+
+
+
+	<template id="upv_combined_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    <span t-field="data.parameter_id.parameter.parameter_name"/>
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr  cols="12">
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.grade_id.grade"/>
+								</td>
+								<td colspan="6">Instrument :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.instrument.name"/>
+								</td>
+							</tr>
+							<t t-foreach="data" t-as="formdata" t-if="extradata and len(extradata) &gt; 0">
+								<tr cols="12">
+									<td colspan="6" t-foreach="extradata" t-as="result">
+										<span>
+											<t t-esc="result[1]"/>
+										</span> : 
+										<![CDATA[&nbsp;]]>
+										<span>
+											<t t-esc="formdata[result[0]]" />
+										</span>
+									</td>
+								</tr>
+							</t>
+							<tr>
+								<td>Test Method :	
+									<span>
+										<t t-foreach="o.parameters_result.parameter[0].parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == o.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</span>
+								</td>
+							</tr>
+
+							</table>
+
+
+
+							<div style="margin-top:20px">
+                        <div style="text-align:center;font-size:15px">
+                            <b>TEST METHOD : UPV DIRECT</b>
+                        </div>
+					
+					  <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+                                <td colspan="2" style="text-align: center;"><b>GRID</b></td>
+                                <td colspan="1" style="text-align: center;"><b>PATH</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>VELOCITY [m/s]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+
+								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines1" t-as="r">
+                                <td colspan="1" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['level_id']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['grid']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['path']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['dist']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['time']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['velocity']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['actual_velocity']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['quality']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+						</div>
+
+
+						<div style="margin-top:10px; page-break-before: always;" >
+                        <div style="text-align:center;font-size:15px">
+                            <b>TEST METHOD : UPV IN-DIRECT</b>
+                        </div>
+					
+					  <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DATE OF CASTING</b></td>
+                                <td colspan="1" style="text-align: center;"><b>PATH</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>SLOPE</b></td>
+                                <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+
+								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines2" t-as="r">
+                                <td colspan="1" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['level_id']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['casting_date']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['path']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['dist']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['time']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['slope']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['actual_velocity']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['quality']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+						</div>
+
+						
+							
+							
+
+
+					
+					
+					<div class="authorizeRowDataSheet">
+						<div>
+							
+							<div>
+								<b>
+									Tested By
+								</b>
+							</div>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.testedby_signature_required">
+										<div t-if="eln.sample_id.filled_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+							<div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						<div style="margin-left:600px">
+							<div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+					</div>
+				
+
+				</div>
+				</div>
+			</t>
+		</t>
+	</template>
 </odoo>

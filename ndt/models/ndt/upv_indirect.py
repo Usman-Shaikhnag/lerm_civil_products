@@ -39,6 +39,14 @@ class UpvInDirct(models.Model):
     # notes = fields.One2many('ndt.upv.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    surface_condition = fields.Char("Surface Condition")
+    make = fields.Char("Make")
+    model = fields.Char("Model")
+
+    description_work = fields.Char("Description Of Work")
+    no_points = fields.Char("No.Of. Points")
+    sample_satus = fields.Char("Sample Status")
+
     notes_id = fields.One2many('ndt.upv.indirect.notes', 'parent_id', string="Notes")
     
     @api.model

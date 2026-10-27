@@ -11,7 +11,7 @@ class UpvCombined(models.Model):
 
 
     eln_ref = fields.Many2one("lerm.eln")
-    name = fields.Char("Name",default="UPV DIRECT")
+    name = fields.Char("Name",default="UPV COMBINED")
     
     structure = fields.Char("Approximate Age of structure  Years")
     temperature = fields.Float("Concrete Temp °C",required=True)
@@ -21,6 +21,15 @@ class UpvCombined(models.Model):
     grade_id = fields.Many2one('lerm.grade.line',compute="_compute_grade", string="Grade")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
+    surface_condition = fields.Char("Surface Condition")
+    make = fields.Char("Make")
+    model = fields.Char("Model")
+
+    description_work = fields.Char("Description Of Work")
+    no_points = fields.Char("No.Of. Points")
+    sample_satus = fields.Char("Sample Status")
+
+    name1 = fields.Char("Name",default="UPV DIRECT")
     child_lines1 = fields.One2many('ndt.upv.combined.line1', 'parent_id', string="Parameter")
     
     average = fields.Float("Average km/s", compute="_compute_velocity_stats",digits=(16,2))
@@ -50,6 +59,7 @@ class UpvCombined(models.Model):
                 record.maximum = 0.0
 
 
+    name2 = fields.Char("Name",default="UPV IN-DIRECT")
     child_lines2 = fields.One2many('ndt.upv.combined.line2', 'parent_id', string="Parameter")
     # average = fields.Float("Average km/s",digits=(16,2))
     # minimum = fields.Float("Min km/s",digits=(16,2))

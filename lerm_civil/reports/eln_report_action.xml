@@ -45,6 +45,31 @@
     <field name="binding_type">report</field>
 </record>
 
+
+
+
+<record id="upv_combined_datasheet_action" model="ir.actions.report">
+    <field name="name">UPV COMBINED DATASHEET</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.upv_combined_datasheet</field>
+    <field name="report_file">lerm_civil.upv_combined_datasheet</field>
+    <!--   <field name="binding_model_id" ref="model_lerm_eln"/>   -->
+    <field name="binding_model_id" eval="False"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="upv_combined_report_unique" model="ir.actions.report">
+    <field name="name">UPV COMBIEND REPORT</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.upv_combined_report</field>
+    <field name="report_file">lerm_civil.upv_combined_report</field>
+    <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+    <field name="binding_model_id" eval="False"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="design_mix_datasheet_action" model="ir.actions.report">
     <field name="name">Design Mix DataSheet</field>
     <field name="model">lerm.eln</field>

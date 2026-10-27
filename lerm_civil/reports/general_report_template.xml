@@ -142,10 +142,15 @@
 							</tr>
 						</table> -->
 						<table style="margin-top:20px;">
-							<tr>
-								<td colspan="12">Customer Party Name :
+							 <tr style="height:10px;">
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
@@ -153,129 +158,264 @@
 									<span t-field="o.srf_id.customer.state_id"/>
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 60px;"/>
+									</td>
+								
 							</tr>
-							<tr>
-								<!-- <td colspan="12">Project / Site Address :
+							<tr >
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
-									<!-- <span t-field="o.srf_id.name_work"/> -->
-								</td>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
 							</tr>
-							<tr>
-								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
-							</tr>
-						</table>
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Size :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td colspan="6">Grade :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">Consultant Name :
-									<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Client Name :
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+
+						
+
+							<tr>
+								
+
+								<td style="width:20%;">Letter No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
 								</td>
-								<td colspan="6">Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
+								
+                            <tr>
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+
+
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
 								</td>
 							</tr>
 
+							
+							
+
+
+							
+
 							<tr>
-								<td colspan="12">Material :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
+								
+								<td>Test Start Date  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td>Test Completion Date  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+
+							
+
+							<tr>
+
+								<td>Sub Group :-</td>
+								<td>
+								  <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
 								</td>
 								
+								<td>No. Of  Points :-</td>
+								<td>
+									   <t t-if="data.no_points">
+											<span t-field="data.no_points"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
 							</tr>
+
 							<tr>
-								<td colspan="12">Test Name :
+
+							<td>Surface Condition :-</td>
+								<td>
+								  <t t-if="data.surface_condition">
+											<span t-field="data.surface_condition"/>
+										</t>
+								</td>
+
+								<td>Make :-</td>
+								<td>
+								  <t t-if="data.make">
+											<span t-field="data.make"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+							<tr>
+
+							<td>Model :-</td>
+								<td>
+								  <t t-if="data.model">
+											<span t-field="data.model"/>
+										</t>
+								</td>
+
+								<td>Temperature :-</td>
+								<td>
+								  <t t-if="data.temperature">
+											<span t-field="data.temperature"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+							
+
+							
+							
+
+							<tr >
+								<td colspan="1" >Work Description:</td>
+								  <td colspan="3" >
+									<![CDATA[&nbsp;]]>
+									<t t-if="data.description_work">
+											<span t-field="data.description_work"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+							</tr>
+
+
+
+							<tr>
+
+							<td>Discipline :-</td>
+								<td>
+								 <span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td>Group :-</td>
+								<td>
+							<span t-field="o.group.group"/>
+								</td>
+								
+							
+							</tr>
+
+							
+
+							
+						
+							
+							<tr>
+								<td colspan="1">Name Of Test :</td>
+								<td colspan="3">
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.parameters_result.parameter[0].parameter_name"/>
 								</td>
 							</tr>
-                            <tr>
-								<td colspan="6">Instrument :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.instrument.name"/>
+
+
+                           <tr>
+							<td>Instrument :-</td>
+								<td>
+								  <t t-if="o.instrument.name">
+											<span t-field="o.instrument.name"/>
+										</t>
 								</td>
-								<td colspan="3">Temperature :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.temperature"/>°C
+
+								<td>Structure Age :-</td>
+								<td>
+								  <t t-if="data.structure">
+											<span t-field="data.structure"/>
+										</t>
 								</td>
-								<td colspan="3">Structure Age :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.structure"/>
-								</td>
+								
+							
 							</tr>
+
+
+
+							<tr>
+							<td>Grade :-</td>
+								<td>
+								  <t t-if="o.grade_id.grade">
+											<span t-field="o.grade_id.grade"/>
+										</t>
+								</td>
+
+								<td>TEST METHOD :-</td>
+								<td>
+								  <t t-if="o.material.test_method_adopted">
+										<span t-field="o.material.test_method_adopted"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+                          
+
+
+						
+
+
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
 						</table>
 					</div>
-					<div style="margin-top:20px;">
-						<u>Test Method</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
-						<!-- <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/> -->
-						<span>
-							<t t-foreach="o.parameters_result.parameter[0].parameter_table" t-as="parameter">
-								<t t-if="parameter.grade.id == o.grade_id.id">
-										<span t-field="parameter.specification"/>
-								</t>
-							</t>
-						</span>
-					</div>
 
+					 <div style="text-align: center; font-weight: bold; margin-top: 2px; font-size: 16px;">
+						TEST RESULT
+					</div>
+					
 					<t t-set="data_length" t-value="len(data.child_lines or [])"/>
 					<t t-if="data_length &lt;= o.sample_id.page_break">
 						<table style="margin-top:15px;">
@@ -386,7 +526,7 @@
 									<tr>
 										
 										<t t-foreach="tabledata" t-as="column">
-											<th>
+											<th t-if="column[0] != 'is_editable_line'">
 												<span>
 													<t style="text-align:center;" t-esc="column[1]" />
 												</span>
@@ -400,7 +540,7 @@
 										<tr t-foreach="range(o.sample_id.page_break)" t-as="index">
 											<t t-set="r" t-value="data.child_lines[index]"/>
 											<t t-foreach="tabledata" t-as="row">
-												<td>
+												<td t-if="row[0] != 'is_editable_line'">
 													<span>
 														<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
 															<t style="text-align:center;" t-esc="round(float(r[row[0]]),2)"/>
@@ -525,27 +665,23 @@
 
 
 		
-						<!-- <div style="margin-top:20px" class="noteContainer">
-							<table class="table table-bordered">
-							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
-									</t>
-								</td>
-							</tr>
-						</table>
-						</div> -->
+						<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
+									<ul>
+									   
+										Estimated compressive strength is derived using the manufacturer's rebound number-compressive strength correlation curve and is reported for indicative assessment only. The correlation is not a laboratory/site-specific correlation established for the concrete under investigation. Therefore, the estimated strength shall not be interpreted as the actual in-situ compressive strength or as a substitute for standard compression testing.
+									</ul>
+								</div>
+				</div>
+
+				<div style="margin-top: 10px; text-align: center;">
+							<p style="border-top: 1px dashed #000; padding-top: 10px;">
+								...... End Of Report......
+							</p>
+					</div>
 						<div t-if="o.witness_photo or o.attachment">
 							<b>PHOTOS</b>
 						</div>
@@ -561,7 +697,7 @@
 							<div>
 								<div>
 									<b>
-										Checked By
+										Reviewed By
 									</b>
 								</div>
 								<div style="height: 40px;">
@@ -595,7 +731,7 @@
 							<div>
 								<div>
 									<b>
-										Approved By 
+										Authorised Signatory By 
 									</b>
 									
 								</div>
@@ -626,12 +762,545 @@
 						</div>
 						</div>
 					</div>
-					<div style="margin-top: 10px; text-align: center;">
+					
+				</div>
+			</t>
+		</t>
+	</template>
+
+
+
+
+
+	<template id="upv_combined_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+			 	<!-- <div style="position:absolute;opacity:0.25;font-size:3em;width:100%;height:100%;z-index:1000;margin:-10px">
+					<img src="/lerm_civil/static/src/img/watermark2.jpg"/>
+				</div> -->
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				
+				<div class="container_eln" style="padding-top:20px;">
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3"  t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:20px;">
+							 <tr style="height:10px;">
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 60px;"/>
+									</td>
+								
+							</tr>
+							<tr >
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+
+						
+
+							<tr>
+								
+
+								<td style="width:20%;">Letter No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+								
+                            <tr>
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+
+
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+							</tr>
+
+							
+							
+
+
+							
+
+							<tr>
+								
+								<td>Test Start Date  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td>Test Completion Date  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+
+							
+
+							<tr>
+
+								<td>Sub Group :-</td>
+								<td>
+								  <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+								<td>No. Of  Points :-</td>
+								<td>
+									   <t t-if="data.no_points">
+											<span t-field="data.no_points"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+							
+							</tr>
+
+							<tr>
+
+							<td>Surface Condition :-</td>
+								<td>
+								  <t t-if="data.surface_condition">
+											<span t-field="data.surface_condition"/>
+										</t>
+								</td>
+
+								<td>Make :-</td>
+								<td>
+								  <t t-if="data.make">
+											<span t-field="data.make"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+							<tr>
+
+							<td>Model :-</td>
+								<td>
+								  <t t-if="data.model">
+											<span t-field="data.model"/>
+										</t>
+								</td>
+
+								<td>Temperature :-</td>
+								<td>
+								  <t t-if="data.temperature">
+											<span t-field="data.temperature"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+							
+
+							
+							
+
+							<tr >
+								<td colspan="1" >Work Description:</td>
+								  <td colspan="3" >
+									<![CDATA[&nbsp;]]>
+									<t t-if="data.description_work">
+											<span t-field="data.description_work"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+							</tr>
+
+
+
+							<tr>
+
+							<td>Discipline :-</td>
+								<td>
+								 <span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td>Group :-</td>
+								<td>
+							<span t-field="o.group.group"/>
+								</td>
+								
+							
+							</tr>
+
+							
+
+							
+						
+							
+							<tr>
+								<td colspan="1">Name Of Test :</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.parameters_result.parameter[0].parameter_name"/>
+								</td>
+							</tr>
+
+
+                           <tr>
+							<td>Instrument :-</td>
+								<td>
+								  <t t-if="o.instrument.name">
+											<span t-field="o.instrument.name"/>
+										</t>
+								</td>
+
+								<td>Structure Age :-</td>
+								<td>
+								  <t t-if="data.structure">
+											<span t-field="data.structure"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+
+
+							<tr>
+							<td>Grade :-</td>
+								<td>
+								  <t t-if="o.grade_id.grade">
+											<span t-field="o.grade_id.grade"/>
+										</t>
+								</td>
+
+								<td>TEST METHOD :-</td>
+								<td>
+								  <t t-if="o.material.test_method_adopted">
+										<span t-field="o.material.test_method_adopted"/>
+										</t>
+								</td>
+								
+							
+							</tr>
+
+                          
+
+
+						
+
+
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+						</table>
+					</div>
+
+					 <div style="text-align: center; font-weight: bold; margin-top: 2px; font-size: 16px;">
+						TEST RESULT
+					</div>
+
+
+					 <div style="margin-top:20px">
+                        <div style="text-align:center;font-size:15px">
+                            <b>TEST METHOD : UPV DIRECT</b>
+                        </div>
+					
+					  <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+                                <td colspan="2" style="text-align: center;"><b>GRID</b></td>
+                                <td colspan="1" style="text-align: center;"><b>PATH</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>VELOCITY [m/s]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+
+								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines1" t-as="r">
+                                <td colspan="1" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['level_id']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['grid']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['path']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['dist']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['time']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['velocity']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['actual_velocity']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['quality']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+						</div>
+
+
+						<div style="margin-top:10px; page-break-before: always;" >
+                        <div style="text-align:center;font-size:15px">
+                            <b>TEST METHOD : UPV IN-DIRECT</b>
+                        </div>
+					
+					  <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
+                                <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DATE OF CASTING</b></td>
+                                <td colspan="1" style="text-align: center;"><b>PATH</b></td>
+                                <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
+                                <td colspan="1" style="text-align: center;"><b>SLOPE</b></td>
+                                <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
+                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+
+								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines2" t-as="r">
+                                <td colspan="1" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['level_id']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['casting_date']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['path']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['dist']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['time']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['slope']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['actual_velocity']"/>
+                                </td>
+                                 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								 <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['quality']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </table>
+						</div>
+					
+
+
+		
+						<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div >
+									<ul>
+									   
+										Estimated compressive strength is derived using the manufacturer's rebound number-compressive strength correlation curve and is reported for indicative assessment only. The correlation is not a laboratory/site-specific correlation established for the concrete under investigation. Therefore, the estimated strength shall not be interpreted as the actual in-situ compressive strength or as a substitute for standard compression testing.
+									</ul>
+								</div>
+				</div>
+
+				<div style="margin-top: 10px; text-align: center;">
 							<p style="border-top: 1px dashed #000; padding-top: 10px;">
 								...... End Of Report......
 							</p>
 					</div>
-				</div>
+						<div t-if="o.witness_photo or o.attachment">
+							<b>PHOTOS</b>
+						</div>
+						<div t-if="o.witness_photo" style="margin-top: 20px;width:100%;text-align:center;align-items:right;z-index:1000;">
+							<img t-att-src="'data:image/png;base64,' + o.witness_photo.decode('utf-8')" style="max-width: 100%; height: 250px;z-index:1000;" />
+						</div>
+
+						<div t-if="o.attachment" style="margin-top: 20px;width:100%;text-align:center;z-index:1000;">
+							<img t-att-src="'data:image/png;base64,' + o.attachment.decode('utf-8')" style="max-width: 100%;z-index:1000;height:250px;"/>
+						</div>
+
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Reviewed By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+								
+							</div>
+							<!-- <div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
+								</div>
+							</div> -->
+							<div>
+								<div>
+									<b>
+										Authorised Signatory By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<!-- <div>
+									<b>
+										NDT Department (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div> -->
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						</div>
+					<!-- </div> -->
+					
+				<!-- </div> -->
 			</t>
 		</t>
 	</template>

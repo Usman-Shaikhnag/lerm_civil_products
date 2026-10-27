@@ -16,8 +16,64 @@ class ReboundHammer(models.Model):
     maximum_mpa = fields.Float(string="Maximum Mpa",compute="_compute_average",store=True)
     structure = fields.Char("Structure")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-    notes = fields.One2many('ndt.rebound.hammer.notes','parent_id',string="Notes")
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
+
+    surface_condition = fields.Char("Surface Condition")
+    make = fields.Char("Make")
+    model = fields.Char("Model")
+
+    description_work = fields.Char("Description Of Work")
+    no_points = fields.Char("No.Of. Points")
+    sample_satus = fields.Char("Sample Status")
+
+    notes_id = fields.One2many('ndt.rebound.hammer.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(ReboundHammer, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
 
     # @api.depends('child_lines.avg')
@@ -87,16 +143,16 @@ class CarbonationnLine(models.Model):
     _name = "ndt.rebound.hammer.line"
     parent_id = fields.Many2one('ndt.rebound.hammer',string="Parent Id")
     # element = fields.Char(string="Member / Element Type")
-    location = fields.Char(string="Location Of Member")
+    serial_no = fields.Integer(string="Test Point", readonly=True, copy=False, default=1)
+    location = fields.Char(string="Location")
+    impact_direction = fields.Char(string="Impact Direction")
     f1 = fields.Integer(string="1")
     f2 = fields.Integer(string="2")
     f3 = fields.Integer(string="3")
     f4 = fields.Integer(string="4")
     f5 = fields.Integer(string="5")
     f6 = fields.Integer(string="6")
-    f7 = fields.Integer(string="7")
-    f8 = fields.Integer(string="8")
-    f9 = fields.Integer(string="9")
+    
     # f10 = fields.Integer(string="10")
     avg = fields.Float(string="Average" ,compute="_compute_average")
     mpa = fields.Float(string="Mpa",compute="_compute_mpa", store=True)
@@ -104,25 +160,82 @@ class CarbonationnLine(models.Model):
         ('horizontal', 'Horizontal'),
         ('vertical_up', 'Vertical Up'), 
         ('vertical_down', 'Vertical Down')], string='Direction')
+
+
+    @api.depends('f1', 'f2', 'f3', 'f4', 'f5', 'f6')
+    def _compute_average(self):
+        for record in self:
+            values = [
+                record.f1, record.f2, record.f3,
+                record.f4, record.f5, record.f6
+            ]
+            record.avg = sum(values) / len(values)
+
+    
+    
+    # def _interpolate(self, x, x_table, y_table):
+    #     """Linear interpolation equivalent to the Excel formula."""
+    #     if not x_table or len(x_table) != len(y_table):
+    #         return 0.0
+
+    #     # Excel MATCH(..., 1) requires ascending lookup values.
+    #     if x < x_table[0] or x > x_table[-1]:
+    #         return 0.0
+
+    #     for i in range(len(x_table) - 1):
+    #         x1 = x_table[i]
+    #         x2 = x_table[i + 1]
+    #         y1 = y_table[i]
+    #         y2 = y_table[i + 1]
+
+    #         if x1 <= x <= x2:
+    #             if x2 == x1:
+    #                 return y1
+
+    #             return y1 + (x - x1) * (y2 - y1) / (x2 - x1)
+
+    #     return y_table[-1]
+
+    # @api.depends('avg', 'impact_direction')
+    # def _compute_calibrated_value(self):
+    #     # Replace these example arrays with your actual Excel data.
+    #     table_0_x = []
+    #     table_0_y = []
+
+    #     table_neg90_x = []
+    #     table_neg90_y = []
+
+    #     table_90_x = []
+    #     table_90_y = []
+
+    #     for record in self:
+    #         direction = record.impact_direction
+
+    #         if direction == '0':
+    #             result = self._interpolate(
+    #                 record.avg, table_0_x, table_0_y
+    #             )
+    #         elif direction == '-90':
+    #             result = self._interpolate(
+    #                 record.avg, table_neg90_x, table_neg90_y
+    #             )
+    #         elif direction == '90':
+    #             result = self._interpolate(
+    #                 record.avg, table_90_x, table_90_y
+    #             )
+    #         else:
+    #             result = 0.0
+
+    #         record.mpa = result
     
 
-    # @api.depends('f1','f2','f3','f4','f5','f6','f7','f8','f9','f10')
+    
+
+
+    # @api.depends('f1', 'f2', 'f3', 'f4', 'f5', 'f6')
     # def _compute_average(self):
     #     for record in self:
-    #         values = []
-    #         median = 0
-    #         median_first = 0
-    #         median_third = 0
-    #         values.append(record.f1)
-    #         values.append(record.f2)
-    #         values.append(record.f3)
-    #         values.append(record.f4)
-    #         values.append(record.f5)
-    #         values.append(record.f6)
-    #         values.append(record.f7)
-    #         values.append(record.f8)
-    #         values.append(record.f9)
-    #         values.append(record.f10)
+    #         values = [record.f1, record.f2, record.f3, record.f4, record.f5, record.f6]
 
     #         sorted_array = sorted(values)
     #         midpoint = len(sorted_array) // 2
@@ -144,45 +257,12 @@ class CarbonationnLine(models.Model):
     #         else:
     #             median_third = third_quartile[midpoint]
     #         iqr = median_third - median_first
-    #         lower_bound = median_first - 1.5*iqr
-    #         upper_bound = median_third + 1.5*iqr
+    #         lower_bound = median_first - 1.5 * iqr
+    #         upper_bound = median_third + 1.5 * iqr
 
     #         filtered_array = [x for x in values if lower_bound <= x <= upper_bound]
 
     #         record.avg = sum(filtered_array) / len(filtered_array)
-
-
-    @api.depends('f1', 'f2', 'f3', 'f4', 'f5', 'f6','f7','f8','f9')
-    def _compute_average(self):
-        for record in self:
-            values = [record.f1, record.f2, record.f3, record.f4, record.f5, record.f6,record.f7,record.f8,record.f9]
-
-            sorted_array = sorted(values)
-            midpoint = len(sorted_array) // 2
-            if len(sorted_array) % 2 == 0:
-                median = (sorted_array[midpoint - 1] + sorted_array[midpoint]) / 2.0
-            else:
-                median = sorted_array[midpoint]
-
-            first_quartile = sorted_array[:midpoint]
-            third_quartile = sorted_array[midpoint:]
-            midpoint = len(first_quartile) // 2
-            if len(first_quartile) % 2 == 0:
-                median_first = (first_quartile[midpoint - 1] + first_quartile[midpoint]) / 2.0
-            else:
-                median_first = first_quartile[midpoint]
-            midpoint = len(third_quartile) // 2
-            if len(third_quartile) % 2 == 0:
-                median_third = (third_quartile[midpoint - 1] + third_quartile[midpoint]) / 2.0
-            else:
-                median_third = third_quartile[midpoint]
-            iqr = median_third - median_first
-            lower_bound = median_first - 1.5 * iqr
-            upper_bound = median_third + 1.5 * iqr
-
-            filtered_array = [x for x in values if lower_bound <= x <= upper_bound]
-
-            record.avg = sum(filtered_array) / len(filtered_array)
 
     @api.depends('avg')
     def _compute_mpa(self):
@@ -198,6 +278,24 @@ class CarbonationnLine(models.Model):
                 record.mpa = max(calculated_mpa, 0.0)
             else:
                 record.mpa = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CarbonationnLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
                 
 
 
@@ -205,4 +303,5 @@ class ReboundHammerNotes(models.Model):
     _name = "ndt.rebound.hammer.notes"
 
     parent_id = fields.Many2one('ndt.rebound.hammer',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
