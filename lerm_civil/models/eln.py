@@ -843,38 +843,114 @@ class ParameteResultCalculationWizard(models.TransientModel):
     #         else:
     #             record.conformity_status = "--"
 
+    # @api.depends('result', 'parameter')
+    # def compute_conformity_status(self):
+    #     for record in self:
+    #         if record.parameter and hasattr(record.parameter, 'parameter_table'):
+    #             material_table = record.parameter.parameter_table.filtered(
+    #                 lambda rec: rec.grade.id == self.env.context.get('grade_id')
+    #                 and rec.material.id == self.env.context.get('material_id')
+    #                 and rec.size.id == self.env.context.get('size_id')
+    #             )
+
+    #             if material_table:
+    #                 # Permissible limit is '--'/empty OR both req_min and req_max are 0
+    #                 if (
+    #                     material_table.permissable_limit == '--'
+    #                     or not material_table.permissable_limit
+    #                     or (
+    #                         material_table.req_min == 0.0
+    #                         and material_table.req_max == 0.0
+    #                     )
+    #                 ):
+    #                     record.conformity_status = "--"
+    #                 else:
+    #                     req_min = material_table.req_min
+    #                     req_max = material_table.req_max
+
+    #                     mu_neg = (
+    #                         record.result
+    #                         - record.result * record.parameter.mu_value
+    #                     )
+    #                     mu_pos = (
+    #                         record.result
+    #                         + record.result * record.parameter.mu_value
+    #                     )
+
+    #                     if (
+    #                         req_min <= mu_neg <= req_max
+    #                         and req_min <= mu_pos <= req_max
+    #                     ):
+    #                         record.conformity_status = "pass"
+    #                     else:
+    #                         record.conformity_status = "fail"
+    #             else:
+    #                 record.conformity_status = "--"
+    #         else:
+    #             record.conformity_status = "--"
+
     @api.depends('result', 'parameter')
     def compute_conformity_status(self):
         for record in self:
             if record.parameter and hasattr(record.parameter, 'parameter_table'):
-                material_table = record.parameter.parameter_table.filtered(
-                    lambda rec: rec.grade.id == self.env.context.get('grade_id')
-                    and rec.material.id == self.env.context.get('material_id')
-                    and rec.size.id == self.env.context.get('size_id')
+
+                parameter = record.parameter
+
+                grade_id = self.env.context.get('grade_id')
+                material_id = self.env.context.get('material_id')
+                size_id = self.env.context.get('size_id')
+
+                # Build dynamic domain based on parameter settings
+                domain = []
+
+                if parameter.fetch_by_grade and grade_id:
+                    domain.append(('grade', '=', grade_id))
+
+                if material_id:
+                    domain.append(('material', '=', material_id))
+
+                if parameter.fetch_by_size and size_id:
+                    domain.append(('size', '=', size_id))
+
+                material_table = parameter.parameter_table.filtered(
+                    lambda rec: (
+                        (not parameter.fetch_by_grade or
+                        (grade_id and rec.grade.id == grade_id))
+                        and
+                        (not parameter.fetch_by_size or
+                        (size_id and rec.size.id == size_id))
+                        and
+                        (not material_id or
+                        rec.material.id == material_id)
+                    )
                 )
 
                 if material_table:
+                    table = material_table[0]
+
                     # Permissible limit is '--'/empty OR both req_min and req_max are 0
                     if (
-                        material_table.permissable_limit == '--'
-                        or not material_table.permissable_limit
+                        table.permissable_limit == '--'
+                        or not table.permissable_limit
                         or (
-                            material_table.req_min == 0.0
-                            and material_table.req_max == 0.0
+                            table.req_min == 0.0
+                            and table.req_max == 0.0
                         )
                     ):
                         record.conformity_status = "--"
+
                     else:
-                        req_min = material_table.req_min
-                        req_max = material_table.req_max
+                        req_min = table.req_min
+                        req_max = table.req_max
 
                         mu_neg = (
                             record.result
-                            - record.result * record.parameter.mu_value
+                            - record.result * parameter.mu_value
                         )
+
                         mu_pos = (
                             record.result
-                            + record.result * record.parameter.mu_value
+                            + record.result * parameter.mu_value
                         )
 
                         if (
@@ -884,8 +960,10 @@ class ParameteResultCalculationWizard(models.TransientModel):
                             record.conformity_status = "pass"
                         else:
                             record.conformity_status = "fail"
+
                 else:
                     record.conformity_status = "--"
+
             else:
                 record.conformity_status = "--"
 
