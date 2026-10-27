@@ -1,0 +1,100 @@
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_followup_reminder" model="mail.template">
+            <field name="name">Payment Follow-up: Reminder</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="subject">Payment reminder from {{ user.company_id.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.id }}</field>
+            <field name="lang">{{ object.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Dear <t t-out="object.name or ''">Customer</t>,</p>
+    <p>
+        This is a friendly reminder that the invoices below are due for payment.
+        If you have already paid, please share the payment details so we can update our records.
+    </p>
+    <table cellpadding="6" style="border-collapse: collapse; width: 100%;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #dddddd; text-align: left;">Invoice</th>
+            <th style="border: 1px solid #dddddd; text-align: left;">Invoice Date</th>
+            <th style="border: 1px solid #dddddd; text-align: left;">Due Date</th>
+            <th style="border: 1px solid #dddddd; text-align: right;">Days Overdue</th>
+            <th style="border: 1px solid #dddddd; text-align: right;">Amount Due</th>
+        </tr>
+        <t t-foreach="object.followup_open_invoice_ids" t-as="inv">
+            <tr>
+                <td style="border: 1px solid #dddddd;"><t t-out="inv.name or ''">INV/2026/00001</t></td>
+                <td style="border: 1px solid #dddddd;"><t t-out="format_date(inv.invoice_date)">01/01/2026</t></td>
+                <td style="border: 1px solid #dddddd;"><t t-out="format_date(inv.invoice_date_due)">31/01/2026</t></td>
+                <td style="border: 1px solid #dddddd; text-align: right;"><t t-out="inv.followup_days_overdue">0</t></td>
+                <td style="border: 1px solid #dddddd; text-align: right;"><t t-out="format_amount(inv.amount_residual_signed, inv.company_currency_id)">0.00</t></td>
+            </tr>
+        </t>
+        <tr>
+            <td colspan="4" style="border: 1px solid #dddddd; text-align: right;"><strong>Total Due</strong></td>
+            <td style="border: 1px solid #dddddd; text-align: right;"><strong><t t-out="format_amount(object.followup_total_due, object.currency_id)">0.00</t></strong></td>
+        </tr>
+    </table>
+    <p>Kindly arrange the payment at the earliest. For any query about these invoices, please reply to this email.</p>
+    <p>
+        Regards,<br/>
+        <t t-out="user.name or ''">Accounts Team</t><br/>
+        <t t-out="user.company_id.name or ''">Company</t>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_followup_firm" model="mail.template">
+            <field name="name">Payment Follow-up: Firm Reminder</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="subject">Overdue invoices: payment required - {{ user.company_id.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.id }}</field>
+            <field name="lang">{{ object.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Dear <t t-out="object.name or ''">Customer</t>,</p>
+    <p>
+        Despite our earlier reminders, the invoices below remain unpaid.
+        The total overdue amount is <strong><t t-out="format_amount(object.followup_total_overdue, object.currency_id)">0.00</t></strong>.
+    </p>
+    <table cellpadding="6" style="border-collapse: collapse; width: 100%;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #dddddd; text-align: left;">Invoice</th>
+            <th style="border: 1px solid #dddddd; text-align: left;">Invoice Date</th>
+            <th style="border: 1px solid #dddddd; text-align: left;">Due Date</th>
+            <th style="border: 1px solid #dddddd; text-align: right;">Days Overdue</th>
+            <th style="border: 1px solid #dddddd; text-align: right;">Amount Due</th>
+        </tr>
+        <t t-foreach="object.followup_open_invoice_ids" t-as="inv">
+            <tr>
+                <td style="border: 1px solid #dddddd;"><t t-out="inv.name or ''">INV/2026/00001</t></td>
+                <td style="border: 1px solid #dddddd;"><t t-out="format_date(inv.invoice_date)">01/01/2026</t></td>
+                <td style="border: 1px solid #dddddd;"><t t-out="format_date(inv.invoice_date_due)">31/01/2026</t></td>
+                <td style="border: 1px solid #dddddd; text-align: right;"><t t-out="inv.followup_days_overdue">0</t></td>
+                <td style="border: 1px solid #dddddd; text-align: right;"><t t-out="format_amount(inv.amount_residual_signed, inv.company_currency_id)">0.00</t></td>
+            </tr>
+        </t>
+        <tr>
+            <td colspan="4" style="border: 1px solid #dddddd; text-align: right;"><strong>Total Due</strong></td>
+            <td style="border: 1px solid #dddddd; text-align: right;"><strong><t t-out="format_amount(object.followup_total_due, object.currency_id)">0.00</t></strong></td>
+        </tr>
+    </table>
+    <p>
+        Please clear the outstanding amount within 7 days, or contact us to agree on a payment date.
+        If no payment or response is received, we will have to escalate this matter.
+    </p>
+    <p>
+        Regards,<br/>
+        <t t-out="user.name or ''">Accounts Team</t><br/>
+        <t t-out="user.company_id.name or ''">Company</t>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

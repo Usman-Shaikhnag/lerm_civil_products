@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <record id="view_followup_level_tree" model="ir.ui.view">
+            <field name="name">lerm.followup.level.tree</field>
+            <field name="model">lerm.followup.level</field>
+            <field name="arch" type="xml">
+                <tree string="Follow-up Levels">
+                    <field name="delay"/>
+                    <field name="name"/>
+                    <field name="action_type"/>
+                    <field name="mail_template_id" invisible="action_type != 'email'"/>
+                    <field name="attach_invoices" invisible="action_type != 'email'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_followup_level_form" model="ir.ui.view">
+            <field name="name">lerm.followup.level.form</field>
+            <field name="model">lerm.followup.level</field>
+            <field name="arch" type="xml">
+                <form string="Follow-up Level">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <field name="active" invisible="1"/>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="delay"/>
+                                <field name="action_type"/>
+                            </group>
+                            <group invisible="action_type != 'email'">
+                                <field name="mail_template_id"/>
+                                <field name="attach_invoices"/>
+                            </group>
+                        </group>
+                        <field name="note" placeholder="Instructions for the person doing this step..."
+                               invisible="action_type == 'email'"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_followup_level" model="ir.actions.act_window">
+            <field name="name">Follow-up Levels</field>
+            <field name="res_model">lerm.followup.level</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create a follow-up level</p>
+                <p>Each level is a step done a number of days after the oldest unpaid invoice's due date.</p>
+            </field>
+        </record>
+    </data>
+</odoo>

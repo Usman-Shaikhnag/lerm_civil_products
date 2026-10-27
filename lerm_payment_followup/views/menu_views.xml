@@ -1,0 +1,47 @@
+<odoo>
+    <data>
+        <menuitem id="menu_followup_root"
+            name="Payment Follow-up"
+            web_icon="lerm_payment_followup,static/description/icon.png"
+            groups="lerm_payment_followup.group_followup_user"
+            sequence="60"/>
+
+        <menuitem id="menu_followup_my"
+            name="My Follow-ups"
+            parent="menu_followup_root"
+            action="action_followup_my"
+            sequence="10"/>
+
+        <menuitem id="menu_followup_all"
+            name="All Customers"
+            parent="menu_followup_root"
+            action="action_followup_all"
+            groups="lerm_payment_followup.group_followup_manager"
+            sequence="20"/>
+
+        <menuitem id="menu_followup_log"
+            name="Follow-up Log"
+            parent="menu_followup_root"
+            action="action_followup_log_list"
+            sequence="30"/>
+
+        <menuitem id="menu_followup_config"
+            name="Configuration"
+            parent="menu_followup_root"
+            groups="lerm_payment_followup.group_followup_manager"
+            sequence="90"/>
+
+        <menuitem id="menu_followup_levels"
+            name="Follow-up Levels"
+            parent="menu_followup_config"
+            action="action_followup_level"
+            sequence="10"/>
+
+        <menuitem id="menu_followup_settings"
+            name="Settings"
+            parent="menu_followup_config"
+            action="action_followup_settings"
+            groups="base.group_system"
+            sequence="20"/>
+    </data>
+</odoo>

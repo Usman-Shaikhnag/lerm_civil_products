@@ -1,0 +1,95 @@
+<odoo>
+    <data>
+        <record id="view_followup_log_tree" model="ir.ui.view">
+            <field name="name">lerm.followup.log.tree</field>
+            <field name="model">lerm.followup.log</field>
+            <field name="arch" type="xml">
+                <tree string="Follow-up Log" create="false">
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="action"/>
+                    <field name="outcome"/>
+                    <field name="level_id"/>
+                    <field name="note"/>
+                    <field name="promise_date" optional="show"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="promise_amount" optional="hide"/>
+                    <field name="user_id" widget="many2one_avatar_user"/>
+                    <field name="responsible_id" optional="hide"/>
+                    <field name="auto" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_followup_log_form" model="ir.ui.view">
+            <field name="name">lerm.followup.log.form</field>
+            <field name="model">lerm.followup.log</field>
+            <field name="arch" type="xml">
+                <form string="Follow-up Log" create="false" edit="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="date"/>
+                                <field name="action"/>
+                                <field name="outcome"/>
+                                <field name="level_id"/>
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="auto"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="promise_date" invisible="not promise_date"/>
+                                <field name="promise_amount" invisible="not promise_date"/>
+                            </group>
+                        </group>
+                        <field name="note"/>
+                        <field name="invoice_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="invoice_date_due"/>
+                                <field name="company_currency_id" column_invisible="1"/>
+                                <field name="amount_residual_signed" string="Amount Due"/>
+                                <field name="payment_state" widget="badge"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_followup_log_search" model="ir.ui.view">
+            <field name="name">lerm.followup.log.search</field>
+            <field name="model">lerm.followup.log</field>
+            <field name="arch" type="xml">
+                <search string="Follow-up Log">
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <filter name="filter_email" string="Emails" domain="[('action', '=', 'email')]"/>
+                    <filter name="filter_call" string="Calls" domain="[('action', '=', 'call')]"/>
+                    <filter name="filter_promised" string="Promises" domain="[('outcome', '=', 'promised')]"/>
+                    <filter name="filter_disputed" string="Disputes" domain="[('outcome', '=', 'disputed')]"/>
+                    <separator/>
+                    <filter name="filter_mine" string="Done by Me" domain="[('user_id', '=', uid)]"/>
+                    <filter name="filter_date" string="Date" date="date"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_action" string="Action" context="{'group_by': 'action'}"/>
+                        <filter name="group_user" string="Done By" context="{'group_by': 'user_id'}"/>
+                        <filter name="group_date" string="Date" context="{'group_by': 'date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_followup_log_list" model="ir.actions.act_window">
+            <field name="name">Follow-up Log</field>
+            <field name="res_model">lerm.followup.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No follow-up logged yet</p>
+                <p>Reminders, calls, promises to pay and disputes appear here.</p>
+            </field>
+        </record>
+    </data>
+</odoo>

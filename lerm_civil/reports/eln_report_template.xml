@@ -1107,7 +1107,7 @@
 							<div>
 								<div>
 									<b>
-										Checked By
+										Reviewed By
 									</b>
 								</div>
 								<div style="height: 40px;">
@@ -1226,7 +1226,7 @@
 							</tr>
 						</table>
 					</div>
-						<table style="margin-top:30px;">
+						<table t-foreach="datasheet_groups" t-as="group" style="margin-top:30px; page-break-inside: avoid;">
 							<thead>
 								<tr>
 									<th>
@@ -1253,7 +1253,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr t-foreach="datasheet" t-as="r">
+								<tr t-foreach="group" t-as="r">
 									<td>
 										<span t-esc="r['parameter_name']"/>
 									</td>
@@ -1304,7 +1304,7 @@
 								</div>
 								<div>
 									<b>
-										Checked By
+										Reviewed By
 									</b>
 								</div>
 							</div>
@@ -1336,7 +1336,7 @@
 							
 					<div>
 						<b>
-							Checked By
+							Reviewed By
 						</b>
 					</div>
 					<div style="height: 40px;">
@@ -2429,7 +2429,7 @@
 							</div>
 							<div>
 								<b>
-									Checked By
+									Reviewed By
 								</b>
 							</div>
 						</div>
@@ -3411,7 +3411,7 @@
 						</div>
 						<div>
 							<b>
-								Checked By
+								Reviewed By
 							</b>
 						</div>
 					</div>
