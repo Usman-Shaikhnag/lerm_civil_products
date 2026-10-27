@@ -1,0 +1,245 @@
+<odoo>
+    <data>
+        <record id="view_partner_followup_tree" model="ir.ui.view">
+            <field name="name">res.partner.followup.tree</field>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Follow-up" create="false" delete="false"
+                      decoration-danger="followup_state == 'broken'"
+                      decoration-warning="followup_state == 'action'"
+                      decoration-muted="followup_state == 'none'">
+                    <header>
+                        <button name="action_followup_process" type="object" string="Do Next Step"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="followup_responsible_id" widget="many2one_avatar_user"/>
+                    <field name="followup_level_id"/>
+                    <field name="followup_next_level_id"/>
+                    <field name="followup_next_date"/>
+                    <field name="followup_oldest_due_date" optional="hide"/>
+                    <field name="followup_promise_date" optional="show"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="followup_total_due" string="Total Due" sum="Total Due"/>
+                    <field name="followup_total_overdue" string="Total Overdue" sum="Total Overdue"/>
+                    <field name="followup_credit_block" optional="hide"/>
+                    <field name="followup_credit_limit" optional="hide"/>
+                    <field name="followup_credit_hold" optional="hide"/>
+                    <field name="followup_state" widget="badge"
+                           decoration-success="followup_state == 'none'"
+                           decoration-info="followup_state in ('waiting', 'promise')"
+                           decoration-warning="followup_state == 'action'"
+                           decoration-danger="followup_state in ('broken', 'final')"/>
+                    <field name="followup_exclude_auto" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_partner_followup_form" model="ir.ui.view">
+            <field name="name">res.partner.followup.form</field>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Payment Follow-up" create="false" delete="false">
+                    <header>
+                        <button name="action_followup_process" type="object" string="Do Next Step" class="btn-primary"
+                                invisible="followup_state not in ('action', 'broken')"/>
+                        <button name="action_followup_send" type="object" string="Send Reminder"/>
+                        <button name="action_followup_log" type="object" string="Log Follow-up"/>
+                        <button name="action_followup_reset" type="object" string="Reset"
+                                groups="lerm_payment_followup.group_followup_manager"
+                                invisible="not followup_level_id and not followup_promise_date"
+                                confirm="Reset this customer's follow-up level and promise to pay?"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Broken Promise" bg_color="text-bg-danger"
+                                invisible="followup_state != 'broken'"/>
+                        <widget name="web_ribbon" title="Credit Hold" bg_color="text-bg-danger"
+                                invisible="not followup_credit_hold or followup_state == 'broken'"/>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Status">
+                                <field name="followup_state" widget="badge"
+                                       decoration-success="followup_state == 'none'"
+                                       decoration-info="followup_state in ('waiting', 'promise')"
+                                       decoration-warning="followup_state == 'action'"
+                                       decoration-danger="followup_state in ('broken', 'final')"/>
+                                <field name="followup_level_id" readonly="1"/>
+                                <field name="followup_last_date" readonly="1"/>
+                                <field name="followup_next_level_id"/>
+                                <field name="followup_next_date"/>
+                            </group>
+                            <group string="Amounts">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="followup_total_due" string="Total Due"/>
+                                <field name="followup_total_overdue" string="Total Overdue"/>
+                                <field name="followup_disputed_amount"/>
+                                <field name="followup_oldest_due_date"/>
+                                <field name="followup_credit_hold" invisible="1"/>
+                                <!-- Set on the contact form, Sales & Purchase tab -->
+                                <field name="followup_credit_block" readonly="1"/>
+                                <field name="followup_credit_limit" invisible="not followup_credit_block" readonly="1"/>
+                                <field name="followup_credit_used" invisible="not followup_credit_block"/>
+                            </group>
+                            <group string="Promise to Pay" invisible="not followup_promise_date">
+                                <field name="followup_promise_date" readonly="1"/>
+                                <field name="followup_promise_amount" readonly="1"/>
+                            </group>
+                            <group string="Contact">
+                                <field name="followup_responsible_id" widget="many2one_avatar_user"/>
+                                <field name="followup_exclude_auto"/>
+                                <field name="email" readonly="1" widget="email"/>
+                                <field name="phone" readonly="1" widget="phone"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Open Invoices" name="open_invoices">
+                                <field name="followup_open_invoice_ids" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="invoice_date"/>
+                                        <field name="invoice_date_due"/>
+                                        <field name="followup_days_overdue"/>
+                                        <field name="invoice_user_id" optional="hide"/>
+                                        <field name="company_currency_id" column_invisible="1"/>
+                                        <field name="amount_total_signed" string="Total"/>
+                                        <field name="amount_residual_signed" string="Amount Due" sum="Total"/>
+                                        <field name="payment_state" widget="badge"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Disputed Invoices" name="disputed_invoices"
+                                  invisible="not followup_disputed_invoice_ids">
+                                <field name="followup_disputed_invoice_ids" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="invoice_date_due"/>
+                                        <field name="followup_dispute_reason"/>
+                                        <field name="followup_dispute_note"/>
+                                        <field name="company_currency_id" column_invisible="1"/>
+                                        <field name="amount_residual_signed" string="Amount Due" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Follow-up Log" name="followup_log">
+                                <field name="followup_log_ids" readonly="1">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="action"/>
+                                        <field name="outcome"/>
+                                        <field name="level_id"/>
+                                        <field name="note"/>
+                                        <field name="promise_date" optional="show"/>
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                        <field name="auto" optional="hide"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_partner_followup_search" model="ir.ui.view">
+            <field name="name">res.partner.followup.search</field>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <search string="Payment Follow-up">
+                    <field name="name"/>
+                    <field name="followup_responsible_id"/>
+                    <field name="followup_level_id"/>
+                    <filter name="filter_todo" string="To Do" domain="[('followup_state', 'in', ('action', 'broken'))]"/>
+                    <filter name="filter_broken" string="Broken Promises" domain="[('followup_state', '=', 'broken')]"/>
+                    <filter name="filter_promise" string="Promised to Pay" domain="[('followup_state', '=', 'promise')]"/>
+                    <filter name="filter_final" string="Final Level Reached" domain="[('followup_state', '=', 'final')]"/>
+                    <filter name="filter_overdue" string="Overdue" domain="[('followup_total_overdue', '>', 0)]"/>
+                    <separator/>
+                    <filter name="filter_mine" string="My Customers" domain="[('followup_responsible_id', '=', uid)]"/>
+                    <filter name="filter_excluded" string="Excluded from Automation" domain="[('followup_exclude_auto', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_state" string="Status" context="{'group_by': 'followup_state'}"/>
+                        <filter name="group_level" string="Level" context="{'group_by': 'followup_level_id'}"/>
+                        <filter name="group_responsible" string="Responsible" context="{'group_by': 'followup_responsible_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_partner_form_followup_button" model="ir.ui.view">
+            <field name="name">res.partner.form.followup.button</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="60"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button type="object"
+                        class="oe_stat_button"
+                        icon="fa-bell"
+                        name="action_open_followup"
+                        groups="lerm_payment_followup.group_followup_user">
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="followup_total_due" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </span>
+                            <span class="o_stat_text">Follow-up</span>
+                        </div>
+                    </button>
+                </div>
+                <xpath expr="//page[@name='sales_purchases']/*[1]" position="before">
+                    <group string="Credit Limit" name="followup_credit" invisible="not is_company and parent_id">
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="followup_credit_can_edit" invisible="1"/>
+                            <field name="followup_credit_block" readonly="not followup_credit_can_edit"/>
+                            <field name="followup_credit_limit" invisible="not followup_credit_block"
+                                   readonly="not followup_credit_can_edit"/>
+                            <field name="followup_credit_used" invisible="not followup_credit_block"/>
+                            <field name="followup_credit_hold" invisible="not followup_credit_block"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_followup_my" model="ir.actions.act_window">
+            <field name="name">My Follow-ups</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('followup_responsible_id', '=', uid), ('followup_state', 'in', ('waiting', 'action', 'promise', 'broken', 'final'))]</field>
+            <field name="context">{'search_default_filter_todo': 1}</field>
+            <field name="search_view_id" ref="view_partner_followup_search"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_partner_followup_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_partner_followup_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No follow-up due today</p>
+                <p>Customers you are responsible for appear here when a follow-up step is due.</p>
+            </field>
+        </record>
+
+        <record id="action_followup_all" model="ir.actions.act_window">
+            <field name="name">Customers to Follow Up</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('followup_state', 'in', ('waiting', 'action', 'promise', 'broken', 'final'))]</field>
+            <field name="context">{'search_default_filter_todo': 1}</field>
+            <field name="search_view_id" ref="view_partner_followup_search"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_partner_followup_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_partner_followup_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No follow-up due today</p>
+                <p>Customers with unpaid invoices appear here when a follow-up step is due.</p>
+            </field>
+        </record>
+    </data>
+</odoo>

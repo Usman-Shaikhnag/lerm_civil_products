@@ -1,0 +1,36 @@
+<odoo>
+    <data noupdate="1">
+        <record id="followup_level_reminder" model="lerm.followup.level">
+            <field name="name">Friendly reminder</field>
+            <field name="delay">-3</field>
+            <field name="action_type">email</field>
+            <field name="mail_template_id" ref="mail_template_followup_reminder"/>
+        </record>
+        <record id="followup_level_overdue" model="lerm.followup.level">
+            <field name="name">Overdue reminder</field>
+            <field name="delay">7</field>
+            <field name="action_type">email</field>
+            <field name="mail_template_id" ref="mail_template_followup_reminder"/>
+        </record>
+        <record id="followup_level_call" model="lerm.followup.level">
+            <field name="name">Phone call</field>
+            <field name="delay">15</field>
+            <field name="action_type">call</field>
+            <field name="attach_invoices" eval="False"/>
+            <field name="note">Call the customer about the overdue invoices. Log the outcome and any promised payment date.</field>
+        </record>
+        <record id="followup_level_firm" model="lerm.followup.level">
+            <field name="name">Firm reminder</field>
+            <field name="delay">30</field>
+            <field name="action_type">email</field>
+            <field name="mail_template_id" ref="mail_template_followup_firm"/>
+        </record>
+        <record id="followup_level_escalate" model="lerm.followup.level">
+            <field name="name">Escalate to management</field>
+            <field name="delay">45</field>
+            <field name="action_type">manual</field>
+            <field name="attach_invoices" eval="False"/>
+            <field name="note">Review the account with the accounts manager and decide on further action.</field>
+        </record>
+    </data>
+</odoo>
