@@ -254,9 +254,18 @@ class DataSheetReport(models.AbstractModel):
             prev_result_type = getattr(param_res, 'result_type', 'number')
             prev_result_char = getattr(param_res, 'result_char', '')
 
+        # One group per parameter so the template can render a table for each
+        datasheet_groups = []
+        for row in datasheet_data:
+            if datasheet_groups and datasheet_groups[-1][0]['parameter_name'] == row['parameter_name']:
+                datasheet_groups[-1].append(row)
+            else:
+                datasheet_groups.append([row])
+
         return {
             'eln': eln,
             'datasheet': datasheet_data,
+            'datasheet_groups': datasheet_groups,
             'datasheet_name': 'Afzal',
         }
 

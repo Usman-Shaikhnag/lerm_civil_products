@@ -244,7 +244,7 @@ class LermSampleForm(models.Model):
         for record in self:
             record.write({
                 'state':'8-amendment',
-                'ulr_no':record.ulr_no+"A"
+                'kes_no':record.kes_no if record.kes_no.endswith("-A") else record.kes_no+"-A"
                 })
             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', record.id)])
             eln.write({'state': '6-amendment'})

@@ -1,0 +1,28 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Always on: only recomputes status (it depends on today's date). Sends nothing. -->
+        <record id="ir_cron_followup_refresh" model="ir.cron">
+            <field name="name">Payment Follow-up: Refresh Status</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_followup_refresh()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 00:30:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Optional: switched on and timed from Settings > Payment Follow-up -->
+        <record id="ir_cron_followup_auto" model="ir.cron">
+            <field name="name">Payment Follow-up: Automatic Run</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_followup_auto()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>
