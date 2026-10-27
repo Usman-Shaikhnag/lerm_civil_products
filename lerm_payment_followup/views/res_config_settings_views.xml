@@ -1,0 +1,49 @@
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_followup" model="ir.ui.view">
+            <field name="name">res.config.settings.lerm.payment.followup</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Payment Follow-up" string="Payment Follow-up" name="lerm_payment_followup">
+                        <block title="Automatic Follow-up">
+                            <setting string="Automatic Follow-up"
+                                     help="Run follow-up once a day for customers whose next step is due. Off: follow-up is done by hand from the To Do list.">
+                                <field name="followup_auto_enabled"/>
+                            </setting>
+                            <setting string="Run Time" help="Time of day for the daily run, in your timezone."
+                                     invisible="not followup_auto_enabled">
+                                <field name="followup_auto_time" widget="float_time"/>
+                            </setting>
+                            <setting string="Send Emails Automatically"
+                                     help="Off: the run creates a 'review and send' task instead, so someone checks the email first."
+                                     invisible="not followup_auto_enabled">
+                                <field name="followup_auto_send_email"/>
+                            </setting>
+                            <setting string="Create Call Tasks Automatically"
+                                     help="Create a task for the responsible person when a phone call or manual step is due."
+                                     invisible="not followup_auto_enabled">
+                                <field name="followup_auto_create_activity"/>
+                            </setting>
+                        </block>
+                        <block title="Levels">
+                            <setting string="Follow-up Levels" help="Steps, days after the due date, and email templates.">
+                                <button name="%(lerm_payment_followup.action_followup_level)d" type="action"
+                                        string="Configure Levels" icon="oi-arrow-right" class="btn-link"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_followup_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module': 'lerm_payment_followup', 'bin_size': False}</field>
+        </record>
+    </data>
+</odoo>
