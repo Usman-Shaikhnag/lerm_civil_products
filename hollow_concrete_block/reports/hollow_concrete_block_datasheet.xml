@@ -12,33 +12,44 @@
            <table style="margin-top:20px">
 				<tr cols="12">
 					
-					<td colspan="6">Job No :
-                        <![CDATA[&nbsp;]]>
-                         <span t-field="eln.kes_no"></span>
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.eln_id"/>
+					   </span>
                     </td>
-					<td colspan="6">Test Start Date: 
-                        <![CDATA[&nbsp;]]>
-                        <span t-field="eln.start_date"></span>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test Start Date. <![CDATA[&nbsp;]]> <span t-esc="eln.start_date"/>
+					   </span>
                     </td>
 				</tr>
-                <tr>
-                  <td colspan="6">Material: <span t-field="eln.material"></span>
-                </td>
-                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
-                </td>
+                <tr cols="12">
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Material. <![CDATA[&nbsp;]]> <span t-esc="eln.material.name"/>
+					   </span>
+                    </td>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+					   </span>
+                    </td>
                 </tr>
                 <tr style="height:50px" cols="12">
-                    <td colspan="4">Performed By :
-                        <![CDATA[&nbsp;]]>
-                        <span t-field="eln.technician.name"/>
+                    <td colspan="4">
+					   <span style="text-align:center;">	
+						    Performed By. <![CDATA[&nbsp;]]> <span t-esc="eln.technician.name"/>
+					   </span>
                     </td>
-                    <td colspan="4">Witness Name :
-                        <![CDATA[&nbsp;]]>
-                        <span t-field="eln.witness_name"/>
+                    <td colspan="4">
+					    <span style="text-align:center;">	
+						    Witness Name. <![CDATA[&nbsp;]]> <span t-esc="eln.witness_description"/>
+					   </span>
                     </td>
-                    <td colspan="4">Witness Signature :
-                        <![CDATA[&nbsp;]]>
-                        <span style='padding:20px'></span>
+                    <td colspan="4">
+					     <span style="text-align:center;">	
+						    Witness Signature. <![CDATA[&nbsp;]]> <span style='padding:20px'></span>
+					   </span>
                     </td>
                 </tr>
 			</table>

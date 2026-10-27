@@ -8,6 +8,53 @@
                     Gypsum
                 </div>
 				<div class="container_eln" style="margin-top:5px">
+
+				<table style="margin-top:20px">
+				<tr cols="12">
+					
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.eln_id"/>
+					   </span>
+                    </td>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test Start Date. <![CDATA[&nbsp;]]> <span t-esc="eln.start_date"/>
+					   </span>
+                    </td>
+				</tr>
+                <tr cols="12">
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Material. <![CDATA[&nbsp;]]> <span t-esc="eln.material.name"/>
+					   </span>
+                    </td>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+					   </span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">
+					   <span style="text-align:center;">	
+						    Performed By. <![CDATA[&nbsp;]]> <span t-esc="eln.technician.name"/>
+					   </span>
+                    </td>
+                    <td colspan="4">
+					    <span style="text-align:center;">	
+						    Witness Name. <![CDATA[&nbsp;]]> <span t-esc="eln.witness_description"/>
+					   </span>
+                    </td>
+                    <td colspan="4">
+					     <span style="text-align:center;">	
+						    Witness Signature. <![CDATA[&nbsp;]]> <span style='padding:20px'></span>
+					   </span>
+                    </td>
+                </tr>
+			</table>
+
+			
 					<div t-if="data.normal_consistency_visible">
 
 

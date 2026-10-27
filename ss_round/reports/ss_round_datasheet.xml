@@ -9,43 +9,50 @@
                 </div>
 				<div class="container_eln" style="margin-top:5px">
 					<div t-foreach="eln" t-as="o">
-						<table>
-							<tr cols="12">
-								<td colspan="6">Job no :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.eln_id"/>
-								</td>
-								<td colspan="6">Test Start Date :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-							</tr>
-							<tr cols="12">
-								<td colspan="6">Material :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
-								</td>
-								<td colspan="6">Test End Date :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							 <tr style="height:50px" cols="12">
-                            <td colspan="4">Performed By :
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.technician.name"/>
-                            </td>
-                            <td colspan="4">Witness Name :
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.witness_name"/>
-                            </td>
-                            <td colspan="4">Witness Signature :
-                                <![CDATA[&nbsp;]]>
-                                <span style='padding:20px'></span>
-                            </td>
-                        </tr>
-							
-						</table>
+						<table style="margin-top:20px">
+				<tr cols="12">
+					
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.eln_id"/>
+					   </span>
+                    </td>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test Start Date. <![CDATA[&nbsp;]]> <span t-esc="eln.start_date"/>
+					   </span>
+                    </td>
+				</tr>
+                <tr cols="12">
+				    <td colspan="6">
+					    <span style="text-align:center;">	
+						    Material. <![CDATA[&nbsp;]]> <span t-esc="eln.material.name"/>
+					   </span>
+                    </td>
+					<td colspan="6">
+					    <span style="text-align:center;">	
+						    Test End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+					   </span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">
+					   <span style="text-align:center;">	
+						    Performed By. <![CDATA[&nbsp;]]> <span t-esc="eln.technician.name"/>
+					   </span>
+                    </td>
+                    <td colspan="4">
+					    <span style="text-align:center;">	
+						    Witness Name. <![CDATA[&nbsp;]]> <span t-esc="eln.witness_description"/>
+					   </span>
+                    </td>
+                    <td colspan="4">
+					     <span style="text-align:center;">	
+						    Witness Signature. <![CDATA[&nbsp;]]> <span style='padding:20px'></span>
+					   </span>
+                    </td>
+                </tr>
+			</table>
 					</div>
 					<table>
 							<thead>

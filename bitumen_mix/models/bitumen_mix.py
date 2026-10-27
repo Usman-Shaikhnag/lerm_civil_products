@@ -607,8 +607,8 @@ class BitumenConcrete(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-class bitumenNotes(models.Model):
-    _name = "bitumen.notes"
+class bitumenMixNotes(models.Model):
+    _name = "bitumen.mix.notes"
 
     parent_id = fields.Many2one('mechanical.bitumen.mix',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
