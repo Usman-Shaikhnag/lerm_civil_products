@@ -7,7 +7,7 @@ class ChemicalFineAggregate(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name = fields.Char("Name",default="Fine Aggregate")
+    name = fields.Char("Name",default="Aggregate Coarse Chemical")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -891,7 +891,7 @@ class ChemicalFineAggregate(models.Model):
         for result in self.eln_ref.parameters_result:
             # ph 
             if result.parameter.internal_id == '628cf04d-645d-4794-a0fd-3daabff4b044':
-                result.result_char = round(self.ph_average,2)
+                result.result_char = f"{self.ph_average:.2f}"
                 result.calculated = True
                 if self.ph_average_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -900,7 +900,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == 'c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa':
-                result.result_char = round(self.volume_ammonia_consumed,2)
+                result.result_char = f"{self.volume_ammonia_consumed:.4f}"
                 result.calculated = True
                 if self.chloride_percent_nabl_fine == 'pass':
                     result.nabl_status = 'nabl'
@@ -909,7 +909,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == 'f605daf3-ffb4-48c2-aa20-fffb1d556c07':
-                result.result_char = round(self.sulphate_percent,2)
+                result.result_char = f"{self.sulphate_percent:.4f}"
                 result.calculated = True
                 if self.sulphate_percent_nabl_fine == 'pass':
                     result.nabl_status = 'nabl'
@@ -918,7 +918,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == '0437ea07-5283-4248-9430-e5d89866d3c5':
-                result.result_char = round(self.average_reduction_alkalinity,2)
+                result.result_char = f"{self.average_reduction_alkalinity:.2f}"
                 result.calculated = True
                 if self.average_reduction_alkalinity_nabl_fine == 'pass':
                     result.nabl_status = 'nabl'
@@ -927,7 +927,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == 'fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a':
-                result.result_char = round(self.average_dissolved_silica,2)
+                result.result_char = f"{self.average_dissolved_silica:.2f}"
                 result.calculated = True
                 if self.average_dissolved_silica_nabl_fine == 'pass':
                     result.nabl_status = 'nabl'
@@ -936,7 +936,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == '03507018-bb06-4362-a2e7-6d70ec7d8870':
-                result.result_char = round(self.na2O,2)
+                result.result_char = f"{self.na2O:.2f}"
                 result.calculated = True
                 if self.na2O_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -945,7 +945,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == '3997903d-8a2e-49fc-baa1-531f0b805cac':
-                result.result_char = round(self.k2O,2)
+                result.result_char = f"{self.k2O:.2f}"
                 result.calculated = True
                 if self.k2O_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -954,7 +954,7 @@ class ChemicalFineAggregate(models.Model):
                 continue
 
             if result.parameter.internal_id == '0510b578-b3de-4045-bd55-5f54198e9dc8':
-                result.result_char = round(self.total_alkali_content,2)
+                result.result_char = f"{self.total_alkali_content:.2f}"
                 result.calculated = True
                 if self.total_alkali_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
