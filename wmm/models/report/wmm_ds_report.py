@@ -317,7 +317,7 @@ class WMMReport(models.AbstractModel):
             'qrcode': qr_code,
             "qrcode_static": qrcode_static,
             'nabl' : nabl,
-            'fromEln':fromEln,
+            # 'fromEln':fromEln,
             'graphHeavy' : graph_image,
             # 'mdd' : max_y,
             # 'omc' : max_x,
