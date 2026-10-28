@@ -845,9 +845,32 @@ class ParameteResultCalculationWizard(models.TransientModel):
 
 
 
-    # @api.depends('result', 'parameter')
+    
+
+
+    # @api.depends('result', 'parameter', 'inputs_lines')
     # def compute_conformity_status(self):
+    #     Result = self.env['eln.parameters.result']
+
     #     for record in self:
+    #         record.conformity_status = '--'
+
+    #         if not record.parameter:
+    #             continue
+
+    #         # Character / Number type eln.parameters.result मधून घ्या
+    #         result_record = Result.search(
+    #             [('parameter', '=', record.parameter.id)],
+    #             limit=1,
+    #             order='id desc'
+    #         )
+
+    #         # Character असल्यास नेहमी --
+    #         if result_record and result_record.result_type == 'char':
+    #             record.conformity_status = '--'
+    #             continue
+
+    #         # Existing number logic
     #         if record.parameter and hasattr(record.parameter, 'parameter_table'):
 
     #             parameter = record.parameter
@@ -893,36 +916,38 @@ class ParameteResultCalculationWizard(models.TransientModel):
     #                         and table.req_max == 0.0
     #                     )
     #                 ):
-    #                     record.conformity_status = "--"
+    #                     record.conformity_status = '--'
 
     #                 else:
     #                     req_min = table.req_min
     #                     req_max = table.req_max
 
+    #                     result_value = record.result or 0.0
+    #                     mu_value = parameter.mu_value or 0.0
+
     #                     mu_neg = (
-    #                         record.result
-    #                         - record.result * parameter.mu_value
+    #                         result_value
+    #                         - result_value * mu_value
     #                     )
 
     #                     mu_pos = (
-    #                         record.result
-    #                         + record.result * parameter.mu_value
+    #                         result_value
+    #                         + result_value * mu_value
     #                     )
 
     #                     if (
     #                         req_min <= mu_neg <= req_max
     #                         and req_min <= mu_pos <= req_max
     #                     ):
-    #                         record.conformity_status = "pass"
+    #                         record.conformity_status = 'pass'
     #                     else:
-    #                         record.conformity_status = "fail"
+    #                         record.conformity_status = 'fail'
 
     #             else:
-    #                 record.conformity_status = "--"
+    #                 record.conformity_status = '--'
 
     #         else:
-    #             record.conformity_status = "--"
-
+    #             record.conformity_status = '--'
 
     @api.depends('result', 'parameter', 'inputs_lines')
     def compute_conformity_status(self):
@@ -941,8 +966,12 @@ class ParameteResultCalculationWizard(models.TransientModel):
                 order='id desc'
             )
 
-            # Character असल्यास नेहमी --
-            if result_record and result_record.result_type == 'char':
+            # Character आणि result_char Awaited असल्यासच --
+            if (
+                result_record
+                and result_record.result_type == 'char'
+                and (result_record.result_char or '').strip().lower() == 'awaited'
+            ):
                 record.conformity_status = '--'
                 continue
 
@@ -969,14 +998,20 @@ class ParameteResultCalculationWizard(models.TransientModel):
 
                 material_table = parameter.parameter_table.filtered(
                     lambda rec: (
-                        (not parameter.fetch_by_grade or
-                        (grade_id and rec.grade.id == grade_id))
+                        (
+                            not parameter.fetch_by_grade
+                            or (grade_id and rec.grade.id == grade_id)
+                        )
                         and
-                        (not parameter.fetch_by_size or
-                        (size_id and rec.size.id == size_id))
+                        (
+                            not parameter.fetch_by_size
+                            or (size_id and rec.size.id == size_id)
+                        )
                         and
-                        (not material_id or
-                        rec.material.id == material_id)
+                        (
+                            not material_id
+                            or rec.material.id == material_id
+                        )
                     )
                 )
 
