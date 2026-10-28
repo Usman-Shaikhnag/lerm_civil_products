@@ -937,6 +937,19 @@ class ChemicalFlyAsh(models.Model):
     ffg_na2o = fields.Float("Factor from graph")
     na2o_calculation = fields.Float("Dilution *Reading* factor *100/10000*wt of sample*A4",compute="_compute_na2o_calculation")
     na2o_round = fields.Float("Na * 1.3480",compute="_compute_na2o_round")
+
+    na2o_round_char = fields.Char(
+    string="Status",
+    compute="_compute_na2o_round_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_na2o_round_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.na2o_round_char = "Done"
+            else:
+                rec.na2o_round_char = "Awaited"
     
 
     @api.depends('dilution_na2o', 'sodium_reading_na2o', 'ffg_na2o', 'wt_of_sample_na2o')
@@ -953,6 +966,8 @@ class ChemicalFlyAsh(models.Model):
         for record in self:
             record.na2o_round = record.na2o_calculation * 1.3480
 
+    
+
 
     na2o_round_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -960,10 +975,41 @@ class ChemicalFlyAsh(models.Model):
             ('--', '--')
             ], string="Conformity", compute="_compute_na2o_round_conformity", store=True)
 
-    @api.depends('na2o_round','eln_ref','grade')
-    def _compute_na2o_round_conformity(self):
+    # @api.depends('na2o_round','eln_ref','grade')
+    # def _compute_na2o_round_conformity(self):
         
+    #     for record in self:
+    #         record.na2o_round_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+
+    #                 # Check if permissible limit is '--' or empty
+    #                 if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+    #                     record.na2o_round_conformity = '--'
+    #                     break
+
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.na2o_round - record.na2o_round*mu_value
+    #                 upper = record.na2o_round + record.na2o_round*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.na2o_round_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.na2o_round_conformity = 'fail'
+
+    @api.depends('na2o_round', 'eln_ref', 'grade', 'status_28days')
+    def _compute_na2o_round_conformity(self):
+
         for record in self:
+            if not record.status_28days:
+                record.na2o_round_conformity = '--'
+                continue
+
             record.na2o_round_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')]).parameter_table
@@ -978,9 +1024,9 @@ class ChemicalFlyAsh(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    
-                    lower = record.na2o_round - record.na2o_round*mu_value
-                    upper = record.na2o_round + record.na2o_round*mu_value
+
+                    lower = record.na2o_round - record.na2o_round * mu_value
+                    upper = record.na2o_round + record.na2o_round * mu_value
                     if lower >= req_min and upper <= req_max:
                         record.na2o_round_conformity = 'pass'
                         break
@@ -1045,6 +1091,19 @@ class ChemicalFlyAsh(models.Model):
     k2o_calculation = fields.Float("Dilution *Reading* factor *100/10000*wt of sample*A4",compute="_compute_k2o_calculation")
     k2o_round = fields.Float("K *1.20",compute="_compute_k2o_round")
 
+    k2o_round_char = fields.Char(
+    string="Status",
+    compute="_compute_k2o_round_char"
+    )
+
+    @api.depends('status_28days_k2o')
+    def _compute_k2o_round_char(self):
+        for rec in self:
+            if rec.status_28days_k2o:
+                rec.k2o_round_char = "Done"
+            else:
+                rec.k2o_round_char = "Awaited"
+
     @api.depends('dilution_k2o', 'potasium_reading_k2o', 'ffg_k2o', 'wt_of_sample_k2o')
     def _compute_k2o_calculation(self):
         for record in self:
@@ -1066,10 +1125,15 @@ class ChemicalFlyAsh(models.Model):
             ('--', '--')
             ], string="Conformity", compute="_compute_k2o_round_conformity", store=True)
 
-    @api.depends('k2o_round','eln_ref','grade')
+    @api.depends('k2o_round','eln_ref','grade','status_28days_k2o')
     def _compute_k2o_round_conformity(self):
         
         for record in self:
+
+            if not record.status_28days_k2o:
+                record.k2o_round_conformity = '--'
+                continue
+
             record.k2o_round_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b6fb80a6-b992-477e-9048-c40b58e28a6c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b6fb80a6-b992-477e-9048-c40b58e28a6c')]).parameter_table
@@ -1130,6 +1194,19 @@ class ChemicalFlyAsh(models.Model):
 
     available_alkalis = fields.Float("Available alkalis  % = A+B (0.65)",compute="_compute_available_alkalis")
 
+    available_alkalis_char = fields.Char(
+    string="Status",
+    compute="_compute_available_alkalis_char"
+    )
+
+    @api.depends('status_28days', 'status_28days_k2o')
+    def _compute_available_alkalis_char(self):
+        for rec in self:
+            if rec.status_28days_k2o and rec.status_28days:
+                rec.available_alkalis_char = "Done"
+            else:
+                rec.available_alkalis_char = "Awaited"
+
     @api.depends('na2o_round', 'k2o_round')
     def _compute_available_alkalis(self):
         for record in self:
@@ -1141,10 +1218,14 @@ class ChemicalFlyAsh(models.Model):
             ('--', '--')
             ], string="Conformity", compute="_compute_available_alkalis_conformity", store=True)
 
-    @api.depends('available_alkalis','eln_ref','grade')
+    @api.depends('available_alkalis','eln_ref','grade','status_28days_k2o','status_28days')
     def _compute_available_alkalis_conformity(self):
         
         for record in self:
+
+            if not record.status_28days_k2o or not record.status_28days:
+                record.available_alkalis_conformity = '--'
+                continue
             record.available_alkalis_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ab486ca-fb44-437b-adeb-8b6928ac43b0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ab486ca-fb44-437b-adeb-8b6928ac43b0')]).parameter_table
@@ -1459,7 +1540,11 @@ class ChemicalFlyAsh(models.Model):
                 continue
 
             if result.parameter.internal_id == '3ccd6049-2b3d-42a0-a78f-b83e49eeff6a':
-                result.result_char = round(self.na2o_round,2)
+                if self.status_28days:
+                    result.result_char = round(self.na2o_round, 2)
+                else:
+                    result.result_char = self.na2o_round_char
+
                 result.calculated = True
                 if self.na2o_round_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1468,7 +1553,11 @@ class ChemicalFlyAsh(models.Model):
                 continue
 
             if result.parameter.internal_id == 'b6fb80a6-b992-477e-9048-c40b58e28a6c':
-                result.result_char = round(self.k2o_round,2)
+                if self.status_28days_k2o:
+                    result.result_char = round(self.k2o_round, 2)
+                else:
+                    result.result_char = self.k2o_round_char
+
                 result.calculated = True
                 if self.k2o_round_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1477,7 +1566,12 @@ class ChemicalFlyAsh(models.Model):
                 continue
 
             if result.parameter.internal_id == '5ab486ca-fb44-437b-adeb-8b6928ac43b0':
-                result.result_char = round(self.available_alkalis,2)
+                if self.status_28days_k2o and self.status_28days:
+
+                    result.result_char = round(self.available_alkalis, 2)
+                else:
+                    result.result_char = self.available_alkalis_char
+
                 result.calculated = True
                 if self.available_alkalis_nabl == 'pass':
                     result.nabl_status = 'nabl'

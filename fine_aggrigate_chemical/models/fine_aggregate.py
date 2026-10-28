@@ -897,6 +897,8 @@ class ChemicalFineAggregate(models.Model):
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
+
+               
                 continue
 
             if result.parameter.internal_id == 'c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa':
