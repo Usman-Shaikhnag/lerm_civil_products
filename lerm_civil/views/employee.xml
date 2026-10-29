@@ -14,6 +14,28 @@
         </record>
 
         
+        <record id="view_employee_filter_inherit_departments" model="ir.ui.view">
+            <field name="name">hr.employee.search.inherit.departments</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//searchpanel/field[@name='department_id']" position="replace">
+                    <field name="department_ids" select="multi" icon="fa-users" enable_counters="1"/>
+                </xpath>
+                <xpath expr="//search/field[@name='job_id']" position="after">
+                    <field name="department_ids"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr.act_employee_from_department" model="ir.actions.act_window">
+            <field name="context">{
+                
+                "default_department_ids": [active_id],
+                "expand": 1}
+            </field>
+        </record>
+
         <record id="view_employee_form_inherit" model="ir.ui.view">
             <field name="name">hr.employee.form.inherit</field>
             <field name="model">hr.employee</field>
