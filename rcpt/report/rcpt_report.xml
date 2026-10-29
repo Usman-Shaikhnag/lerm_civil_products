@@ -113,14 +113,12 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="6">Age in Days :
+								<td colspan="6">#Age in Days :
 									<![CDATA[&nbsp;]]>
-
-									<span t-field="rcpt.age_of_days"/>
 									<span t-field="rcpt.age_of_test"/>
-									<span> Days</span>
-								</td> -->
-								<td colspan="12">#Date of Casting :
+									<span>Days</span>
+								</td>
+								<td colspan="6">#Date of Casting :
 									<![CDATA[&nbsp;]]>
 									<span t-field="rcpt.date_of_casting"/>
 								</td>
@@ -128,16 +126,16 @@
 							
 						</table>
 					</div>
-					<!-- <div style="margin-top:20px;">
-						<p><strong>Results</strong>:<![CDATA[&nbsp;]]></p>
-					</div> -->
+					<div style="padding-top:5px">
+						<span style="font-weight: bold;">Test Method : </span><span  t-field="eln.material.method_reference"/> 
+						</div>
 
 						<!-- 1 Compressive strength  -->
 					
 				<div t-if="rcpt">
-					<div style="padding-top:5px">
+					<!-- <div style="padding-top:5px">
 						<span t-esc="eln.material.test_parameter"/>
-					</div>
+					</div> -->
 					
 
 					<table t-if="rcpt">

@@ -998,11 +998,13 @@
 							<tr cols="12">
 								<td colspan="3">Sr no 
 								</td>
-								<td colspan="3">Intial Length (L1) 
+								<td colspan="3">Length of Bar after Immersion in Water (L1)
 								</td>
-								<td colspan="3">Final Length(L2)
+								<td colspan="3">Final Length (L2) 
 								</td>
-								<td colspan="3">Expansion ((L2-L1)/L1)x 100, %
+								<td colspan="3">Original Length
+								</td>
+								<td colspan="3">Expansion ((L2-L1)/L3)x 100, %
 								</td>
 							</tr>
 
@@ -1019,6 +1021,9 @@
 								</td>
 								<td colspan="3">
 									<span t-esc="r['final_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['original_length']"/>
 								</td>
 								<td colspan="3">
 									<span t-esc="r['expantion']"  t-options='{"widget": "float", "precision": 3}'/>
@@ -1280,7 +1285,7 @@
 
 						<!-- Normal Consistency  -->
 							<tr t-if="cement.normal_consistency_visible and cement.normal_consistency_nabl == 'pass' and nabl and not fromEln">
-								<td style="text-align: center;">
+								<td >
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 									
@@ -1292,19 +1297,19 @@
 									</span>
 									
 								</td>
-								<td style="text-align: center;">
+								<td>
 									<span>
 										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
 									</span>
 								</td>
 								
-								<td style="text-align: center;">
+								<td>
 									<span>
 										<span t-field="cement.normal_consistency_trial1"/>
 									</span>									
 								</td>
 								
-								<td style="text-align: center;">
+								<td>
 									<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1313,7 +1318,7 @@
 									</t>
 									</span>
 								</td>
-								<td style="text-align: center;"> 
+								<td> 
 									<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">

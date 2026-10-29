@@ -1130,7 +1130,7 @@ class FlyaschNormalConsistency(models.Model):
 
      #28 days Casting
 
-    casting_28_namess = fields.Char("Name",default="28 Days")
+    casting_28_namess = fields.Char("Name",default="11 Days")
     # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
 
     casting_dates_28dayss = fields.Date(string="Date of Casting")
@@ -1156,7 +1156,7 @@ class FlyaschNormalConsistency(models.Model):
         for record in self:
             if record.casting_dates_28dayss:
                 cast_date = fields.Datetime.from_string(record.casting_dates_28dayss)
-                testing_date = cast_date + timedelta(days=28)
+                testing_date = cast_date + timedelta(days=11)
                 record.testing_dates_28dayss = fields.Datetime.to_string(testing_date)
             else:
                 record.testing_dates_28dayss = False

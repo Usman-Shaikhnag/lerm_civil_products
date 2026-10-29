@@ -105,11 +105,12 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="6">Age in Days :
+								<td colspan="6">#Age in Days :
 									<![CDATA[&nbsp;]]>
 									<span t-field="rcmt.age_of_test"/>
-								</td> -->
-								<td colspan="12">#Date of Casting :
+									<span>Days</span>
+								</td>
+								<td colspan="6">#Date of Casting :
 									<![CDATA[&nbsp;]]>
 									<span t-field="rcmt.date_of_casting"/>
 								</td>
@@ -124,7 +125,7 @@
 						<!-- 1 Compressive strength  -->
 					
 				<div style="padding-top:5px">
-						<span style="font-weight: bold;" t-field="eln.material.method_reference"/>:   	
+						<span style="font-weight: bold;">Test Method : </span><span  t-field="eln.material.method_reference"/>  	
 						
 						
 							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
