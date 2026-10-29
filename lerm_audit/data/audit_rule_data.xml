@@ -1,0 +1,103 @@
+<odoo>
+    <data noupdate="1">
+        <record id="audit_rule_parameter_master" model="audit.rule">
+            <field name="name">Parameter Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_parameter_master"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_parameter_master_table" model="audit.rule">
+            <field name="name">Parameter Specification / Test Method</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_parameter_master_table"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_parameter_master_table__parameter_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_dependent_inputs" model="audit.rule">
+            <field name="name">Parameter Dependent Inputs</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_dependent_inputs"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_dependent_inputs__parameter_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_test_method" model="audit.rule">
+            <field name="name">Test Method</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_civil_test_method"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_product_template" model="audit.rule">
+            <field name="name">Product Master</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_grade_line" model="audit.rule">
+            <field name="name">Product Grade</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_grade_line"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_grade_line__product_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_size_line" model="audit.rule">
+            <field name="name">Product Size</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_size_line"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_size_line__product_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_qty_line" model="audit.rule">
+            <field name="name">Product Quantity</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_qty_line"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_qty_line__product_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_alias_line" model="audit.rule">
+            <field name="name">Product Alias</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_alias_line"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_alias_line__product_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_product_based_calculation" model="audit.rule">
+            <field name="name">Product Based Calculation</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_product_based_calculation"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_product_based_calculation__product_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_product_grade_title" model="audit.rule">
+            <field name="name">Product Grade Title</field>
+            <field name="model_id" ref="lerm_civil.model_product_grade_title"/>
+            <field name="parent_field_id" ref="lerm_civil.field_product_grade_title__parent_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_discipline" model="audit.rule">
+            <field name="name">Discipline Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_civil_discipline"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_group" model="audit.rule">
+            <field name="name">Group Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_civil_group"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_datasheet_master" model="audit.rule">
+            <field name="name">Datasheet Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_datasheet_master"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_datasheet_line" model="audit.rule">
+            <field name="name">Datasheet Line</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_datasheet_line"/>
+            <field name="parent_field_id" ref="lerm_civil.field_lerm_datasheet_line__datasheet_id"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_lab_master" model="audit.rule">
+            <field name="name">Lab Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_lab_master"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_lab_location_master" model="audit.rule">
+            <field name="name">Lab Location Master</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_lab_location_master"/>
+            <field name="state">subscribed</field>
+        </record>
+        <record id="audit_rule_portal_user_master" model="audit.rule">
+            <field name="name">Portal User Master</field>
+            <field name="model_id" ref="lerm_civil.model_portal_user_master"/>
+            <field name="state">subscribed</field>
+        </record>
+    </data>
+</odoo>

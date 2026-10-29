@@ -1,0 +1,117 @@
+<odoo>
+    <data>
+        <record id="view_audit_log_tree" model="ir.ui.view">
+            <field name="name">audit.log.tree</field>
+            <field name="model">audit.log</field>
+            <field name="arch" type="xml">
+                <tree string="Audit Trail" create="false" edit="false" delete="false"
+                      decoration-danger="operation == 'unlink'" decoration-success="operation == 'create'">
+                    <field name="date"/>
+                    <field name="user_id" widget="many2one_avatar_user"/>
+                    <field name="operation" widget="badge"
+                           decoration-danger="operation == 'unlink'" decoration-success="operation == 'create'" decoration-info="operation == 'write'"/>
+                    <field name="model_id"/>
+                    <field name="res_name"/>
+                    <field name="parent_name" optional="show"/>
+                    <field name="res_id" optional="hide"/>
+                    <field name="source" optional="hide"/>
+                    <field name="restored_res_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_audit_log_form" model="ir.ui.view">
+            <field name="name">audit.log.form</field>
+            <field name="model">audit.log</field>
+            <field name="arch" type="xml">
+                <form string="Audit Log" create="false" edit="false" delete="false">
+                    <header>
+                        <button name="action_restore" type="object" string="Restore Record" class="btn-primary"
+                                groups="audit_trail.group_audit_manager"
+                                invisible="operation != 'unlink' or restored_res_id"
+                                confirm="Recreate this deleted record from its snapshot?"/>
+                        <button name="action_open_record" type="object" string="Open Record"
+                                invisible="operation == 'unlink' and not restored_res_id"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="res_name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="operation"/>
+                                <field name="model_id"/>
+                                <field name="model_name"/>
+                                <field name="res_id"/>
+                                <field name="parent_name" invisible="not parent_name"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="user_id"/>
+                                <field name="source"/>
+                                <field name="rule_id"/>
+                                <field name="restored_res_id" invisible="not restored_res_id"/>
+                            </group>
+                        </group>
+                        <field name="line_ids">
+                            <tree>
+                                <field name="field_label"/>
+                                <field name="old_value"/>
+                                <field name="new_value"/>
+                                <field name="field_name" optional="hide"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_audit_log_search" model="ir.ui.view">
+            <field name="name">audit.log.search</field>
+            <field name="model">audit.log</field>
+            <field name="arch" type="xml">
+                <search string="Audit Trail">
+                    <field name="res_name"/>
+                    <field name="parent_name"/>
+                    <field name="user_id"/>
+                    <field name="model_id"/>
+                    <field name="res_id"/>
+                    <field name="line_ids" string="Value" filter_domain="['|', ('line_ids.old_value', 'ilike', self), ('line_ids.new_value', 'ilike', self)]"/>
+                    <filter name="filter_create" string="Created" domain="[('operation', '=', 'create')]"/>
+                    <filter name="filter_write" string="Changed" domain="[('operation', '=', 'write')]"/>
+                    <filter name="filter_unlink" string="Deleted" domain="[('operation', '=', 'unlink')]"/>
+                    <separator/>
+                    <filter name="filter_date" string="Date" date="date"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                        <filter name="group_model" string="Model" context="{'group_by': 'model_id'}"/>
+                        <filter name="group_operation" string="Operation" context="{'group_by': 'operation'}"/>
+                        <filter name="group_date" string="Day" context="{'group_by': 'date:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_audit_log_pivot" model="ir.ui.view">
+            <field name="name">audit.log.pivot</field>
+            <field name="model">audit.log</field>
+            <field name="arch" type="xml">
+                <pivot string="Audit Trail">
+                    <field name="user_id" type="row"/>
+                    <field name="operation" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="action_audit_log" model="ir.actions.act_window">
+            <field name="name">Audit Trail</field>
+            <field name="res_model">audit.log</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="search_view_id" ref="view_audit_log_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No changes logged yet</p>
+                <p>Subscribe an Audit Rule on a model to start logging its creates, changes and deletes.</p>
+            </field>
+        </record>
+    </data>
+</odoo>
