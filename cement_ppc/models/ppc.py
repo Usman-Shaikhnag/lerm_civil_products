@@ -707,6 +707,19 @@ class CementPpc(models.Model):
     compressive_strength_3_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_3days" ,digits=(16,1))
     status_3days = fields.Boolean("Done")
 
+    casting_3_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_3_days_char"
+    )
+
+    @api.depends('status_3days')
+    def _compute_casting_3_days_char(self):
+        for rec in self:
+            if rec.status_3days:
+                rec.casting_3_days_char = "Done"
+            else:
+                rec.casting_3_days_char = "Awaited"
+
     compressive_3days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -722,6 +735,11 @@ class CementPpc(models.Model):
     @api.depends('compressive_strength_3_days','eln_ref','grade')
     def _compute_compressive_3days_conformity(self):
         for record in self:
+
+            if not record.status_3days:
+                record.compressive_3days_conformity = '--'
+                continue
+
             record.compressive_3days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec1c9105-4eaf-4722-942e-1d8a030eb32c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec1c9105-4eaf-4722-942e-1d8a030eb32c')]).parameter_table
@@ -815,6 +833,19 @@ class CementPpc(models.Model):
     compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days" ,digits=(16,1))
     status_7days = fields.Boolean("Done")
 
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
     compressive_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -830,6 +861,9 @@ class CementPpc(models.Model):
     @api.depends('compressive_strength_7_days','eln_ref','grade')
     def _compute_compressive_7days_conformity(self):
         for record in self:
+            if not record.status_7days:
+                record.compressive_7days_conformity = '--'
+                continue
             record.compressive_7days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e771886e-5bf2-432a-9fd0-9b1194ca4e22')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e771886e-5bf2-432a-9fd0-9b1194ca4e22')]).parameter_table
@@ -923,6 +957,19 @@ class CementPpc(models.Model):
     compressive_strength_28_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_28days" ,digits=(16,1))
     status_28days = fields.Boolean("Done")
 
+    casting_28_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_casting_28_days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.casting_28_days_char = "Done"
+            else:
+                rec.casting_28_days_char = "Awaited"
+
     compressive_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -938,6 +985,9 @@ class CementPpc(models.Model):
     @api.depends('compressive_strength_28_days','eln_ref','grade')
     def _compute_compressive_28days_conformity(self):
         for record in self:
+            if not record.status_28days:
+                record.compressive_28days_conformity = '--'
+                continue
             record.compressive_28days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','570f56ad-6957-42d3-8f30-a1556f96756f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','570f56ad-6957-42d3-8f30-a1556f96756f')]).parameter_table
@@ -1400,7 +1450,11 @@ class CementPpc(models.Model):
 
           
             if result.parameter.internal_id == 'ec1c9105-4eaf-4722-942e-1d8a030eb32c':
-                result.result_char = round(self.compressive_strength_3_days,2)
+                if self.status_3days:
+                    result.result_char = round(self.compressive_strength_3_days, 2)
+                else:
+                    result.result_char = self.casting_3_days_char
+
                 result.calculated = True
                 if self.compressive_3days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1410,7 +1464,11 @@ class CementPpc(models.Model):
 
 
             if result.parameter.internal_id == 'e771886e-5bf2-432a-9fd0-9b1194ca4e22':
-                result.result_char = round(self.compressive_strength_7_days,2)
+                if self.status_7days:
+                    result.result_char = round(self.compressive_strength_7_days, 2)
+                else:
+                    result.result_char = self.casting_7_days_char
+
                 result.calculated = True
                 if self.compressive_7days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1420,7 +1478,10 @@ class CementPpc(models.Model):
 
 
             if result.parameter.internal_id == '570f56ad-6957-42d3-8f30-a1556f96756f':
-                result.result_char = round(self.compressive_strength_28_days,2)
+                if self.status_28days:
+                    result.result_char = round(self.compressive_strength_28_days, 2)
+                else:
+                    result.result_char = self.casting_28_days_char
                 result.calculated = True
                 if self.compressive_28days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1632,16 +1693,17 @@ class SoundnessAutoclaveMethodppc(models.Model):
 
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
-    intial_length = fields.Float("Intial Length (L1)",digits=(12,3))
-    final_length = fields.Float("Final Length (L2)",digits=(12,3))
-    expantion = fields.Float("Expansion ((L2-L1)/L1)x 100, %",compute="_compute_expansion_opc",digits=(12,3))
+    intial_length = fields.Float("Length of Bar after Immersion in Water (L1)",digits=(12,2))
+    final_length = fields.Float("Final Length (L2)",digits=(12,2))
+    original_length = fields.Float("Original Length",digits=(12,2)) #just for display
+    expantion = fields.Float("Expansion ((L2-L1)/L3)x 100, %",compute="_compute_expansion_fly_ash",digits=(12,2))
 
-
+    # ((L2-L1)/L1) x 100
     @api.depends('intial_length', 'final_length')
-    def _compute_expansion_opc(self):
+    def _compute_expansion_fly_ash(self):
         for record in self:
-            if record.intial_length:  # Avoid division by zero
-                record.expantion = ((record.final_length - record.intial_length) / record.intial_length) * 100
+            if record.original_length:  # Avoid division by zero (L1 is denominator)
+                record.expantion = ((record.final_length - record.intial_length) / record.original_length) * 100
             else:
                 record.expantion = 0.0
 
