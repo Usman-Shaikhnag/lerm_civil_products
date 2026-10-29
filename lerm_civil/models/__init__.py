@@ -14,6 +14,7 @@ from . import company
 from . import data_sheets_report
 from . import enviroment_register
 from . import employee
+from . import department
 from . import invoice
 from . import lab_master
 from . import general_template

@@ -100,11 +100,18 @@
 							</tr>
 
 							<tr>
-								<td colspan="6">Material/Test Name :
+								<td colspan="12">Material/Test Name :
 																											<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
-								<td colspan="6">Date of Casting :
+							</tr>
+							<tr>
+								<td colspan="6">#Age in Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.age_of_test"/>
+									<span>Days</span>
+								</td>
+								<td colspan="6">#Date of Casting :
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.date_of_casting"/>
 								</td>
@@ -118,8 +125,8 @@
 						<u>Protocol</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
 						IS 516(Part2 / Sec1)<![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>2018
 					</div> -->
-					<div style="margin-top:10px;">
-						<span t-esc="eln.material.test_parameter"/>
+					<div style="margin-top:20px;">
+						<u>Results</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
 					</div>
 
 					<!-- <div>
@@ -156,6 +163,11 @@
 											
 										</span>
 									</th>
+									<th style="text-align: center;" t-if="eln.conformity">
+									<span style="font-weight: bold;">
+										Confirmity Status
+									</span>
+							   	</th>
 									
 								</tr>
 
@@ -193,10 +205,9 @@
 											</t>
 										</t>
 										</td>
-									<!-- <td t-if="eln.conformity">
-											<span t-esc="data.wpt_conformity"/>
-									</td>
-										-->
+									<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="data.wpt_conformity"/>
+								</td>
 									
 								</tr>
 								

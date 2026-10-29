@@ -1365,10 +1365,11 @@
                     <div invisible = "opc_soundness_visible == False">
                         <field name="opc_soundness_table"  nolabel="1" class="custom_table_borders">
                         <tree editable="bottom">
-                         <field name="sr_no" /> 
-                          <field name="intial_length" />
-                          <field name="final_length" />
-                          <field name="expantion"/>
+                             <field name="sr_no" /> 
+                            <field name="intial_length" class="blue-input" decoration-info="intial_length != 0"/>
+                            <field name="final_length" class="blue-input" decoration-info="final_length != 0"/>
+                            <field name="original_length" class="blue-input" decoration-info="original_length != 0"/>
+                            <field name="expantion"/>
                          
                         </tree>
                         </field>

@@ -997,11 +997,13 @@
 							<tr cols="12">
 								<td colspan="3">Sr no 
 								</td>
-								<td colspan="3">Intial Length (L1) 
+								<td colspan="3">Length of Bar after Immersion in Water (L1)
 								</td>
-								<td colspan="3">Final Length(L2)
+								<td colspan="3">Final Length (L2) 
 								</td>
-								<td colspan="3">Expansion ((L2-L1)/L1)x 100, %
+								<td colspan="3">Original Length
+								</td>
+								<td colspan="3">Expansion ((L2-L1)/L3)x 100, %
 								</td>
 							</tr>
 
@@ -1018,6 +1020,9 @@
 								</td>
 								<td colspan="3">
 									<span t-esc="r['final_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['original_length']"/>
 								</td>
 								<td colspan="3">
 									<span t-esc="r['expantion']"  t-options='{"widget": "float", "precision": 3}'/>

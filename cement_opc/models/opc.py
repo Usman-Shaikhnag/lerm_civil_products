@@ -1270,6 +1270,7 @@ class CementNormalConsistency(models.Model):
     opc_soundness_visible = fields.Boolean("Soundness by Autoclave Method Visible",compute="_compute_visible")
   
     opc_soundness_table = fields.One2many('opc.soundness.autoclave.line','parent_id',string="Parameter")
+    
     wt_cement_opc = fields.Float(string="Wt. of Cement (g)", store=True)
     water_required_opc = fields.Float(string="Wt.of water required (g)", store=True)
     avg_expantion_opc = fields.Float(string="Average Expansion %",compute="_compute_avg_expantion_opc",digits=(12,3))
@@ -1714,16 +1715,17 @@ class SoundnessAutoclaveMethod(models.Model):
 
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
-    intial_length = fields.Float("Intial Length (L1)",digits=(12,3))
-    final_length = fields.Float("Final Length (L2)",digits=(12,3))
-    expantion = fields.Float("Expansion ((L2-L1)/L1)x 100, %",compute="_compute_expansion_opc",digits=(12,3))
+    intial_length = fields.Float("Length of Bar after Immersion in Water (L1)",digits=(12,2))
+    final_length = fields.Float("Final Length (L2)",digits=(12,2))
+    original_length = fields.Float("Original Length",digits=(12,2)) #just for display
+    expantion = fields.Float("Expansion ((L2-L1)/L3)x 100, %",compute="_compute_expansion_fly_ash",digits=(12,2))
 
-
+    # ((L2-L1)/L1) x 100
     @api.depends('intial_length', 'final_length')
-    def _compute_expansion_opc(self):
+    def _compute_expansion_fly_ash(self):
         for record in self:
-            if record.intial_length:  # Avoid division by zero
-                record.expantion = ((record.final_length - record.intial_length) / record.intial_length) * 100
+            if record.original_length:  # Avoid division by zero (L1 is denominator)
+                record.expantion = ((record.final_length - record.intial_length) / record.original_length) * 100
             else:
                 record.expantion = 0.0
 
