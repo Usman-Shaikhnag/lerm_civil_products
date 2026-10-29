@@ -23,19 +23,15 @@ class ChemicalCrushedSand(models.Model):
 
         default_notes = [
             (0, 0, {
-                'sr_no': 'a',
                 'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'b',
                 'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'c',
                 'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'd',
                 'notes': '# - Information provided by the customer.',
             }),
         ]
