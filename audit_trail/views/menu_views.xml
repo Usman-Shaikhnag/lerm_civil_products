@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <menuitem id="menu_audit_root"
+            name="Audit Trail"
+            parent="base.menu_custom"
+            groups="audit_trail.group_audit_viewer"
+            sequence="200"/>
+
+        <menuitem id="menu_audit_log"
+            name="Audit Logs"
+            parent="menu_audit_root"
+            action="action_audit_log"
+            sequence="10"/>
+
+        <menuitem id="menu_audit_rule"
+            name="Audit Rules"
+            parent="menu_audit_root"
+            action="action_audit_rule"
+            groups="audit_trail.group_audit_manager"
+            sequence="20"/>
+    </data>
+</odoo>
