@@ -1286,6 +1286,8 @@ class ELNParametersResult(models.Model):
     #         else:
     #             record.nabl_status = 'non-nabl'
 
+    
+
     @api.depends('parameter.calculation_type')
     def _compute_calculation_type(self):
         for record in self:

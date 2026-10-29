@@ -127,7 +127,8 @@
                         <field name="specification_permissible_limit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="specification" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="nabl_status" optional="show" readonly="result_type == 'number'"/>
-                        <field name="conformity_status" optional="show" decoration-success="conformity_status == 'pass'" decoration-danger="conformity_status == 'fail'" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
+                        
+                        <field name="conformity_status" optional="show" decoration-success="conformity_status == 'pass'" decoration-danger="conformity_status == 'fail'"  column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="model_id" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <button string="Calculation" optional="show" name="open_calculation_wizard" type="object" class="oe_highlight"
                                 invisible="calculation_type == 'form_based'" column_invisible="parent.is_product_based_calculation == True"/>

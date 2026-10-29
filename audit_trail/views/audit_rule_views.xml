@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+        <record id="view_audit_rule_tree" model="ir.ui.view">
+            <field name="name">audit.rule.tree</field>
+            <field name="model">audit.rule</field>
+            <field name="arch" type="xml">
+                <tree string="Audit Rules" decoration-muted="state == 'draft'">
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="log_create"/>
+                    <field name="log_write"/>
+                    <field name="log_unlink"/>
+                    <field name="field_mode" optional="hide"/>
+                    <field name="parent_field_id" optional="show"/>
+                    <field name="state" widget="badge" decoration-success="state == 'subscribed'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_audit_rule_form" model="ir.ui.view">
+            <field name="name">audit.rule.form</field>
+            <field name="model">audit.rule</field>
+            <field name="arch" type="xml">
+                <form string="Audit Rule">
+                    <header>
+                        <button name="action_subscribe" type="object" string="Subscribe" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_unsubscribe" type="object" string="Unsubscribe" invisible="state != 'subscribed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_logs" type="object" class="oe_stat_button" icon="fa-history">
+                                <field name="log_count" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="e.g. Parameter Master"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="model_id" options="{'no_create': True}" readonly="state == 'subscribed'"/>
+                                <field name="model_name"/>
+                                <field name="parent_field_id" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="log_create"/>
+                                <field name="log_write"/>
+                                <field name="log_unlink"/>
+                                <field name="action_id" invisible="not action_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="field_mode" widget="radio" options="{'horizontal': true}"/>
+                            <field name="field_ids" widget="many2many_tags" invisible="field_mode == 'all'" options="{'no_create': True}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_audit_rule" model="ir.actions.act_window">
+            <field name="name">Audit Rules</field>
+            <field name="res_model">audit.rule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
