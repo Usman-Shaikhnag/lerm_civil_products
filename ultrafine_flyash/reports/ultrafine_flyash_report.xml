@@ -604,9 +604,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.compressive_strength_28_days" />
-									</div>
+									</div> -->
+									<span>
+												<t t-if="data.status_28daysss">
+													<span t-field="data.compressive_strength_28_days" />
+												</t>
+												<t t-else="">
+													<span t-field="data.lime_char" />
+												</t>
+											</span>		
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
@@ -794,9 +802,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.average_casting_28days" />
-									</div>
+									</div> -->
+									<span>
+												<t t-if="data.status_28days">
+													<span t-field="data.average_casting_28days" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_28_days_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
@@ -839,9 +855,18 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.average_casting_28dayss" />
-									</div>
+									</div> -->
+
+									<span>
+												<t t-if="data.status_28dayss">
+													<span t-field="data.average_casting_28dayss" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_28_dayss_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
@@ -872,9 +897,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.compressive_strength_of_sample" />
-									</div>
+									</div> -->
+									<span>
+												<t t-if="data.status_28dayss">
+													<span t-field="data.compressive_strength_of_sample" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_28_dayss_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>

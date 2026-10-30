@@ -1357,6 +1357,19 @@ class UltraFineFlyash(models.Model):
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     status_28days = fields.Boolean("Done")
 
+    casting_28_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_casting_28_days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.casting_28_days_char = "Done"
+            else:
+                rec.casting_28_days_char = "Awaited"
+
 
     @api.depends('casting_28_days_tables.compressive_strength')
     def _compute_average_28days(self):
@@ -1434,6 +1447,19 @@ class UltraFineFlyash(models.Model):
     average_casting_28dayss = fields.Float("Average",compute="_compute_average_28dayss")
     status_28dayss = fields.Boolean("Done")
 
+    casting_28_dayss_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_dayss_char"
+    )
+
+    @api.depends('status_28dayss')
+    def _compute_casting_28_dayss_char(self):
+        for rec in self:
+            if rec.status_28dayss:
+                rec.casting_28_dayss_char = "Done"
+            else:
+                rec.casting_28_dayss_char = "Awaited"
+
 
     @api.depends('casting_28_dayss_tables.compressive_strengths')
     def _compute_average_28dayss(self):
@@ -1473,10 +1499,15 @@ class UltraFineFlyash(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_compressive_strength_of_sample_conformity", store=True)
 
-    @api.depends('compressive_strength_of_sample','eln_ref','grade')
+    @api.depends('compressive_strength_of_sample','eln_ref','grade','status_28days','status_28dayss')
     def _compute_compressive_strength_of_sample_conformity(self):
         
         for record in self:
+
+            if not record.status_28days or not record.status_28dayss:
+                record.compressive_strength_of_sample_conformity = '--'
+                continue
+
             record.compressive_strength_of_sample_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cc57a991-3540-4891-add6-b20aa1c68fcc')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cc57a991-3540-4891-add6-b20aa1c68fcc')]).parameter_table
@@ -1613,6 +1644,19 @@ class UltraFineFlyash(models.Model):
     compressive_strength_28_days = fields.Integer("Compressive Strength",compute="_compute_compressive_strength_28dayss")
     status_28daysss = fields.Boolean("Done")
 
+    lime_char = fields.Char(
+    string="Status",
+    compute="_compute_lime_char"
+    )
+
+    @api.depends('status_28daysss')
+    def _compute_lime_char(self):
+        for rec in self:
+            if rec.status_28daysss:
+                rec.lime_char = "Done"
+            else:
+                rec.lime_char = "Awaited"
+
 
     @api.depends('casting_28_dayss_tabless.compressive_strengthss')
     def _compute_average_28daysss(self):
@@ -1656,10 +1700,13 @@ class UltraFineFlyash(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_lime_reactivity_conformity", store=True)
 
-    @api.depends('compressive_strength_28_days','eln_ref','grade')
+    @api.depends('compressive_strength_28_days','eln_ref','grade','status_28daysss')
     def _compute_lime_reactivity_conformity(self):
         
         for record in self:
+            if not record.status_28daysss:
+                record.lime_reactivity_conformity = '--'
+                continue
             record.lime_reactivity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e012794c-2af1-408d-8d5d-4c605c689b63')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e012794c-2af1-408d-8d5d-4c605c689b63')]).parameter_table
@@ -2108,6 +2155,11 @@ class UltraFineFlyash(models.Model):
 
             if result.parameter.internal_id == 'cc57a991-3540-4891-add6-b20aa1c68fcc':
                 result.result_char = round(self.compressive_strength_of_sample,2)
+
+                if self.status_28days and self.status_28dayss:
+                    result.result_char = round(self.compressive_strength_of_sample, 2)
+                else:
+                    result.result_char = self.casting_28_dayss_char
                 result.calculated = True
                 if self.compressive_strength_of_sample_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2116,7 +2168,11 @@ class UltraFineFlyash(models.Model):
                 continue
 
             if result.parameter.internal_id == 'e012794c-2af1-408d-8d5d-4c605c689b63':
-                result.result_char = round(self.compressive_strength_28_days,2)
+
+                if self.status_28daysss:
+                    result.result_char = round(self.compressive_strength_28_days, 2)
+                else:
+                    result.result_char = self.lime_char
                 result.calculated = True
                 if self.lime_reactivity_nabl == 'pass':
                     result.nabl_status = 'nabl'
