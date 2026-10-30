@@ -253,6 +253,20 @@ class GypsumMechanical(models.Model):
     compressive_strength_1_days = fields.Float("Compressive Strength")
     status_1days = fields.Boolean("Done")
 
+    casting_1_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_1_days_char"
+    )
+
+    @api.depends('status_1days')
+    def _compute_casting_1_days_char(self):
+        for rec in self:
+            if rec.status_1days:
+                rec.casting_1_days_char = "Done"
+            else:
+                rec.casting_1_days_char = "Awaited"
+
+
 
     @api.depends('casting_1_days_tables.compressive_strength')
     def _compute_average_1days(self):
@@ -285,6 +299,20 @@ class GypsumMechanical(models.Model):
     casting_7_days_tables = fields.One2many('gypsum.casting.7days.line','parent_id',string="7 Days")
     average_casting_7days = fields.Float("Average",compute="_compute_average_7days")
     status_7days = fields.Boolean("Done")
+
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
     # compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days" ,digits=(16,1))
 
     # compressive_7days_conformity = fields.Selection([

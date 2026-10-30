@@ -428,6 +428,84 @@ class GgbsMechanical(models.Model):
             else:
                 record.testing_date_7days_opc = False
 
+    average_7days_slag_char = fields.Char(
+    string="Status",
+    compute="_compute_average_7days_slag_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_average_7days_slag_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.average_7days_slag_char = "Done"
+            else:
+                rec.average_7days_slag_char = "Awaited"
+
+    average_7days_slag_opc_char = fields.Char(
+    string="Status",
+    compute="_compute_average_7days_slag_opc_char"
+    )
+
+    @api.depends('status_7days_opc')
+    def _compute_average_7days_slag_opc_char(self):
+        for rec in self:
+            if rec.status_7days_opc:
+                rec.average_7days_slag_opc_char = "Done"
+            else:
+                rec.average_7days_slag_opc_char = "Awaited"
+
+    slag_activity_index_7days_char = fields.Char(
+    string="Status",
+    compute="_compute_slag_activity_index_7days_char"
+    )
+
+    @api.depends('status_7days','status_7days_opc')
+    def _compute_slag_activity_index_7days_char(self):
+        for rec in self:
+            if rec.status_7days and rec.status_7days_opc:
+                rec.slag_activity_index_7days_char = "Done"
+            else:
+                rec.slag_activity_index_7days_char = "Awaited"
+
+    average_28days_slag_char = fields.Char(
+    string="Status",
+    compute="_compute_average_28days_slag_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_average_28days_slag_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.average_28days_slag_char = "Done"
+            else:
+                rec.average_28days_slag_char = "Awaited"
+
+    average_28days_slag_opc_char = fields.Char(
+    string="Status",
+    compute="_compute_average_28days_slag_opc_char"
+    )
+
+    @api.depends('status_28days_opc')
+    def _compute_average_28days_slag_opc_char(self):
+        for rec in self:
+            if rec.status_28days_opc:
+                rec.average_28days_slag_opc_char = "Done"
+            else:
+                rec.average_28days_slag_opc_char = "Awaited"
+
+    slag_activity_index_28days_char = fields.Char(
+    string="Status",
+    compute="_compute_slag_activity_index_28days_char"
+    )
+
+    @api.depends('status_28days','status_28days_opc')
+    def _compute_slag_activity_index_28days_char(self):
+        for rec in self:
+            if rec.status_28days and rec.status_28days_opc:
+                rec.slag_activity_index_28days_char = "Done"
+            else:
+                rec.slag_activity_index_28days_char = "Awaited"
+
     # conformity field 
     slag_activity_index_7days = fields.Float("Slag Activity Index (SAI) 7 days",compute="_compute_slag_index_7days")
     slag_7days_conformity = fields.Selection([
@@ -804,7 +882,7 @@ class GgbsMechanical(models.Model):
                 if self.status_7days and self.status_7days_opc:
                     result.result_char = self.slag_activity_index_7days
                 else:
-                    result.result_char = "Awaited"
+                    result.result_char = self.slag_activity_index_7days_char
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -821,7 +899,7 @@ class GgbsMechanical(models.Model):
                 if self.status_28days and self.status_28days_opc:
                     result.result_char = self.slag_activity_index_28days
                 else:
-                    result.result_char = "Awaited"
+                    result.result_char = self.slag_activity_index_28days_char
                 if self.slag_28days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:

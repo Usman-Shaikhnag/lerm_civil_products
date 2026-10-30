@@ -469,7 +469,7 @@
 											<span t-field="ggbs.average_7days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -524,7 +524,7 @@
 											<span t-field="ggbs.average_7days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -580,7 +580,7 @@
 											<span t-field="ggbs.average_7days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -629,11 +629,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days_opc">
 											<span t-field="ggbs.average_7days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -681,11 +681,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days_opc">
 											<span t-field="ggbs.average_7days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -732,11 +732,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days_opc">
 											<span t-field="ggbs.average_7days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_7days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -782,11 +782,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days and ggbs.status_7days_opc">
 											<span t-field="ggbs.slag_activity_index_7days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_7days_char" />
 										</t>
 									</span>									
 								</td>
@@ -827,11 +827,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days and ggbs.status_7days_opc">
 											<span t-field="ggbs.slag_activity_index_7days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_7days_char" />
 										</t>
 									</span>									
 								</td>
@@ -869,11 +869,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_7days and ggbs.status_7days_opc">
 											<span t-field="ggbs.slag_activity_index_7days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_7days_char" />
 										</t>
 									</span>									
 								</td>
@@ -912,11 +912,11 @@
 
 								<td  style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_7days">
+										<t t-if="ggbs.status_28days">
 											<span t-field="ggbs.average_28days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -942,7 +942,7 @@
 								
 								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
 								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
-									<span t-field="ggbs.fineness_confirmity"/>
+									<span t-field="ggbs.slag_28days_conformity"/>
 								</td>
 								
 							</tr>
@@ -970,7 +970,7 @@
 											<span t-field="ggbs.average_28days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -996,7 +996,7 @@
 								
 								<!-- <td style="text-align: center;border-bottom:none;" t-if="eln.conformity"> -->
 								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
-									<span t-field="ggbs.fineness_confirmity"/>
+									<span t-field="ggbs.slag_28days_conformity"/>
 								</td>
 								
 							</tr>
@@ -1023,7 +1023,7 @@
 											<span t-field="ggbs.average_28days_slag"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_char" />
 										</t>
 									</span>									
 								</td>
@@ -1048,7 +1048,7 @@
 								
 								
 								<td rowspan="3" style="text-align:center;vertical-align:middle;" t-if="eln.conformity">
-									<span t-field="ggbs.fineness_confirmity"/>
+									<span t-field="ggbs.slag_28days_conformity"/>
 								</td>
 								
 							</tr>
@@ -1071,11 +1071,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days_opc">
 											<span t-field="ggbs.average_28days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -1123,11 +1123,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days_opc">
 											<span t-field="ggbs.average_28days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -1174,11 +1174,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days_opc">
 											<span t-field="ggbs.average_28days_slag_opc"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.average_28days_slag_opc_char" />
 										</t>
 									</span>									
 								</td>
@@ -1224,11 +1224,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days and ggbs.status_28days_opc">
 											<span t-field="ggbs.slag_activity_index_28days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_28days_char" />
 										</t>
 									</span>									
 								</td>
@@ -1269,11 +1269,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days and ggbs.status_28days_opc">
 											<span t-field="ggbs.slag_activity_index_28days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_28days_char" />
 										</t>
 									</span>									
 								</td>
@@ -1313,11 +1313,11 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<t t-if="ggbs.status_28days">
+										<t t-if="ggbs.status_28days and ggbs.status_28days_opc">
 											<span t-field="ggbs.slag_activity_index_28days"/>
 										</t>
 										<t t-else="">
-											Awaited
+											<span t-field="ggbs.slag_activity_index_28days_char" />
 										</t>
 									</span>									
 								</td>

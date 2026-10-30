@@ -1016,6 +1016,19 @@ class FlyaschNormalConsistency(models.Model):
                 record.compressive_strength_of_sample = 0.0
 
 
+    compressive_strength_of_sample_char = fields.Char(
+    string="Status",
+    compute="_compute_compressive_strength_of_sample_char"
+    )
+
+    @api.depends('status_28days','status_28dayss')
+    def _compute_compressive_strength_of_sample_char(self):
+        for rec in self:
+            if rec.status_28days and rec.status_28dayss:
+                rec.compressive_strength_of_sample_char = "Done"
+            else:
+                rec.compressive_strength_of_sample_char = "Awaited"
+
     compressive_strength_of_sample_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -1705,7 +1718,7 @@ class FlyaschNormalConsistency(models.Model):
                 if self.status_28days and self.status_28dayss:
                     result.result_char = round(self.compressive_strength_of_sample, 2)
                 else:
-                    result.result_char = "Awaited"
+                    result.result_char = self.compressive_strength_of_sample_char
                 result.calculated = True
                 if self.compressive_strength_of_sample_nabl == 'pass':
                     result.nabl_status = 'nabl'

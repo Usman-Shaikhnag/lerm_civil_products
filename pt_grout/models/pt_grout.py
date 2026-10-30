@@ -703,6 +703,20 @@ class PtGrout(models.Model):
     compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days")
     status_7days = fields.Boolean("Done")
 
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
+
     compressive_strength_7days_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -815,6 +829,20 @@ class PtGrout(models.Model):
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     compressive_strength_28_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_28days")
     status_28days = fields.Boolean("Done")
+
+    casting_28_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_casting_28_days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.casting_28_days_char = "Done"
+            else:
+                rec.casting_28_days_char = "Awaited"
+
 
     compressive_strength_28days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -1036,7 +1064,7 @@ class PtGrout(models.Model):
                 if self.status_28days:
                     result.result_char = round(self.compressive_strength_28_days,2)
                 else:
-                    result.result_char = "Awaited"
+                    result.result_char = self.casting_28_days_char
                 result.calculated = True
                 if self.days28_nabl == 'pass':
                     result.nabl_status = 'nabl'
