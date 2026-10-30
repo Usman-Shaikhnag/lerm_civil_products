@@ -7,7 +7,7 @@ from lxml import etree
 
 
 class FusionBondCoatedSteelDatasheet(models.AbstractModel):
-    _name = 'report.fusion_bond.fusion_bond_coated_steel_datasheet'
+    _name = 'report.fusion_bond.lerm_fusion_bond_coated_steel_datasheet'
     _description = 'Fusion Bond Epoxy Coated Steel DataSheet'
     
     @api.model

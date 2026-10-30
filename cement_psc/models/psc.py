@@ -27,19 +27,15 @@ class CementPsc(models.Model):
 
         default_notes = [
             (0, 0, {
-                'sr_no': 'a',
                 'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'b',
                 'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'c',
                 'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'd',
                 'notes': '# - Information provided by the customer.',
             }),
         ]
@@ -702,6 +698,19 @@ class CementPsc(models.Model):
     compressive_strength_3_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_3days" ,digits=(16,1))
     status_3days = fields.Boolean("Done")
 
+    casting_3_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_3_days_char"
+    )
+
+    @api.depends('status_3days')
+    def _compute_casting_3_days_char(self):
+        for rec in self:
+            if rec.status_3days:
+                rec.casting_3_days_char = "Done"
+            else:
+                rec.casting_3_days_char = "Awaited"
+
     compressive_3days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -717,6 +726,9 @@ class CementPsc(models.Model):
     @api.depends('compressive_strength_3_days','eln_ref','grade')
     def _compute_compressive_3days_conformity(self):
         for record in self:
+            if not record.status_3days:
+                record.compressive_3days_conformity = '--'
+                continue
             record.compressive_3days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table
@@ -810,6 +822,19 @@ class CementPsc(models.Model):
     compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days" ,digits=(16,1))
     status_7days = fields.Boolean("Done")
 
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
     compressive_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -825,6 +850,10 @@ class CementPsc(models.Model):
     @api.depends('compressive_strength_7_days','eln_ref','grade')
     def _compute_compressive_7days_conformity(self):
         for record in self:
+            if not record.status_7days:
+                record.compressive_7days_conformity = '--'
+                continue
+
             record.compressive_7days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table
@@ -916,6 +945,20 @@ class CementPsc(models.Model):
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     compressive_strength_28_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_28days" ,digits=(16,1))
     status_28days = fields.Boolean("Done")
+
+    casting_28_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_casting_28_days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.casting_28_days_char = "Done"
+            else:
+                rec.casting_28_days_char = "Awaited"
+
     compressive_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -931,6 +974,9 @@ class CementPsc(models.Model):
     @api.depends('compressive_strength_28_days','eln_ref','grade')
     def _compute_compressive_28days_conformity(self):
         for record in self:
+            if not record.status_28days:
+                record.compressive_28days_conformity = '--'
+                continue
             record.compressive_28days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table
@@ -1391,7 +1437,10 @@ class CementPsc(models.Model):
 
           
             if result.parameter.internal_id == 'c59e9080-f1e5-4ef5-8ced-f1232704ab2d':
-                result.result_char = round(self.compressive_strength_3_days,2)
+                if self.status_3days:
+                    result.result_char = round(self.compressive_strength_3_days, 2)
+                else:
+                    result.result_char = self.casting_3_days_char
                 result.calculated = True
                 if self.compressive_3days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1401,7 +1450,10 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == 'a221eadd-b067-41ed-9c64-3180b0d2f644':
-                result.result_char = round(self.compressive_strength_7_days,2)
+                if self.status_7days:
+                    result.result_char = round(self.compressive_strength_7_days, 2)
+                else:
+                    result.result_char = self.casting_7_days_char
                 result.calculated = True
                 if self.compressive_7days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1411,7 +1463,10 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == '734c18a7-e665-44bc-89b7-ed512432bc9c':
-                result.result_char = round(self.compressive_strength_28_days,2)
+                if self.status_28days:
+                    result.result_char = round(self.compressive_strength_28_days, 2)
+                else:
+                    result.result_char = self.casting_28_days_char
                 result.calculated = True
                 if self.compressive_28days_nabl == 'pass':
                     result.nabl_status = 'nabl'

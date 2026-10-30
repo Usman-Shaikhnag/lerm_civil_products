@@ -25,19 +25,15 @@ class CementNormalConsistency(models.Model):
 
         default_notes = [
             (0, 0, {
-                'sr_no': 'a',
                 'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'b',
                 'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'c',
                 'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
-                'sr_no': 'd',
                 'notes': '# - Information provided by the customer.',
             }),
         ]
@@ -171,12 +167,12 @@ class CementNormalConsistency(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity', default='fail')
+    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='pass')
+    ], string='NABL', default='fail',compute="_compute_initial_setting_nabl")
 
 
     @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
@@ -204,7 +200,32 @@ class CementNormalConsistency(models.Model):
                     else:
                         record.initial_setting_conformity = 'fail'
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('initial_setting_time_minutes','eln_ref','grade')
+    def _compute_initial_setting_conformity(self):
+        for record in self:
+            record.initial_setting_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.initial_setting_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.initial_setting_time_minutes - record.initial_setting_time_minutes*mu_value
+                    upper = record.initial_setting_time_minutes + record.initial_setting_time_minutes*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.initial_setting_conformity = 'pass'
+                        break
+                    else:
+                        record.initial_setting_conformity = 'fail'
+
+    @api.depends('initial_setting_time_minutes','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
         
         for record in self:
@@ -216,8 +237,8 @@ class CementNormalConsistency(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
+            lower = float(record.initial_setting_time_minutes) - float(record.initial_setting_time_minutes)*mu_value
+            upper = float(record.initial_setting_time_minutes) + float(record.initial_setting_time_minutes)*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.initial_setting_nabl = 'pass'
                 break
@@ -266,12 +287,12 @@ class CementNormalConsistency(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--')
-    ], string='Conformity', default='fail')
+    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='pass')
+    ], string='NABL', default='fail',compute="_compute_final_setting_nabl")
 
 
     @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
@@ -695,6 +716,19 @@ class CementNormalConsistency(models.Model):
     status_3days = fields.Boolean("Done")
     compressive_strength_3_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_3days" ,digits=(16,1))
 
+    casting_3_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_3_days_char"
+    )
+
+    @api.depends('status_3days')
+    def _compute_casting_3_days_char(self):
+        for rec in self:
+            if rec.status_3days:
+                rec.casting_3_days_char = "Done"
+            else:
+                rec.casting_3_days_char = "Awaited"
+
     compressive_3days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -707,9 +741,13 @@ class CementNormalConsistency(models.Model):
     ], string='NABL', default='fail',compute="_compute_compressive_3days_nabl")
 
 
-    @api.depends('compressive_strength_3_days','eln_ref','grade')
+    @api.depends('compressive_strength_3_days','eln_ref','grade','status_3days')
     def _compute_compressive_3days_conformity(self):
         for record in self:
+
+            if not record.status_3days:
+                record.compressive_3days_conformity = '--'
+                continue
             record.compressive_3days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ff8bce6-fb91-4673-8789-557cf91c3449')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ff8bce6-fb91-4673-8789-557cf91c3449')]).parameter_table
@@ -800,6 +838,19 @@ class CementNormalConsistency(models.Model):
     status_7days = fields.Boolean("Done")
     compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days" ,digits=(16,1))
 
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
     compressive_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -812,9 +863,14 @@ class CementNormalConsistency(models.Model):
     ], string='NABL', default='fail',compute="_compute_compressive_7days_nabl")
 
 
-    @api.depends('compressive_strength_7_days','eln_ref','grade')
+    @api.depends('compressive_strength_7_days','eln_ref','grade','status_7days')
     def _compute_compressive_7days_conformity(self):
         for record in self:
+
+            if not record.status_7days:
+                record.compressive_7days_conformity = '--'
+                continue
+
             record.compressive_7days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a267dec2-59df-4c9d-827b-69778c31c29b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a267dec2-59df-4c9d-827b-69778c31c29b')]).parameter_table
@@ -907,6 +963,19 @@ class CementNormalConsistency(models.Model):
     status_28days = fields.Boolean("Done")
     compressive_strength_28_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_28days" ,digits=(16,1))
 
+    casting_28_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_28_days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_casting_28_days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.casting_28_days_char = "Done"
+            else:
+                rec.casting_28_days_char = "Awaited"
+
 
     compressive_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -920,9 +989,14 @@ class CementNormalConsistency(models.Model):
     ], string='NABL', default='fail',compute="_compute_compressive_28days_nabl")
 
 
-    @api.depends('compressive_strength_28_days','eln_ref','grade')
+    @api.depends('compressive_strength_28_days','eln_ref','grade','status_28days')
     def _compute_compressive_28days_conformity(self):
         for record in self:
+
+            if not record.status_28days:
+                record.compressive_28days_conformity = '--'
+                continue
+
             record.compressive_28days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6a0229a9-ba1d-4fc9-b2fa-3383699d3464')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6a0229a9-ba1d-4fc9-b2fa-3383699d3464')]).parameter_table
@@ -1386,7 +1460,10 @@ class CementNormalConsistency(models.Model):
 
           
             if result.parameter.internal_id == '8ff8bce6-fb91-4673-8789-557cf91c3449':
-                result.result_char = round(self.compressive_strength_3_days,2)
+                if self.status_3days:
+                    result.result_char = round(self.compressive_strength_3_days, 2)
+                else:
+                    result.result_char = self.casting_3_days_char
                 result.calculated = True
                 if self.compressive_3days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1396,7 +1473,12 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == 'a267dec2-59df-4c9d-827b-69778c31c29b':
-                result.result_char = round(self.compressive_strength_7_days,2)
+
+                if self.status_7days:
+                    result.result_char = round(self.compressive_strength_7_days, 2)
+                else:
+                    result.result_char = self.casting_7_days_char
+
                 result.calculated = True
                 if self.compressive_7days_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1406,7 +1488,11 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == '6a0229a9-ba1d-4fc9-b2fa-3383699d3464':
-                result.result_char = round(self.compressive_strength_28_days,2)
+
+                if self.status_28days:
+                    result.result_char = round(self.compressive_strength_28_days, 2)
+                else:
+                    result.result_char = self.casting_28_days_char
                 result.calculated = True
                 if self.compressive_28days_nabl == 'pass':
                     result.nabl_status = 'nabl'
