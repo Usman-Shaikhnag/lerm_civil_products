@@ -879,6 +879,19 @@ class FlyaschNormalConsistency(models.Model):
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     status_28days = fields.Boolean("Done")
 
+    average_casting_28days_char = fields.Char(
+    string="Status",
+    compute="_compute_average_casting_28days_char"
+    )
+
+    @api.depends('status_28days')
+    def _compute_average_casting_28days_char(self):
+        for rec in self:
+            if rec.status_28days:
+                rec.average_casting_28days_char = "Done"
+            else:
+                rec.average_casting_28days_char = "Awaited"
+
 
     @api.depends('casting_28_days_tables.compressive_strength')
     def _compute_average_28days(self):
@@ -956,6 +969,19 @@ class FlyaschNormalConsistency(models.Model):
     average_casting_28dayss = fields.Float("Average",compute="_compute_average_28dayss")
     status_28dayss = fields.Boolean("Done")
 
+    average_casting_28dayss_char = fields.Char(
+    string="Status",
+    compute="_compute_average_casting_28dayss_char"
+    )
+
+    @api.depends('status_28dayss')
+    def _compute_average_casting_28dayss_char(self):
+        for rec in self:
+            if rec.status_28dayss:
+                rec.average_casting_28dayss_char = "Done"
+            else:
+                rec.average_casting_28dayss_char = "Awaited"
+
 
     @api.depends('casting_28_dayss_tables.compressive_strengths')
     def _compute_average_28dayss(self):
@@ -995,10 +1021,14 @@ class FlyaschNormalConsistency(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_compressive_strength_of_sample_conformity", store=True)
 
-    @api.depends('compressive_strength_of_sample','eln_ref','grade')
+    @api.depends('compressive_strength_of_sample','eln_ref','grade','status_28days','status_28dayss')
     def _compute_compressive_strength_of_sample_conformity(self):
         
         for record in self:
+
+            if not record.status_28days or not record.status_28dayss:
+                record.compressive_strength_of_sample_conformity = '--'
+                continue
             record.compressive_strength_of_sample_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')]).parameter_table
@@ -1136,6 +1166,19 @@ class FlyaschNormalConsistency(models.Model):
     compressive_strength_28_days = fields.Integer("Compressive Strength",compute="_compute_compressive_strength_28dayss")
     status_28daysss = fields.Boolean("Done")
 
+    lime_char = fields.Char(
+    string="Status",
+    compute="_compute_lime_char"
+    )
+
+    @api.depends('status_28daysss')
+    def _compute_lime_char(self):
+        for rec in self:
+            if rec.status_28daysss:
+                rec.lime_char = "Done"
+            else:
+                rec.lime_char = "Awaited"
+
 
     @api.depends('casting_28_dayss_tabless.compressive_strengthss')
     def _compute_average_28daysss(self):
@@ -1179,10 +1222,13 @@ class FlyaschNormalConsistency(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_lime_reactivity_conformity", store=True)
 
-    @api.depends('compressive_strength_28_days','eln_ref','grade')
+    @api.depends('compressive_strength_28_days','eln_ref','grade','status_28daysss')
     def _compute_lime_reactivity_conformity(self):
         
         for record in self:
+            if not record.status_28daysss:
+                record.lime_reactivity_conformity = '--'
+                continue
             record.lime_reactivity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')]).parameter_table
@@ -1656,7 +1702,10 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5':
-                result.result_char = round(self.compressive_strength_of_sample,2)
+                if self.status_28days and self.status_28dayss:
+                    result.result_char = round(self.compressive_strength_of_sample, 2)
+                else:
+                    result.result_char = self.average_casting_28dayss_char
                 result.calculated = True
                 if self.compressive_strength_of_sample_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1665,7 +1714,11 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
-                result.result_char = round(self.compressive_strength_28_days,2)
+
+                if self.status_28daysss:
+                    result.result_char = round(self.compressive_strength_28_days, 2)
+                else:
+                    result.result_char = self.lime_char
                 result.calculated = True
                 if self.lime_reactivity_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1677,6 +1730,15 @@ class FlyaschNormalConsistency(models.Model):
                 result.result_char = round(self.fineness_air_permeability,2)
                 result.calculated = True
                 if self.fineness_blaine_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2104534c-5e9c-4335-9ea2-2d87624c23048':
+                result.result_char = round(self.avg_expantion_fly_ash,2)
+                result.calculated = True
+                if self.avg_expantion_fly_ash_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
