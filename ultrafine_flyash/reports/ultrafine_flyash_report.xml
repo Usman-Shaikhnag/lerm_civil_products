@@ -654,9 +654,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.average_casting_7days_7" />
-									</div>
+									</div> -->
+									<span>
+												<t t-if="data.status_7days">
+													<span t-field="data.average_casting_7days_7" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_7_days_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
@@ -699,9 +707,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.average_casting_7dayss_7" />
-									</div>
+									</div> -->
+									<span>
+												<t t-if="data.status_7dayss_7">
+													<span t-field="data.average_casting_7dayss_7" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_7_dayss_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
@@ -732,9 +748,18 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="data.compressive_strength_of_sample_7" />
-									</div>
+									</div> -->
+
+									<span>
+												<t t-if="data.status_7dayss_7">
+													<span t-field="data.compressive_strength_of_sample_7" />
+												</t>
+												<t t-else="">
+													<span t-field="data.casting_7_dayss_char" />
+												</t>
+											</span>	
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>

@@ -1074,6 +1074,20 @@ class UltraFineFlyash(models.Model):
     average_casting_7days_7 = fields.Float("Average",compute="_compute_average_7days_7")
     status_7days = fields.Boolean("Done")
 
+    casting_7_days_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_days_char"
+    )
+
+    @api.depends('status_7days')
+    def _compute_casting_7_days_char(self):
+        for rec in self:
+            if rec.status_7days:
+                rec.casting_7_days_char = "Done"
+            else:
+                rec.casting_7_days_char = "Awaited"
+
+
 
     @api.depends('casting_7_days_tables_7.compressive_strength')
     def _compute_average_7days_7(self):
@@ -1151,6 +1165,19 @@ class UltraFineFlyash(models.Model):
     average_casting_7dayss_7 = fields.Float("Average",compute="_compute_average_7dayss_7")
     status_7dayss_7 = fields.Boolean("Done")
 
+    casting_7_dayss_char = fields.Char(
+    string="Status",
+    compute="_compute_casting_7_dayss_char"
+    )
+
+    @api.depends('status_7dayss_7')
+    def _compute_casting_7_dayss_char(self):
+        for rec in self:
+            if rec.status_7dayss_7:
+                rec.casting_7_dayss_char = "Done"
+            else:
+                rec.casting_7_dayss_char = "Awaited"
+
 
     @api.depends('casting_7_dayss_tables_7.compressive_strengths')
     def _compute_average_7dayss_7(self):
@@ -1190,10 +1217,13 @@ class UltraFineFlyash(models.Model):
             ('fail', 'Fail'),
             ('--', '--')], string="Conformity", compute="_compute_compressive_strength_of_sample_7_conformity", store=True)
 
-    @api.depends('compressive_strength_of_sample_7','eln_ref','grade')
+    @api.depends('compressive_strength_of_sample_7','eln_ref','grade','status_7days','status_7dayss_7')
     def _compute_compressive_strength_of_sample_7_conformity(self):
         
         for record in self:
+            if not record.status_7days or not record.status_7dayss_7:
+                record.compressive_strength_of_sample_7_conformity = '--'
+                continue
             record.compressive_strength_of_sample_7_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','44fc20eb-2a1f-4f25-86ff-26fd23d861d3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','44fc20eb-2a1f-4f25-86ff-26fd23d861d3')]).parameter_table
@@ -2065,7 +2095,10 @@ class UltraFineFlyash(models.Model):
                 continue
 
             if result.parameter.internal_id == '44fc20eb-2a1f-4f25-86ff-26fd23d861d3':
-                result.result_char = round(self.compressive_strength_of_sample_7,2)
+                if self.status_7days and self.status_7dayss_7:
+                    result.result_char = round(self.compressive_strength_of_sample_7, 2)
+                else:
+                    result.result_char = self.casting_7_dayss_char
                 result.calculated = True
                 if self.compressive_strength_of_sample_7_nabl == 'pass':
                     result.nabl_status = 'nabl'

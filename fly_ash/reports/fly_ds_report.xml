@@ -2291,9 +2291,17 @@
 								</td>
 
 								<td style="text-align: center;">
-									<div>
+									<!-- <div>
 										<span t-field="flyash.compressive_strength_28_days"/>
-									</div>
+									</div> -->
+									<span>
+												<t t-if="flyash.status_28daysss">
+													<span t-field="flyash.compressive_strength_28_days" />
+												</t>
+												<t t-else="">
+													<span t-field="flyash.lime_char" />
+												</t>
+											</span>		
 								</td>
 								<td style="text-align: center; vertical-align: middle;">
 									<span>
