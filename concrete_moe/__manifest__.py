@@ -11,7 +11,6 @@
 This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
-    'post_init_hook': 'post_init_hook',
     'data': [
                 'security/ir.model.access.csv',
                 'views/concrete_moe.xml',

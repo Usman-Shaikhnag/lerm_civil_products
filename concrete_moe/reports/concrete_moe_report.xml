@@ -21,7 +21,7 @@
 						 deliberately not referenced here: it never decides which of the two
 						 reports a parameter is printed in. -->
 					<t t-set="moe_in_this_report" t-value="data.compressive_visible and (data.nabl == 'pass' and nabl or (data.nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
-					<t t-set="poisson_in_this_report" t-value="data.poisson_visible and (data.poisson_nabl == 'pass' and nabl or (data.poisson_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
+					<t t-set="deformation_in_this_report" t-value="data.deformation_visible and (data.deformation_nabl == 'pass' and nabl or (data.deformation_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
 					<div t-foreach="eln" t-as="o">
 						<table style="margin-top:10px;">
 							<tr>
@@ -293,11 +293,80 @@
 						</t>
 
 					</div>
+					<!-- MODULUS OF ELASTICITY DEFORMATION DATA -->
+					<div t-if="deformation_in_this_report"
+						style="margin-top:20px; page-break-inside: avoid;">
+
+						<table style="width:100%">
+							<thead>
+								<tr>
+									<th colspan="7" style="text-align:center;">
+										MODULUS OF ELASTICITY DEFORMATION DATA
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align:center;">Specimen</th>
+									<th style="text-align:center;">Compressive Strength Fc (MPa)</th>
+									<th style="text-align:center;">Stress S₁ = Fc/9 (MPa)</th>
+									<th style="text-align:center;">Stress S₂ = Fc/3 (MPa)</th>
+									<th style="text-align:center;">Strain ε₁</th>
+									<th style="text-align:center;">Strain ε₂</th>
+									<th style="text-align:center;">Modulus of Elasticity (GPa)</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr t-foreach="data.deformation_lines" t-as="r">
+									<td style="text-align:center;">
+										<span t-esc="r.specimen"/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.fc_for_moe"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.stress_s1"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.stress_s2"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.strain_epsilon_1"
+											t-options='{"widget":"float","precision":6}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.strain_epsilon_2"
+											t-options='{"widget":"float","precision":6}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.deformation_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+								</tr>
+
+								<tr t-if="not data.deformation_lines">
+									<td colspan="7" style="text-align:center;">--</td>
+								</tr>
+
+								<tr>
+									<td colspan="6" style="text-align:center;">
+										Average Modulus of Elasticity (GPa)
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="data.average_deformation_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 					<!-- Poisson table is shown for the second parameter only; the flag
 						 comes from the existing _compute_visible, keyed on
 						 POISSON_PARAMETER_INTERNAL_ID. -->
-					<div t-if="poisson_in_this_report" style="margin-top:20px; page-break-inside: avoid;">
+					<!-- <div t-if="poisson_in_this_report" style="margin-top:20px; page-break-inside: avoid;">
 						<table style="width:100%">
 							<thead>
 								<tr>
@@ -343,7 +412,7 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>
+					</div> -->
 
 					<div style="margin-top:10px">
 						<table style="width:100%">
@@ -355,16 +424,25 @@
 								</tr>
 							</thead>
 							<tbody>
-							<tr t-if="moe_in_this_report">
-								<td colspan="4">Average Static Modulus of Elasticity, Ec (GPa)</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="data.average_ec_gpa" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-							</tr>
-							<tr t-if="poisson_in_this_report">
-									<td colspan="4">Average Poisson&#39;s Ratio, μ</td>
-									<td colspan="2" style="text-align: center;">
-										<span t-esc="data.average_poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+								<!-- First Parameter: Modulus of Elasticity -->
+								<tr t-if="moe_in_this_report">
+									<td colspan="4">
+										Average Static Modulus of Elasticity, Ec (GPa)
+									</td>
+									<td colspan="2" style="text-align:center;">
+										<span t-esc="data.average_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
+									</td>
+								</tr>
+
+								<!-- Second Parameter: Section 2 Deformation Data -->
+								<tr t-if="deformation_in_this_report">
+									<td colspan="4">
+										Average Modulus of Elasticity (GPa)
+									</td>
+									<td colspan="2" style="text-align:center;">
+										<span t-esc="data.average_deformation_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
 								</tr>
 							</tbody>

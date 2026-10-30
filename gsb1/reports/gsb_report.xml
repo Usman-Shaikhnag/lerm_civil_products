@@ -275,7 +275,7 @@
 					<div t-if="data.dry_gradation_visible and fromEln" style="margin-top:20px">
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
-							<span t-esc="eln.material.test_parameter "/> 
+							<!-- <span t-esc="eln.material.test_parameter "/>  -->
 						</div>
 						<table t-if="data.dry_gradation_visible and fromEln">
 							<tr cols="12">
@@ -371,7 +371,7 @@
 					<div t-if="data.dry_gradation_visible and not fromEln" style="margin-top:20px">
 						<div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>
-							<span t-esc="eln.material.test_parameter "/> 
+							<!-- <span t-esc="eln.material.test_parameter "/>  -->
 						</div>
 						<table t-if="data.dry_gradation_visible and not fromEln">
 							<tr cols="12">
@@ -1320,7 +1320,7 @@
 											<span t-field="data.aggregate_flakiness"  t-options='{"widget": "float", "precision": 2}'/>
 										</div>
 									</td>
-									<td colspan="2" style="text-align: center;border-bottom:none;">
+									<td colspan="2" style="text-align: center;">
 										<div>
 											<span>
 											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','06308898-70fb-4c47-baec-9880be12d765')]).parameter_table" t-as="parameter">

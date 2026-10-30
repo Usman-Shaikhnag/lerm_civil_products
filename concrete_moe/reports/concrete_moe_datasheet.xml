@@ -9,51 +9,45 @@
 				<div class="container_eln" style="margin-top:5px">
 
 					<div t-foreach="eln" t-as="o">
-						<table style="margin-top:20px">
-				<tr cols="12">
-					
-				    <td colspan="6">
-					    <span style="text-align:center;">	
-						    Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
-					   </span>
-                    </td>
-					<td colspan="6">
-					    <span style="text-align:center;">	
-						    Test Start Date. <![CDATA[&nbsp;]]> <span t-esc="eln.start_date"/>
-					   </span>
-                    </td>
-				</tr>
-                <tr cols="12">
-				    <td colspan="6">
-					    <span style="text-align:center;">	
-						    Material. <![CDATA[&nbsp;]]> <span t-esc="eln.material.name"/>
-					   </span>
-                    </td>
-					<td colspan="6">
-					    <span style="text-align:center;">	
-						    Test End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
-					   </span>
-                    </td>
-                </tr>
-                <tr style="height:50px" cols="12">
-                    <td colspan="4">
-					   <span style="text-align:center;">	
-						    Performed By. <![CDATA[&nbsp;]]> <span t-esc="eln.technician.name"/>
-					   </span>
-                    </td>
-                    <td colspan="4">
-					    <span style="text-align:center;">	
-						    Witness Name. <![CDATA[&nbsp;]]> <span t-esc="eln.witness_description"/>
-					   </span>
-                    </td>
-                    <td colspan="4">
-					     <span style="text-align:center;">	
-						    Witness Signature. <![CDATA[&nbsp;]]> <span style='padding:20px'></span>
-					   </span>
-                    </td>
-                </tr>
-			</table>
-					
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+						</table>
+					<!-- MOE tables are shown for the first (Modulus of Elasticity)
+						 parameter only; the flag comes from the existing
+						 _compute_visible, keyed on MOE_PARAMETER_INTERNAL_ID. -->
 					<div t-if="data.compressive_visible"
 						style="text-align:center;font-size:18px;margin-top:25px">
 
@@ -155,7 +149,7 @@
 										<span t-esc="r.specimen"/>
 									</td>
 									<td style="text-align: center;">
-										<span t-esc="r.diameter" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.diameter" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td style="text-align: center;">
 										<span t-esc="r.specimen_length" t-options='{"widget": "float", "precision": 2}'/>
@@ -204,64 +198,67 @@
 						</table>
 					</div>
 
-					<!-- Poisson table is shown for the second parameter only; the flag
-						 comes from the existing _compute_visible, keyed on
-						 POISSON_PARAMETER_INTERNAL_ID. -->
-					<div t-if="data.poisson_visible and poisson_parameter" style="text-align:center;font-size:18px;margin-top:25px">
-						<span t-esc="poisson_parameter.parameter_name"/>
-						<span>
-							<t t-foreach="poisson_parameter.parameter_table" t-as="parameter_table_line">
-								<t t-if="parameter_table_line.grade.id == eln.grade_id.id">
-									<span t-field="parameter_table_line.specification"/>
-								</t>
-							</t>
-						</span>
-					</div>
-					<div t-if="data.poisson_visible and poisson_parameter" style="margin-top:20px;">
-						<table style="width:100%">
+                    
+					<div t-if="data.deformation_visible" style="margin-top:20px;">
+						<table style="width:100%; border-collapse:collapse;">
 							<thead>
 								<tr>
-									<th colspan="6" style="text-align:center;">
-										POISSON&#39;S RATIO (OPTIONAL &#8212; IF TRANSVERSE STRAIN IS MEASURED)
+									<th colspan="7" style="text-align:center;">
+										SECTION 2 - MODULUS OF ELASTICITY DEFORMATION DATA
 									</th>
 								</tr>
 								<tr>
-									<th style="text-align: center;">Specimen</th>
-									<th style="text-align: center;">Long. εb (×10⁻⁶)</th>
-									<th style="text-align: center;">Long. εa (×10⁻⁶)</th>
-									<th style="text-align: center;">Trans. εb (×10⁻⁶)</th>
-									<th style="text-align: center;">Trans. εa (×10⁻⁶)</th>
-									<th style="text-align: center;">Poisson&#39;s Ratio μ</th>
+									<th style="text-align:center;">Sr. No.</th>
+									<th style="text-align:center;">Compressive Strength Fc (MPa)</th>
+									<th style="text-align:center;">Stress S₁ = Fc/9 (MPa)</th>
+									<th style="text-align:center;">Stress S₂ = Fc/3 (MPa)</th>
+									<th style="text-align:center;">Strain ε₁</th>
+									<th style="text-align:center;">Strain ε₂</th>
+									<th style="text-align:center;">Modulus of Elasticity (GPa)</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr t-foreach="data.poisson_lines" t-as="r">
-									<td style="text-align: center;">
+								<tr t-foreach="data.deformation_lines" t-as="r">
+									<td style="text-align:center;">
 										<span t-esc="r.specimen"/>
 									</td>
-									<td style="text-align: center;">
-										<span t-esc="r.long_strain_b" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.fc_for_moe"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
-									<td style="text-align: center;">
-										<span t-esc="r.long_strain_a" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.stress_s1"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
-									<td style="text-align: center;">
-										<span t-esc="r.trans_strain_b" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.stress_s2"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
-									<td style="text-align: center;">
-										<span t-esc="r.trans_strain_a" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.strain_epsilon_1"
+											t-options='{"widget":"float","precision":6}'/>
 									</td>
-									<td style="text-align: center;">
-										<span t-esc="r.poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.strain_epsilon_2"
+											t-options='{"widget":"float","precision":6}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.deformation_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
 								</tr>
-								<tr t-if="not data.poisson_lines">
-									<td colspan="6" style="text-align: center;">--</td>
+
+								<tr t-if="not data.deformation_lines">
+									<td colspan="7" style="text-align:center;">--</td>
 								</tr>
+
 								<tr>
-									<td colspan="5" style="text-align: center;">Average</td>
-									<td style="text-align: center;">
-										<span t-esc="data.average_poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									<td colspan="6" style="text-align:center;">
+										Average Modulus of Elasticity (GPa)
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="data.average_deformation_ec_gpa"
+											t-options='{"widget":"float","precision":2}'/>
 									</td>
 								</tr>
 							</tbody>
@@ -278,22 +275,41 @@
 								</tr>
 							</thead>
 							<tbody>
+								<!-- Existing Static Modulus Result -->
 								<tr t-if="data.compressive_visible">
-									<td colspan="4">Average Static Modulus of Elasticity, Ec (GPa)</td>
-									<td colspan="2" style="text-align: center;">
-										<span t-esc="data.average_ec_gpa" t-options='{"widget": "float", "precision": 2}'/>
+									<td colspan="4">
+										Average Static Modulus of Elasticity, Ec (GPa)
+									</td>
+									<td colspan="2" style="text-align:center;">
+										<span t-esc="data.average_ec_gpa"
+											t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
+
+								<!-- Section 2: Modulus of Elasticity -->
+								<tr t-if="data.deformation_visible">
+									<td colspan="4">
+										Average Modulus of Elasticity (GPa)
+									</td>
+									<td colspan="2" style="text-align:center;">
+										<span t-esc="data.average_deformation_ec_gpa"
+											t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+
+								<!-- Average Poisson's Ratio
 								<tr t-if="data.poisson_visible">
-									<td colspan="4">Average Poisson&#39;s Ratio, μ</td>
-									<td colspan="2" style="text-align: center;">
-										<span t-esc="data.average_poisson_ratio" t-options='{"widget": "float", "precision": 2}'/>
+									<td colspan="4">
+										Average Poisson's Ratio
 									</td>
-								</tr>
+									<td colspan="2" style="text-align:center;">
+										<span t-esc="data.average_poisson_ratio"
+											t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr> -->
 							</tbody>
 						</table>
 					</div>
-
 					<div class="authorizeRowDataSheet">
 						<div>
 							<div>

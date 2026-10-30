@@ -414,33 +414,48 @@ class MoistureMovementLine(models.Model):
    
     moisture_movement = fields.Float("Moisture Movement in %",compute="_compute_moisture_movement",digits=(16, 3))
 
+
     # @api.depends('final_wet', 'parent_id.drying_child_lines.dry_mesurment', 'parent_id.drying_child_lines.dry_length')
     # def _compute_moisture_movement(self):
     #     for record in self:
     #         drying_shrinkage_line = record.parent_id.drying_child_lines.filtered(lambda x: x.sr_no == record.sr_no)
     #         if drying_shrinkage_line:
-    #             dry_measurement = drying_shrinkage_line.dry_mesurment
+    #             dry_mesurment = drying_shrinkage_line.dry_mesurment
     #             dry_length = drying_shrinkage_line.dry_length
     #             if dry_length != 0:
-    #                 record.moisture_movement = ((dry_measurement - record.final_wet) / dry_length) * 100
+    #                 record.moisture_movement = ((record.final_wet - dry_mesurment) / dry_length) * 100
     #             else:
     #                 record.moisture_movement = 0
     #         else:
     #             record.moisture_movement = 0
 
-    @api.depends('final_wet', 'parent_id.drying_child_lines.dry_mesurment', 'parent_id.drying_child_lines.dry_length')
+
+    
+    @api.depends(
+    'final_wet',
+    'sr_no',
+    'parent_id.drying_child_lines.sr_no',
+    'parent_id.drying_child_lines.dry_mesurment',
+    'parent_id.drying_child_lines.dry_length')
     def _compute_moisture_movement(self):
-        for record in self:
-            drying_shrinkage_line = record.parent_id.drying_child_lines.filtered(lambda x: x.sr_no == record.sr_no)
-            if drying_shrinkage_line:
-                dry_mesurment = drying_shrinkage_line.dry_mesurment
-                dry_length = drying_shrinkage_line.dry_length
-                if dry_length != 0:
-                    record.moisture_movement = ((record.final_wet - dry_mesurment) / dry_length) * 100
-                else:
-                    record.moisture_movement = 0
+     for record in self:
+        drying_shrinkage_line = record.parent_id.drying_child_lines.filtered(
+            lambda x: x.sr_no == record.sr_no
+        )[:1]
+
+        if drying_shrinkage_line:
+            dry_mesurment = drying_shrinkage_line.dry_mesurment
+            dry_length = drying_shrinkage_line.dry_length
+
+            if dry_length:
+                record.moisture_movement = (
+                    (record.final_wet - dry_mesurment) / dry_length
+                ) * 100
             else:
                 record.moisture_movement = 0
+        else:
+            record.moisture_movement = 0
+
 
 
 

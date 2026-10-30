@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+﻿from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
 from datetime import datetime , timedelta
@@ -12,7 +12,7 @@ MOE_PARAMETER_INTERNAL_ID = '0d84a152-37e6-4423-85a9-df33ef387f44'
 # independent parameter that shares the same form: its result is the average
 # Poisson's ratio and it is judged against its own lab limits and grade table.
 # Fill this in from Settings > Lerm > Parameter Master before using the module.
-POISSON_PARAMETER_INTERNAL_ID = '6ba2bb5e-dfd0-4e97-98a5-b2f708e0231f'
+DEFORMATION_PARAMETER_INTERNAL_ID = '6ba2bb5e-dfd0-4e97-98a5-b2f708e0231f'
 
 # Reference stress divisors (28 day cube compressive strength)
 BASIC_STRESS_DIVISOR = 9.0
@@ -31,7 +31,7 @@ class MechanicalConcretemoe(models.Model):
 
     name = fields.Char("Name", default="Concrete MOE")
     compressive_visible = fields.Boolean("concrete moe",compute="_compute_visible")
-    poisson_visible = fields.Boolean("poisson's ratio",compute="_compute_visible")
+    deformation_visible = fields.Boolean("Deformation Visible",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
 
@@ -70,14 +70,13 @@ class MechanicalConcretemoe(models.Model):
 
 
     child_lines = fields.One2many('mechanical.concrete.moe.line','parent_id',string="Parameter")
-    # Same specimen rows, exposed under their own relation so that the second
-    # table can be rendered as its own table (a one2many may only appear once
-    # per form view).
+    # Static modulus table keeps its existing model.
     specimen_lines = fields.One2many('mechanical.concrete.moe.line','parent_id',string="Specimen")
-
-    # Third table (optional Poisson's ratio) has its own lines: the strains it
-    # needs are transverse ones that the second table does not hold.
-    poisson_lines = fields.One2many('mechanical.concrete.moe.poisson.line','parent_id',string="Poisson's Ratio",copy=False)
+    # Section 2 has independent specimen records and calculations.
+    deformation_lines = fields.One2many(
+        'mechanical.concrete.moe.deformation.line', 'parent_id',
+        string="Section 2 Deformation Data", copy=False
+    )
 
     # Cube specimens of the first table. Any number of lines can be entered, the
     # average Fc and both reference stresses follow from what is filled in.
@@ -92,8 +91,12 @@ class MechanicalConcretemoe(models.Model):
 
     average_ec_mpa = fields.Float(string="Average Ec (MPa)", compute="_compute_average_ec", digits=(12,2))
     average_ec_gpa = fields.Float(string="Average Ec (GPa)", compute="_compute_average_ec", digits=(12,2))
+    # Average from the independent Section 2 deformation-data table.
+    average_deformation_ec_gpa = fields.Float(
+        string="Average Modulus of Elasticity (GPa)",
+        compute="_compute_average_deformation_ec_gpa", digits=(12, 2)
+    )
 
-    average_poisson_ratio = fields.Float(string="Average Poisson's Ratio", compute="_compute_average_poisson_ratio", digits=(12,2))
 
     nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -107,17 +110,17 @@ class MechanicalConcretemoe(models.Model):
         ('--', '--'),
     ], string='Confirmity', default='fail',compute="_compute_confirmity")
 
-    poisson_nabl = fields.Selection([
+    deformation_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+    ], string="Section 2 NABL", default='fail', compute="_compute_deformation_nabl")
 
-    ], string="Poisson's NABL", default='fail',compute="_compute_poisson_nabl")
-
-    poisson_confirmity = fields.Selection([
+    deformation_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('--', '--'),
-    ], string="Poisson's Confirmity", default='fail',compute="_compute_poisson_confirmity")
+    ], string="Section 2 Conformity", default='fail', compute="_compute_deformation_confirmity")
+
 
 
     def _get_parameter(self):
@@ -133,31 +136,6 @@ class MechanicalConcretemoe(models.Model):
         when it holds no row for the grade of the current test.
         """
         line = self._get_parameter()
-        if not line or not self.grade:
-            return line, self.env['lerm.parameter.master.table']
-        material = line.parameter_table.filtered(
-            lambda row: row.grade == self.grade
-        )[:1]
-        return line, material
-
-
-    def _get_poisson_parameter(self):
-        """Parameter master record of the second (Poisson's Ratio) parameter.
-
-        It is a separate record from the MOE one, with its own lab limits, mu value
-        and grade table. limit=1 keeps this a singleton even if the id was copied.
-        """
-        return self.env['lerm.parameter.master'].sudo().search(
-            [('internal_id','=','%s' % POISSON_PARAMETER_INTERNAL_ID)], limit=1)
-
-
-    def _get_poisson_requirement(self):
-        """Return the (Poisson parameter master, grade row) pair for this record.
-
-        Mirrors _get_requirement: both are empty recordsets when the parameter
-        master is not configured or holds no row for the current grade.
-        """
-        line = self._get_poisson_parameter()
         if not line or not self.grade:
             return line, self.env['lerm.parameter.master.table']
         material = line.parameter_table.filtered(
@@ -208,27 +186,11 @@ class MechanicalConcretemoe(models.Model):
             record.average_ec_gpa = round(average / GPA_DIVISOR, 2)
 
 
-    @api.depends(
-        'poisson_lines',
-        'poisson_lines.poisson_ratio',
-        'poisson_lines.long_strain_b',
-        'poisson_lines.long_strain_a',
-        'poisson_lines.trans_strain_b',
-        'poisson_lines.trans_strain_a',
-    )
-    def _compute_average_poisson_ratio(self):
-        """Average of the Poisson's ratios that could be calculated.
-
-        Specimens left blank (ratio 0 because no strain was entered) are skipped,
-        exactly like the Ec average above.
-        """
+    @api.depends('deformation_lines.deformation_ec_gpa')
+    def _compute_average_deformation_ec_gpa(self):
         for record in self:
-            ratios = [line.poisson_ratio for line in record.poisson_lines if line.poisson_ratio]
-            if ratios:
-                average = sum(ratios) / len(ratios)
-            else:
-                average = 0.0
-            record.average_poisson_ratio = round(average, 2)
+            values = [line.deformation_ec_gpa for line in record.deformation_lines if line.deformation_ec_gpa > 0]
+            record.average_deformation_ec_gpa = round(sum(values) / len(values), 2) if values else 0.0
 
 
     @api.depends('average_strength','eln_ref','grade')
@@ -296,70 +258,92 @@ class MechanicalConcretemoe(models.Model):
                 record.confirmity = 'pass'
 
 
-    @api.depends('average_poisson_ratio', 'eln_ref', 'grade')
-    def _compute_poisson_nabl(self):
-        """NABL of the second parameter, judged on the average Poisson's ratio.
+    def _get_deformation_parameter(self):
+        return self.env['lerm.parameter.master'].sudo().search(
+            [
+                (
+                    'internal_id',
+                    '=',
+                    DEFORMATION_PARAMETER_INTERNAL_ID,
+                )
+            ],
+            limit=1,
+        )
 
-        Independent of the cube strength NABL above: the limits and the mu value
-        come from the Poisson's Ratio parameter master, not the MOE one.
-        """
+    def _get_deformation_requirement(self):
+        line = self._get_deformation_parameter()
+        if not line or not self.grade:
+            return line, self.env['lerm.parameter.master.table']
+        material = line.parameter_table.filtered(
+            lambda row: row.grade == self.grade
+        )[:1]
+        return line, material
+
+    @api.depends('average_deformation_ec_gpa')
+    def _compute_deformation_nabl(self):
         for record in self:
-            record.poisson_nabl = 'fail'
-            line = record._get_poisson_parameter()
-            if not line:
+            record.deformation_nabl = 'fail'
+
+            parameter = record._get_deformation_parameter()
+            value = record.average_deformation_ec_gpa
+
+            if not parameter or value <= 0:
                 continue
 
-            # No ratio could be calculated (all specimens left blank).
-            if not record.average_poisson_ratio:
-                continue
+            lab_min = parameter.lab_min_value
+            lab_max = parameter.lab_max_value
+            mu_value = parameter.mu_value or 0.0
 
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+            lower = value - abs(value * mu_value)
+            upper = value + abs(value * mu_value)
 
-            ratio = record.average_poisson_ratio
-            lower = ratio - ratio * mu_value
-            upper = ratio + ratio * mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.poisson_nabl = 'pass'
+                record.deformation_nabl = 'pass'
             else:
-                record.poisson_nabl = 'fail'
+                record.deformation_nabl = 'fail'
+            
 
-
-    @api.depends('average_poisson_ratio', 'eln_ref', 'grade')
-    def _compute_poisson_confirmity(self):
-        """Conformity of the second parameter against its own grade requirement.
-
-        No age scaling is applied here: the age factors of the cube strength table
-        do not apply to Poisson's ratio.
-        """
+    @api.depends('average_deformation_ec_gpa', 'grade')
+    def _compute_deformation_confirmity(self):
         for record in self:
-            record.poisson_confirmity = 'fail'
+            record.deformation_confirmity = 'fail'
 
-            line, material = record._get_poisson_requirement()
-            if not material:
+            parameter = record._get_deformation_parameter()
+
+            if not parameter or not record.grade:
                 continue
 
-            if material.permissable_limit == '--' or not material.permissable_limit:
-                record.poisson_confirmity = '--'
+            grade_rows = parameter.parameter_table.filtered(
+                lambda row: row.grade == record.grade
+            )[:1]
+
+            if not grade_rows:
                 continue
 
-            req_min = material.req_min
-            req_max = material.req_max
-            if not req_min and not req_max:
+            requirement = grade_rows[0]
+
+            if (
+                requirement.permissable_limit == '--'
+                or not requirement.permissable_limit
+            ):
+                record.deformation_confirmity = '--'
                 continue
 
-            if not record.average_poisson_ratio:
+            req_min = requirement.req_min
+            req_max = requirement.req_max
+            value = record.average_deformation_ec_gpa
+
+            if not value or (not req_min and not req_max):
                 continue
 
-            mu_value = line.mu_value
-            ratio = record.average_poisson_ratio
-            lower = ratio - ratio * mu_value
-            upper = ratio + ratio * mu_value
+            mu_value = parameter.mu_value or 0.0
+            lower = value - abs(value * mu_value)
+            upper = value + abs(value * mu_value)
 
             if lower >= req_min and upper <= req_max:
-                record.poisson_confirmity = 'pass'
-
+                record.deformation_confirmity = 'pass'
+            else:
+                record.deformation_confirmity = 'fail'
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -376,9 +360,9 @@ class MechanicalConcretemoe(models.Model):
                 result.calculated = True
                 continue
 
-            # Second parameter: the average Poisson's ratio, against its own limits.
-            if result.parameter.internal_id == POISSON_PARAMETER_INTERNAL_ID:
-                result.result_char = round(self.average_poisson_ratio,2)
+            # Section 2 uses the former Poisson Internal ID by request.
+            if result.parameter.internal_id == DEFORMATION_PARAMETER_INTERNAL_ID:
+                result.result_char = round(self.average_deformation_ec_gpa, 2)
                 result.calculated = True
                 continue
 
@@ -409,18 +393,17 @@ class MechanicalConcretemoe(models.Model):
     ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
-
         for record in self:
-            record.compressive_visible = False
-            record.poisson_visible = False
+            selected_ids = set(
+                record.sample_parameters.mapped('internal_id')
+            )
 
-            for sample in record.sample_parameters:
-                if sample.internal_id == MOE_PARAMETER_INTERNAL_ID:
-                    record.compressive_visible = True
-
-                if sample.internal_id == POISSON_PARAMETER_INTERNAL_ID:
-                    record.poisson_visible = True
-
+            record.compressive_visible = (
+                MOE_PARAMETER_INTERNAL_ID in selected_ids
+            )
+            record.deformation_visible = (
+                DEFORMATION_PARAMETER_INTERNAL_ID in selected_ids
+            )
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
@@ -472,6 +455,7 @@ class MechanicalConcreteMoeCubeLine(models.Model):
     # plain related fields: no calculation is duplicated or recalculated here.
     average_fc_display = fields.Float(string="Average Fc (MPa)",related='parent_id.average_strength',readonly=True,digits=(12,2))
     basic_stress_display = fields.Float(string="Basic Stress, σb = Fc/9 (MPa)",related='parent_id.basic_stress',readonly=True,digits=(12,2))
+    upper_stress_display = fields.Float(string="Upper Stress, σa = Fc/3 (MPa)",related='parent_id.upper_stress',readonly=True,digits=(12,2))
 
 
     @api.depends('parent_id', 'parent_id.cube_lines')
@@ -665,57 +649,77 @@ class ConcreteMoeNotes(models.Model):
     notes = fields.Char("Notes")
 
 
-class MechanicalConcreteMoePoissonLine(models.Model):
-    _name = "mechanical.concrete.moe.poisson.line"
-    _description = "Concrete MOE Poisson's Ratio Line"
+class MechanicalConcreteMoeDeformationLine(models.Model):
+    """Independent Section 2 deformation specimen line."""
+    _name = "mechanical.concrete.moe.deformation.line"
+    _description = "Concrete MOE Section 2 Deformation Line"
     _order = "id"
 
-    parent_id = fields.Many2one('mechanical.concrete.moe',string="Parent Id",ondelete='cascade',index=True)
+    parent_id = fields.Many2one(
+        'mechanical.concrete.moe', string="Parent", ondelete='cascade',
+        index=True, required=True
+    )
+    specimen = fields.Integer(
+        string="Sr. No.", compute="_compute_specimen", store=True, readonly=True
+    )
+    fc_for_moe = fields.Float(string="Compressive Strength Fc (MPa)", digits=(12, 2))
+    stress_s1 = fields.Float(
+        string="Stress S₁ = Fc/9 (MPa)", compute="_compute_stresses", digits=(12, 2)
+    )
+    stress_s2 = fields.Float(
+        string="Stress S₂ = Fc/3 (MPa)", compute="_compute_stresses", digits=(12, 2)
+    )
+    strain_epsilon_1 = fields.Float(string="Strain ε₁", digits=(16, 6))
+    strain_epsilon_2 = fields.Float(string="Strain ε₂", digits=(16, 6))
+    deformation_ec_gpa = fields.Float(
+        string="Modulus of Elasticity (GPa)",
+        compute="_compute_deformation_modulus", digits=(12, 2)
+    )
+    deformation_nabl = fields.Selection(
+        [
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+        ],
+        string="Section 2 NABL",
+        default='fail',
+        compute="_compute_deformation_nabl",
+    )
 
-    # Specimen number is the line's own position in the parent's sequence, so it
-    # is always 1, 2, 3 ... and renumbers by itself when a line is removed.
-    specimen = fields.Integer(string="Specimen",compute="_compute_specimen",store=True,readonly=True)
+    deformation_confirmity = fields.Selection(
+        [
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--'),
+        ],
+        string="Section 2 Conformity",
+        default='fail',
+        compute="_compute_deformation_confirmity",
+    )
 
-    # Strains are typed by the technician as micro strain (x10^-6) and are never
-    # recomputed, so nothing overwrites an entered value.
-    long_strain_b = fields.Float(string="Long. εb (×10⁻⁶)", digits=(12,3))
-    long_strain_a = fields.Float(string="Long. εa (×10⁻⁶)", digits=(12,3))
-    trans_strain_b = fields.Float(string="Trans. εb (×10⁻⁶)", digits=(12,3))
-    trans_strain_a = fields.Float(string="Trans. εa (×10⁻⁶)", digits=(12,3))
-
-    poisson_ratio = fields.Float(string="Poisson's Ratio μ", compute="_compute_poisson_ratio", digits=(12,2))
-
-
-    @api.depends('parent_id', 'parent_id.poisson_lines')
+    @api.depends('parent_id', 'parent_id.deformation_lines')
     def _compute_specimen(self):
-        """Specimen number = position of the line within its parent (1, 2, 3 ...).
-
-        Taken from the one2many sequence, so a deleted line shifts the remaining
-        ones back into 1, 2, 3 ... order. The lines are never sorted on `id`:
-        unsaved lines coming from an onchange carry a NewId, which is not
-        orderable.
-        """
         for record in self:
-            sibling_ids = record.parent_id.poisson_lines.ids
+            sibling_ids = record.parent_id.deformation_lines.ids
             record.specimen = (
-                sibling_ids.index(record.id) + 1 if record.id in sibling_ids else 0
+                sibling_ids.index(record.id) + 1
+                if record.id in sibling_ids else 0
             )
 
-
-    @api.depends(
-        'long_strain_b',
-        'long_strain_a',
-        'trans_strain_b',
-        'trans_strain_a',
-    )
-    def _compute_poisson_ratio(self):
-        """μ = (Trans. εa - Trans. εb) / (Long. εa - Long. εb)."""
+    @api.depends('fc_for_moe')
+    def _compute_stresses(self):
         for record in self:
-            strain_difference = record.long_strain_a - record.long_strain_b
-            if strain_difference > 0:
-                record.poisson_ratio = round(
-                    (record.trans_strain_a - record.trans_strain_b) / strain_difference, 2
-                )
+            fc = record.fc_for_moe or 0.0
+            record.stress_s1 = round(fc / 9.0, 2)
+            record.stress_s2 = round(fc / 3.0, 2)
+
+    @api.depends('fc_for_moe', 'strain_epsilon_1', 'strain_epsilon_2')
+    def _compute_deformation_modulus(self):
+        for record in self:
+            fc = record.fc_for_moe or 0.0
+            s1 = round(fc / 9.0, 2)
+            s2 = round(fc / 3.0, 2)
+            delta_strain = (record.strain_epsilon_2 or 0.0) - (record.strain_epsilon_1 or 0.0)
+            if delta_strain > 0 and fc > 0:
+                record.deformation_ec_gpa = round((s2 - s1) / delta_strain / 1000.0, 2)
             else:
-                # Strains not entered (or Long. εa not above Long. εb) yet.
-                record.poisson_ratio = 0.0
+                record.deformation_ec_gpa = 0.0

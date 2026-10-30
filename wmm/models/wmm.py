@@ -21,13 +21,14 @@ class WmmMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-    notes_id = fields.One2many('wmm.notes', 'parent_id', string="Notes")
+
+    notes_id = fields.One2many('wmm.notes', 'parent_id',string="Notes",
+    default=lambda self: self._default_notes_lines()
+)
     
     @api.model
-    def default_get(self, fields):
-        res = super(WmmMechanical, self).default_get(fields)
-
-        default_notes = [
+    def _default_notes_lines(self):
+        return [
             (0, 0, {
                 'sr_no': 'a',
                 'notes': 'The information marked with an # received from customer',
@@ -46,8 +47,9 @@ class WmmMechanical(models.Model):
             }),
         ]
 
-        res['notes_id'] = default_notes
-        return res
+
+    
+    
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()

@@ -8,6 +8,8 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                <field name="compressive_visible" invisible="1"/>
+                <field name="deformation_visible" invisible="1"/>
 
                  <div>
                         <h1>
@@ -90,6 +92,11 @@
                                         string="Basic stress, σb = Fc/9 (MPa)"
                                         readonly="1"
                                         invisible="specimen != 1"/>
+
+                                    <field name="upper_stress_display"
+                                        string="Upper stress, σa = Fc/3 (MPa)"
+                                        readonly="1"
+                                        invisible="specimen != 1"/>
                                 </tree>
                             </field>
                         </div>
@@ -151,69 +158,73 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <div invisible="poisson_visible == False" style="margin-top: 15px;">
-                            <field name="poisson_visible" invisible="1"/>
+                        <div invisible="not deformation_visible"
+                            style="margin-top: 15px;">
                             <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
-                                POISSON&#39;S RATIO (OPTIONAL &#8212; IF TRANSVERSE STRAIN IS MEASURED)
+                                MODULUS OF ELASTICITY &amp; POISSON'S RATIO DEFORMATION DATA
                             </div>
-                            <field name="poisson_lines" nolabel="1" class="custom_table_borders">
+                            <field name="deformation_lines" nolabel="1" class="custom_table_borders">
                                 <tree editable="bottom">
-                                    <field name='specimen' string="Specimen" readonly="1"/>
-                                    <field name='long_strain_b' string="Long. εb (×10⁻⁶)" class="blue-input" decoration-info="long_strain_b != 0"/>
-                                    <field name='long_strain_a' string="Long. εa (×10⁻⁶)" class="blue-input" decoration-info="long_strain_a != 0"/>
-                                    <field name='trans_strain_b' string="Trans. εb (×10⁻⁶)" class="blue-input" decoration-info="trans_strain_b != 0"/>
-                                    <field name='trans_strain_a' string="Trans. εa (×10⁻⁶)" class="blue-input" decoration-info="trans_strain_a != 0"/>
-                                    <field name='poisson_ratio' string="Poisson&#39;s Ratio μ" readonly="1"/>
+                                    <field name="specimen" string="Sr. No" readonly="1"/>
+                                    <field name="fc_for_moe" string="Compressive Strength (MPa)" class="blue-input"/>
+                                    <field name="stress_s1" string="Stress S₁ = Fc/9 (MPa)" class="blue-input"/>
+                                    <field name="stress_s2" string="Stress S₂ = Fc/3 (MPa)" class="blue-input"/>
+                                    <field name="strain_epsilon_1" string="Strain ε₁" class="blue-input"/>
+                                    <field name="strain_epsilon_2" string="Strain ε₂" class="blue-input"/>
+                                    <field name="deformation_ec_gpa" string="Modulus of Elasticity (GPa)" readonly="1"/>
                                 </tree>
                             </field>
                             <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody><tr>
+                                    <td colspan="6" class="text-center">Average Modulus of Elasticity (GPa)</td>
+                                    <td class="text-center"><field name="average_deformation_ec_gpa" readonly="1"/></td>
+                                </tr></tbody>
+                            </table>
+                            </div>
+                            <div invisible="not deformation_visible"
+                                style="margin-top: 10px;">
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                 <tbody>
                                     <tr>
-                                        <td colspan="5" class="text-center">Average</td>
-                                        <td class="text-center"><field name="average_poisson_ratio" readonly="1"/></td>
+                                        <td>NABL</td>
+                                        <td>
+                                            <field name="deformation_nabl"
+                                                decoration-success="deformation_nabl == 'pass'"
+                                                decoration-danger="deformation_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Conformity</td>
+                                        <td>
+                                            <field name="deformation_confirmity"
+                                                decoration-success="deformation_confirmity == 'pass'"
+                                                decoration-danger="deformation_confirmity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <table invisible="poisson_visible == False" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                <tr>
-                                    <td><label for="poisson_nabl"></label></td>
-                                    <td><field name='poisson_nabl'
-                                    decoration-success="poisson_nabl == 'pass'"
-                                    decoration-danger="poisson_nabl == 'fail'"
-                                    readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="poisson_confirmity"></label></td>
-                                    <td><field name='poisson_confirmity'
-                                    decoration-success="poisson_confirmity == 'pass'"
-                                    decoration-danger="poisson_confirmity == 'fail'"
-                                    readonly="1"/></td>
-                                </tr>
-                                </tbody>
-                            </table>
                         </div>
-
                         <div style="margin-top: 15px;">
                             <div style="text-align:center;font-weight:bold;margin-bottom:5px;">
                                 FINAL RESULT
                             </div>
                             <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                                 <tbody>
-                                    <tr>
+                                    <tr invisible="not deformation_visible">
                                         <td colspan="3">Average Static Modulus of Elasticity, Ec (GPa)</td>
                                         <td class="text-center"><field name="average_ec_gpa" readonly="1"/></td>
                                     </tr>
-                                    <tr invisible="poisson_visible == False">
-                                        <td colspan="3">Average Poisson&#39;s Ratio, μ</td>
-                                        <td class="text-center"><field name="average_poisson_ratio" readonly="1"/></td>
+                                    <tr invisible="not compressive_visible">
+                                        <td colspan="3">Average Modulus of Elasticity (GPa)</td>
+                                        <td class="text-center"><field name="average_deformation_ec_gpa" readonly="1"/></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-<!-- 
-                        <div class="d-flex gap-2" >
+ 
+                        <!-- <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -231,7 +242,8 @@
                                readonly="1"/></td>
                            </tr>
                            </tbody>
-                          </table> -->
+                          </table>
+                        </div> -->
                         <!-- <table invisible="poisson_visible == False" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
