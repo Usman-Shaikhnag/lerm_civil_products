@@ -1705,7 +1705,7 @@ class FlyaschNormalConsistency(models.Model):
                 if self.status_28days and self.status_28dayss:
                     result.result_char = round(self.compressive_strength_of_sample, 2)
                 else:
-                    result.result_char = self.average_casting_28dayss_char
+                    result.result_char = "Awaited"
                 result.calculated = True
                 if self.compressive_strength_of_sample_nabl == 'pass':
                     result.nabl_status = 'nabl'

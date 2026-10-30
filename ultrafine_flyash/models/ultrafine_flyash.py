@@ -2145,7 +2145,7 @@ class UltraFineFlyash(models.Model):
                 if self.status_7days and self.status_7dayss_7:
                     result.result_char = round(self.compressive_strength_of_sample_7, 2)
                 else:
-                    result.result_char = self.casting_7_dayss_char
+                    result.result_char = "Awaited"
                 result.calculated = True
                 if self.compressive_strength_of_sample_7_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2159,7 +2159,7 @@ class UltraFineFlyash(models.Model):
                 if self.status_28days and self.status_28dayss:
                     result.result_char = round(self.compressive_strength_of_sample, 2)
                 else:
-                    result.result_char = self.casting_28_dayss_char
+                    result.result_char = "Awaited"
                 result.calculated = True
                 if self.compressive_strength_of_sample_nabl == 'pass':
                     result.nabl_status = 'nabl'

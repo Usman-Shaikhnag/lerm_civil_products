@@ -442,9 +442,12 @@ class GgbsMechanical(models.Model):
     ], string='NABL', default='fail',compute="_compute_slag_7days_nabl")
 
 
-    @api.depends('slag_activity_index_7days','eln_ref','grade')
+    @api.depends('slag_activity_index_7days','eln_ref','grade','status_7days','status_7days_opc')
     def _compute_slag_7days_conformity(self):
         for record in self:
+            if not record.status_7days or not record.status_7days_opc:
+                record.slag_7days_conformity = '--'
+                continue
             record.slag_7days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
@@ -500,9 +503,12 @@ class GgbsMechanical(models.Model):
         ('fail', 'Fail'),
     ], string='NABL', default='fail',compute="_compute_slag_28days_nabl")
 
-    @api.depends('slag_activity_index_28days','eln_ref','grade')
+    @api.depends('slag_activity_index_28days','eln_ref','grade','status_28days','status_28days_opc')
     def _compute_slag_28days_conformity(self):
         for record in self:
+            if not record.status_28days or not record.status_28days_opc:
+                record.slag_28days_conformity = '--'
+                continue
             record.slag_28days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table
@@ -795,7 +801,10 @@ class GgbsMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             if result.parameter.internal_id == '55b3df61-8e67-4e94-86ea-98d9472f5c71':
-                result.result_char = self.slag_activity_index_7days
+                if self.status_7days and self.status_7days_opc:
+                    result.result_char = self.slag_activity_index_7days
+                else:
+                    result.result_char = "Awaited"
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -809,7 +818,10 @@ class GgbsMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             if result.parameter.internal_id == 'c28cde20-f42a-4405-b127-b5d84fe78485':
-                result.result_char = self.slag_activity_index_28days
+                if self.status_28days and self.status_28days_opc:
+                    result.result_char = self.slag_activity_index_28days
+                else:
+                    result.result_char = "Awaited"
                 if self.slag_28days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:

@@ -373,9 +373,12 @@
 									</span>
 								</td>
 								<td style="text-align: center;">
-									<span>
+									<span t-if="gypsum.status_1days">
 										<span t-field="gypsum.average_casting_1days" t-options='{"widget": "float", "precision": 2}'/>
-									</span>									
+									</span>
+									<span t-if="not gypsum.status_1days">
+										<span>Awaited</span>
+									</span>
 								</td>
 								<td>
 									<span>

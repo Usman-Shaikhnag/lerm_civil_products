@@ -2389,7 +2389,7 @@
 
 										
 											<span>
-											<t t-if="flyash.status_28dayss">
+											<t t-if="flyash.status_28days and flyash.status_28dayss">
 												<span t-field="flyash.compressive_strength_of_sample" t-options='{"widget": "float", "precision": 2}'/>
 											</t>
 											<t t-else="">
@@ -2496,7 +2496,7 @@
 												</t>
 											</span> -->
 											<span>
-											<t t-if="flyash.status_28dayss">
+											<t t-if="flyash.status_28days and flyash.status_28dayss">
 												<span t-field="flyash.compressive_strength_of_sample" t-options='{"widget": "float", "precision": 2}'/>
 											</t>
 											<t t-else="">
@@ -2655,7 +2655,7 @@
 											</t>
 										</span> -->
 										<span>
-											<t t-if="flyash.status_28dayss">
+											<t t-if="flyash.status_28days and flyash.status_28dayss">
 												<span t-field="flyash.compressive_strength_of_sample" t-options='{"widget": "float", "precision": 2}'/>
 											</t>
 											<t t-else="">
@@ -2762,11 +2762,11 @@
 											</t>
 										</span> -->
 										<span>
-											<t t-if="flyash.status_28dayss">
+											<t t-if="flyash.status_28days and flyash.status_28dayss">
 												<span t-field="flyash.compressive_strength_of_sample" t-options='{"widget": "float", "precision": 2}'/>
 											</t>
 											<t t-else="">
-											<span t-field="flyash.average_casting_28dayss_char" />
+											Awaited
 											</t>
 										</span>
 									</div>

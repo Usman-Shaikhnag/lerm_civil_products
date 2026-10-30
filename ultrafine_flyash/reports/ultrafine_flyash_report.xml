@@ -761,11 +761,11 @@
 									</div> -->
 
 									<span>
-												<t t-if="data.status_7dayss_7">
+												<t t-if="data.status_7days and data.status_7dayss_7">
 													<span t-field="data.compressive_strength_of_sample_7" />
 												</t>
 												<t t-else="">
-													<span t-field="data.casting_7_dayss_char" />
+													Awaited
 												</t>
 											</span>	
 								</td>
@@ -901,11 +901,11 @@
 										<span t-field="data.compressive_strength_of_sample" />
 									</div> -->
 									<span>
-												<t t-if="data.status_28dayss">
+												<t t-if="data.status_28days and data.status_28dayss">
 													<span t-field="data.compressive_strength_of_sample" />
 												</t>
 												<t t-else="">
-													<span t-field="data.casting_28_dayss_char" />
+													Awaited
 												</t>
 											</span>	
 								</td>

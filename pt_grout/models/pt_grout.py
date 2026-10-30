@@ -711,9 +711,12 @@ class PtGrout(models.Model):
 
   
 
-    @api.depends('compressive_strength_7_days','eln_ref')
+    @api.depends('compressive_strength_7_days','eln_ref','status_7days')
     def _compute_compressive_strength_7days_confirmity(self):
         for record in self:
+            if not record.status_7days:
+                record.compressive_strength_7days_confirmity = '--'
+                continue
             record.compressive_strength_7days_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a40b79f8-39e1-4ca3-8c9d-f28fb1f9b12e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a40b79f8-39e1-4ca3-8c9d-f28fb1f9b12e')]).parameter_table
@@ -821,9 +824,12 @@ class PtGrout(models.Model):
 
   
 
-    @api.depends('compressive_strength_28_days','eln_ref')
+    @api.depends('compressive_strength_28_days','eln_ref','status_28days')
     def _compute_compressive_strength_28days_confirmity(self):
         for record in self:
+            if not record.status_28days:
+                record.compressive_strength_28days_confirmity = '--'
+                continue
             record.compressive_strength_28days_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a40b79f8-39e1-4ca3-8c9d-f28fb1f9b12e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a40b79f8-39e1-4ca3-8c9d-f28fb1f9b12e')]).parameter_table
@@ -1027,7 +1033,10 @@ class PtGrout(models.Model):
                 continue
 
             if result.parameter.internal_id == 'a40b79f8-39e1-4ca3-8c9d-f28fb1f9b12e':
-                result.result_char = round(self.compressive_strength_28_days,2)
+                if self.status_28days:
+                    result.result_char = round(self.compressive_strength_28_days,2)
+                else:
+                    result.result_char = "Awaited"
                 result.calculated = True
                 if self.days28_nabl == 'pass':
                     result.nabl_status = 'nabl'
