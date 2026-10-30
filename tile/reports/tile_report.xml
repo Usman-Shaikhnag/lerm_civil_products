@@ -519,7 +519,7 @@
 						</tr>
 
 
-						<tr t-if="data.surface_quality_visible ">
+						<tr t-if="data.surface_quality_visible and (data.surface_quality_nabl == 'pass' and nabl or (data.surface_quality_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -563,7 +563,7 @@
                             
 						
 							<td t-if="eln.conformity">
-								<!-- <span t-field="data.deviation_warpage_conformity"/> -->
+								<span t-attf-style="color: #{'green' if data.surface_quality_conformity and data.surface_quality_conformity.lower() == 'pass' else ('red' if data.surface_quality_conformity and data.surface_quality_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.surface_quality_conformity"/>
 							</td>
 
 						
@@ -719,7 +719,7 @@
 								</td>
 						</tr>
 
-						<tr t-if="data.crazing_visible ">
+						<tr t-if="data.crazing_visible and (data.crazing_nabl == 'pass' and nabl or (data.crazing_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -755,6 +755,7 @@
 							</td>
 
 							<td t-if="eln.conformity">
+								<span t-attf-style="color: #{'green' if data.crazing_conformity and data.crazing_conformity.lower() == 'pass' else ('red' if data.crazing_conformity and data.crazing_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.crazing_conformity"/>
 							</td>
 
 						</tr>
@@ -929,7 +930,7 @@
 						</tr>
 
 
-                         <tr t-if="data.scratch_hardness_visible ">
+                         <tr t-if="data.scratch_hardness_visible and (data.scratch_hardness_nabl == 'pass' and nabl or (data.scratch_hardness_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -975,7 +976,7 @@
                             
 							
 							<td t-if="eln.conformity">
-								<!-- <span t-field="data.breaking_strenght_conformity"/> -->
+								<span t-attf-style="color: #{'green' if data.scratch_hardness_conformity and data.scratch_hardness_conformity.lower() == 'pass' else ('red' if data.scratch_hardness_conformity and data.scratch_hardness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.scratch_hardness_conformity"/>
 							</td>
 
 						</tr>
@@ -985,7 +986,7 @@
 						
 
 
-							<tr t-if="data.observations_alkalis_visible ">
+							<tr t-if="data.observations_alkalis_visible and (data.alkalis_un_nabl == 'pass' and nabl or (data.alkalis_un_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -1029,7 +1030,7 @@
                             
 						
 							<td t-if="eln.conformity">
-								<!-- <span t-field="data.breaking_strenght_conformity"/> -->
+								<span t-attf-style="color: #{'green' if data.alkalis_un_conformity and data.alkalis_un_conformity.lower() == 'pass' else ('red' if data.alkalis_un_conformity and data.alkalis_un_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.alkalis_un_conformity"/>
 							</td>
 
 						</tr>
@@ -1037,7 +1038,7 @@
 
 					
 
-						<tr t-if="data.chemical_visible ">
+						<tr t-if="data.chemical_visible and (data.alkalis_nabl == 'pass' and nabl or (data.alkalis_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -1081,7 +1082,7 @@
                             
 
 							<td t-if="eln.conformity">
-								<!-- <span t-field="data.breaking_strenght_conformity"/> -->
+								<span t-attf-style="color: #{'green' if data.alkalis_conformity and data.alkalis_conformity.lower() == 'pass' else ('red' if data.alkalis_conformity and data.alkalis_conformity.lower() == 'fail' else 'black')}; font-weight: bold;" t-esc="data.alkalis_conformity"/>
 							</td>
 
 						</tr>

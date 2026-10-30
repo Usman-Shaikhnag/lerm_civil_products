@@ -1727,6 +1727,17 @@ class Tile(models.Model):
          # Default to "No crazing effect was observed"
     ) 
 
+    crazing_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    crazing_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
+
 
 
         # chemical resistance test
@@ -1735,6 +1746,17 @@ class Tile(models.Model):
     chemical_visible = fields.Boolean("chemical resistance test Visible",compute="_compute_visible")  
 
     observations_alkalis = fields.Char(string="Observations")
+
+    alkalis_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    alkalis_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
     requirement_alkalis = fields.Char(string="Requirement",compute="_compute_requirement_alkalis")
 
     @api.depends('size')
@@ -1765,6 +1787,17 @@ class Tile(models.Model):
     observations_alkalis_visible = fields.Boolean("chemical resistance test Visible",compute="_compute_visible")  
 
     observations_alkalis_un = fields.Char(string="Observations")
+
+    alkalis_un_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    alkalis_un_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
     requirement_alkalis_un = fields.Char(string="Requirement",compute="_compute_requirement_alkalis_un")
 
 
@@ -1797,6 +1830,17 @@ class Tile(models.Model):
     observations3 = fields.Float(string="Observations")
     observations4 = fields.Float(string="Observations")
     observations5 = fields.Float(string="Observations")
+
+    scratch_hardness_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    scratch_hardness_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
 
     scratch_hardness_avg = fields.Float(string="Scratch hardness According to Moh's Scale",compute="_compute_scratch_hardness_avg")
 
@@ -1835,6 +1879,17 @@ class Tile(models.Model):
     surface_quality_visible = fields.Boolean("Surface Quality",compute="_compute_visible")  
 
     observations_surface_quality = fields.Char(string="Observations")
+
+    surface_quality_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    surface_quality_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
     requirement_surface_quality = fields.Char(string="Requirement, Surface Quality",compute="_compute_requirement_surface_quality")
 
 
