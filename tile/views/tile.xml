@@ -86,6 +86,16 @@
                                 
                             </tbody>
                         </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="tile_type1"></label></td>
+                                    <td><field name="tile_type1" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
                         
                       
 
@@ -1388,18 +1398,7 @@
                                     <td><label for="observations"></label></td>
                                     <td><field name="observations" /></td>
                                 </tr>
-                                <tr>
-                                    <td><label for="crazing_conformity"></label></td>
-                                    <td><field name="crazing_conformity"
-                                        decoration-success="crazing_conformity == 'pass'"
-                                        decoration-danger="crazing_conformity == 'fail'"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="crazing_nabl"></label></td>
-                                    <td><field name="crazing_nabl"
-                                        decoration-success="crazing_nabl == 'nabl'"
-                                        decoration-danger="crazing_nabl == 'non-nabl'"/></td>
-                                </tr>
+                                
                                 
                             </tbody>
                         </table>
@@ -1417,6 +1416,31 @@
                       
                     </div>
 
+                     <div class="d-flex gap-2" invisible="crazing_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                               
+                                <tr>
+                                    <td><label for="crazing_conformity"></label></td>
+                                    <td><field name="crazing_conformity"
+                                        decoration-success="crazing_conformity == 'pass'"
+                                        decoration-danger="crazing_conformity == 'fail'"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="crazing_nabl"></label></td>
+                                    <td><field name="crazing_nabl"
+                                        decoration-success="crazing_nabl == 'nabl'"
+                                        decoration-danger="crazing_nabl == 'non-nabl'"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                      
+
+                      
+                    </div>
+
                     
 
 
@@ -1428,12 +1452,45 @@
                     </div>
 
                      <div class="d-flex gap-2" invisible="chemical_visible == False" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="observations_alkalis"></label></td>
                                     <td><field name="observations_alkalis" /></td>
                                 </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="requirement_alkalis"></label></td>
+                                    <td><field name="requirement_alkalis" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="test_method_alkalis"></label></td>
+                                    <td><field name="test_method_alkalis" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                      
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="chemical_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                              
                                 <tr>
                                     <td><label for="alkalis_conformity"></label></td>
                                     <td><field name="alkalis_conformity"
@@ -1450,15 +1507,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="requirement_alkalis"></label></td>
-                                    <td><field name="requirement_alkalis" /></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
+                     
 
                       
                     </div>
@@ -1475,12 +1524,44 @@
                     </div>
 
                     <div class="d-flex gap-2" invisible="observations_alkalis_visible == False" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="observations_alkalis_un"></label></td>
                                     <td><field name="observations_alkalis_un" /></td>
                                 </tr>
+                               
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="requirement_alkalis_un"></label></td>
+                                    <td><field name="requirement_alkalis_un" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="test_method_alkalis_un"></label></td>
+                                    <td><field name="test_method_alkalis_un" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                      
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="observations_alkalis_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                              
                                 <tr>
                                     <td><label for="alkalis_un_conformity"></label></td>
                                     <td><field name="alkalis_un_conformity"
@@ -1497,18 +1578,9 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="requirement_alkalis_un"></label></td>
-                                    <td><field name="requirement_alkalis_un" /></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-
-                      
                     </div>
+
+                    
 
                 
 
@@ -1553,6 +1625,29 @@
                                     <td><label for="requirement_surface_quality"></label></td>
                                     <td><field name="requirement_surface_quality" /></td>
                                 </tr>
+                             
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="requirement_surface_quality"></label></td>
+                                    <td><field name="requirement_surface_quality" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                      
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="scratch_hardness_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                               
                                 <tr>
                                     <td><label for="scratch_hardness_conformity"></label></td>
                                     <td><field name="scratch_hardness_conformity"
@@ -1569,15 +1664,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="requirement_surface_quality"></label></td>
-                                    <td><field name="requirement_surface_quality" /></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
+                     
 
                       
                     </div>
@@ -1603,6 +1690,30 @@
                                     <td><label for="observations_surface_quality"></label></td>
                                     <td><field name="observations_surface_quality" /></td>
                                 </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="requirement_surface_quality"></label></td>
+                                    <td><field name="requirement_surface_quality" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                      
+                    </div>
+
+
+
+                     <div class="d-flex gap-2" invisible="surface_quality_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                               
                                 <tr>
                                     <td><label for="surface_quality_conformity"></label></td>
                                     <td><field name="surface_quality_conformity"
@@ -1619,15 +1730,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="requirement_surface_quality"></label></td>
-                                    <td><field name="requirement_surface_quality" /></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
+                        
 
                       
                     </div>

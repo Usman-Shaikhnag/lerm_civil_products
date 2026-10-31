@@ -59,6 +59,10 @@ class Tile(models.Model):
     custom_size = fields.Char("Size")
 
     tile_type = fields.Char(string="Type Of Tile")
+    tile_type1 = fields.Selection([
+    ('glazed_tile', 'Glazed Tile'),
+    ('unglazed_tile', 'Unglazed Tile'),
+    ], string='Tile Type Glazed/Unglazed')
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
@@ -1746,7 +1750,7 @@ class Tile(models.Model):
     chemical_visible = fields.Boolean("chemical resistance test Visible",compute="_compute_visible")  
 
     observations_alkalis = fields.Char(string="Observations")
-
+    
     alkalis_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -1758,6 +1762,8 @@ class Tile(models.Model):
         ('non-nabl', 'Non NABL')
     ], string="NABL", default='non-nabl')
     requirement_alkalis = fields.Char(string="Requirement",compute="_compute_requirement_alkalis")
+    test_method_alkalis = fields.Char(string="Test Method")
+
 
     @api.depends('size')
     def _compute_requirement_alkalis(self):
@@ -1799,6 +1805,22 @@ class Tile(models.Model):
         ('non-nabl', 'Non NABL')
     ], string="NABL", default='non-nabl')
     requirement_alkalis_un = fields.Char(string="Requirement",compute="_compute_requirement_alkalis_un")
+    test_method_alkalis_un = fields.Char(string="Test Method")
+
+    @api.onchange('tile_type1')
+    def _onchange_tile_type1(self):
+        for rec in self:
+            if rec.tile_type1 == 'glazed_tile':
+                test_method = 'IS 13630 Part 8 :2019'
+
+            elif rec.tile_type1 == 'unglazed_tile':
+                test_method = 'IS 13630 Part 7 :2019'
+
+            else:
+                test_method = False
+
+            rec.test_method_alkalis_un = test_method
+            rec.test_method_alkalis = test_method
 
 
     @api.depends('size')

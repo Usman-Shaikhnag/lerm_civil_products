@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="manhole_cover_frame_view" model="ir.ui.view">
+        <field name="name">manhole.cover.frame.form</field>
+        <field name="model">manhole.cover.frame</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <sheet>
+                   <group>
+                       
+                       
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
+                    </group>
+                         
+                            <group>
+                                
+                               
+                                
+                            </group>
+
+                             <div class="d-flex gap-1" >
+                            <table class="table table-sm o_form_table table-bordered w-10 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="grade"></label></td>
+                                        <td><field name="grade" /></td>
+                                        <field name="eln_state" />
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            
+                            <!-- <table class="table table-sm o_form_table table-bordered w-10 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="size"></label></td>
+                                        <td><field name="size" /></td>
+                                    </tr>
+                                
+                                </tbody>
+                            </table> -->
+                            </div>
+                             <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                           <div class="custom_table_borders">
+                                <field name="sample_parameters">
+                                    <tree>
+                                        <field name="parameter_name"/>
+                                        <field name="test_method"/>
+                                    </tree>
+                                </field>
+                            </div>
+<!--          1. LOAD TEST & PERMANENT SET TEST DATA					-->
+                    <group>
+                        <h1>
+                            <field name="load_permanent_set_test_name" readonly="1" nolabel="1" style="white-space: nowrap;"/>
+                        </h1>
+                    </group>
+                    <div class="custom_table_borders">
+                        <field name="load_permanent_set_test_lines" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="initial_gauge" class="blue-input"  decoration-info="initial_gauge != 0"/>
+                          <field name="final_gauge" class="blue-input"  decoration-info="final_gauge != 0"/>
+                          <field name="permanent_set" class="blue-input"  decoration-info="permanent_set != 0"/>
+                          <field name="specified_load" class="blue-input"  decoration-info="specified_load != 0"/>                         
+                          <field name="load_holding_time" class="blue-input" decoration-info="load_holding_time != 0"/>
+                          
+                        </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div style="display:flex;">
+                    <div style="width:33%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_permanent_set">Average Permanent Set</label></td>
+                                    <td><field name="average_permanent_set"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+                
+                <div style="width: 100%; overflow: visible;">
+    
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%; table-layout: auto;">
+                            <tbody><span>Remark</span>
+                                <tr>
+                                <td><label class="text-bold" for="load_test_result">Load Test Result</label></td>
+                                <td><field name="load_test_result"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="permanent_set_test_result">Permanent Set</label></td>
+                                    <td style= "white-space: nowrap;"><field name="permanent_set_test_result"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    
+
+
+                <!-- 2. DEFECTS & WORKMANSHIP TEST DATA					-->
+
+
+                <group>
+                        <h1>
+                            <field name="defects_workmanship_test_name" readonly="1" nolabel="1" style="white-space: nowrap;"/>
+                        </h1>
+                </group>
+
+                <div class="custom_table_borders">
+                        <field name="defects_workmanship_test_data_line" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="specimen_no" class="blue-input"  decoration-info="specimen_no != 0"/>
+                          <field name="visual_inspection_parameter" class="blue-input"  decoration-info="visual_inspection_parameter != 0"/>
+                          <field name="specified_requirements" class="blue-input"  decoration-info="specified_requirements != 0"/>
+                          <field name="observed_conditions" class="blue-input"  decoration-info="observed_conditions != 0"/>                         
+                          <field name="con" class="blue-input" decoration-info="con != 0"/>
+                        </tree>
+                        </field>
+                    </div>
+
+
+                <div style="display:flex;">
+                    <div style="width:100%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:100%;">
+                            <tbody><span>Remark</span>
+                                <tr>
+                                    <td><label class="text-bold" for="defects_workmanship_test_result"> DEFECTS &amp; WORKMANSHIP</label></td>
+                                    <td><field name="defects_workmanship_test_result"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+
+
+            
+                    
+                    
+                    
+                    
+            <button
+                type="object"
+                class="oe_highlight" 
+                name="open_eln_page"
+                string="Submit"
+            />
+              
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>
