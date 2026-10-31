@@ -456,6 +456,17 @@ class ShutteringPlywood(models.Model):
 
     adhesion_plies = fields.Char(string="Observation")
 
+    adhesion_plies_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    adhesion_plies_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
+
     adhesion_plies_pecification = fields.Char("Adhesion of Plies Specification")
 
 
@@ -465,6 +476,17 @@ class ShutteringPlywood(models.Model):
     resistance_heat_visible = fields.Boolean("Resistance to Dry Heat Visible",compute="_compute_visible") 
 
     resistance_heat = fields.Char(string="Observation")
+
+    resistance_heat_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    resistance_heat_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
 
     resistance_heat_pecification = fields.Char("Resistance to Dry Heat Specification")
 
@@ -476,6 +498,17 @@ class ShutteringPlywood(models.Model):
     water_resistance_visible = fields.Boolean("Water Resistance Test Visible",compute="_compute_visible") 
 
     water_resistance = fields.Char(string="Observation")
+
+    water_resistance_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('--', '--')
+    ], string="Conformity")
+
+    water_resistance_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')
+    ], string="NABL", default='fail')
 
     water_resistance_pecification = fields.Char("Water Resistance Specification")
 
