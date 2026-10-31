@@ -1017,13 +1017,14 @@
 								<span t-field="data.requirement_alkalis_un"/>
 							</td>
                             <td style="text-align: center;">
-								<span>
+								<!-- <span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','65eefe82-1c17-43d6-8d24-31cad21f017a')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
 									</t>
-								</span>
+								</span> -->
+								<span t-field="data.test_method_alkalis_un"/>
 							</td>
 
                           
@@ -1069,13 +1070,14 @@
 								<span t-field="data.requirement_alkalis"/>
 							</td>
                             <td style="text-align: center;">
-								<span>
+								<!-- <span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','daa5edf4-4f0a-4625-a1b8-4b365204be34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
 									</t>
-								</span>
+								</span> -->
+								<span t-field="data.test_method_alkalis"/>
 							</td>
 
                          
