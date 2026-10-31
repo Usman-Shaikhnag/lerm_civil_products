@@ -178,7 +178,7 @@ class PtGrout(models.Model):
     initial_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='NABL',compute="_compute_initial_setting_nabl")
+    ], string='NABL', default='fail',compute="_compute_initial_setting_nabl")
 
 
     @api.depends('initial_setting_time_hours','eln_ref','grade')
@@ -309,7 +309,7 @@ class PtGrout(models.Model):
     final_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='NABL',compute="_compute_final_setting_nabl")
+    ], string='NABL', default='fail',compute="_compute_final_setting_nabl")
 
 
     @api.depends('final_setting_time_hours','eln_ref','grade')
