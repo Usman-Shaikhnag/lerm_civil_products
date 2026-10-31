@@ -145,7 +145,7 @@ class CarbonationnLine(models.Model):
     # element = fields.Char(string="Member / Element Type")
     serial_no = fields.Integer(string="Test Point", readonly=True, copy=False, default=1)
     location = fields.Char(string="Location")
-    impact_direction = fields.Char(string="Impact Direction")
+    # impact_direction = fields.Char(string="Impact Direction")
     f1 = fields.Integer(string="1")
     f2 = fields.Integer(string="2")
     f3 = fields.Integer(string="3")

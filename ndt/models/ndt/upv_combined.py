@@ -11,7 +11,7 @@ class UpvCombined(models.Model):
 
 
     eln_ref = fields.Many2one("lerm.eln")
-    name = fields.Char("Name",default="UPV COMBINED")
+    name = fields.Char("Name",default="Ultrasonic Pluse Velocity")
     
     structure = fields.Char("Approximate Age of structure  Years")
     temperature = fields.Float("Concrete Temp °C",required=True)
@@ -166,13 +166,14 @@ class UpvCombinedLine1(models.Model):
     # element_type = fields.Char("Element Type")
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     level_id = fields.Char("LOCATION")
+    casting_date = fields.Date("DATE OF CASTING",compute="_compute_dt_of_casting", store=True)
     grid = fields.Char("GRID")
     path = fields.Char("PATH")
     dist = fields.Float("DISTANCE [MM]",digits=(16,2))
     time = fields.Float("TIME [µs]",digits=(16,2))
     velocity = fields.Float("VELOCITY [m/s]",digits=(16,2),compute="_compute_velocities")
-    actual_velocity = fields.Float("ACTUAL VELOCITY [Km/s]",compute="_compute_velocities")
-    corrected_velocity = fields.Float("CORRECTED VELOCITY [Km/s]",compute="_compute_velocities")
+    actual_velocity = fields.Float("ACTUAL VELOCITY [Km/s]",compute="_compute_velocities",digits=(16,2))
+    corrected_velocity = fields.Float("CORRECTED VELOCITY [Km/s]",compute="_compute_velocities",digits=(16,2))
     # condition_concrete = fields.Selection([
     #     ('dry', 'Dry'),
     #     ('wet', 'Wet')],"Condition Of Concrete")
@@ -192,6 +193,30 @@ class UpvCombinedLine1(models.Model):
     #     ('direct', 'Direct'),
     #     ('indirect', 'In-Direct'),
     #     ('semi_direct', 'Semi-Direct')],"Method")
+
+    @api.depends('parent_id.date_of_casting')
+    def _compute_dt_of_casting(self):
+        for record in self:
+            # आधी बेसिक चेक: जर पॅरेंट किंवा चाईल्ड लाईन्स नसतील तर तारीख रिकामी ठेवा
+            if not record.parent_id or not record.parent_id.child_lines1:
+                record.casting_date = False
+                continue
+
+            all_lines = list(record.parent_id.child_lines1)
+            
+            try:
+                current_index = all_lines.index(record)
+            except ValueError:
+                record.casting_date = False
+                continue
+
+            base_index = (current_index // 3) * 3
+
+            if base_index < len(all_lines):
+                base_line = all_lines[base_index]
+                record.casting_date = base_line.parent_id.date_of_casting
+            else:
+                record.casting_date = False
 
     @api.depends('dist', 'time')
     def _compute_velocities(self):

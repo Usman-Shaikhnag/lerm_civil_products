@@ -407,20 +407,23 @@
 
 							<div style="margin-top:20px">
                         <div style="text-align:center;font-size:15px">
-                            <b>TEST METHOD : UPV DIRECT</b>
+                            <b>TEST METHOD : Ultrasonic Pluse Velocity DIRECT</b>
                         </div>
 					
 					  <table>
                             <tr cols="12">
                                 <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
                                 <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+								<t t-if="data.casting_date">
+								<th colspan="1" style="text-align: center;"><b>DATE OF CASTING</b></th>
+								</t>
                                 <td colspan="2" style="text-align: center;"><b>GRID</b></td>
                                 <td colspan="1" style="text-align: center;"><b>PATH</b></td>
                                 <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
                                 <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
                                 <td colspan="1" style="text-align: center;"><b>VELOCITY [m/s]</b></td>
                                 <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
-                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+                                <!-- <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td> -->
 
 								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
                             </tr>
@@ -435,6 +438,11 @@
                                 <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['level_id']"/>
                                 </td>
+								<t t-if="data.casting_date">
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['casting_date']"/>
+                                </td>
+								</t>
                                 <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['grid']"/>
                                 </td>
@@ -453,9 +461,9 @@
                                  <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['actual_velocity']"/>
                                 </td>
-                                 <td colspan="2" style="text-align: center;">
+                                 <!-- <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
+                                </td> -->
 
 								 <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['quality']" />
@@ -467,62 +475,73 @@
 
 						<div style="margin-top:10px; page-break-before: always;" >
                         <div style="text-align:center;font-size:15px">
-                            <b>TEST METHOD : UPV IN-DIRECT</b>
+                            <b>TEST METHOD : Ultrasonic Pluse Velocity  IN-DIRECT</b>
                         </div>
 					
+					  <t t-set="indirect_lines" t-value="data.child_lines2"/>
 					  <table>
-                            <tr cols="12">
-                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
-                                <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
-                                <td colspan="2" style="text-align: center;"><b>DATE OF CASTING</b></td>
-                                <td colspan="1" style="text-align: center;"><b>PATH</b></td>
-                                <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
-                                <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
-                                <td colspan="1" style="text-align: center;"><b>SLOPE</b></td>
-                                <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
-                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
-
-								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
-                            </tr>
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.child_lines2" t-as="r">
-                                <td colspan="1" style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-                                <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['level_id']"/>
-                                </td>
-                                <td colspan="2" style="text-align: center;">
-                                    <span t-esc="r['casting_date']"/>
-                                </td>
-                                <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['path']"/>
-                                </td>
-                                 <td colspan="2" style="text-align: center;">
-                                    <span t-esc="r['dist']"/>
-                                </td>
-                                <td colspan="2" style="text-align: center;">
-                                    <span t-esc="r['time']"/>
-                                </td>
-                                <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['slope']"/>
-                                </td>
-                                 <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['actual_velocity']"/>
-                                </td>
-                                 <td colspan="2" style="text-align: center;">
-                                    <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-
-								 <td colspan="2" style="text-align: center;">
-                                    <span t-esc="r['quality']" />
-                                </td>
-                            </tr>
-                        </table>
+							<thead style="display: table-header-group;">
+								<tr>
+									<th style="text-align: center; vertical-align: middle;"><b>S. NO</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>LOCATION</b></th>
+									<t t-if="data.casting_date">
+									<th style="text-align: center; vertical-align: middle;"><b>DATE OF CASTING</b></th>
+									</t>
+									<th style="text-align: center; vertical-align: middle;"><b>PATH</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>DISTANCE [MM]</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>TIME [µs]</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>SLOPE</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>ACTUAL VELOCITY [Km/s]</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>CORRECTED VELOCITY [Km/s]</b></th>
+									<th style="text-align: center; vertical-align: middle;"><b>QUALITY OF CONCRETE</b></th>
+								</tr>
+							</thead>
+							<!-- Each reading set is 3 lines; slope, velocities and quality are stored on the first line -->
+							<tbody t-foreach="range(0, len(indirect_lines), 3)" t-as="start" style="page-break-inside: avoid;">
+								<t t-set="group" t-value="indirect_lines[start:start + 3]"/>
+								<t t-set="first" t-value="group[0]"/>
+								<tr t-foreach="group" t-as="line">
+									<t t-if="line_first">
+										<td t-att-rowspan="len(group)" style="text-align: center; vertical-align: middle; font-weight: bold;">
+											<span t-esc="start // 3 + 1"/>
+										</td>
+										<td t-att-rowspan="len(group)" style="vertical-align: middle;">
+											<span t-esc="first.level_id"/>
+										</td>
+										<t t-if="data.casting_date">
+										<td t-att-rowspan="len(group)" style="vertical-align: middle;">
+											<span t-esc="first.casting_date"/>
+										</td>
+										</t>
+									</t>
+									<td style="text-align: center; padding: 1px 5px;">
+										<span t-esc="line.path"/>
+									</td>
+									<td style="text-align: center; padding: 1px 5px;">
+										<span t-esc="'%g' % line.dist"/>
+									</td>
+									<td style="text-align: center; padding: 1px 5px;">
+										<span t-esc="line.time" t-options='{"widget": "float", "precision": 1}'/>
+									</td>
+									<t t-if="line_first">
+										<td t-att-rowspan="len(group)" style="text-align: center; vertical-align: middle;">
+											<span t-if="first.slope" t-esc="first.slope" t-options='{"widget": "float", "precision": 4}'/>
+										</td>
+										<td t-att-rowspan="len(group)" style="text-align: center; vertical-align: middle;">
+											<span t-if="first.actual_velocity" t-esc="first.actual_velocity" t-options='{"widget": "float", "precision": 2}'/>
+										</td>
+										<td t-att-rowspan="len(group)" style="text-align: center; vertical-align: middle; font-weight: bold;">
+											<span t-if="first.corrected_velocity" t-esc="first.corrected_velocity" t-options='{"widget": "float", "precision": 2}'/>
+										</td>
+										<td t-att-rowspan="len(group)" t-attf-style="text-align: center; vertical-align: middle; font-weight: if first.quality else ''}">
+											<span t-esc="(first.quality or '').capitalize()"/>
+										</td>
+									</t>
+								</tr>
+							</tbody>
+						</table>
 						</div>
+					
 
 						
 							

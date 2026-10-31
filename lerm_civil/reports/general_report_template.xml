@@ -1082,20 +1082,23 @@
 
 					 <div style="margin-top:20px">
                         <div style="text-align:center;font-size:15px">
-                            <b>TEST METHOD : UPV DIRECT</b>
+                            <b>TEST METHOD : Ultrasonic Pluse Velocity DIRECT</b>
                         </div>
 					
 					  <table>
                             <tr cols="12">
                                 <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
                                 <td colspan="1" style="text-align: center;"><b>LOCATION</b></td>
+								<t t-if="data.casting_date">
+								<th colspan="1" style="text-align: center;"><b>DATE OF CASTING</b></th>
+								</t>
                                 <td colspan="2" style="text-align: center;"><b>GRID</b></td>
                                 <td colspan="1" style="text-align: center;"><b>PATH</b></td>
                                 <td colspan="2" style="text-align: center;"><b>DISTANCE [MM]</b></td>
                                 <td colspan="2" style="text-align: center;"><b>TIME [µs]</b></td>
                                 <td colspan="1" style="text-align: center;"><b>VELOCITY [m/s]</b></td>
                                 <td colspan="1" style="text-align: center;"><b>ACTUAL VELOCITY [Km/s]</b></td>
-                                <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td>
+                                <!-- <td colspan="2" style="text-align: center;"><b>CORRECTED VELOCITY [Km/s]</b></td> -->
 
 								<td colspan="2" style="text-align: center;"><b>QUALITY OF CONCRETE</b></td>
                             </tr>
@@ -1110,6 +1113,11 @@
                                 <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['level_id']"/>
                                 </td>
+								<t t-if="data.casting_date">
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['casting_date']"/>
+                                </td>
+								</t>
                                 <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['grid']"/>
                                 </td>
@@ -1128,9 +1136,9 @@
                                  <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['actual_velocity']"/>
                                 </td>
-                                 <td colspan="2" style="text-align: center;">
+                                 <!-- <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['corrected_velocity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
+                                </td> -->
 
 								 <td colspan="2" style="text-align: center;">
                                     <span t-esc="r['quality']" />
@@ -1142,7 +1150,7 @@
 
 						<div style="margin-top:10px; page-break-before: always;" >
                         <div style="text-align:center;font-size:15px">
-                            <b>TEST METHOD : UPV IN-DIRECT</b>
+                            <b>TEST METHOD : Ultrasonic Pluse Velocity  IN-DIRECT</b>
                         </div>
 					
 					  <t t-set="indirect_lines" t-value="data.child_lines2"/>
@@ -1151,6 +1159,9 @@
 								<tr>
 									<th style="text-align: center; vertical-align: middle;"><b>S. NO</b></th>
 									<th style="text-align: center; vertical-align: middle;"><b>LOCATION</b></th>
+									<t t-if="data.casting_date">
+									<th style="text-align: center; vertical-align: middle;"><b>DATE OF CASTING</b></th>
+									</t>
 									<th style="text-align: center; vertical-align: middle;"><b>PATH</b></th>
 									<th style="text-align: center; vertical-align: middle;"><b>DISTANCE [MM]</b></th>
 									<th style="text-align: center; vertical-align: middle;"><b>TIME [µs]</b></th>
@@ -1172,6 +1183,11 @@
 										<td t-att-rowspan="len(group)" style="vertical-align: middle;">
 											<span t-esc="first.level_id"/>
 										</td>
+										<t t-if="data.casting_date">
+										<td t-att-rowspan="len(group)" style="vertical-align: middle;">
+											<span t-esc="first.casting_date"/>
+										</td>
+										</t>
 									</t>
 									<td style="text-align: center; padding: 1px 5px;">
 										<span t-esc="line.path"/>
@@ -1192,7 +1208,7 @@
 										<td t-att-rowspan="len(group)" style="text-align: center; vertical-align: middle; font-weight: bold;">
 											<span t-if="first.corrected_velocity" t-esc="first.corrected_velocity" t-options='{"widget": "float", "precision": 2}'/>
 										</td>
-										<td t-att-rowspan="len(group)" t-attf-style="text-align: center; vertical-align: middle; font-weight: bold; #{'background-color: yellow;' if first.quality else ''}">
+										<td t-att-rowspan="len(group)" t-attf-style="text-align: center; vertical-align: middle; font-weight: if first.quality else ''}">
 											<span t-esc="(first.quality or '').capitalize()"/>
 										</td>
 									</t>
@@ -1204,17 +1220,7 @@
 
 
 		
-						<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-					<div>
-						<b>Notes: -</b>
-					</div>
-					<div >
-									<ul>
-									   
-										Estimated compressive strength is derived using the manufacturer's rebound number-compressive strength correlation curve and is reported for indicative assessment only. The correlation is not a laboratory/site-specific correlation established for the concrete under investigation. Therefore, the estimated strength shall not be interpreted as the actual in-situ compressive strength or as a substitute for standard compression testing.
-									</ul>
-								</div>
-				</div>
+						
 
 				<div style="margin-top: 10px; text-align: center;">
 							<p style="border-top: 1px dashed #000; padding-top: 10px;">
