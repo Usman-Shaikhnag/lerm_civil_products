@@ -463,9 +463,9 @@ class ShutteringPlywood(models.Model):
     ], string="Conformity")
 
     adhesion_plies_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
 
     adhesion_plies_pecification = fields.Char("Adhesion of Plies Specification")
 
@@ -484,9 +484,9 @@ class ShutteringPlywood(models.Model):
     ], string="Conformity")
 
     resistance_heat_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
 
     resistance_heat_pecification = fields.Char("Resistance to Dry Heat Specification")
 
@@ -506,9 +506,9 @@ class ShutteringPlywood(models.Model):
     ], string="Conformity")
 
     water_resistance_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
 
     water_resistance_pecification = fields.Char("Water Resistance Specification")
 

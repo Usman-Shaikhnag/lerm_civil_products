@@ -1734,9 +1734,9 @@ class Tile(models.Model):
     ], string="Conformity")
 
     crazing_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
 
 
 
@@ -1754,9 +1754,9 @@ class Tile(models.Model):
     ], string="Conformity")
 
     alkalis_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
     requirement_alkalis = fields.Char(string="Requirement",compute="_compute_requirement_alkalis")
 
     @api.depends('size')
@@ -1795,9 +1795,9 @@ class Tile(models.Model):
     ], string="Conformity")
 
     alkalis_un_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
     requirement_alkalis_un = fields.Char(string="Requirement",compute="_compute_requirement_alkalis_un")
 
 
@@ -1838,9 +1838,9 @@ class Tile(models.Model):
     ], string="Conformity")
 
     scratch_hardness_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
 
     scratch_hardness_avg = fields.Float(string="Scratch hardness According to Moh's Scale",compute="_compute_scratch_hardness_avg")
 
@@ -1887,9 +1887,9 @@ class Tile(models.Model):
     ], string="Conformity")
 
     surface_quality_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], string="NABL", default='fail')
+        ('nabl', 'NABL'),
+        ('non-nabl', 'Non NABL')
+    ], string="NABL", default='non-nabl')
     requirement_surface_quality = fields.Char(string="Requirement, Surface Quality",compute="_compute_requirement_surface_quality")
 
 

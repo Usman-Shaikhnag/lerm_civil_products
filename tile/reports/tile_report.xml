@@ -519,7 +519,7 @@
 						</tr>
 
 
-						<tr t-if="data.surface_quality_visible and (data.surface_quality_nabl == 'pass' and nabl or (data.surface_quality_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
+						<tr t-if="data.surface_quality_visible and (data.surface_quality_nabl == 'nabl' and nabl or (data.surface_quality_nabl != 'nabl' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -719,7 +719,7 @@
 								</td>
 						</tr>
 
-						<tr t-if="data.crazing_visible and (data.crazing_nabl == 'pass' and nabl or (data.crazing_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
+						<tr t-if="data.crazing_visible and (data.crazing_nabl == 'nabl' and nabl or (data.crazing_nabl != 'nabl' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -930,7 +930,7 @@
 						</tr>
 
 
-                         <tr t-if="data.scratch_hardness_visible and (data.scratch_hardness_nabl == 'pass' and nabl or (data.scratch_hardness_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
+                         <tr t-if="data.scratch_hardness_visible and (data.scratch_hardness_nabl == 'nabl' and nabl or (data.scratch_hardness_nabl != 'nabl' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -986,7 +986,7 @@
 						
 
 
-							<tr t-if="data.observations_alkalis_visible and (data.alkalis_un_nabl == 'pass' and nabl or (data.alkalis_un_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.observations_alkalis_visible and (data.alkalis_un_nabl == 'nabl' and nabl or (data.alkalis_un_nabl != 'nabl' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
@@ -1038,7 +1038,7 @@
 
 					
 
-						<tr t-if="data.chemical_visible and (data.alkalis_nabl == 'pass' and nabl or (data.alkalis_nabl != 'pass' or eln.sample_id.scope != 'nabl') and not nabl)">
+						<tr t-if="data.chemical_visible and (data.alkalis_nabl == 'nabl' and nabl or (data.alkalis_nabl != 'nabl' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
 								<div>
 									<span t-esc="i + 1" />
