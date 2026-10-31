@@ -115,7 +115,10 @@
 						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
 					</div>
 					<div>
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;"/>
+						<div t-if="not eln.sample_id.lab_location.use_footer_image" style="font-size:11px; line-height:1.3; text-align:center; white-space:pre-line;">
+							<t t-esc="eln.sample_id.lab_location.footer_text"/>
+						</div>
+						<img t-else="" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 78px;"/>
 					</div>
 					<div>
 						<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')" style="width:70px; height:70px;"/>

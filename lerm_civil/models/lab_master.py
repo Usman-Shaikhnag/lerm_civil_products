@@ -31,6 +31,8 @@ class LabMaster(models.Model):
 
     footer_image = fields.Binary('Footer Image')
     footer_filename = fields.Char("Footer filename")
+    use_footer_image = fields.Boolean("Use Footer Image", default=True)
+    footer_text = fields.Text("Footer Text")
 
     stamp_image = fields.Binary('Stamp Image')
     stamp_filename = fields.Char("Stamp filename")
