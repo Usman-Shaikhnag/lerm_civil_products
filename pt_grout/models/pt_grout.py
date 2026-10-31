@@ -175,10 +175,7 @@ class PtGrout(models.Model):
         ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
-    initial_setting_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_initial_setting_nabl")
+    
 
 
     @api.depends('initial_setting_time_hours','eln_ref','grade')
@@ -225,6 +222,11 @@ class PtGrout(models.Model):
                     else:
                         record.initial_setting_conformity = 'fail'
 
+    initial_setting_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_initial_setting_nabl")
+    
     @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
         for record in self:
